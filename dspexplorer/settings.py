@@ -120,6 +120,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-
 # import local settings
 from local_settings import *

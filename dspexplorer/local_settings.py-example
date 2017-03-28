@@ -1,12 +1,12 @@
 """
-Django settings for contacttools project.
+Django settings for DSPEXPLORER project.
 
 Local settings for project
 For more information on this file, see
-https://docs.djangoproject.com/en/1.9/topics/settings/
+https://docs.djangoproject.com/en/1.10/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.9/ref/settings/
+https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
@@ -21,15 +21,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 '''
 # comment out to use sqlite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'contacttools',
-        'USER': 'contacttools',
+        'NAME': 'dspexplorer',
+        'USER': 'dspexplorer',
         'PASSWORD': 'secret',
         'HOST': 'localhost',
     }
@@ -39,8 +39,8 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'contacttools',
-        'USER': 'contacttools',
+        'NAME': 'dspexplorer',
+        'USER': 'dspexplorer',
         'PASSWORD': 'secret',
         'HOST': 'localhost',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}
@@ -88,7 +88,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, "contacttools-custom.log"),
+            'filename': os.path.join(BASE_DIR, "dspexplorer-custom.log"),
             'formatter': 'ct-verbose'
         },
         'console': {
