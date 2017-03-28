@@ -27,9 +27,6 @@ def migrate():
 def migrate_app(app_name):
     local('python manage.py makemigrations %s' % app_name)
 
-def migrate_all():
-    local('python manage.py migrate')
-
 def create_superuser():
     local('python manage.py createsuperuser')
 
