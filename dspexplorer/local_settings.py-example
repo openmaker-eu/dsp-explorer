@@ -18,7 +18,7 @@ SECRET_KEY = 'testkey1234567890'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['hostname_of_deployed_website.myorganization.org']
+ALLOWED_HOSTS = []
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
