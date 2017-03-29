@@ -123,7 +123,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-
 ## STATIC FILES
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 STATIC_URL = '/static/'
@@ -133,7 +132,6 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = '/'
-
 
 # import local settings
 from local_settings import *
