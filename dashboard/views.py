@@ -14,7 +14,7 @@ def login_page(request):
         return HttpResponseRedirect("/dashboard")
     username = password = ''
     if request.POST:
-        username = request.POST['username']
+        username = request.POST['email']
         password = request.POST['password']
         
         user = authenticate(username=username, password=password)
