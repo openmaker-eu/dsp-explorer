@@ -3,13 +3,13 @@ body { padding-top: 70px; }
 
 /* Alert Error Message */
 .alert-error {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
 }
 .alert-error hr {
-  border-top-color: #e4b9c0;
+    border-top-color: #e4b9c0;
 }
 .alert-error .alert-link {
-  color: #843534;
+    color: #843534;
 }
