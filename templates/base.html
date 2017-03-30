@@ -34,7 +34,6 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
                     <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>

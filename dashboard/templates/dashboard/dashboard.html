@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
 {% block container %}
-
+<div class="row">
+    <ol class="breadcrumb">
+        <li class="active">Dashboard</li>
+    </ol>
+</div>
 <div class="row">
     <div class="col-md-12">
-        <h2>Welcome {{request.user.first_name}}</h2>
+        <h2>Hi {{request.user.first_name}}! <small>Start exploring data</small></h2>
     </div>
 </div>
 <div class="row">
@@ -14,7 +18,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" id="inputGroup"/>
+                <input type="text" class="form-control" placeholder="Search for Theme.." id="inputGroup"/>
                 <span class="input-group-addon">
                     <i class="glyphicon glyphicon-search"></i>
                 </span>
@@ -25,7 +29,9 @@
     <div class="col-md-12">
         <ul>
             {% for theme in themes %}
-                <li><a href="{% url 'dashboard:theme' theme.name %}"> {{theme.name}} </a></li>
+            <blockquote>
+                <p><a href="{% url 'dashboard:theme' theme.name %}"> {{theme.name}} </a></p>
+            </blockquote>
             {% endfor %}
         </ul>
     </div>
