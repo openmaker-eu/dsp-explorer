@@ -46,3 +46,10 @@ def start():
 def run_test():
     local('python manage.py test contacts')
 
+
+@hosts(['topix@dspexplorer.top-ix.org'])
+def deploy_dev():
+    with cd('/var/www/dsp-explorer'):
+        run('git checkout .')
+        run('git pull')
+        run('service apache2 reload')
