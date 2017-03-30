@@ -1,12 +1,34 @@
 {% extends "base.html" %}
 
 {% block container %}
-{% load static %}
+
 <div class="row">
     <div class="col-md-12">
-        <p class="comu">Ciao {{request.user}}</p>
+        <h2>Welcome {{request.user.first_name}}</h2>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <p class="lead">Themes List</p>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" id="inputGroup"/>
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
 
+    <div class="col-md-12">
+        <ul>
+            {% for theme in themes %}
+                <li><a href="{% url 'dashboard:theme' theme.name %}"> {{theme.name}} </a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

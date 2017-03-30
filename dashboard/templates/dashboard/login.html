@@ -7,7 +7,7 @@
         <p>Welcome!</p>
     </div>
     <div class="col-md-12">
-        <form method="post" action="{% url 'login' %}">
+        <form method="post" action="{% url 'dashboard:login' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="email">Email</label>

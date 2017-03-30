@@ -13,3 +13,17 @@ body { padding-top: 70px; }
 .alert-error .alert-link {
     color: #843534;
 }
+
+.feed_img {
+    width: 150px;
+    height: 150px;
+}
+
+.influencers_box{
+    border-left: solid 1px rgb(225, 227, 239);
+}
+
+.influencers_separator{
+    border-bottom: 1px solid rgb(225, 227, 239);
+    margin-bottom: 10px;
+}

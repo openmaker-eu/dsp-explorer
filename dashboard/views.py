@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from dspconnector.connector import DSPConnector, DSPConnectorException
 
 
 def logout_page(request):
@@ -36,5 +37,22 @@ def login_page(request):
 
 @login_required()
 def dashboard(request):
-    # context = {"user": request.user}
-    return render(request, 'dashboard/dashboard.html')
+    try:
+        context = {"themes": DSPConnector.get_themes()}
+    except DSPConnectorException as e:
+        context = {"themes": []}
+        messages.error(request, e.message)
+    return render(request, 'dashboard/dashboard.html', context)
+
+
+@login_required()
+def theme(request, theme_name):
+    try:
+        feeds = DSPConnector.get_feeds(theme_name)
+        influencers = DSPConnector.get_influencers(theme_name)
+    except DSPConnectorException as e:
+        messages.error(request, e.message)
+        feeds = []
+        influencers = []
+    context = {"theme_name": theme_name, "feeds": feeds, "influencers": influencers}
+    return render(request, 'dashboard/theme.html', context)

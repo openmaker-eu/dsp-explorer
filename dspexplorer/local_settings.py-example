@@ -108,3 +108,12 @@ LOGGING = {
 '''
 
 
+# DSP API SETTINGS
+
+DSP_BASE_URL = 'http://138.68.92.181:8484'
+DSP_API_MOUNT = '/api'
+DSB_API_URL = DSP_BASE_URL + DSP_API_MOUNT
+
+DSP_GET_THEMES = '/get_themes'
+DSP_GET_FEEDS = '/get_feeds'
+DSP_GET_INFLUENCERS = '/get_influencers'
