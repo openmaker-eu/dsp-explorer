@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dspconnector.connector import DSPConnector, DSPConnectorException
 
 
@@ -17,7 +18,6 @@ def login_page(request):
     
     if request.user.is_authenticated:
         return HttpResponseRedirect("/dashboard")
-    username = password = ''
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
@@ -47,6 +47,11 @@ def dashboard(request):
 
 @login_required()
 def theme(request, theme_name):
+    pagesize = 20
+    try:
+        page = int(request.GET['page'])
+    except:
+        page = 1
     try:
         feeds = DSPConnector.get_feeds(theme_name)
         influencers = DSPConnector.get_influencers(theme_name)
@@ -54,5 +59,16 @@ def theme(request, theme_name):
         messages.error(request, e.message)
         feeds = []
         influencers = []
-    context = {"theme_name": theme_name, "feeds": feeds, "influencers": influencers}
+
+    paginator = Paginator(feeds, pagesize)
+    try:
+        feeds_to_show = paginator.page(page)
+    except PageNotAnInteger:
+        feeds_to_show = paginator.page(1)
+    except EmptyPage:
+        feeds_to_show = paginator.page(paginator.num_pages)
+        
+    context = {"theme_name": theme_name,
+               "feeds": feeds_to_show,
+               "influencers": influencers}
     return render(request, 'dashboard/theme.html', context)
