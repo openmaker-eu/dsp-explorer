@@ -12,28 +12,17 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
-        <p class="lead">Themes List</p>
-    </div>
-    <!--<div class="col-md-6">-->
-        <!--<div class="form-group">-->
-            <!--<div class="input-group">-->
-                <!--<input type="text" class="form-control" placeholder="Search for Theme.." id="inputGroup"/>-->
-                <!--<span class="input-group-addon">-->
-                    <!--<i class="glyphicon glyphicon-search"></i>-->
-                <!--</span>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
     <div class="col-md-12">
-        <ul>
-            {% for theme in themes %}
-            <blockquote>
-                <p><a href="{% url 'dashboard:theme' theme.name %}"> {{theme.name}} </a></p>
-            </blockquote>
-            {% endfor %}
-        </ul>
+        <div class="panel panel-info">
+            <div class="panel-heading">Available Themes</div>
+            <div class="panel-body">
+                <div class="list-group">
+                    {% for theme in themes %}
+                        <a class="list-group-item" href="{% url 'dashboard:theme' theme.name %}"> {{theme.name}} </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
