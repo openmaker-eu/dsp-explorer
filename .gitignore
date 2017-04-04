@@ -4,6 +4,9 @@ local_settings.py
 # Environment
 env
 
+# MAC stuff
+.DS_Store
+
 # Created by https://www.gitignore.io/api/django
 
 ### Django ###
