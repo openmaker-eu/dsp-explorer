@@ -27,3 +27,17 @@ body { padding-top: 70px; }
     border-bottom: 1px solid rgb(225, 227, 239);
     margin-bottom: 10px;
 }
+
+
+/*STYLE signed by Mauri*/
+#center{
+    font-size: 65px;
+    background-color: pink;/*testing*/
+}
+
+#xl{
+    width: 40%;
+    opacity:0.6;
+    font-size:16px;
+    color:black;
+}
