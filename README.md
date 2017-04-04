@@ -38,5 +38,9 @@ Start server:
 
     fab start
 
+Create a super user
+
+    create_superuser
+
 Open your browser on **http://localhost:8000** and here we go!
 
