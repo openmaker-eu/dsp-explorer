@@ -4,7 +4,7 @@ body { padding-top: 70px; }
 
 /* Button navbar */
 .btn-color {
-    color: red;
+    color: black;
     border: solid 3px;
     border-color: grey;
     margin-top: 5px;
@@ -19,13 +19,13 @@ body { padding-top: 70px; }
 .brand {
     margin-left:10px;
 }
-/* Container footer */
-.container-footer {
+/* Links footer */
+.links-footer {
     position:relative;
     padding: 15px;
 }
 /* Footer */
-footer {
+.footer {
     background-color: black;
     height: 150px;
 }
