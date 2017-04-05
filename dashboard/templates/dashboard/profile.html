@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block container %}
+<div class="row">
+    <ol class="breadcrumb">
+        <li class="active">Profile</li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-6">
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    <img src="/static/images/user_icon.png" alt="" class="img-circle img-responsive" />
+                </div>
+                <div class="col-sm-6 col-md-8">
+                    <h4>
+                        {{request.user.first_name}} {{request.user.last_name}}
+                    </h4>
+                    <small>
+                        <cite title="Location">San Francisco, USA <i class="glyphicon glyphicon-map-marker"></i></cite>
+                    </small>
+                    <p>
+                        <i class="glyphicon glyphicon-envelope"></i> {{request.user.email}}
+                        <br />
+                        <i class="glyphicon glyphicon-globe"></i><a href="http://openmaker.eu">  http://openmaker.eu</a>
+                        <br />
+                        <i class="glyphicon glyphicon-gift"></i>July 26, 1989</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^logout', views.logout_page, name='logout'),
     url(r'^dashboard/theme/(?P<theme_name>[\w\-]+)$', views.theme, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
+    url(r'^profile', views.profile, name='profile'),
 ]
