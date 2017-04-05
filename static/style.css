@@ -4,19 +4,39 @@ body { padding-top: 70px; }
 
 /* Button navbar */
 .btn-color {
-    position: relative;
-    margin-top: 5px;
-    right: -500px;
-    width: 200px;
     color: black;
     border: solid 3px;
     border-color: grey;
+    margin-top: 5px;
 }
 
-/* Container fluid */
+/* Button login */
+.login {
+    margin-left:10px;
+}
+
+/* Brand */
+.brand {
+    margin-left:10px;
+}
+
+/* Container footer */
+.container-footer {
+    position:relative;
+    padding: 15px;
+}
+/* Footer */
 footer {
     background-color: black;
+    height: 150px;
 }
+
+/* Links footer */
+.footer-links {
+    color: white;
+    font-size: 18px;
+}
+
 
 /* Alert Error Message */
 .alert-error {
