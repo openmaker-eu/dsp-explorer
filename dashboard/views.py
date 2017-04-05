@@ -72,3 +72,8 @@ def theme(request, theme_name):
                "feeds": feeds_to_show,
                "influencers": influencers}
     return render(request, 'dashboard/theme.html', context)
+
+@login_required()
+def profile(request):
+    context = {}
+    return render(request, 'dashboard/profile.html', context)

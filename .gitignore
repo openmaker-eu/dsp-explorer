@@ -6,6 +6,7 @@ env
 
 # MAC stuff
 .DS_Store
+.idea
 
 # Created by https://www.gitignore.io/api/django
 

@@ -44,3 +44,33 @@ footer {
     border-bottom: 1px solid rgb(225, 227, 239);
     margin-bottom: 10px;
 }
+
+
+/*STYLE signed by Mauri*/
+ul {
+    list-style-type:none;
+}
+
+#center{
+    font-size: 65px;
+    /*background-color: pink;/*testing*/*/
+}
+
+#xl{
+    width: 40%;
+    opacity:0.6;
+    font-size:16px;
+    color:black;
+    border:3px solid #C0C0C0;
+    border-radius: 10px;
+}
+
+.resize{
+    width: 400px;
+    height: 400px;
+}
+
+.dist{
+    margin-top: 20px;
+
+}
