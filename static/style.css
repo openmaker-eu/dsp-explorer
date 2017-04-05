@@ -2,17 +2,6 @@
 body { padding-top: 70px; }
 
 
-/* Button navbar */
-.btn-success {
-    position: relative;
-    margin-top: 10px;
-    right: -500px;
-    width: 200px;
-    color: black;
-    border: solid 3px;
-    border-color: grey;
-}
-
 /* Container fluid */
 footer {
     background-color: black;
