@@ -66,6 +66,11 @@ IMAGES
 
 */
 
+.feed_img {
+    width: 150px;
+    height: 150px;
+}
+
 .cover-img {
     height: 400px;
 }
