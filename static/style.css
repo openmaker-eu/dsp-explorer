@@ -32,6 +32,10 @@ html, body {
     font-weight: 100;
 }
 
+a, a:hover {
+    color: #333;
+}
+
 /*
 
 NAVBAR
@@ -112,151 +116,30 @@ BUTTONS
     font-size: 20px;
 }
 
+.box {
+    min-height: 150px;
+    border: 1px solid darkgrey;
+    position: relative;
+}
 
+.box p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
 
+.box:hover {
+    background: #db4348;
+    -webkit-box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+    -moz-box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+    box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+}
 
-
-
-
-
-
-/*body { */
-    /*padding-top: 70px; */
-/*}*/
-
-
-
-
-
-/* The Modal (background) */
-/*.modal {*/
-    /*display: none; !* Hidden by default *!*/
-    /*position: fixed; !* Stay in place *!*/
-    /*z-index: 1; !* Sit on top *!*/
-    /*left: 0;*/
-    /*top: 0;*/
-    /*width: 100%; !* Full width *!*/
-    /*height: 100%; !* Full height *!*/
-    /*overflow: auto; !* Enable scroll if needed *!*/
-    /*background-color: rgb(0,0,0); !* Fallback color *!*/
-    /*background-color: rgba(0,0,0,0.4); !* Black w/ opacity *!*/
-/*}*/
-
-/*!* Modal Content/Box *!*/
-/*.modal-content {*/
-    /*background-color: #fefefe;*/
-    /*margin: 15% auto; !* 15% from the top and centered *!*/
-    /*padding: 20px;*/
-    /*border: 1px solid #888;*/
-    /*width: 40%; !* Could be more or less, depending on screen size *!*/
-/*}*/
-
-/*!* The Close Button *!*/
-/*.close {*/
-    /*color: #aaa;*/
-    /*float: right;*/
-    /*font-size: 28px;*/
-    /*font-weight: bold;*/
-/*}*/
-
-/*.close:hover,*/
-/*.close:focus {*/
-    /*color: black;*/
-    /*text-decoration: none;*/
-    /*cursor: pointer;*/
-/*}*/
-
-
-/*!* Button navbar *!*/
-/*.btn-color {*/
-    /*color: black;*/
-    /*border: solid 3px;*/
-    /*border-color: grey;*/
-    /*margin-top: 5px;*/
-    /*background-color: #ccffcc;*/
-    /*opacity:0.6;*/
-/*}*/
-
-/*!* Button login *!*/
-/*.login {*/
-    /*margin-left:10px;*/
-/*}*/
-
-/*!* Brand *!*/
-/*.brand {*/
-    /*margin-left:10px;*/
-/*}*/
-/*!* Links footer *!*/
-/*.links-footer {*/
-    /*position:relative;*/
-    /*padding: 15px;*/
-/*}*/
-/*!* Footer *!*/
-/*.footer {*/
-    /*background-color: black;*/
-    /*height: 150px;*/
-/*}*/
-
-/*!* Links footer *!*/
-/*.footer-links {*/
-    /*color: white;*/
-    /*font-size: 18px;*/
-/*}*/
-
-
-/*!* Alert Error Message *!*/
-/*.alert-error {*/
-    /*color: #a94442;*/
-    /*background-color: #f2dede;*/
-    /*border-color: #ebccd1;*/
-/*}*/
-/*.alert-error hr {*/
-    /*border-top-color: #e4b9c0;*/
-/*}*/
-/*.alert-error .alert-link {*/
-    /*color: #843534;*/
-/*}*/
-
-/*.feed_img {*/
-    /*width: 150px;*/
-    /*height: 150px;*/
-/*}*/
-
-/*.influencers_box{*/
-    /*border-left: solid 1px rgb(225, 227, 239);*/
-/*}*/
-
-/*.influencers_separator{*/
-    /*border-bottom: 1px solid rgb(225, 227, 239);*/
-    /*margin-bottom: 10px;*/
-/*}*/
-
-
-/*!*STYLE signed by Mauri*!*/
-/*ul {*/
-    /*list-style-type:none;*/
-/*}*/
-
-/*#center{*/
-    /*font-size: 65px;*/
-    /*!*background-color: pink;!*testing*!*!*/
-/*}*/
-
-/*#xl{*/
-    /*width: 40%;*/
-    /*opacity:0.6;*/
-    /*font-size:16px;*/
-    /*color:black;*/
-    /*border:3px solid #C0C0C0;*/
-    /*border-radius: 10px;*/
-/*}*/
-
-/*.resize{*/
-    /*width: 400px;*/
-    /*height: 400px;*/
-/*}*/
-
-/*.dist{*/
-    /*margin-top: 20px;*/
-
-/*}*/
+.box:hover p {
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+}
