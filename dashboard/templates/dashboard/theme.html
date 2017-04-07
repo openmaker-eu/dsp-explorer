@@ -1,87 +1,92 @@
 {% extends "base.html" %}
 
 {% block container %}
-<div class="row">
-    <ol class="breadcrumb">
-        <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-        <li class="active">{{theme_name}}</li>
-    </ol>
-</div>
-
-<div class="row">
-    <div class="col-md-12 text-center">
-        <h2>{{theme_name}}</h2>
+<div class="container">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+            <li class="active">{{theme_name}}</li>
+        </ol>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-8">
-        <p class="lead">Feeds</p>
-        <!-- FEED SPACE -->
-        {% for feed in feeds %}
-        <div class="row">
-            <h5>{{feed.title}}</h5>
-            <div class="col-md-3">
-                {% if feed.im %}
-                <img src="{{feed.im}}" class="img-responsive feed_img" alt="{{feed.title}}">
-                {% else %}
-                <img src="http://placehold.it/150x150" class="img-responsive  feed_img" alt="{{feed.title}}">
-                {% endif %}
-            </div>
-            <div class="col-md-9">
-                <p>Created by: <strong>{{feed.username}}</strong></p>
-                {% if feed.description %}
-                <p>{{feed.description}}</p>
-                {% else %}
-                <p>No Description provided </p>
-                {% endif %}
-                <p><a href="{{feed.url}}" target="_blank" class="btn btn-info">View More</a> </p>
-            </div>
-        </div>
-        {% endfor %}
+
+    <div class="row margin-bottom-50">
         <div class="col-md-12 text-center">
-            {% if feeds.has_other_pages %}
-            <ul class="pagination pagination-sm">
-                {% if feeds.has_previous %}
-                <li><a href="?page={{ feeds.previous_page_number }}">&laquo;</a></li>
-                {% else %}
-                <li class="disabled"><span>&laquo;</span></li>
-                {% endif %}
-                {% for i in feeds.paginator.page_range %}
-                    {% if feeds.number == i %}
-                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
-                    <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-                {% if feeds.has_next %}
-                <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ feeds.next_page_number }}">&raquo;</a></li>
-                {% else %}
-                <li class="disabled"><span>&raquo;</span></li>
-                {% endif %}
-            </ul>
-            {% endif %}
+            <h2 class="logo text-red">{{theme_name}}</h2>
         </div>
     </div>
-    <div class="col-md-4 influencers_box">
-        <p class="lead">TOP Influencers</p>
-        <!-- INFLUENCERS SPACE -->
-        {% for account in influencers %}
-        <div class="row influencers_separator">
-            <div class="col-md-3">
-                <img src="{{account.img_url}}" alt="{{account.username}}" class="img-circle">
+    <div class="row">
+        <div class="col-md-8">
+            <p class="lead">Feeds</p>
+            <!-- FEED SPACE -->
+            {% for feed in feeds %}
+            <div class="row margin-bottom-25">
+                <div class="col-md-3">
+                    {% if feed.im %}
+                    <img src="{{feed.im}}" class="img-responsive feed_img" alt="{{feed.title}}">
+                    {% else %}
+                    <img src="http://placehold.it/150x150" class="img-responsive  feed_img" alt="{{feed.title}}">
+                    {% endif %}
+                </div>
+                <div class="col-md-9">
+                    <p><strong>Title:</strong> <h5>{{feed.title}}</h5></p>
+                    <p><strong>Created by:</strong> <p>{{feed.username}}</p></p>
+                    <p>
+                        <strong>Description:</strong>
+                        {% if feed.description %}
+                        <p>{{feed.description}}</p>
+                        {% else %}
+                        <p>No Description provided </p>
+                        {% endif %}
+                    </p>
+                    <p><a href="{{feed.url}}" target="_blank" class="btn login-button">View More</a> </p>
+                </div>
+                <div class="col-md-12 margin-top-25">
+                    <hr>
+                </div>
             </div>
-            <div class="col-md-9">
-                <address>
-                    <strong>{{account.name}}</strong>
-                    {% if account.location_user %} {{account.location_user}} {% endif %}
-                </address>
-                <p>{{account.description_user}}</p>
+            {% endfor %}
+            <div class="col-md-12 text-center">
+                {% if feeds.has_other_pages %}
+                <ul class="pagination pagination-sm">
+                    {% if feeds.has_previous %}
+                    <li><a href="?page={{ feeds.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in feeds.paginator.page_range %}
+                        {% if feeds.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if feeds.has_next %}
+                    <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ feeds.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
             </div>
         </div>
-
-
-        {% endfor%}
+        <div class="col-md-4 influencers_box">
+            <p class="lead">TOP Influencers</p>
+            <!-- INFLUENCERS SPACE -->
+            {% for account in influencers %}
+            <div class="row influencers_separator">
+                <div class="col-md-3">
+                    <img src="{{account.img_url}}" alt="{{account.username}}" class="img-circle">
+                </div>
+                <div class="col-md-9">
+                    <address>
+                        <strong>{{account.name}}</strong>
+                        {% if account.location_user %} {{account.location_user}} {% endif %}
+                    </address>
+                    <p>{{account.description_user}}</p>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
     </div>
 </div>
-
 {% endblock %}
