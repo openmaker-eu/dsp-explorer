@@ -10,6 +10,19 @@ html, body {
     background-color: #fff;
 }
 
+/* Alert Error Message */
+.alert-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.alert-error hr {
+    border-top-color: #e4b9c0;
+}
+.alert-error .alert-link {
+    color: #843534;
+}
+
 .text-red {
     color: #db4348!important;
 }
@@ -86,6 +99,15 @@ MARGINS
 
 /*
 
+MARGINS
+
+*/
+.color-row {
+    background-color: #333333;
+}
+
+/*
+
 BUTTONS
 
 */
@@ -104,6 +126,30 @@ BUTTONS
     border: solid 1px #fff;
     font-weight: 700;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
+}
+
+.login-button {
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+}
+
+.login-button:hover {
+    background: #db4348;
+    color: #fff;
+}
+
+.close-button {
+    background: transparent;
+    color: #f0ad4e;
+    border: solid 1px;
+    font-weight: 300;
+}
+
+.close-button:hover {
+    background: #f0ad4e;
+    color: #fff;
 }
 
 .claim {
