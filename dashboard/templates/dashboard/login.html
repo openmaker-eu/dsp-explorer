@@ -1,186 +1,237 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>DSP Explorer</title>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+{% extends "base.html" %}
+{% block container %}
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-md-12 text-center">
+            <img class="cover-img" src="/static/images/cover-image.png">
+            <p class="text-center claim">
+                <span class="text-red">Explore</span> the <span class="text-red"><strong>Makers</strong> Data</span>.<br>
+                Find <span class="text-red">Trend</span> <strong class="text-red">Topic</strong> and <span class="text-red">Top</span> <strong class="text-red">Influencers</strong>
+            </p>
+        </div>
+    </div>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <div class="row margin-top-50 margin-bottom-50">
+        <div class="col-md-6 col-md-offset-3"><hr></div>
+    </div>
 
-    <!-- jQuery Bootstrap typeahead -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
-    <link href="/static/style.css" rel="stylesheet" type="text/css">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="col-md-6 col-md-offset-3 margin-bottom-25">
+                <p class="sub-title"><strong>Community</strong> Network</p>
+            </div>
+            <div class="text-center">
+                <img class="sub-img" src="/static/images/cover-image.png">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p class="sub-title margin-bottom-25">Some of our <strong>Members</strong></p>
+            <div class="row margin-top-25">
+                <div class="col-md-3">
+                    <img class="icon-img" src="/static/images/cover-image.png">
+                </div>
+                <div class="col-md-9">
+                    <p>text text text text text text text text text </p>
+                </div>
+                <div class="col-md-12"><hr></div>
+            </div>
+            <div class="row margin-top-25">
+                <div class="col-md-3">
+                    <img class="icon-img" src="/static/images/cover-image.png">
+                </div>
+                <div class="col-md-9">
+                    <p>text text text text text text text text text </p>
+                </div>
+                <div class="col-md-12"><hr></div>
+            </div>
+            <div class="row margin-top-25">
+                <div class="col-md-3">
+                    <img class="icon-img" src="/static/images/cover-image.png">
+                </div>
+                <div class="col-md-9">
+                    <p>text text text text text text text text text </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row margin-top-50 margin-bottom-50">
+        <hr>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button class="btn custom-button">
+                Request Membership
+            </button>
+        </div>
+    </div>
+
+    <div class="row margin-top-50 margin-bottom-50">
+        <hr>
+    </div>
 
 
-</head>
-<body>
-<div >
+
+{% endblock %}
 
 
-    <div class="container">
-     <link rel="stylesheet" href="/static/style.css">
-<nav class="navbar navbar-default navbar-fixed-top">
-        <div class="row">
+{% comment %}<nav class="navbar navbar-default navbar-fixed-top">
+            <div class="row">
 
                 <a class="navbar-brand brand col-md-3 col-xs-5" href="/"><img width="80px;" style="margin-left:60px;" src="/static/images/openmaker-logo.svg" alt="Logo OpenMaker"></a>
 
-            <!-- Brand and toggle get grouped for better mobile display -->
-              <button type="button"  class="col-md-2 col-xs-4 col-md-offset-5 btn btn-color">Request Membership</button>
-              <button type="button" id="myBtn" class="login col-md-1 col-xs-3 btn btn-color">Login</button>
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <button type="button"  class="col-md-2 col-xs-4 col-md-offset-5 btn btn-color">Request Membership</button>
+                <button type="button" id="myBtn" class="login col-md-1 col-xs-3 btn btn-color">Login</button>
 
 
                 <!-- The Modal -->
                 <div id="myModal" class="modal">
 
-                      <!-- Modal content -->
-                  <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Login Form</h4>
-                      </div>
-                    <div class="row">
-                        <div class="col-md-12">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Login Form</h4>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                            </div>
+                            <div class="col-md-12">
+                                <form method="post" action="{% url 'dashboard:login' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" name="email" class="form-control" id="email" placeholder="Email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="login" class="btn btn-info" />
+                                    </div>
+                                </form>
+                            </div>
 
                         </div>
-                        <div class="col-md-12">
-                            <form method="post" action="{% url 'dashboard:login' %}">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="text" name="email" class="form-control" id="email" placeholder="Email">
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="login" class="btn btn-info" />
-                                </div>
-                            </form>
-                        </div>
-                        
                     </div>
-                  </div>
                 </div>
 
 
-            <script>
-                // Get the modal
-                var modal = document.getElementById('myModal');
+                <script>
+                    // Get the modal
+                    var modal = document.getElementById('myModal');
 
-                // Get the button that opens the modal
-                var btn = document.getElementById("myBtn");
+                    // Get the button that opens the modal
+                    var btn = document.getElementById("myBtn");
 
-                // Get the <span> element that closes the modal
-                var span = document.getElementsByClassName("close")[0];
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementsByClassName("close")[0];
 
 
-                // When the user clicks the button, open the modal
-                btn.onclick = function() {
-                    modal.style.display = "block";
-                }
+                    // When the user clicks the button, open the modal
+                    btn.onclick = function() {
+                        modal.style.display = "block";
+                    }
 
-                // When the user clicks on <span> (x), close the modal
-                span.onclick = function() {
-                    modal.style.display = "none";
-                }
-
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function(event) {
-                    if (event.target == modal) {
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
                         modal.style.display = "none";
                     }
-                }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function(event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
 
 
 
-            </script>
+                </script>
 
 
 
-        </div>
+            </div>
 
 
 
-    </nav>
-<div class="container">
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
-            <h1 id="center">Value Proposition</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6 col-md-offset-3">
-            <img src="http://placehold.it/500x500">
-        </div>
-    </div>
-    <div class="row">
-        <div style="margin-top:5px; text-align:center; font-size: 20px;" class="col-md-14">
-            <p >Sed ut perspiciatis unde omnis ntore veritatis et quasi architecitecto beataetore veritatis et quasi architecto beataetore veritatis et quasi architecto beataetore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem m</p>
-        </div>
-    </div>
+        </nav>{% endcomment %}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-md-offset-3 col-md-6 col-md-offset-3">#}
+{#                    <h1 id="center">Value Proposition</h1>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <div class="col-md-offset-3 col-md-6 col-md-offset-3">#}
+{#                    <img src="http://placehold.it/500x500">#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <div style="margin-top:5px; text-align:center; font-size: 20px;" class="col-md-14">#}
+{#                    <p >Sed ut perspiciatis unde omnis ntore veritatis et quasi architecitecto beataetore veritatis et quasi architecto beataetore veritatis et quasi architecto beataetore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem m</p>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <hr>#}
+{##}
+{#            <div class="row">#}
+{#                <div class="col-md-6"><p style="font-size: 24px;font-weight:bold;">Community Network</p></div>#}
+{#                <div class="col-md-6">#}
+{#                    <p style="font-size: 24px;font-weight:bold;">Some of our members</p>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <div class="col-md-6"><img class="resize" src="/static/imgs/CommunityNet.png"></div>#}
+{#                <div class="col-md-6">#}
+{#                    <ul>#}
+{#                        <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>#}
+{#                        <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>#}
+{#                        <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <hr>#}
+{##}
+{#            <div class="row">#}
+{#                <div style="text-align:center;" class="col-md-offset-3 col-md-6 col-xs-8">#}
+{#                    <button id="xl" class="btn btn-success"><span>Request Membership</span></button>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <hr>#}
+{##}
+{#            <div class="row">#}
+{#                <div class="col-md-offset-2 col-md-2 col-xs-4"><button style="height:150px; width:150px; text-align:center; font-size:20px;">Arduino</button></div>#}
+{#                <div class="col-md-offset-1 col-md-3 col-xs-5"><button style="height:150px; width:150px; text-align:center; font-size:20px;">Raspbery <br />Pi</button></div>#}
+{#                <div class="col-md-3"><button style="height:150px; width:150px; text-align:center; font-size:20px;">3D Printer</button></div>#}
+{#            </div>#}
+{##}
+{#            <hr>#}
+{##}
+{#        </div>#}
+{##}
+{#    </div>#}
+{##}
+{#    <div class="footer">#}
+{##}
+{#        <div class="links-footer">#}
+{#            <a class="footer-links" href="#">About us</a><br >#}
+{#            <a class="footer-links" href="#">Privacy</a><br >#}
+{#            <a class="footer-links" href="#">Contact us</a>#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{##}
+{#</div>#}
 
-    <hr>
 
-    <div class="row">
-        <div class="col-md-6"><p style="font-size: 24px;font-weight:bold;">Community Network</p></div>
-        <div class="col-md-6">
-            <p style="font-size: 24px;font-weight:bold;">Some of our members</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6"><img class="resize" src="/static/imgs/CommunityNet.png"></div>
-        <div class="col-md-6">
-            <ul>
-                <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>
-                <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>
-                <li><img class="feed_img influencers_box influencers_separator" src="http://placehold.it/150x150"></li>
-            </ul>
-        </div>
-    </div>
 
-    <hr>
-
-    <div class="row">
-        <div style="text-align:center;" class="col-md-offset-3 col-md-6 col-xs-8">
-            <button id="xl" class="btn btn-success"><span>Request Membership</span></button>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="row">
-        <div class="col-md-offset-2 col-md-2 col-xs-4"><button style="height:150px; width:150px; text-align:center; font-size:20px;">Arduino</button></div>
-        <div class="col-md-offset-1 col-md-3 col-xs-5"><button style="height:150px; width:150px; text-align:center; font-size:20px;">Raspbery <br />Pi</button></div>
-        <div class="col-md-3"><button style="height:150px; width:150px; text-align:center; font-size:20px;">3D Printer</button></div>
-    </div>
-
-    <hr>
-
-    </div>
-
-</div>
-
-<div class="footer">
-
-        <div class="links-footer">
-            <a class="footer-links" href="#">About us</a><br >
-            <a class="footer-links" href="#">Privacy</a><br >
-            <a class="footer-links" href="#">Contact us</a>
-        </div>
-
-</div>
-
-</div>
-
-</body>
-</html>
 
 
 
