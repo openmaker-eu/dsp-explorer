@@ -45,17 +45,20 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-                    <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
-                    <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
+                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
+                        <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
+                    {% else %}
+
+                        <li><a href="#">Request Membership</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
+
                     {% endif %}
-                    <li><a href="#">Request Membership</a></li>
-                    <li><a href="#">Login</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
         {% include "flash.html" %}
 
         <!-- base container goes here -->
