@@ -67,22 +67,29 @@
         {% endblock %}
         <!-- end base container -->
     </div>
-    <div class="row back foooter">
-        <div class="col-md-4 text-white" style="margin-left:30px; margi">
-            <h1 style="font-weight: 300;font-style: italic;">About OpenMaker</h1>
-            <p>Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum Lorem ipsum Lorem ipsum  ipsum Lorem ipsum </p>
-           <div class="col-md-4">
-               <img class="icon-eu"/>
-           </div>
-            <div class="col-md-8" style="position:relative; bottom: -49px;font-size:18px;">
-                <p class="text-white">EU Project</p>
+    {% if user.is_anonymous %}
+        <div class="row back">
+        <div class="container">
+            <div class="col-md-4 text-white margin-top-25">
+                <p class="sub-title">About <strong>Open</strong>Maker</p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna orci, iaculis quis pretium nec, volutpat vel orci. Proin in varius justo. Proin suscipit rhoncus porttitor.
+                    Nulla ut hendrerit massa.
+                </p>
+                <p>
+                    <img class="icon-eu"/> <span style="margin-left:10px">EU Project</span>
+                </p>
             </div>
-
+            <div class="col-md-4 margin-top-25 text-white">
+                <p class="sub-title text-white"><a href="#">Privacy</a></p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna orci, iaculis quis pretium nec, volutpat vel orci. Proin in varius justo. Proin suscipit rhoncus porttitor.
+                    Nulla ut hendrerit massa.
+                </p>
+            </div>
         </div>
-        <div class="col-md-4 text-center">
-            <h1 style="font-weight:300;font-style: italic;"><a id="pvt" style="color:#fff;">Privacy</a></h1>
         </div>
-    </div>
+    {% endif %}
 </div>
 
 </body>
