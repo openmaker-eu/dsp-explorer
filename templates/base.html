@@ -45,12 +45,12 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
-                        <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
+                    <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
+                    <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                     {% else %}
 
-                        <li><a href="#">Request Membership</a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
+                    <li><a href="#">Request Membership</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
 
                     {% endif %}
                 </ul>
@@ -58,17 +58,19 @@
         </div><!-- /.container-fluid -->
     </nav>
 
-        {% include "flash.html" %}
+    {% include "flash.html" %}
 
-        <!-- base container goes here -->
-        {% block container %}
+    <!-- base container goes here -->
+    {% block container %}
 
 
-        {% endblock %}
-        <!-- end base container -->
-    </div>
-    {% if user.is_anonymous %}
-        <div class="row back">
+    {% endblock %}
+    <!-- end base container -->
+</div>
+{% if user.is_anonymous %}
+
+<div class="container-fluid">
+    <div class="row back">
         <div class="container">
             <div class="col-md-4 text-white margin-top-25">
                 <p class="sub-title">About <strong>Open</strong>Maker</p>
@@ -88,8 +90,10 @@
                 </p>
             </div>
         </div>
-        </div>
-    {% endif %}
+
+    </div>
+</div>
+{% endif %}
 </div>
 
 </body>
