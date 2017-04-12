@@ -1,4 +1,6 @@
-<html lang="en">
+{% load render_bundle from webpack_loader %}
+<!doctype html>
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
 
@@ -20,6 +22,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
     <link href="/static/style.css" rel="stylesheet" type="text/css">
+
+    <!-- WEBPACK BUNDLES -->
+    {% render_bundle 'commons' 'js' %}
+    {% render_bundle request.resolver_match.app_name 'js' %}
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700" rel="stylesheet">
 
@@ -61,6 +67,7 @@
     {% include "flash.html" %}
 
     <!-- base container goes here -->
+
     {% block container %}
 
 

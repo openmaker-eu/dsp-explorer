@@ -39,6 +39,7 @@ def login_page(request):
 def dashboard(request):
     try:
         context = {"themes": DSPConnector.get_themes()}
+        print context
     except DSPConnectorException as e:
         context = {"themes": []}
         messages.error(request, e.message)

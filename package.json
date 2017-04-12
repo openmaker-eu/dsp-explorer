@@ -1,0 +1,47 @@
+{
+  "name": "dsp-explorer",
+  "version": "1.0.0",
+  "description": "makers data explorer",
+  "scripts": {
+    "dev": "webpack -d --watch --progress",
+    "prod": "webpack -p --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://andreafspeziale@bitbucket.org/topixdevelopers/dsp-explorer.git"
+  },
+  "keywords": [
+    "big",
+    "data"
+  ],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/topixdevelopers/dsp-explorer#readme",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "css-loader": "^0.28.0",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "html-loader": "^0.4.4",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.16.1",
+    "to-string-loader": "^1.1.5",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.3.3",
+    "webpack-bundle-tracker": "^0.2.0",
+    "webpack-clean-obsolete-chunks": "^0.1.8"
+  },
+  "dependencies": {
+    "angular": "^1.6.2",
+    "angular-toastr": "^2.1.1",
+    "angular-ui-bootstrap": "^2.5.0",
+    "bootstrap-sass": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "lodash": "^4.16.2",
+    "node-sass": "^4.5.2"
+  }
+}
