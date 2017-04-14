@@ -37,7 +37,7 @@ class DSPConnector(object):
     @staticmethod
     def _wrapper_request(response):
         if response and response.status_code < 205:
-            return json.loads(response.json())
+            return response.json()
         raise DSPConnectorException(response)
     
     @staticmethod

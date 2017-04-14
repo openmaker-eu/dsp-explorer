@@ -18,7 +18,7 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <p class="lead">Feeds</p>
+                <p class="lead">Feed</p>
                 <!-- FEED SPACE -->
                 {% for feed in feeds %}
                     <div class="row margin-bottom-25">
@@ -30,17 +30,14 @@
                             {% endif %}
                         </div>
                         <div class="col-md-9">
-                            <p><strong>Title:</strong> <h5>{{feed.title}}</h5></p>
-                            <p><strong>Created by:</strong> <p>{{feed.username}}</p></p>
+                            <p><h5><a href="{{feed.url}}" target="_blank">{{feed.title}}</a></h5></p>
                             <p>
-                                <strong>Description:</strong>
                                 {% if feed.description %}
                                     <p>{{feed.description}}</p>
                                 {% else %}
                                     <p>No Description provided </p>
                                 {% endif %}
                             </p>
-                            <p><a href="{{feed.url}}" target="_blank" class="btn login-button">View More</a> </p>
                         </div>
                         <div class="col-md-12 margin-top-25">
                             <hr>
@@ -81,7 +78,7 @@
                         </div>
                         <div class="col-md-9">
                             <address>
-                                <strong>{{account.name}}</strong>
+                                <strong><a href="http://twitter.com/{{account.username}}" target="_blank">{{account.name}}</a></strong>
                                 {% if account.location_user %} {{account.location_user}} {% endif %}
                             </address>
                             <p>{{account.description_user}}</p>
