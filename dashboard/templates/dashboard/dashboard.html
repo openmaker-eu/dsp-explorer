@@ -24,7 +24,7 @@
                     Themes
                 </p>
             </div>
-            {% for theme in themes %}
+            {% for theme in themes.themes %}
                 <div class="col-md-2">
                     <a href="{% url 'dashboard:theme' theme.name %}">
                         <div class="col-md-12 box">

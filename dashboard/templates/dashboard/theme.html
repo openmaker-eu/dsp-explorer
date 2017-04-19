@@ -44,29 +44,6 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col-md-12 text-center">
-                    {% if feeds.has_other_pages %}
-                        <ul class="pagination pagination-sm">
-                            {% if feeds.has_previous %}
-                                <li><a href="?page={{ feeds.previous_page_number }}">&laquo;</a></li>
-                            {% else %}
-                                <li class="disabled"><span>&laquo;</span></li>
-                            {% endif %}
-                            {% for i in feeds.paginator.page_range %}
-                                {% if feeds.number == i %}
-                                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                                {% else %}
-                                    <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ i }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                            {% if feeds.has_next %}
-                                <li><a href="{% url 'dashboard:theme' theme_name %}?page={{ feeds.next_page_number }}">&raquo;</a></li>
-                            {% else %}
-                                <li class="disabled"><span>&raquo;</span></li>
-                            {% endif %}
-                        </ul>
-                    {% endif %}
-                </div>
             </div>
             <div class="col-md-4 influencers_box">
                 <p class="lead">TOP Influencers</p>
