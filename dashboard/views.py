@@ -48,11 +48,7 @@ def dashboard(request):
 
 @login_required()
 def theme(request, theme_name):
-    pagesize = 20
-    try:
-        page = int(request.GET['page'])
-    except:
-        page = 1
+
     try:
         feeds = DSPConnector.get_feeds(theme_name)
         influencers = DSPConnector.get_influencers(theme_name)
@@ -61,18 +57,11 @@ def theme(request, theme_name):
         feeds = []
         influencers = []
 
-    paginator = Paginator(feeds, pagesize)
-    try:
-        feeds_to_show = paginator.page(page)
-    except PageNotAnInteger:
-        feeds_to_show = paginator.page(1)
-    except EmptyPage:
-        feeds_to_show = paginator.page(paginator.num_pages)
-        
     context = {"theme_name": theme_name,
-               "feeds": feeds_to_show,
-               "influencers": influencers}
+               "feeds": feeds['feeds'],
+               "influencers": influencers['influencers']}
     return render(request, 'dashboard/theme.html', context)
+
 
 @login_required()
 def profile(request):

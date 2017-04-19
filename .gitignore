@@ -1,6 +1,9 @@
 # Custom setting
 local_settings.py
 
+# Production static
+static_root/
+
 # Environment
 env
 
