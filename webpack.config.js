@@ -17,7 +17,11 @@ module.exports = {
     },
     module : {
         rules: [
-            { test: /\.html?$/, loader: ["html-loader"] },
+            {   test: /\.html?$/, loader: ["html-loader"] },
+            {
+                test: /\.css?$/,
+                loaders: ["style-loader", "css-loader"]
+            },
             {
                 test: /\.scss?$/,
                 loaders: ["style-loader", "css-loader", "sass-loader"]
@@ -30,8 +34,9 @@ module.exports = {
                 }
             },
             {
-                test: /\.(ttf|otf|eot|svg|woff2(\?\S*)?$)(\?[a-z0-9]+)?$/,
-                loaders: [ "file-loader?name=fonts/[name].[ext]" ]
+                test: /\.(png|woff|woff2|eot|ttf|svg|json)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file-loader?limit=100000&name=../fonts/[hash].[ext]'
+
             }
         ]
     },
