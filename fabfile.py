@@ -40,6 +40,7 @@ def create_superuser():
 
 
 def start():
+    local('npm run dev &')
     local('python manage.py runserver 0.0.0.0:8000')
 
 
