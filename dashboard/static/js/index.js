@@ -9,5 +9,16 @@ require("../style/dashboard.scss")
 
 import  * as  _  from 'lodash'
 
-$('body').addClass("bg-danger")
+import * as angular from 'angular';
 
+require('angular-ui-bootstrap');
+require('angular-toastr');
+require('angular-sanitize');
+
+var app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
+    .config(function($interpolateProvider) {
+            $interpolateProvider.startSymbol('{$');
+            $interpolateProvider.endSymbol('$}');
+    });
+
+export { app };
