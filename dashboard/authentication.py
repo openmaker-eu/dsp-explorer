@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.sites.shortcuts import get_current_site
 import datetime as dt
 from crmconnector.capsule import CRMConnector
 from .models import Profile
@@ -46,13 +47,36 @@ def request_membership(request, email):
     except EmailAlreadyUsed:
         return JsonResponse({'status': 'error', 'message': 'Email already present'}, status=409)
     message = 'Invitation sent!'
-    Profile.send_invitation(request, email, "%s %s" % (profile.user.first_name, profile.user.last_name))
+    subject_for_email = 'Welcome to DSP Explorer - Open Maker'
+    message_for_email = 'Welcome! Click this link to create your account ' \
+                        'http://{}/reset_password/{}'.format(get_current_site(request), profile.reset_token)
+    profile.send_email(subject_for_email, message_for_email)
     return JsonResponse({'status': 'ok', 'email': email, 'message': message}, status=200)
 
 
 def recover_pwd(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    if request.POST:
+        username = request.POST['email']
+        try:
+            profile = Profile.objects.filter(user__email=username).get()
+            profile.reset_token = Profile.get_new_reset_token()
+            profile.ask_reset_at = dt.datetime.now()
+            profile.save()
+            email_message = """
+DSPExplorer - Open Maker
+Hi {email}, to reset you password, click here:
+
+http://{baseurl}/reset_password/{token}
+            """.format(email=profile.user.email,
+                       baseurl=get_current_site(request),
+                       token=profile.reset_token)
+            profile.send_email('DSPExplorer - Reset Password', email_message)
+            messages.success(request, 'You will receive an email with a link to reset your password!')
+        except Profile.DoesNotExist:
+            messages.error(request, 'User not Found.')
+            return HttpResponseRedirect(reverse('dashboard:login'))
     return HttpResponseRedirect(reverse('dashboard:login'))
 
 

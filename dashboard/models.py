@@ -5,8 +5,6 @@ from django.db import models
 from datetime import datetime as dt
 import uuid
 from .exceptions import EmailAlreadyUsed
-from utils.mailer import EmailHelper
-from django.contrib.sites.shortcuts import get_current_site
 
 
 class Profile(models.Model):
@@ -38,25 +36,55 @@ class Profile(models.Model):
                                             last_name=last_name)
             user.is_active = False
             user.save()
-
+        
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             profile = cls(user=user)
             profile.picture_url = picture_url
-            profile.reset_token = str(uuid.uuid4())
             profile.save()
         if not user.is_active:
+            profile.reset_token = Profile.get_new_reset_token()
+            profile.save()
             return profile
         raise EmailAlreadyUsed
-
-    @classmethod
-    def send_invitation(cls, request, email, full_name):
-        try:
-            profile = Profile.objects.get(user__email=email)
-        except Profile.DoesNotExist:
-            return None
-        message = 'Welcome! Click this link to create your account ' \
-                  'http://{}/reset_password/{}'.format(get_current_site(request), profile.reset_token)
-        EmailHelper.send_email(message=message, subject='Welcome to DSP Explorer - Open Maker',
-                               receiver_name=full_name, receiver_email=email)
+    
+    def send_email(self, subject, message):
+        """
+        Send Async Email to the user
+        :param subject: Subject of the email
+        :param message: Email Content
+        :return: Nothing
+        """
+        import threading
+        thr = threading.Thread(target=Profile._send_email,
+                               kwargs=dict(message=message,
+                                           subject=subject,
+                                           receiver_name=self.user.get_full_name(),
+                                           receiver_email=self.user.email
+                                           ))
+        thr.start()
+    
+    @staticmethod
+    def _send_email(subject, message, receiver_name, receiver_email):
+        """
+        Send Email method
+        :param subject: Subject of the email
+        :param message: Email Content
+        :param receiver_name: Name of the receiver
+        :param receiver_email: Email of the receiver
+        :return: Nothing
+        """
+        from utils.mailer import EmailHelper
+        EmailHelper.send_email(message=message,
+                               subject=subject,
+                               receiver_name=receiver_name,
+                               receiver_email=receiver_email)
+        
+    @staticmethod
+    def get_new_reset_token():
+        """
+        Generate a new reset Token
+        :return: String
+        """
+        return str(uuid.uuid4())
