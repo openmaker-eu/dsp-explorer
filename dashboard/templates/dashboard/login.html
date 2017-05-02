@@ -121,7 +121,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title text-center sub-title" id="myModalLabel"><strong class="text-red">Login</strong></h4>
                 </div>
-                <form method="POST" action="{% url "dashboard:login" %}">
+                <form method="POST" action="{% url 'dashboard:login' %}">
                     {% csrf_token %}
                     <div class="modal-body">
 

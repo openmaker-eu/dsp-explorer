@@ -60,4 +60,8 @@ class CRMConnector(object):
         """
         search_url = 'https://api.capsulecrm.com/api/v2/parties/search?q={}'.format(email)
         resp = CRMConnector._perform_get(search_url)
-        return resp.json().get('parties', [])
+        try:
+            party = resp.json().get('parties', [])
+            return party[0]
+        except IndexError:
+            return None

@@ -26,6 +26,9 @@ def req_pop():
     local('pip freeze > requirements.txt')
 
 
+def makemigrations():
+    local('python manage.py makemigrations')
+
 def migrate():
     local('python manage.py migrate')
 
