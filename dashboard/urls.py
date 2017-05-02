@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         authentication.request_membership, name='request_membership'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
+    url(r'^recover', authentication.recover_pwd, name='recover_pwd'),
 ]
