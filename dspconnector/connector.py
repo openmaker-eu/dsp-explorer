@@ -1,5 +1,4 @@
 import requests
-import json
 from django.conf import settings
 
 
