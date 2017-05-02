@@ -39,6 +39,12 @@ def login_page(request):
 
 
 def request_membership(request, email):
+    """
+    API Used to ask for DSP Registration
+    :param request:
+    :param email: Email of the user
+    :return: Json object
+    """
     party = CRMConnector.search_party_by_email(email)
     if not party:
         return JsonResponse({'status': 'error', 'message': 'User not Found'}, status=404)
@@ -55,6 +61,11 @@ def request_membership(request, email):
 
 
 def recover_pwd(request):
+    """
+    Method used to ask for a reset password
+    :param request:
+    :return:
+    """
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.POST:
@@ -81,6 +92,12 @@ http://{baseurl}/reset_password/{token}
 
 
 def reset_pwd(request, reset_token):
+    """
+    Method used to reset the password
+    :param request:
+    :param reset_token:
+    :return:
+    """
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     try:
