@@ -4,7 +4,6 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from dspconnector.connector import DSPConnector, DSPConnectorException
 
 
@@ -39,7 +38,6 @@ def login_page(request):
 def dashboard(request):
     try:
         context = {"themes": DSPConnector.get_themes()}
-        print context
     except DSPConnectorException as e:
         context = {"themes": []}
         messages.error(request, e.message)
