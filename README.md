@@ -43,4 +43,3 @@ Create a super user
     fab create_superuser
 
 Open your browser on **http://localhost:8000** and here we go!
-
