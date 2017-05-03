@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                <li>Search</li>
+                <li class="active">Members</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Explore Members</h1>
+            <p>Insert name, surname or email.</p>
+
+            <form class="form-horizontal">
+                <div class="form-group has-feedback has-feedback-left">
+                    <div class="col-md-9">
+                        <input id="filter" type="text" class="form-control" placeholder="Search Here..">
+                        <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-info col-md-6">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Results</h2>
+            <p>.. Start searching!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

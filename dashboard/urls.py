@@ -14,4 +14,5 @@ urlpatterns = [
         authentication.request_membership, name='request_membership'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover', authentication.recover_pwd, name='recover_pwd'),
+    url(r'^search/members', views.search_members, name='search_members'),
 ]

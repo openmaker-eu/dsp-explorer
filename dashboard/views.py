@@ -4,6 +4,7 @@ from django.contrib import messages
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from .models import Profile
 
+
 @login_required()
 def dashboard(request):
     try:
@@ -36,6 +37,10 @@ def profile(request):
         profile = Profile.objects.get(user__email=request.user.email)
     except:
         profile = {}
-    print profile
     context = {"profile": profile}
     return render(request, 'dashboard/profile.html', context)
+
+
+@login_required()
+def search_members(request):
+    return render(request, 'dashboard/search_members.html', {})
