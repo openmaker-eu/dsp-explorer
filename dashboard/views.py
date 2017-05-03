@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dspconnector.connector import DSPConnector, DSPConnectorException
-
+from .models import Profile
 
 @login_required()
 def dashboard(request):
@@ -32,5 +32,10 @@ def theme(request, theme_name):
 
 @login_required()
 def profile(request):
-    context = {}
+    try:
+        profile = Profile.objects.get(user__email=request.user.email)
+    except:
+        profile = {}
+    print profile
+    context = {"profile": profile}
     return render(request, 'dashboard/profile.html', context)
