@@ -1,6 +1,3 @@
-/**
- * Created by andreafspeziale on 11/04/17.
- */
 window.$ = window.jQuery = require('jquery')
 
 require("bootstrap-sass")
@@ -21,6 +18,9 @@ let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
             $interpolateProvider.endSymbol('$}');
     });
 
+app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
+
 export { app };
 
-require("./controllers/index")
+app.controller('dashboardController', require('./controllers/dashboard.controller').default )
+

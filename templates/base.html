@@ -14,7 +14,7 @@
 
 </head>
 <body ng-app="{{ request.resolver_match.app_name }}">
-<div>
+<div ng-controller="baseController as baseCtrl">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -38,7 +38,7 @@
                     <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                     {% else %}
 
-                    <li><a href="#">Request Membership</a></li>
+                    <li><a href="#" ng-click="baseCtrl.openModal('membership')">Request Membership</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
 
                     {% endif %}
