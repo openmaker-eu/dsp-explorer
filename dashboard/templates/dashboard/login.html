@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="dashboardController">
     <div class="row" xmlns="http://www.w3.org/1999/html">
         <div class="col-md-12 text-center">
             <img class="cover-img" src="/static/images/cover-image.png">
@@ -59,7 +59,7 @@
 
     <div class="row color-row">
         <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
-            <button class="btn custom-button">
+            <button class="btn custom-button" ng-click="openModal('membership')">
                 Request Membership
             </button>
         </div>

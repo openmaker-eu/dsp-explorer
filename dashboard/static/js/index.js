@@ -15,10 +15,12 @@ require('angular-ui-bootstrap');
 require('angular-toastr');
 require('angular-sanitize');
 
-var app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
+let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
     .config(function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
     });
 
 export { app };
+
+require("./controllers/index")
