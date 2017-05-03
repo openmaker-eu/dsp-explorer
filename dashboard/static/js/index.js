@@ -5,7 +5,6 @@ require("bootstrap-sass/assets/stylesheets/_bootstrap.scss")
 require("../style/dashboard.scss")
 
 import  * as  _  from 'lodash'
-
 import * as angular from 'angular';
 
 require('angular-ui-bootstrap');

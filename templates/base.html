@@ -1,6 +1,6 @@
 {% load render_bundle from webpack_loader %}
 <!doctype html>
-<html lang="en" >
+<html lang="en">
 <head>
     <meta charset="UTF-8">
 
@@ -13,8 +13,8 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700" rel="stylesheet">
 
 </head>
-<body ng-app="{{ request.resolver_match.app_name }}">
-<div ng-controller="baseController as baseCtrl">
+<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl">
+<div >
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -38,8 +38,8 @@
                     <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                     {% else %}
 
-                    <li><a href="#" ng-click="baseCtrl.openModal('membership')">Request Membership</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
+                    <li><a href="#" ng-click="baseCtrl.openModal('#request_membership_modal')">Request Membership</a></li>
+                    <li><a href="#" ng-click="baseCtrl.openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
                 </ul>
