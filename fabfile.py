@@ -8,6 +8,7 @@ from fabric.api import *
 
 def install():
     local('pip install -r requirements.txt')
+    local('npm i')
 
 
 def install_static():
@@ -56,4 +57,5 @@ def deploy_dev():
     with cd('/var/www/dsp-explorer'):
         run('git checkout .')
         run('git pull')
+        run('npm run prod')
         run('service apache2 reload')
