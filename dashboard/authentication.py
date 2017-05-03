@@ -52,6 +52,8 @@ def request_membership(request, email):
         profile = Profile.create(email, party['firstName'], party['lastName'], party['pictureURL'])
     except EmailAlreadyUsed:
         return JsonResponse({'status': 'error', 'message': 'Email already present'}, status=409)
+    except KeyError:
+        return JsonResponse({'status': 'error', 'message': 'Server Error'}, status=500)
     message = 'Invitation sent!'
     subject_for_email = 'Welcome to DSP Explorer - Open Maker'
     message_for_email = 'Welcome! Click this link to create your account ' \
