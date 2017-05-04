@@ -39,8 +39,8 @@
                     <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                     {% else %}
 
-                    <li><a href="#" ng-click="baseCtrl.openModal('#request_membership_modal')">Request Membership</a></li>
-                    <li><a href="#" ng-click="baseCtrl.openModal('#login_modal')">Login</a></li>
+                    <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
+                    <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
                 </ul>
@@ -82,6 +82,10 @@
 </div>
 {% endif %}
 </div>
+
+{% include "./modals/login.html" %}
+{% include "./modals/request_membership.html" %}
+
 
 </body>
 </html>

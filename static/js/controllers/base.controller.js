@@ -1,12 +1,7 @@
-/**
- * Created by andreafspeziale on 03/05/17.
- */
 export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http) {
     
-    this.openModal = (m) => {
-        
+    $scope.openModal = (m) => {
         let modal = $(m);
-        
         if( modal.length>0 ){
             $scope.modalInstance = $uibModal.open({
                 template: modal.html(),
@@ -17,23 +12,30 @@ export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http)
         }
 
     }
-
-    $scope.closeModal = () => {
-        $scope.modalInstance.close();
-    }
     
+    $scope.closeModal = () => { $scope.modalInstance.close(); $scope.modal_response = 'ciao'; }
+    
+    $scope.modal_response = {};
     $scope.request_membership = (email) => {
-        $http({
+        
+        console.log('oki');
+        
+        return $http({
             'method':'GET',
             'url' : '/api/v1.0/request_membership/'+email
         }).then(
             r => {
-                console.log(r);
-                },
-            e => {
-                console.log(e);
+                $scope.modal_response = { message: r.data.message , status : 'success' }
+                console.log('modal_response', $scope.modal_response);
+            }
+            ,
+            r => {
+                if( r.data.hasOwnProperty('message') ) $scope.modal_response = r.data;
+                else $scope.modal_response = { message: r.statusText , status : 'error' }
             }
         )
     }
+    
+    $scope.test = e => console.log($scope.modal_response);
     
 }]

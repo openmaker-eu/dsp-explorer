@@ -5,6 +5,4 @@ export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http)
 
     console.log('dashboard controller')
     
-
-
 }]
