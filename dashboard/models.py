@@ -88,3 +88,19 @@ class Profile(models.Model):
         :return: String
         """
         return str(uuid.uuid4())
+
+    @classmethod
+    def search_members(cls, search_string):
+        from django.db.models import Q
+        profiles = cls.objects.filter(Q(user__email__contains=search_string) |
+                                      Q(user__first_name__contains=search_string) |
+                                      Q(user__last_name__contains=search_string))
+        return profiles
+
+    @classmethod
+    def get_by_email(cls, email):
+        return cls.objects.get(user__email=email)
+
+    @classmethod
+    def get_by_id(cls, profile_id):
+        return cls.objects.get(id=profile_id)

@@ -25,7 +25,7 @@ export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http)
     $scope.request_membership = (email) => {
         $http({
             'method':'GET',
-            'url' : '/request_membership/'+email
+            'url' : '/api/v1.0/request_membership/'+email
         }).then(
             r => {
                 console.log(r);

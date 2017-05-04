@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from .models import Profile
+from django.http import HttpResponseRedirect
 
 
 @login_required()
@@ -32,12 +33,15 @@ def theme(request, theme_name):
 
 
 @login_required()
-def profile(request):
+def profile(request, profile_id=None):
     try:
-        profile = Profile.objects.get(user__email=request.user.email)
-    except:
-        profile = {}
-    context = {"profile": profile}
+        if profile_id:
+            user_profile = Profile.get_by_id(profile_id)
+        else:
+            user_profile = Profile.get_by_email(request.user.email)
+    except Profile.DoesNotExist:
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    context = {"profile": user_profile}
     return render(request, 'dashboard/profile.html', context)
 
 
