@@ -17,40 +17,44 @@
     </div>
 
     <div class="row margin-bottom-50">
-        <div class="col-md-6">
-            <div class="col-md-6 col-md-offset-3 margin-bottom-25">
-                <p class="sub-title text-center"><strong>Community</strong> Network</p>
+        <div class="container">
+            <div class="col-md-6">
+                <div class="col-md-6 col-md-offset-3 margin-bottom-25">
+                    <p class="sub-title text-center"><strong>Community</strong> Network</p>
+                </div>
+                <div class="text-center">
+                    <img class="sub-img" src="/static/images/cover-image.png">
+                </div>
             </div>
-            <div class="text-center">
-                <img class="sub-img" src="/static/images/cover-image.png">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <p class="sub-title margin-bottom-25">Some of our <strong>Members</strong></p>
-            <div class="row margin-top-25">
-                <div class="col-md-3">
-                    <img class="icon-img" src="/static/images/user_icon.png">
-                </div>
-                <div class="col-md-8">
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
-                </div>
-                <div class="col-md-12"><hr></div>
-            </div>
-            <div class="row margin-top-25">
-                <div class="col-md-3">
-                    <img class="icon-img" src="/static/images/user_icon.png">
-                </div>
-                <div class="col-md-8">
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
-                </div>
-                <div class="col-md-12"><hr></div>
-            </div>
-            <div class="row margin-top-25">
-                <div class="col-md-3">
-                    <img class="icon-img" src="/static/images/user_icon.png">
-                </div>
-                <div class="col-md-8">
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
+
+            <div class="col-md-6">
+                <p class="sub-title margin-bottom-25">Some of our <strong>Members</strong></p>
+                    <div class="row margin-top-25">
+                        <div class="col-md-3">
+                            <img class="icon-img" src="/static/images/user_icon.png">
+                        </div>
+                        <div class="col-md-8">
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
+                        </div>
+                        <div class="col-md-12"><hr></div>
+                    </div>
+                    <div class="row margin-top-25">
+                        <div class="col-md-3">
+                            <img class="icon-img" src="/static/images/user_icon.png">
+                        </div>
+                        <div class="col-md-8">
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
+                        </div>
+                        <div class="col-md-12"><hr></div>
+                    </div>
+                    <div class="row margin-top-25">
+                        <div class="col-md-3">
+                            <img class="icon-img" src="/static/images/user_icon.png">
+                        </div>
+                        <div class="col-md-8">
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,7 +63,7 @@
 
     <div class="row color-row">
         <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
-            <button class="btn custom-button" ng-click="baseCtrl.openModal('membership')">
+            <button class="btn custom-button" ng-click="baseCtrl.openModal('#request_membership_modal')">
                 Request Membership
             </button>
         </div>
@@ -72,23 +76,23 @@
                 <p class="text-center claim"><strong>Themes</strong></p>
                 <p class="sub-title text-center">Read fresh and popular about maker movement (login required)</p>
             </div>
-            <div class="col-md-10 col-md-offset-2">
-                <div class="col-md-3 col-xs-12">
-                    <a href="#" data-toggle="modal" data-target="#myModal">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-4 col-xs-12">
+                    <a href="#" ng-click="baseCtrl.openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>Arduino</p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-3 col-xs-12">
-                    <a href="#" data-toggle="modal" data-target="#myModal">
+                <div class="col-md-4 col-xs-12">
+                    <a href="#" ng-click="baseCtrl.openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>Raspberry</p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-3 col-xs-12">
-                    <a href="#" data-toggle="modal" data-target="#myModal">
+                <div class="col-md-4 col-xs-12">
+                    <a href="#" ng-click="baseCtrl.openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>3D Printer</p>
                         </div>

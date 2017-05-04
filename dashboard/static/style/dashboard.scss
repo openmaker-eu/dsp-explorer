@@ -81,40 +81,38 @@ IMAGES
     height: 100px;
 }
 
-/*
+$whitespacers : 'margin' , 'padding';
+@each $propname in $whitespacers {
+    $directions : 'top', 'bottom', left , right;
+    @each $direction in $directions {
+        // generate pixels
+        @for $i from 0 through 100
+        {
+            // generate plain
+            .#{$propname}-#{$i} {
+                #{$propname}: 0px + $i !important ;
+            }
+            // Generate directions
+            .#{$propname}-#{$direction}-#{$i} {
+                #{$propname}-#{$direction}: 0px + $i !important ;
+            }
+        }
 
-MARGINS
-
-*/
-.margin-top-25 {
-    margin-top: 25px;
+        // generate percents
+        @for $i from 1 through 100
+        {
+            // generate plain
+            .#{$propname}-#{$i}-perc {
+                #{$propname}: 0% + $i !important ;
+            }
+            // Generate directions
+            .#{$propname}-#{$direction}-#{$i}-perc {
+                #{$propname}-#{$direction}: 0% + $i !important ;
+            }
+        }
+    }
 }
 
-.margin-top-50 {
-    margin-top: 50px;
-}
-
-.margin-bottom-50 {
-    margin-bottom: 50px;
-}
-
-.margin-bottom-25 {
-    margin-bottom: 25px;
-}
-
-.margin-bottom-100 {
-    margin-bottom: 100px;
-}
-
-.margin-top-100 {
-    margin-top: 100px;
-}
-
-/*
-
-MARGINS
-
-*/
 .color-row {
     background-color: #333333;
 }
