@@ -1,38 +1,50 @@
 <div id="request_membership_modal" style="display: none" >
     <div class="modal-content" ng-init=" email = '' ;" >
+        <ng-form name="request_membership_form">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center sub-title">
+                    <strong class="text-red">Request Membership</strong>
+                </h4>
+            </div>
 
-        <div class="modal-header">
-            <button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title text-center sub-title">
-                <strong class="text-red">Request Membership</strong>
-            </h4>
-        </div>
+            <div class="modal-body">
+                <p class="margin-bottom-20 margin-top-20">
+                    Request a membership to start exploring makers ecosystem data.
+                </p>
 
-        <div class="modal-body">
-            <p class="margin-bottom-20 margin-top-20">
-                Request a membership to start exploring makers ecosystem data.
-            </p>
-            <form>
-                <div class="form-group">
-                     <input type="text" class="form-control" ng-model="email" placeholder="Member E-mail">
-                </div>
-            </form>
+                    <div class="form-group">
+                         <input
+                            class="form-control" placeholder="Member E-mail"
+                            type="email"
+                            ng-model="email"
+                            name="email"
+                            ng-minlength="0"
+                            ng-maxlength="40"
+                            required="required"
+                         >
+                    </div>
 
-            <div ng-bind="modal_message.message"
-                 class="alert"
-                 ng-class="{
-                     'alert-error' : modal_message.status == 'error',
-                     'alert-success' : modal_message.status == 'success',
-                     'hidden' : !modal_message
-                 }"
-            ></div>
+                <div ng-bind="modal_message.message"
+                     class="alert"
+                     ng-class="{
+                         'alert-error' : modal_message.status == 'error',
+                         'alert-success' : modal_message.status == 'success',
+                         'hidden' : !modal_message
+                     }"
+                ></div>
 
-        </div>
+                <!--<p>Error: {$ request_membership_form.email.$error $}</p>-->
+                <!--<p>valid: {$ request_membership_form.email.$valid $}</p>-->
 
-        <div class="modal-footer">
-            <button type="button" class="btn close-button" data-dismiss="modal" ng-click=" closeModal()">Close</button>
-            <button type="button" class="btn login-button" data-dismiss="modal" ng-click="request_membership(email)">Request</button>
-        </div>
+            </div>
 
+            <div class="modal-footer">
+                <button type="button" class="btn close-button" data-dismiss="modal" ng-click=" closeModal()">Close</button>
+                <button type="submit" class="btn login-button" data-dismiss="modal"
+                        ng-click="request_membership(email)"
+                >Request</button>
+            </div>
+        </ng-form>
     </div>
 </div>

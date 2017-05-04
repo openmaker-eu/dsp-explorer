@@ -7,7 +7,6 @@ export default [ '$scope','$uibModal','$http','$rootScope', function ($scope,$ui
         if( modal.length>0 ){
             $scope.modalInstance = $uibModal.open({
                 template: modal.html(),
-                controller: 'requestMembershipController',
                 backdrop: 'static',
                 scope: $scope
             });
