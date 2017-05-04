@@ -8,6 +8,7 @@ First of all you need to have:
 
     Python 2.7+
     mySql or Postgresql
+    nodejs / npm / sass
 
 To ensure a stable and indipendent environment, use **virtualenv** (execute this command inside the root folder):
 
@@ -43,3 +44,44 @@ Create a super user
     fab create_superuser
 
 Open your browser on **http://localhost:8000** and here we go!
+
+## Production
+
+Install all the requirements. After the installation create a virtualhost like:
+
+    <VirtualHost *:80>
+
+          ServerName dsp.openmaker.eu
+          ServerAdmin hackademy@top-ix.org
+    
+          WSGIScriptAlias / /var/www/dsp-explorer/dspexplorer/wsgi.py
+          WSGIDaemonProcess DSPEXPLORER python-path=/var/www/dsp-explorer:/var/www/envExplorer/lib/python2.7/site-packages
+          WSGIProcessGroup DSPEXPLORER
+          
+          DocumentRoot /var/www/dsp-explorer
+          Alias /static/ /var/www/dsp-explorer/static_root/
+          
+      <Directory /var/www/dsp-explorer/>
+          Options ExecCGI MultiViews Indexes
+          MultiViewsMatch Handlers
+          AddHandler wsgi-script .py
+          AddHandler wsgi-script .wsgi
+          DirectoryIndex index.html index.py app.wsgi
+          Order allow,deny
+          Require all granted
+          Allow from all
+      </Directory>
+      
+          ErrorLog ${APACHE_LOG_DIR}/dspexplorer-error.log
+          CustomLog ${APACHE_LOG_DIR}/dspexplorer-access.log combined
+    </VirtualHost>
+
+Install static files:
+
+    npm run prod
+    
+Copy static files on Apache Alias:
+
+    fab install_static
+
+Here we go!
