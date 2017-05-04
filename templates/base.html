@@ -61,27 +61,23 @@
 {% if user.is_anonymous %}
 
 <div class="container-fluid">
-    <div class="row back">
+    <div class="row back padding-bottom-20">
         <div class="container">
-            <div class="col-md-4 text-white margin-top-25">
-                <p class="sub-title">About <strong>Open</strong>Maker</p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna orci, iaculis quis pretium nec, volutpat vel orci. Proin in varius justo. Proin suscipit rhoncus porttitor.
-                    Nulla ut hendrerit massa.
-                </p>
-                <p>
-                    <img class="icon-eu"/> <span style="margin-left:10px">EU Project</span>
-                </p>
-            </div>
-            <div class="col-md-4 margin-top-25 text-white">
-                <p class="sub-title text-white"><a href="#">Privacy</a></p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna orci, iaculis quis pretium nec, volutpat vel orci. Proin in varius justo. Proin suscipit rhoncus porttitor.
-                    Nulla ut hendrerit massa.
-                </p>
+            <div class="row margin-top-25">
+                <div class="col-md-6 text-white">
+                    <p class="sub-title">About <strong>Open</strong>Maker</p>
+                    <p>
+                        The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.
+                    </p>
+                    <p>
+                        This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.
+                    </p>
+                </div>
+                <!--<div class="col-md-4 pull-right margin-top-25">
+                        <img src="/static/images/european-commission.jpg"/>
+                </div>-->
             </div>
         </div>
-
     </div>
 </div>
 {% endif %}
