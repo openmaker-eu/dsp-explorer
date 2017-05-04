@@ -13,12 +13,12 @@ from .models import Profile
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
-    return redirect('/')
+    return HttpResponseRedirect(reverse('dashboard:login'))
 
 
 def login_page(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect("/dashboard")
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
@@ -28,7 +28,7 @@ def login_page(request):
             if user.is_active:
                 login(request, user)
                 messages.info(request, 'Welcome %s' % user.first_name)
-                return redirect('/dashboard')
+                return HttpResponseRedirect(reverse('dashboard:dashboard'))
             else:
                 messages.error(request, 'User Invalid')
         else:
