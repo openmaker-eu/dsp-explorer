@@ -1,4 +1,4 @@
-export default [ '$scope','$uibModal','$http','$rootScope', function ($scope,$uibModal,$http,$rootScope) {
+export default [ '$scope','$uibModal','$http','$rootScope', 'toastr', function ($scope,$uibModal,$http,$rootScope,toastr) {
     
     $scope.rootScope = $rootScope;
     
@@ -32,5 +32,10 @@ export default [ '$scope','$uibModal','$http','$rootScope', function ($scope,$ui
 
     }
 
-    
+    $scope.$watch('toastrMessage', function (newValue, oldValue) {
+        newValue.forEach(function (el) {
+            toastr[el.tags](el.message);
+        })
+    })
+
 }]

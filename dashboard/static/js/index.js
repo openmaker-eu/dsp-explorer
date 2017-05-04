@@ -3,6 +3,7 @@ window.$ = window.jQuery = require('jquery')
 require("bootstrap-sass")
 require("bootstrap-sass/assets/stylesheets/_bootstrap.scss")
 require("../style/dashboard.scss")
+require("angular-toastr/dist/angular-toastr.css")
 
 import  * as  _  from 'lodash'
 import * as angular from 'angular';

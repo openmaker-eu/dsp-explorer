@@ -29,4 +29,5 @@ node_modules/
 webpack-stats.json
 /static/bundles
 /static/fonts
+npm-debug.*
 
