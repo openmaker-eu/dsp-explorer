@@ -17,9 +17,14 @@ let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
             $interpolateProvider.endSymbol('$}');
     });
 
+app.config(['$qProvider', function ($qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+}]);
+
 app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
 
 export { app };
 
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
+app.controller('requestMembershipController', require('./controllers/requestMembershipController').default )
 
