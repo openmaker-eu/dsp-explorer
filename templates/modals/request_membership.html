@@ -18,13 +18,19 @@
                 </div>
             </form>
 
-            <h1 ng-click="test()">{$ modal_response $}</h1>
+            <div ng-bind="modal_message.message"
+                 class="alert"
+                 ng-class="{
+                     'alert-error' : modal_message.status == 'error',
+                     'alert-success' : modal_message.status == 'success',
+                     'hidden' : !modal_message
+                 }"
+            ></div>
 
-            <div class="alert"><p>response: {$ modal_response.message $}</p></div>
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn close-button" data-dismiss="modal" ng-click="closeModal()">Close</button>
+            <button type="button" class="btn close-button" data-dismiss="modal" ng-click=" closeModal()">Close</button>
             <button type="button" class="btn login-button" data-dismiss="modal" ng-click="request_membership(email)">Request</button>
         </div>
 
