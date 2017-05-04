@@ -3,12 +3,15 @@
 
         <div class="modal-header">
             <button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title text-center">
-                &nbsp;Request Membership
+            <h4 class="modal-title text-center sub-title">
+                <strong class="text-red">Request Membership</strong>
             </h4>
         </div>
 
         <div class="modal-body">
+            <p class="margin-bottom-20 margin-top-20">
+                Request a membership to start exploring makers ecosystem data.
+            </p>
             <form>
                 <div class="form-group">
                      <input type="text" class="form-control" ng-model="email" placeholder="Member E-mail">
@@ -20,9 +23,9 @@
             <div class="alert"><p>response: {$ modal_response.message $}</p></div>
         </div>
 
-        <div class="modal-footer ">
-            <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="request_membership(email)">Request</button>
-            <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="closeModal()">Close</button>
+        <div class="modal-footer">
+            <button type="button" class="btn close-button" data-dismiss="modal" ng-click="closeModal()">Close</button>
+            <button type="button" class="btn login-button" data-dismiss="modal" ng-click="request_membership(email)">Request</button>
         </div>
 
     </div>

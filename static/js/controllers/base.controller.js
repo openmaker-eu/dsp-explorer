@@ -22,9 +22,8 @@ export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http)
         
         return $http({
             'method':'GET',
-            'url' : 'request_membership/'+email+'/'
-        })
-        .then(
+            'url' : '/api/v1.0/request_membership/'+email
+        }).then(
             r => {
                 $scope.modal_response = { message: r.data.message , status : 'success' }
                 console.log('modal_response', $scope.modal_response);

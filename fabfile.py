@@ -30,6 +30,7 @@ def req_pop():
 def makemigrations():
     local('python manage.py makemigrations')
 
+
 def migrate():
     local('python manage.py migrate')
 
@@ -46,10 +47,6 @@ def create_superuser():
 def start():
     local('npm run dev &')
     local('python manage.py runserver 0.0.0.0:8000')
-
-
-def run_test():
-    local('python manage.py test contacts')
 
 
 @hosts(['topix@dspexplorer.top-ix.org'])

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-<div class="container">
+<div class="container" ng-controller="searchController">
     <div class="row">
         <div class="col-md-12">
             <ol class="breadcrumb">
@@ -16,12 +16,10 @@
 
             <form class="form-horizontal">
                 <div class="form-group has-feedback has-feedback-left">
-                    <div class="col-md-9">
-                        <input id="filter" type="text" class="form-control" placeholder="Search Here..">
+                    <div class="col-md-5">
+                        <input ng-change="search()" ng-model="search_filter" id="filter" type="text"
+                               class="form-control" placeholder="Search Here..">
                         <i class="glyphicon glyphicon-search form-control-feedback"></i>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-info col-md-6">Search</button>
                     </div>
                 </div>
             </form>
@@ -30,8 +28,13 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h2>Results</h2>
-            <p>.. Start searching!</p>
+            <h2 ng-if="results.length!=0">Results: <small>{$results.length$}</small></h2>
+            <p ng-if="results.length==0">.. Start typing!</p>
+            <div class="col-md-6" ng-repeat="data in results">
+                <p>
+                    <a href="/profile/{$data['id']$}">{$ data.user.first_name $} {$ data.user.last_name $}</a>
+                </p>
+            </div>
         </div>
     </div>
 </div>

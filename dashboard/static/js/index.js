@@ -26,5 +26,5 @@ app.controller('baseController', require('../../../static/js/controllers/base.co
 export { app };
 
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
-app.controller('requestMembershipController', require('./controllers/requestMembershipController').default )
+app.controller('searchController', require('./controllers/searchmembers.controller').default )
 
