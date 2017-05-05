@@ -1,8 +1,11 @@
 /* Body Padding for main container */
 
 $red : rgb( 219 , 67 ,72 );
+$grey : #aaa;
 $red-75 : rgba( 219 , 67 ,72, 0.075 );
 $grey-75: rgba(204, 204, 204, 0.075);
+
+.text-grey { color: $grey!important;}
 
 html, body {
     height: 100%;
@@ -232,5 +235,5 @@ BUTTONS
 
 input:focus {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(204, 204, 204, 0.6) !important;
-    border-color:#CCC!important;
+    border-color:$grey!important;
 }

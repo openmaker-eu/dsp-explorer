@@ -12,28 +12,31 @@
     <div class="row">
         <div class="col-md-12">
             <h1>Explore Members</h1>
-            <p>Insert name, surname or email.</p>
 
-            <form class="form-horizontal">
-                <div class="form-group has-feedback has-feedback-left">
-                    <div class="col-md-5">
-                        <input ng-change="search()" ng-model="search_filter" id="filter" type="text"
-                               class="form-control" placeholder="Search Here..">
-                        <i class="glyphicon glyphicon-search form-control-feedback"></i>
+            <br>
+            <span class="text-center">
+                    <form class="form-inline">
+                    <h4 class="text-grey">Start typing name, surname or email.</h4>
+                    <div class="input-group has-feedback has-feedback-left" style="min-width: 40%;">
+                        <input ng-change="search()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search Here.." value="">
+                        <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                     </div>
-                </div>
-            </form>
+                </form>
+            </span>
+            <br>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
             <h2 ng-if="search_filter.length>0">Results: <small>{$results.length$}</small></h2>
-            <p ng-if="search_filter.length==0">.. Start typing to search members!</p>
-            <div class="col-md-6" ng-repeat="data in results">
-                <p>
-                    <a href="/profile/{$data['id']$}">{$ data.user.first_name $} {$ data.user.last_name $}</a>
-                </p>
+            <!--<p ng-if="search_filter.length==0">.. Start typing to search members!</p>-->
+            <div class="col-md-12" ng-repeat="data in results">
+                <h4 class="pull-left" style="height: 4em;"><img class="img-circle" src="{$ data.picture_url $}" alt="" style="max-height: 100%;">&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                <h4 class="pull-left" style="line-height: 4em;">
+                    <a style="line-height: 3em;" href="/profile/{$data['id']$}" ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></a>
+                    <!--<span style="line-height: 1em; font-size: 0.8em;" ng-bind-html="highlight('   -    '+data.user.email+'', search_filter)"></span>-->
+                </h4>
             </div>
         </div>
     </div>
