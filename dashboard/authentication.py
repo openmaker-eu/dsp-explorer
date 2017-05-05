@@ -64,7 +64,7 @@ http://{baseurl}/reset_password/{token}
         except Profile.DoesNotExist:
             messages.error(request, 'User not Found.')
             return HttpResponseRedirect(reverse('dashboard:login'))
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return render(request, 'dashboard/recover_pwd.html', {})
 
 
 def reset_pwd(request, reset_token):
