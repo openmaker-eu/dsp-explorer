@@ -13,10 +13,10 @@ require('angular-toastr');
 require('angular-sanitize');
 
 let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize'])
-    .config(function($interpolateProvider) {
+    .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
-    });
+    }]);
 
 app.config(['$qProvider', function ($qProvider) {
     $qProvider.errorOnUnhandledRejections(false);
