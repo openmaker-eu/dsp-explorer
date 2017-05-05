@@ -7,9 +7,10 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.results = [];
 
     $scope.search = _.debounce(()=>{
-        
+
         if($scope.search_filter.length < 3){
             $scope.results = [];
+            console.log($scope.results)
             return
         }
         $http({
