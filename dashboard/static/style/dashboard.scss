@@ -5,6 +5,10 @@ $grey : #aaa;
 $red-75 : rgba( 219 , 67 ,72, 0.075 );
 $grey-75: rgba(204, 204, 204, 0.075);
 
+body {
+    a:hover { cursor: pointer!important;}
+}
+
 .text-grey { color: $grey!important;}
 
 html, body {
