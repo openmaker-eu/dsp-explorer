@@ -61,6 +61,7 @@ http://{baseurl}/reset_password/{token}
                        token=profile.reset_token)
             profile.send_email('DSPExplorer - Reset Password', email_message)
             messages.success(request, 'You will receive an email with a link to reset your password!')
+            return HttpResponseRedirect(reverse('dashboard:login'))
         except Profile.DoesNotExist:
             messages.error(request, 'User not Found.')
             return HttpResponseRedirect(reverse('dashboard:login'))
