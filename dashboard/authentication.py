@@ -91,10 +91,10 @@ def reset_pwd(request, reset_token):
         repeat_password = request.POST['repeat_password']
         if password != repeat_password:
             messages.warning(request, 'Attention, Password must be equals!')
-            return HttpResponseRedirect(reverse('dashboard:login', kwargs={'reset_token': reset_token}))
+            return HttpResponseRedirect(reverse('dashboard:reset_pwd', kwargs={'reset_token': reset_token}))
         if len(password) < 8:
             messages.warning(request, 'Attention, Please insert at least 8 characters!')
-            return HttpResponseRedirect(reverse('dashboard:login', kwargs={'reset_token': reset_token}))
+            return HttpResponseRedirect(reverse('dashboard:reset_pwd', kwargs={'reset_token': reset_token}))
         profile.user.set_password(password)
         profile.user.is_active = True
         profile.user.save()
