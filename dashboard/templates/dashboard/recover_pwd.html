@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2 class="text-xl" style="height: initial;">Recover Password</h2>
+                <p class="text-yellow-consel text-xs" style="height: initial;">Set your e-mail and reset you password</p>
+            </div>
+            <div class="col-md-6 col-md-offset-3"><hr></div>
+            <div class="col-md-8">
+                <div style="width: 100%; float: left;" class="border-dash margin-top-25 margin-bottom-25"></div>
+            </div>
+            <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-6 col-md-offset-3">
+                    <form method="post" action="{% url 'dashboard:recover_pwd' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                        </div>
+                        <button type="submit" class="btn login-button pull-right margin-top-45">Recover</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div style="width: 100%; float: left;" class="border-dash margin-top-25 margin-bottom-25"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
