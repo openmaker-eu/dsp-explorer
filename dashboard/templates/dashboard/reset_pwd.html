@@ -1,35 +1,29 @@
-<div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                {% extends "base.html" %}
-            </div>
-        </div>
-</div>
+{% extends "base.html" %}
 {% block container %}
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-xl" style="height: initial;">Hello {{ profile }}</h1>
+            <div class="col-md-12 text-center">
+                <h2 class="text-xl" style="height: initial;">Hello {{ profile }}</h2>
                 <p class="text-yellow-consel text-xs" style="height: initial;">Set your new password</p>
-{#                <h2>Hello {{ profile }} - <small>Set your new password!</small></h2>#}
             </div>
+            <div class="col-md-6 col-md-offset-3"><hr></div>
             <div class="col-md-8">
                 <div style="width: 100%; float: left;" class="border-dash margin-top-25 margin-bottom-25"></div>
             </div>
-            <div class="col-md-8">
-                <div class="col-md-6">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-6 col-md-offset-3">
                     <form method="post" action="{% url 'dashboard:reset_pwd' reset_token %}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="text-light-blue-consel text-xs" for="password">NEW PASSWORD</label>
+                            <label class="text-light-blue-consel text-xs" for="password">New Password</label>
                             <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                         </div>
                         <div class="form-group">
-                            <label class="text-light-blue-consel text-xs" for="repeat_password">REPEAT NEW PASSWORD</label>
+                            <label class="text-light-blue-consel text-xs" for="repeat_password">Repeat New Password</label>
                             <input type="password" name="repeat_password" class="form-control" id="repeat_password" placeholder="Password" required>
                         </div>
                         <div class="form-group margin-top-40">
-                            <input type="submit" value="Reset" class="btn btn-yellow-consel" />
+                            <button type="submit" class="btn login-button pull-right margin-top-20">Set</button>
                         </div>
                     </form>
                 </div>
