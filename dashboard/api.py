@@ -17,10 +17,15 @@ def request_membership(request, email):
     if not party:
         return JsonResponse({'status': 'error', 'message': 'User not Found'}, status=404)
     try:
-        profile = Profile.create(email, party['firstName'], party['lastName'], party['pictureURL'])
+        profile = Profile.create(email, party.get('firstName').encode('ascii', 'ignore').decode('ascii'),
+                                 party.get('lastName').encode('ascii', 'ignore').decode('ascii'),
+                                 party.get('pictureURL').encode('ascii', 'ignore').decode('ascii'))
     except EmailAlreadyUsed:
         return JsonResponse({'status': 'error', 'message': 'Email already present'}, status=409)
     except KeyError:
+        return JsonResponse({'status': 'error', 'message': 'Server Error'}, status=500)
+    except Exception as e:
+        print e
         return JsonResponse({'status': 'error', 'message': 'Server Error'}, status=500)
     message = 'Invitation sent!'
     subject_for_email = 'Welcome to DSP Explorer - Open Maker'
