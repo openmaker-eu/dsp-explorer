@@ -25,6 +25,7 @@ To install the application
     fab install
     OR
     pip install -r requirements.txt
+    npm install
 
 Configure your local setting file:
 
