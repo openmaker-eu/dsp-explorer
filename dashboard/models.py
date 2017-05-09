@@ -104,3 +104,4 @@ class Profile(models.Model):
     @classmethod
     def get_by_id(cls, profile_id):
         return cls.objects.get(id=profile_id)
+
