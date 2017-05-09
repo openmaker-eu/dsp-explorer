@@ -46,7 +46,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-                    <li><a href="{% url 'dashboard:search_members' %}">Members</a></li>
+                    <li><a href="{% url 'dashboard:search_members' %}">Search</a></li>
                     <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
                     <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                     {% else %}

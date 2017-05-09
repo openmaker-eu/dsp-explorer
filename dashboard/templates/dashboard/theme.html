@@ -17,7 +17,8 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <p class="lead">Feed</p>
+                <h3>Feed</h3>
+                <p class="lead">Social media recommended news.</p>
                 <!-- FEED SPACE -->
                 {% for feed in feeds %}
                     <div class="row margin-bottom-25">
@@ -45,12 +46,15 @@
                 {% endfor %}
             </div>
             <div class="col-md-4 influencers_box">
-                <p class="lead">TOP Influencers</p>
+                <h3>TOP Influencers</h3>
+                <p class="lead"></p>
                 <!-- INFLUENCERS SPACE -->
                 {% for account in influencers %}
                     <div class="row influencers_separator">
                         <div class="col-md-3">
-                            <img src="{{account.img_url}}" alt="{{account.username}}" class="img-circle">
+                            <a href="http://twitter.com/{{account.username}}" target="_blank">
+                                <img src="{{account.img_url}}" alt="{{account.username}}" class="img-circle">
+                            </a>
                         </div>
                         <div class="col-md-9">
                             <address>
