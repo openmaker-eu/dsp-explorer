@@ -66,3 +66,4 @@ def release(message):
     local('fab install_static')
     local('git commit -am "%s"' % message)
     local('git push')
+    local('git checkout master')
