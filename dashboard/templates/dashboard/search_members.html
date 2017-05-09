@@ -9,23 +9,41 @@
             </ol>
         </div>
     </div>
+
+    <!-- Mauri edit -->
+
+
     <div class="row">
         <div class="col-md-12">
             <h1>Explore Members</h1>
-
             <br>
-            <span class="text-center">
+            <span class="col-md-6"></span>
+            <h4 class="text-grey col-md-6 text-center">Start typing name, surname or email.</h4>
+            <span class="col-md-3">
+                <p class="btn btn-default active" style="width:200px;" >New users   <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></p>
+            </span>
+            <span class="col-md-3">
+                <p class="btn btn-default disabled" style="width:200px;" > ... </span></p>
+            </span>
+
+            <span class="text-center col-md-6">
                     <form class="form-inline">
-                    <h4 class="text-grey">Start typing name, surname or email.</h4>
-                    <div class="input-group has-feedback has-feedback-left" style="min-width: 40%;">
+                    <!-- <h4 class="text-grey">Start typing name, surname or email.</h4> -->
+                    <div class="input-group has-feedback has-feedback-left" style="min-width: 50%;">
                         <input ng-change="search()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search Here.." value="">
                         <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                     </div>
-                </form>
+                    </form>
             </span>
             <br>
         </div>
     </div>
+
+
+    <!-- end Mauri edit -->
+
+
+
 
     <div class="row">
         <div class="col-md-12" ng-if="search_filter.length>0">
