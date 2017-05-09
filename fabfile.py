@@ -56,3 +56,13 @@ def deploy_dev():
         run('git pull')
         run('npm run prod')
         run('service apache2 reload')
+
+
+# fab release:'RELEASE-COMMIT-MESSAGE'
+def release(message):
+    local('git checkout release')
+    local('git merge master')
+    local('npm run prod')
+    local('fab install_static')
+    local('git commit -am "%s"' % message)
+    local('git push')
