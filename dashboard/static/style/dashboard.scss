@@ -134,6 +134,28 @@ $whitespacers : 'margin' , 'padding';
 BUTTONS
 
 */
+.invite-button, .invite-button:focus {
+    font-size: 20px;
+    padding: 15px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+    text-decoration: none;
+}
+
+.invite-button:hover{
+    font-size: 20px;
+    padding: 15px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+    text-decoration: none;
+
+}
+
+
 .custom-button, .custom-button:focus {
     font-size: 20px;
     padding: 15px;

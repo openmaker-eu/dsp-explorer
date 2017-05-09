@@ -48,3 +48,8 @@ def profile(request, profile_id=None):
 @login_required()
 def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
+
+
+@login_required()
+def invite(request):
+    return render(request, 'dashboard/invite.html', {})

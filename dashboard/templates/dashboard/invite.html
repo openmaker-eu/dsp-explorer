@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="row">
+        <div class="text-center col-md-6 col-md-offset-3"><h1>Invite People</h1></div>
+    </div>
+    <div class="row">
+        <a class="col-md-6 col-md-offset-3 invite-button text-center" role="button" data-toggle="collapse" href="#collapseInvite" aria-expanded="false" aria-controls="collapseInvite">
+            Your chance to invite other people into the Driver Social Platform
+        </a>
+    </div>
+
+    <div class="collapse col-md-6 col-md-offset-3" id="collapseInvite">
+        <div class="panel" style="margin-top:30px;">
+            <form class="form-group" action="#" method="post">
+                <input class="form-control" type="email" name="email" placeholder="Type email"><br />
+                <input class="btn close-button" type="submit" value="Invite">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
