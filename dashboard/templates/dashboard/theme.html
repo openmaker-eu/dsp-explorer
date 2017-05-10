@@ -11,8 +11,25 @@
         </div>
 
         <div class="row margin-bottom-50">
-            <div class="col-md-12 text-center">
-                <h2 class="logo text-red">{{theme_name}}</h2>
+            <div class="col-md-6 col-xs-6 text-center">
+                <h2 class="logo-custom text-red">{{theme_name}}</h2>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <button type="button" class="btn logo-button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="/dashboard/theme/Printer" class="logo-custom-small text-red">Printer</a></li><br>
+                    <li><a href="/dashboard/theme/RaspberryPi" class="logo-custom-small text-red">RaspberryPi</a></li><br>
+                    <li><a href="/dashboard/theme/Arduino" class="logo-custom-small text-red">Arduino</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row margin-bottom-25">
+            <div class="col-md-8 text-center">
+                <button type="button" class="feed-button active-btn">Yesterday</button>
+                <button type="button" class="feed-button">Week</button>
+                <button type="button" class="feed-button">Month</button>
             </div>
         </div>
         <div class="row">
