@@ -1,6 +1,7 @@
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from .models import Profile
 from django.http import HttpResponseRedirect
@@ -52,4 +53,22 @@ def search_members(request):
 
 @login_required()
 def invite(request):
-    return render(request, 'dashboard/invite.html', {})
+    # static variables
+    invitation_field = "INVITATION on Driver Social Platform"
+    content_field = "Congratulation your friends ... invite you to join in!!"
+
+    if request.method == 'POST':
+        print 'into post'
+        # show alert success sent top-right
+        # send email to request.form['email']
+        addressee = request.POST.get('email', '')
+        # print addressee
+
+        #trouble 
+        send_mail(invitation_field, content_field, 'mauriziocontatto@gmail.com', [addressee], fail_silently=False)
+
+        return render(request, 'dashboard/invite.html', {'message': "Mail Sent!"})
+
+    else:
+        print 'into get'
+        return render(request, 'dashboard/invite.html', {})
