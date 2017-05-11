@@ -10,9 +10,9 @@ from django.http import HttpResponseRedirect
 @login_required()
 def dashboard(request):
     try:
-        context = {"themes": DSPConnector.get_themes()}
+        context = {'themes': DSPConnector.get_themes()}
     except DSPConnectorException as e:
-        context = {"themes": []}
+        context = {'themes': []}
         messages.error(request, e.message)
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -22,14 +22,18 @@ def theme(request, theme_name):
     try:
         feeds = DSPConnector.get_feeds(theme_name)
         influencers = DSPConnector.get_influencers(theme_name)
+        themes = DSPConnector.get_themes()
+        themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
     except DSPConnectorException as e:
         messages.error(request, e.message)
         feeds = []
         influencers = []
+        themes_list = []
 
-    context = {"theme_name": theme_name,
-               "feeds": feeds['feeds'],
-               "influencers": influencers['influencers']}
+    context = {'theme_name': theme_name,
+               'feeds': feeds.get('feeds', []),
+               'themes': themes_list,
+               'influencers': influencers.get('influencers', [])}
     return render(request, 'dashboard/theme.html', context)
 
 
@@ -42,7 +46,7 @@ def profile(request, profile_id=None):
             user_profile = Profile.get_by_email(request.user.email)
     except Profile.DoesNotExist:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    context = {"profile": user_profile}
+    context = {'profile': user_profile}
     return render(request, 'dashboard/profile.html', context)
 
 
@@ -53,14 +57,14 @@ def search_members(request):
 
 @login_required()
 def invite(request):
-    subject = "INVITATION on Driver Social Platform"
-    content = "Congratulation your friends ... invite you to join in!!"
+    subject = 'INVITATION on Driver Social Platform'
+    content = 'Congratulation your friends ... invite you to join in!!'
 
     if request.method == 'POST':
         address = request.POST.get('email', '')
         try:
             Profile.get_by_email(address)
-            messages.error(request, "User already present!")
+            messages.error(request, 'User already present!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except Profile.DoesNotExist:
             pass
@@ -72,7 +76,7 @@ def invite(request):
                 receiver_email=address,
                 receiver_name=''
             )
-            messages.success(request, "Invitation sent!")
+            messages.success(request, 'Invitation sent!')
         except:
-            messages.error(request, "Please try again!")
+            messages.error(request, 'Please try again!')
     return render(request, 'dashboard/invite.html', {})
