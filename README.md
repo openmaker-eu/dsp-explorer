@@ -77,6 +77,19 @@ Install all the requirements. After the installation create a virtualhost like:
           CustomLog ${APACHE_LOG_DIR}/dspexplorer-access.log combined
     </VirtualHost>
 
+## Release - Automatic
+
+We've created an automatic task to prepare for release the code, just simply run:
+
+    fab release:'RELEASE-COMMIT-MESSAGE'
+    
+This task will merge automatically all the changes in the release branch, run **npm run prod** and **fab install_static**.
+After minification and static files installation will commit and push the changes.
+
+On the production server we just need to pull!
+
+## Release - Manually
+
 Install static files:
 
     npm run prod
