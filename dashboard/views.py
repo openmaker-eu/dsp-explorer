@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.mail import send_mail
+from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from .models import Profile
 from django.http import HttpResponseRedirect
@@ -53,22 +53,26 @@ def search_members(request):
 
 @login_required()
 def invite(request):
-    # static variables
-    invitation_field = "INVITATION on Driver Social Platform"
-    content_field = "Congratulation your friends ... invite you to join in!!"
+    subject = "INVITATION on Driver Social Platform"
+    content = "Congratulation your friends ... invite you to join in!!"
 
     if request.method == 'POST':
-        print 'into post'
-        # show alert success sent top-right
-        # send email to request.form['email']
-        addressee = request.POST.get('email', '')
-        # print addressee
+        address = request.POST.get('email', '')
+        try:
+            Profile.get_by_email(address)
+            messages.error(request, "User already present!")
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except Profile.DoesNotExist:
+            pass
 
-        #trouble 
-        send_mail(invitation_field, content_field, 'mauriziocontatto@gmail.com', [addressee], fail_silently=False)
-
-        return render(request, 'dashboard/invite.html', {'message': "Mail Sent!"})
-
-    else:
-        print 'into get'
-        return render(request, 'dashboard/invite.html', {})
+        try:
+            EmailHelper.send_email(
+                message=content,
+                subject=subject,
+                receiver_email=address,
+                receiver_name=''
+            )
+            messages.success(request, "Invitation sent!")
+        except:
+            messages.error(request, "Please try again!")
+    return render(request, 'dashboard/invite.html', {})
