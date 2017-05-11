@@ -41,3 +41,9 @@ def search_members(request, search_string):
     return JsonResponse({'status': 'ok',
                          'search_string': search_string,
                          'result': serializer.data}, status=200)
+
+
+def get_last_members(request):
+    # TODO Get last 20 members
+    return JsonResponse({'status': 'ok',
+                         'result': []}, status=200)
