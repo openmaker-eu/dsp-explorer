@@ -6,11 +6,15 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.search_filter = "";
     $scope.results = [];
 
+    // TODO: On INIT -> Call API to fetch last 20 registered members
+    // Save the result in a list base_result
+    // If I'm doing a search -> Show result
+    // If I'm not doing a search -> Show base_result
+
     $scope.search = _.debounce(()=>{
 
         if($scope.search_filter.length < 3){
             $scope.results = [];
-            console.log($scope.results)
             return
         }
         $http({
