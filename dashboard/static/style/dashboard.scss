@@ -48,7 +48,7 @@ html, body {
 }
 
 .dropdown-menu{
-    left:-94px;
+    left:-130px;
 }
 
 .logo{
@@ -172,11 +172,15 @@ BUTTONS
 
 }
 
+.btn{
+    font-size: 9px;
+}
+
 
 .logo-button{
     float:left;
-    margin-top: 10px;
-    margin-left:10px;
+    margin-top: 22px;
+    margin-left:-20px;
     color: #db4348;
     background: transparent;
     border: solid 1px;

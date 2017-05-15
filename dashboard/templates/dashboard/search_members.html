@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-<div class="container" ng-controller="searchController" ng-cloak>
+<div class="container" ng-controller="searchController" ng-init="get_last_members()">
     <div class="row">
         <div class="col-md-12">
             <ol class="breadcrumb">
@@ -10,7 +10,6 @@
         </div>
     </div>
 
-    <!-- Mauri edit -->
 
 
     <div class="row">
@@ -20,7 +19,7 @@
             <span class="col-md-6"></span>
             <h4 class="text-grey col-md-6 text-center">Start typing name, surname or email.</h4>
             <span class="col-md-3">
-                <p class="btn btn-default active" style="width:200px;" >New users   <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></p>
+                    <p class="btn btn-default active" style="width:200px;" >New users   <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></p>
             </span>
             <span class="col-md-3">
                 <p class="btn btn-default disabled" style="width:200px;" > ... </span></p>
@@ -39,22 +38,19 @@
         </div>
     </div>
 
-
-    <!-- end Mauri edit -->
-
-
-
-
     <div class="row">
-        <div class="col-md-12" ng-if="search_filter.length>0">
+        <div class="col-md-12">
             <h2>Results: <small>{$results.length$}</small></h2>
-            <div class="col-md-12" ng-repeat="data in results">
-                <h4 class="pull-left" style="height: 4em;"><img class="img-circle" ng-src="{$ data.picture_url $}" alt="" style="max-height: 100%;">&nbsp;&nbsp;&nbsp;&nbsp;</h4>
-                <h4 class="pull-left" style="line-height: 4em;">
-                    <a style="line-height: 3em;" href="/profile/{$data['id']$}" ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></a>
-                </h4>
+            <div class="col-md-4" ng-repeat="data in results">
+                <a href="/profile/{$data['id']$}">
+                    <h4 class="pull-left" style="height: 4em;"><img class="img-circle" ng-src="{$ data.picture_url $}" alt="" style="height: 80px; width: 80px;">&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                    <h4 class="pull-left" style="line-height: 4em;">
+                        <p style="line-height: 81px;"  ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></p>
+                    </h4>
+                </a>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
