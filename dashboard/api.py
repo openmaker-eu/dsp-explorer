@@ -15,18 +15,20 @@ def request_membership(request, email):
     """
     party = CRMConnector.search_party_by_email(email)
     if not party:
-        return JsonResponse({'status': 'error', 'message': 'User not Found'}, status=404)
+        message = '''User not found! To become a DSP member you need to fill the onboarding form.
+        Please visit the Open Maker website for more information.'''
+        return JsonResponse({'status': 'error', 'message': message}, status=404)
     try:
         profile = Profile.create(email, party.get('firstName').encode('ascii', 'ignore').decode('ascii'),
                                  party.get('lastName').encode('ascii', 'ignore').decode('ascii'),
                                  party.get('pictureURL').encode('ascii', 'ignore').decode('ascii'))
     except EmailAlreadyUsed:
-        return JsonResponse({'status': 'error', 'message': 'Email already present'}, status=409)
+        return JsonResponse({'status': 'error', 'message': 'This user is already a DSP Member.'}, status=409)
     except KeyError:
-        return JsonResponse({'status': 'error', 'message': 'Server Error'}, status=500)
+        return JsonResponse({'status': 'error', 'message': 'Some error occures, please try again'}, status=500)
     except Exception as e:
         print e
-        return JsonResponse({'status': 'error', 'message': 'Server Error'}, status=500)
+        return JsonResponse({'status': 'error', 'message': 'Some error occures, please try again'}, status=500)
     message = 'Invitation sent!'
     subject_for_email = 'Welcome to DSP Explorer - Open Maker'
     message_for_email = 'Welcome! Click this link to create your account ' \
