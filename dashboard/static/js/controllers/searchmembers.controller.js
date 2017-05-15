@@ -5,30 +5,39 @@
 export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.search_filter = "";
     $scope.results = [];
+    $scope.last_members = [];
 
-    // TODO: On INIT -> Call API to fetch last 20 registered members
-    // Save the result in a list base_result
-    // If I'm doing a search -> Show result
-    // If I'm not doing a search -> Show base_result
+    $scope.get_last_members = function(){
 
-    $scope.search = _.debounce(()=>{
+        $http({
+            'method': 'GET',
+            'url': '/api/v1.0/search/last_members/'
+        }).then($scope.handleSearchLastMembersResponse, $scope.handleSearchError)
 
+    }
+
+
+    $scope.search = function(){
         if($scope.search_filter.length < 3){
-            $scope.results = [];
-            return
+            $scope.results = $scope.last_members;
+            return;
         }
         $http({
             'method': 'GET',
             'url': '/api/v1.0/search/members/'+$scope.search_filter+'/'
         }).then($scope.handleSearchResponse, $scope.handleSearchError)
-        
-    } , 500, {});
+    };
     
     $scope.highlight = function(text, search) {
         if (!search) {return $sce.trustAsHtml(text);}
         return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red">$&</span>'));
     };
-    
+
+    $scope.handleSearchLastMembersResponse = function (result) {
+        $scope.results = result['data']['result']
+        $scope.last_members = result['data']['result']
+    };
+
     $scope.handleSearchResponse = function (result) {
         $scope.results = result['data']['result']
     };
@@ -36,5 +45,7 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.handleSearchError = function(){
         $scope.results = []
     };
+
+
 
 }]

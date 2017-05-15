@@ -22,13 +22,13 @@ urlpatterns = [
     # Search
     url(r'^search/members/$', views.search_members, name='search_members'),
 
-    #edit by Mauri
     # Invite
     url(r'^invite/$', views.invite, name='invite'),
-    #
 
     # API v1.0
     url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         api.request_membership, name='api_request_membership'),
-    url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member')
+    url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
+    url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members')
 ]
+

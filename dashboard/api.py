@@ -45,5 +45,7 @@ def search_members(request, search_string):
 
 def get_last_members(request):
     # TODO Get last 20 members
+    last_twenty = Profile.objects.order_by('-user__date_joined')[:21]
+    serializer = ProfileSerializer(instance=last_twenty, many=True)
     return JsonResponse({'status': 'ok',
-                         'result': []}, status=200)
+                         'result': serializer.data}, status=200)
