@@ -31,8 +31,19 @@ def request_membership(request, email):
         return JsonResponse({'status': 'error', 'message': 'Some error occures, please try again'}, status=500)
     message = 'Invitation sent!'
     subject_for_email = 'Welcome to DSP Explorer - Open Maker'
-    message_for_email = 'Welcome! Click this link to create your account ' \
-                        'http://{}/reset_password/{}'.format(get_current_site(request), profile.reset_token)
+    message_for_email = '''
+Hi!
+
+You are about to enter to the OpenMaker Digital Social Platform (OpenMaker DSP).
+
+The platform will provide you with an easy-to-read dashboard displaying the most relevant innovation trends and networks, expressed in intuitive and graphical representations.
+DSP runs a machine learning that harvests online relations of makers and manufacturers within the digital environments that they already use, by tracing, measuring and assessing relations and trends.
+
+The platform will collect and analyse the personal data that are already public on your social networks, and will trace your publicly available online activities on these channels (Twitter, Google +, Linkedin, Facebook, Instagram, Pinterest, YouTube, Instructables, Medium, Meet Up, GitHub, Slack).
+
+Data will be collected and treated in Europe, by Bosphorus University, University of Zurich and IMT Lucca.
+
+Click this link to create your account: http://{}/reset_password/{}'''.format(get_current_site(request), profile.reset_token)
     profile.send_email(subject_for_email, message_for_email)
     return JsonResponse({'status': 'ok', 'email': email, 'message': message}, status=200)
 

@@ -25,7 +25,6 @@ class EmailHelper(object):
     def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
-        # TODO ASYNC CALL!
         receivers = [receiver_email]
         formatted_message = Message()
         formatted_message['Subject'] = Header("%s - %s" % (subject, time.strftime("%d/%m/%Y %H:%M:%S")), 'utf-8')
