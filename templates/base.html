@@ -46,20 +46,29 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-
-                    <!-- edit by Mauri-->
-
-                    <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
-
-                    <!--end edit Mauri-->
-
-                    <li><a href="{% url 'dashboard:search_members' %}">Search</a></li>
-                    <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
-                    <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
+{#                        <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>#}
+                        <li><a href="{% url 'dashboard:search_members' %}">Search</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"
+                               data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+{#                                <button type="button" class="btn">#}
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="caret"></span>
+{#                                </button>#}
+                                </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
+                                <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+{#                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>#}
                     {% else %}
 
-                    <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
-                    <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+                        <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
+                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
                 </ul>
@@ -77,26 +86,26 @@
 </div>
 {% if user.is_anonymous %}
 
-<div class="container-fluid">
-    <div class="row back padding-bottom-20">
-        <div class="container">
-            <div class="row margin-top-25">
-                <div class="col-md-8 text-white">
-                    <p class="sub-title">About <strong>Open</strong>Maker</p>
-                    <p>
-                        The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.
-                    </p>
-                    <p>
-                        This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.
-                    </p>
-                </div>
-                <div class="col-md-4 text-center margin-top-30">
-                    <a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>
+    <div class="container-fluid">
+        <div class="row back padding-bottom-20">
+            <div class="container">
+                <div class="row margin-top-25">
+                    <div class="col-md-8 text-white">
+                        <p class="sub-title">About <strong>Open</strong>Maker</p>
+                        <p>
+                            The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.
+                        </p>
+                        <p>
+                            This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-center margin-top-30">
+                        <a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endif %}
 </div>
 
