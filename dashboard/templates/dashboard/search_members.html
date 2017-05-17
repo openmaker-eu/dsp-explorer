@@ -17,9 +17,9 @@
                     <h1 class="margin-bottom-30">Explore Members</h1>
                 </div>
                 <div class="col-md-6">
-                    <h4 class="text-grey">Start typing name, surname or email</h4>
+                    <h5 class="text-grey">Start typing name, surname or email</h5>
                     <form>
-                        <div class="input-group has-feedback has-feedback-left">
+                        <div class="input-group has-feedback has-feedback-left" style="width: 50%">
                             <input ng-change="search()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search Here.." value="">
                             <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                         </div>
@@ -28,10 +28,10 @@
                 <div class="col-md-6">
                     <h4>&nbsp;</h4>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-default">New users <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
+                        <button type="button" class="btn login-button">New users <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-default">Next filter <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
+                        <button type="button" class="btn login-button">Next filter <span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
                     </div>
                 </div>
             </div>
