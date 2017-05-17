@@ -26,7 +26,7 @@
                 {% endfor %}
           ];
       ">
-<div >
+<div id="top-div">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -59,17 +59,17 @@
                                 </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
-                                <li><a href="{% url 'dashboard:support' %}">Support</a></li>
                                 <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
                                 <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'dashboard:support' %}">Support</a></li>
                                 <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                             </ul>
                         </li>
 {#                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>#}
                     {% else %}
-
                         <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
                         <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+                        <li><a href="{% url 'dashboard:support' %}">Support</a></li>
 
                     {% endif %}
                 </ul>
@@ -87,7 +87,7 @@
 </div>
 {% if user.is_anonymous %}
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="footer">
         <div class="row back padding-bottom-20">
             <div class="container">
                 <div class="row margin-top-25">

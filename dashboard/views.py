@@ -83,4 +83,4 @@ def invite(request):
 
 
 def support(request):
-    return render(request, 'dashboard/FAQpage.html', {})
+    return render(request, 'dashboard/support.html', {})

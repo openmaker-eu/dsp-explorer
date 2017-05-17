@@ -23,6 +23,7 @@ app.config(['$qProvider', function ($qProvider) {
 }]);
 
 app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
+require("../../../static/js/footer/footer")
 
 export { app };
 
