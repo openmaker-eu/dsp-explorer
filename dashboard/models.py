@@ -6,6 +6,12 @@ from datetime import datetime as dt
 import uuid
 from .exceptions import EmailAlreadyUsed
 
+class Invitation(models.Model):
+    user = models.OneToOneField(User)
+    email = models.EmailField(max_length=254, verbose_name='email address')
+    first_name = models.TextField(max_length=200, null=True, blank=True)
+    last_name = models.TextField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(default=None, null=True, blank=True)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
