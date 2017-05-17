@@ -80,3 +80,7 @@ def invite(request):
         except:
             messages.error(request, 'Please try again!')
     return render(request, 'dashboard/invite.html', {})
+
+
+def support(request):
+    return render(request, 'dashboard/FAQpage.html', {})

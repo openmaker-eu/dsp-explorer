@@ -25,6 +25,9 @@ urlpatterns = [
     # Invite
     url(r'^invite/$', views.invite, name='invite'),
 
+    # FAQ page
+    url(r'^support/$', views.support, name='support'),
+
     # API v1.0
     url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         api.request_membership, name='api_request_membership'),
