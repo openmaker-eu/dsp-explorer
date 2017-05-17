@@ -68,8 +68,8 @@
 {#                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>#}
                     {% else %}
                         <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
-                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
                         <li><a href="{% url 'dashboard:support' %}">Support</a></li>
+                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
                 </ul>

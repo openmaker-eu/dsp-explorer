@@ -18,7 +18,9 @@
         <div class="col-md-4 col-md-offset-4">
             <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
                 {% csrf_token %}
-                <input class="form-control" required type="email" name="email" placeholder="Type email"><br />
+                <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
+                <input class="form-control" required type="text" name="first_name" placeholder="First name" required><br />
+                <input class="form-control" required type="text" name="last_name" placeholder="Last name" required><br />
                 <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
             </form>
         </div>

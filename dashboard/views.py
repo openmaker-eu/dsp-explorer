@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
-from .models import Profile
+from .models import Profile, Invitation
+from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 
 
@@ -57,19 +58,23 @@ def search_members(request):
 
 @login_required()
 def invite(request):
-    subject = 'INVITATION on Driver Social Platform'
-    content = 'Congratulation your friends ... invite you to join in!!'
-
     if request.method == 'POST':
-        address = request.POST.get('email', '')
         try:
-            Profile.get_by_email(address)
-            messages.error(request, 'User already present!')
+            address = request.POST['email']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+        except KeyError:
+            messages.error(request, 'Please all the fields are required!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
-        except Profile.DoesNotExist:
-            pass
 
+        # email not present, filling invitation model
         try:
+            invitation = Invitation.create(user=request.user, email=address, first_name=first_name, last_name=last_name)
+            subject = 'INVITATION To OpenMake Digital Social Platform'
+            content = '''
+Hello {}!
+Our member {} invited you to the DSP bla bla bla..
+'''.format(invitation.first_name, invitation.profile.user.get_full_name())
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -77,8 +82,13 @@ def invite(request):
                 receiver_name=''
             )
             messages.success(request, 'Invitation sent!')
-        except:
+        except EmailAlreadyUsed:
+            messages.error(request, 'User is already a member!')
+        except UserAlreadyInvited:
+            messages.error(request, 'User has already received an invitation!')
+        except Exception:
             messages.error(request, 'Please try again!')
+
     return render(request, 'dashboard/invite.html', {})
 
 
