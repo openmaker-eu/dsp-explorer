@@ -47,8 +47,13 @@ html, body {
     color: #fff;
 }
 
+.font-size-8 {
+    font-size: 8px!important;
+}
+
 .dropdown-menu{
-    left:-130px;
+    left: 43%;
+    text-align: right;
 }
 
 .logo{
@@ -256,9 +261,9 @@ BUTTONS
     font-weight: 300;
 }
 
-.login-button:hover {
-    background: #db4348;
-    color: #fff;
+.login-button:hover, .login-button:focus {
+    background: #db4348!important;
+    color: #fff!important;
 }
 
 .close-button {
