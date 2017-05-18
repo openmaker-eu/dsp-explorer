@@ -94,3 +94,7 @@ Our member {} invited you to the DSP bla bla bla..
 
 def support(request):
     return render(request, 'dashboard/support.html', {})
+
+
+def terms_conditions(request):
+    return render(request, 'dashboard/terms_conditions.html', {})
