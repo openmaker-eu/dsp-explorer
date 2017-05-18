@@ -56,6 +56,10 @@ def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
 
 
+def privacy(request):
+    return render(request, 'dashboard/privacy.html', {})
+
+
 @login_required()
 def invite(request):
     if request.method == 'POST':
