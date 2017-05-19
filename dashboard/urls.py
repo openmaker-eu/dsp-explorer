@@ -31,6 +31,9 @@ urlpatterns = [
     # FAQ page
     url(r'^support/$', views.support, name='support'),
 
+    # Terms and Conditions
+    url(r'terms/$', views.terms_conditions, name='terms_conditions'),
+
     # API v1.0
     url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         api.request_membership, name='api_request_membership'),
