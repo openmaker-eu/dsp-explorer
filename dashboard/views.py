@@ -56,7 +56,6 @@ def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
 
 
-@login_required()
 def privacy(request):
     return render(request, 'dashboard/privacy.html', {})
 

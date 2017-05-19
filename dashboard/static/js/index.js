@@ -30,3 +30,6 @@ export { app };
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 
+require("../../../node_modules/cookieconsent/build/cookieconsent.min.css")
+require("../../../node_modules/cookieconsent/build/cookieconsent.min")
+require("../../../static/js/cookie/cookiePolicy")
