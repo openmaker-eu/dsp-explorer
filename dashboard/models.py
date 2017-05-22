@@ -2,9 +2,10 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from datetime import datetime as dt
 import uuid
-from .exceptions import EmailAlreadyUsed
+from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
 
 class Profile(models.Model):
@@ -104,3 +105,31 @@ class Profile(models.Model):
     @classmethod
     def get_by_id(cls, profile_id):
         return cls.objects.get(id=profile_id)
+
+
+class Invitation(models.Model):
+    profile = models.OneToOneField(Profile, null=False, blank=False)
+    email = models.EmailField(max_length=254, verbose_name='email address')
+    first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    @classmethod
+    def create(cls, user, email, first_name, last_name):
+        try:
+            Invitation.objects.get(email=email)
+            raise UserAlreadyInvited
+        except Invitation.DoesNotExist:
+            pass
+        try:
+            user = User.objects.get(email=email)
+            raise EmailAlreadyUsed
+        except User.DoesNotExist:
+            pass
+        try:
+            profile = Profile.objects.get(user=user)
+            invitation = cls(profile=profile, email=email, first_name=first_name, last_name=last_name)
+            invitation.save()
+            return invitation
+        except Profile.DoesNotExist:
+            raise Exception

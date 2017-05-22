@@ -31,7 +31,7 @@ class DSPConnector(object):
     
     @staticmethod
     def generate_url(endpoint, parameter=None):
-        return settings.DSB_API_URL + endpoint + '/' + parameter if parameter else settings.DSB_API_URL + endpoint
+        return settings.DSP_API_URL + endpoint + '/' + parameter if parameter else settings.DSP_API_URL + endpoint
     
     @staticmethod
     def _wrapper_request(response):
@@ -42,7 +42,7 @@ class DSPConnector(object):
     @staticmethod
     def _get(url):
         try:
-            response = requests.get(url)
+            response = requests.get(url, timeout=8)
         except:
             response = None
         return DSPConnector._wrapper_request(response=response)
