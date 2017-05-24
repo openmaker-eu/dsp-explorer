@@ -3,6 +3,7 @@ window.$ = window.jQuery = require('jquery')
 require("bootstrap-sass")
 require("bootstrap-sass/assets/stylesheets/_bootstrap.scss")
 require("../style/dashboard.scss")
+require("../style/card.scss")
 require("angular-toastr/dist/angular-toastr.css")
 require("../../../node_modules/cookieconsent/build/cookieconsent.min.css");
 require("../../../node_modules/cookieconsent/build/cookieconsent.min");

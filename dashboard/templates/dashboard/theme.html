@@ -44,39 +44,68 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <h3>Feed</h3>
                     <p class="lead">Social media recommended news.</p>
+                </div>
                     <!-- FEED SPACE -->
                     {% for feed in feeds %}
-                        <div class="row margin-bottom-25">
-                            <div class="col-md-3">
-                                {% if feed.im %}
-                                    <img src="{{feed.im}}" class="img-responsive feed_img" alt="{{feed.title}}">
-                                {% else %}
-                                    <img src="http://placehold.it/150x150" class="img-responsive  feed_img" alt="{{feed.title}}">
-                                {% endif %}
-                            </div>
-                            <div class="col-md-9">
-                                <p><h5><a href="{{feed.url}}" target="_blank">{{feed.title}}</a></h5></p>
-                                <p>
-                                    {% if feed.description %}
-                                        <p>{{feed.description}}</p>
-                                    {% else %}
-                                        <p>No Description provided </p>
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div class="col-md-12 margin-top-25">
-                                <hr>
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+                            <div class="card margin-bottom-20">
+                                <a href="{{feed.url}}">
+                                    <div class="card-image">
+{#                                        <div style="background: url('{{feed.im}}')no-repeat;" class="card-container"></div>#}
+                                        {% if feed.im %}
+                                            <img src="{{feed.im}}" class="img-responsive" alt="{{feed.title}}">
+                                        {% else %}
+                                            <img src="/static/images/rasp-icon.png" class="img-responsive" alt="{{feed.title}}">
+                                          {% endif %}
+                                    </div>
+                                    <div class="card-content text-center">
+                                        {% if feed.title %}
+                                            <p>{{feed.title|truncatechars:50}}</p>
+                                        {% else %}
+                                            <p>No Title provided </p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-action">
+                                        {% if feed.description %}
+                                            <p class="">{{feed.description|truncatechars:100}}</p>
+                                        {% else %}
+                                            <p>No Description provided </p>
+                                        {% endif %}
+                                    </div>
+                                </a>
                             </div>
                         </div>
+{#                        <div class="row margin-bottom-25">#}
+{#                            <div class="col-md-3">#}
+{#                                {% if feed.im %}#}
+{#                                    <img src="{{feed.im}}" class="img-responsive feed_img" alt="{{feed.title}}">#}
+{#                                {% else %}#}
+{#                                    <img src="http://placehold.it/150x150" class="img-responsive  feed_img" alt="{{feed.title}}">#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                            <div class="col-md-9">#}
+{#                                <p><h5><a href="{{feed.url}}" target="_blank">{{feed.title}}</a></h5></p>#}
+{#                                <p>#}
+{#                                    {% if feed.description %}#}
+{#                                        <p>{{feed.description}}</p>#}
+{#                                    {% else %}#}
+{#                                        <p>No Description provided </p>#}
+{#                                    {% endif %}#}
+{#                                </p>#}
+{#                            </div>#}
+{#                            <div class="col-md-12 margin-top-25">#}
+{#                                <hr>#}
+{#                            </div>#}
+{#                        </div>#}
                     {% endfor %}
-                </div>
-                <div class="col-md-4 influencers_box">
+
+                <!--<div class="col-md-4 influencers_box">
                     <h3>TOP Influencers</h3>
                     <p class="lead"></p>
-                    <!-- INFLUENCERS SPACE -->
+                     INFLUENCERS SPACE
                     {% for account in influencers %}
                         <div class="row influencers_separator">
                             <div class="col-md-3">
@@ -94,7 +123,7 @@
                         </div>
                     {% endfor%}
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 {% endblock %}

@@ -1,0 +1,65 @@
+/**
+*
+* Cards
+*
+*/
+
+.card {
+	margin-top: 10px;
+	box-sizing: border-box;
+	border-radius: 2px;
+	background-clip: padding-box;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.card .card-image {
+	min-width: 255px;
+	position: relative;
+	overflow: hidden;
+	max-height: 137px;
+	min-height: 137px;
+	//.card-container {
+	//	max-height: 137px;
+	//	min-height: 137px;
+	//	background-size: cover;
+	//	width: 100%;
+	//}
+}
+
+
+.card .card-content {
+	padding: 16px;
+	border-radius: 0 0 2px 2px;
+	background-clip: padding-box;
+	box-sizing: border-box;
+	min-height: 70px;
+	max-height: 70px;
+}
+.card .card-content p {
+	margin: 0;
+	color: inherit;
+}
+
+.card .card-action {
+	border-top: 1px solid rgba(160, 160, 160, 0.2);
+	padding: 16px;
+	height: 119px;
+	overflow: hidden;
+}
+
+.card a {
+	color: #000;
+	text-decoration: none;
+}
+
+.card a:hover {
+	color: #FC4343;
+	text-decoration: none;
+}
+
+.card-list-element{
+	padding:2%;
+	&:not(:last-child) {
+		border-bottom:solid 1px #eee;
+	}
+}
