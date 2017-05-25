@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members'),
 
     # API v1.1
-    url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds')
+    url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds'),
+    url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes')
 ]
 

@@ -72,3 +72,12 @@ def get_feeds(request, theme_name, date='yesterday', cursor=-1):
 
     return JsonResponse({'status': 'ok',
                          'result': feeds}, status=200)
+
+def get_themes(request):
+    try:
+        themes = DSPConnector.get_themes()
+    except DSPConnectorException:
+        themes=[{}]
+
+    return JsonResponse({'status': 'ok',
+                         'result': themes}, status=200)
