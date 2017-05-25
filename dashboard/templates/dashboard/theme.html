@@ -32,13 +32,13 @@
                 {#                <button type="button" class="feed-button">Week</button>#}
                 {#                <button type="button" class="feed-button">Month</button>#}
                 <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Yesterday <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+                    <button ng-click="setFilter('yesterday')" type="button" class="btn login-button">Yesterday <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
                 </div>
                 <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Week <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+                    <button ng-click="setFilter('week')" type="button" class="btn login-button">Week <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
                 </div>
                 <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Month <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+                    <button ng-click="setFilter('month')" type="button" class="btn login-button">Month <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -54,9 +54,7 @@
                     <p class="lead">Social media recommended news.</p>
                 </div>
                     <!-- FEED SPACE -->
-{#                    {% for feed in feeds %}#}
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3" ng-repeat="feed in feeds">
-{#                            {$ feed $}#}
                             <div class="card margin-bottom-20">
                                 <a href="{$feed.url$}">
                                     <div class="card-image">
