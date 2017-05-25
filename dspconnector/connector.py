@@ -23,11 +23,13 @@ class DSPConnector(object):
     
     @staticmethod
     def get_feeds(theme_name, date='yesterday', cursor=-1):
-        return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_FEEDS, parameter='?themename={}&date={}&cursor={}'.format(theme_name, date, cursor)))
+        return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_FEEDS,
+                                                           parameter='?themename={}&date={}&cursor={}'.format(theme_name, date, cursor)))
 
     @staticmethod
     def get_influencers(theme_name):
-        return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_INFLUENCERS, parameter=theme_name))
+        return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_INFLUENCERS,
+                                                           parameter='?themename={}'.format(theme_name)))
     
     @staticmethod
     def generate_url(endpoint, parameter=None):

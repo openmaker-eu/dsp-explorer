@@ -64,6 +64,7 @@ def get_last_members(request):
     return JsonResponse({'status': 'ok',
                          'result': serializer.data}, status=200)
 
+
 def get_feeds(request, theme_name, date='yesterday', cursor=-1):
     try:
         feeds = DSPConnector.get_feeds(theme_name, date, cursor)
@@ -73,11 +74,22 @@ def get_feeds(request, theme_name, date='yesterday', cursor=-1):
     return JsonResponse({'status': 'ok',
                          'result': feeds}, status=200)
 
+
 def get_themes(request):
     try:
         themes = DSPConnector.get_themes()
     except DSPConnectorException:
-        themes=[{}]
+        themes = {}
 
     return JsonResponse({'status': 'ok',
                          'result': themes}, status=200)
+
+
+def get_influencers(request, theme_name):
+    try:
+        influencers = DSPConnector.get_influencers(theme_name)
+    except DSPConnectorException:
+        influencers = {}
+
+    return JsonResponse({'status': 'ok',
+                         'result': influencers}, status=200)

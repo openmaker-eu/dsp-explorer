@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
     
     # Explore
-    url(r'^dashboard/theme/(?P<theme_name>[\w\-]+)$', views.theme, name='theme'),
+    url(r'^dashboard/theme/(?P<theme_name>.*)$', views.theme, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
     
     # Profiles
@@ -42,6 +42,7 @@ urlpatterns = [
 
     # API v1.1
     url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds'),
-    url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes')
+    url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes'),
+    url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
 ]
 
