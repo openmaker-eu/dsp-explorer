@@ -4,6 +4,7 @@ from crmconnector.capsule import CRMConnector
 from .models import Profile
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
+from dspconnector.connector import DSPConnector, DSPConnectorException
 
 
 def request_membership(request, email):
@@ -62,3 +63,12 @@ def get_last_members(request):
     serializer = ProfileSerializer(instance=last_twenty, many=True)
     return JsonResponse({'status': 'ok',
                          'result': serializer.data}, status=200)
+
+def get_feeds(request, theme_name, date='yesterday', cursor=-1):
+    try:
+        feeds = DSPConnector.get_feeds(theme_name, date, cursor)
+    except DSPConnectorException:
+        feeds={}
+
+    return JsonResponse({'status': 'ok',
+                         'result': feeds}, status=200)

@@ -21,7 +21,8 @@ def dashboard(request):
 @login_required()
 def theme(request, theme_name):
     try:
-        feeds = DSPConnector.get_feeds(theme_name)
+        # feeds = DSPConnector.get_feeds(theme_name)
+        feeds = {}
         influencers = DSPConnector.get_influencers(theme_name)
         themes = DSPConnector.get_themes()
         themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]

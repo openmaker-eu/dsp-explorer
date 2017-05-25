@@ -37,9 +37,13 @@
   },
   "dependencies": {
     "angular": "^1.6.2",
+    "angular-animate": "^1.6.4",
+    "angular-motion": "^0.4.4",
     "angular-sanitize": "^1.6.2",
+    "angular-strap": "^2.3.12",
     "angular-toastr": "^2.1.1",
     "angular-ui-bootstrap": "^2.5.0",
+    "bootstrap-additions": "^0.3.1",
     "bootstrap-sass": "^3.3.7",
     "cookieconsent": "^3.0.4",
     "font-awesome": "^4.7.0",

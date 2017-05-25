@@ -38,6 +38,9 @@ urlpatterns = [
     url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         api.request_membership, name='api_request_membership'),
     url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
-    url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members')
+    url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members'),
+
+    # API v1.1
+    url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds')
 ]
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container">
+    <div class="container" ng-controller="themesController">
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
@@ -43,7 +43,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-3 col-md-offset-9 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Influencers</button>
+                    <a class="btn login-button" ng-click="openAside()" >Influencers</a>
                 </div>
             </div>
         </div>
