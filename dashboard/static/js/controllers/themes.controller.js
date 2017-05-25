@@ -18,6 +18,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             .then(function (response) {
                 $scope.feeds = response.data.result.feeds;
             },function (err) {
+                // ToDo show API errors with a common error message using toastr?
                 console.log(err)
             })
     }
@@ -28,6 +29,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             .then(function (response) {
                 $scope.influencers = response.data.result.influencers;
             },function (err) {
+                // ToDo show API errors with a common error message using toastr?
                 console.log(err)
             })
     }
