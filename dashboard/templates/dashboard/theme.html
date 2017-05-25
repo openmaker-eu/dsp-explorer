@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container" ng-controller="themesController">
+    <div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
@@ -54,31 +54,22 @@
                     <p class="lead">Social media recommended news.</p>
                 </div>
                     <!-- FEED SPACE -->
-                    {% for feed in feeds %}
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+{#                    {% for feed in feeds %}#}
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3" ng-repeat="feed in feeds">
+{#                            {$ feed $}#}
                             <div class="card margin-bottom-20">
-                                <a href="{{feed.url}}">
+                                <a href="{$feed.url$}">
                                     <div class="card-image">
-{#                                        <div style="background: url('{{feed.im}}')no-repeat;" class="card-container"></div>#}
-                                        {% if feed.im %}
-                                            <img src="{{feed.im}}" class="img-responsive" alt="{{feed.title}}">
-                                        {% else %}
-                                            <img src="/static/images/rasp-icon.png" class="img-responsive" alt="{{feed.title}}">
-                                          {% endif %}
+                                        <img ng-if="feed.im" src="{$feed.im$}" class="img-responsive" alt="{$feed.title$}">
+                                        <img ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
                                     </div>
                                     <div class="card-content text-center">
-                                        {% if feed.title %}
-                                            <p>{{feed.title|truncatechars:50}}</p>
-                                        {% else %}
-                                            <p>No Title provided </p>
-                                        {% endif %}
+                                        <p ng-if="feed.title">{$ feed.title | limitTo: 40 $} {$ feed.title.length > 50 ? '...' : '' $}</p>
+                                        <p ng-if="!feed.title">No Title provided </p>
                                     </div>
                                     <div class="card-action">
-                                        {% if feed.description %}
-                                            <p class="">{{feed.description|truncatechars:100}}</p>
-                                        {% else %}
-                                            <p>No Description provided </p>
-                                        {% endif %}
+                                        <p ng-if="feed.description">{$ feed.description | limitTo: 60 $} {$ feed.description.length > 60 ? '...' : '' $}</p>
+                                        <p ng-if="!feed.description">No Description provided </p>
                                     </div>
                                 </a>
                             </div>
@@ -105,7 +96,7 @@
 {#                                <hr>#}
 {#                            </div>#}
 {#                        </div>#}
-                    {% endfor %}
+{#                    {% endfor %}#}
 
                 <!--<div class="col-md-4 influencers_box">
                     <h3>TOP Influencers</h3>
