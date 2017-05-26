@@ -261,7 +261,12 @@ BUTTONS
     font-weight: 300;
 }
 
-.login-button:hover, .login-button:focus {
+.login-button:hover, .login-button:focus, .login-button:active {
+    background: #db4348!important;
+    color: #fff!important;
+}
+
+.login-button-active {
     background: #db4348!important;
     color: #fff!important;
 }
