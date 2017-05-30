@@ -133,3 +133,21 @@ class Invitation(models.Model):
             return invitation
         except Profile.DoesNotExist:
             raise Exception
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User)
+    title = models.CharField(max_length=100)
+    message_text = models.TextField(max_length=500)
+    created_at = models.DateTimeField(default=dt.now)
+
+    class Meta:
+        ordering = ('created_at', 'title',)
+
+    @classmethod
+    def create(cls, user, title, message_text):
+        model = cls(cls, user, title, message_text)
+        return model
+
+    def __str__(self):
+        return self.message_text

@@ -28,6 +28,9 @@ urlpatterns = [
     # Privacy
     url(r'^privacy/$', views.privacy, name='privacy'),
 
+    # Feedback
+    url(r'^feed/$', views.feed, name='feed'),
+
     # FAQ page
     url(r'^support/$', views.support, name='support'),
 

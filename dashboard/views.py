@@ -1,11 +1,14 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
-from .models import Profile, Invitation
+from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
+from form import FeedbackForm
+
 
 
 @login_required()
@@ -96,3 +99,22 @@ def support(request):
 
 def terms_conditions(request):
     return render(request, 'dashboard/terms_conditions.html', {})
+
+
+@login_required()
+def feed(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        print form
+        if form.is_valid():
+            try:
+                user = User.objects.filter(email=request.user.email).first()
+                Feedback(user=user, title=request.POST['title'],
+                         message_text=request.POST['message_text']).save()
+                messages.success(request, 'Grazie per il tuo feedback')
+                return HttpResponseRedirect(reverse('dashboard:dashboard'))
+            except KeyError:
+                messages.warning(request, 'Errore, per favore')
+        else:
+            messages.error(request, 'Please all the fields are required!')
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
