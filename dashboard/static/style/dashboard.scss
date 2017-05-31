@@ -22,6 +22,10 @@ html, body {
     background-color: #fff;
 }
 
+textarea {
+    resize: vertical;
+}
+
 /* Alert Error Message */
 .alert-error {
     color: #a94442;
