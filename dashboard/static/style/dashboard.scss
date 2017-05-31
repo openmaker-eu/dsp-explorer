@@ -12,6 +12,9 @@ body {
 .text-grey { color: $grey!important;}
 .text-red { color: $red!important;}
 
+.bg-grey    {   background-color: $grey!important;}
+.bg-red     {   background-color: $red!important;}
+
 html, body {
     height: 100%;
     width: 100%;
@@ -361,3 +364,5 @@ input:focus {
 li {
     margin-top: 5px;
 }
+
+.no-scroll { overflow-y: hidden; }

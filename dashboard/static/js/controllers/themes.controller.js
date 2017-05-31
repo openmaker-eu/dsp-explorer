@@ -56,11 +56,19 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             scope:$scope,
             title: "Title",
             templateUrl: false,
+            backdrop: 'static',
             template: require("../../../templates/aside/influencers.html"),
             show:false
         });
         $scope.aside.$promise.then(function() {
             $scope.aside.show();
+            $('body').addClass('no-scroll');
         })
     }
+    $scope.closeAside = () =>{
+        $scope.aside.hide()
+        $('body').removeClass('no-scroll');
+        
+    }
+    
 }]
