@@ -17,7 +17,8 @@ def request_membership(request, email):
     party = CRMConnector.search_party_by_email(email)
     if not party:
         message = '''User not found! To become a DSP member you need to fill the onboarding form.
-        Please visit the Open Maker website for more information.'''
+        Please visit the <strong><a href="http://openmaker.eu/" target="_blank">Open Maker website for more information</a></strong>.
+        '''
         return JsonResponse({'status': 'error', 'message': message}, status=404)
     try:
         profile = Profile.create(email, party.get('firstName').encode('ascii', 'ignore').decode('ascii'),
