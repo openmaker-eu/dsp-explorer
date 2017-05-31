@@ -18,8 +18,9 @@ require('angular-sanitize');
 require('angular-animate');
 require('angular-strap');
 require("../../../node_modules/cookieconsent/build/cookieconsent.min");
+require('ng-infinite-scroll')
 
-let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize', 'ngAnimate','mgcrea.ngStrap'])
+let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll'])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
