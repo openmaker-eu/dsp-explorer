@@ -43,7 +43,7 @@
                     </label>
                 </div>
 
-                <div ng-bind="modal_message.message"
+                <div ng-bind-html="modal_message.message"
                      class="alert"
                      ng-class="{
                          'alert-error' : modal_message.status == 'error',
