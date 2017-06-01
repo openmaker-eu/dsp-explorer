@@ -102,19 +102,16 @@ def terms_conditions(request):
 
 
 @login_required()
-def feed(request):
+def feedback(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
-        print form
         if form.is_valid():
             try:
-                user = User.objects.filter(email=request.user.email).first()
-                Feedback(user=user, title=request.POST['title'],
+                Feedback(user=request.user, title=request.POST['title'],
                          message_text=request.POST['message_text']).save()
-                messages.success(request, 'Grazie per il tuo feedback')
-                return HttpResponseRedirect(reverse('dashboard:dashboard'))
+                messages.success(request, 'Thanks for your feedback!')
             except KeyError:
-                messages.warning(request, 'Errore, per favore')
+                messages.warning(request, 'Error, please try again.')
         else:
             messages.error(request, 'Please all the fields are required!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
