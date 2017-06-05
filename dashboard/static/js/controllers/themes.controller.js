@@ -17,6 +17,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             current_cursor : null,
             next_cursor : -1,
             progress : false,
+            top:  $(window).scrollTop(),
             
             data : [],
             
@@ -49,19 +50,8 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
                 model.data = []
                 model.current_cursor = null
                 model.next_cursor = -1
-    
+                
                 return model.next(theme, filter, cursor)
-    
-                //     return get_feed( theme, filter, cursor ).then(
-                //         (response) => {
-                //             model.data =response.data.result.feeds
-                //             model.next_cursor = parseInt( response.data.result.next_cursor );
-                //         },
-                //         model.error
-                //     )
-                //
-                // },
-                // error : e=>{ console.log('Error infinte scroll:', e ); model.progress = false; model.current_cursor = null;  }
                 
             }
             
@@ -70,6 +60,13 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         return model
         
     }) ()
+    
+    $(window).scroll(function() {
+        console.log( $(window).scrollTop() );
+        console.log('top', $('.infinite-container').offset() )
+        
+    });
+    
     
     // ToDo make yesterday filter active as default [css] and change active class when other filters are selected
     $scope.setFilter = function (filter) {
