@@ -55,6 +55,7 @@ def deploy_dev():
         run('git checkout .')
         run('git pull')
         run('npm run prod')
+        local('fab install_static')
         run('service apache2 reload')
 
 
