@@ -4,10 +4,12 @@ require("bootstrap-sass")
 require("bootstrap-sass/assets/stylesheets/_bootstrap.scss")
 require("../style/dashboard.scss")
 require("../style/card.scss")
+require("../style/material.scss")
 require("angular-toastr/dist/angular-toastr.css")
 require('../../../node_modules/bootstrap-additions/dist/bootstrap-additions.min.css');
 require('../../../node_modules/angular-motion/dist/angular-motion.css');
 require("../../../node_modules/cookieconsent/build/cookieconsent.min.css");
+
 
 import  * as  _  from 'lodash'
 import * as angular from 'angular';
@@ -31,7 +33,7 @@ app.config(['$qProvider', function ($qProvider) {
 }]);
 
 app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
-require("../../../static/js/footer/footer")
+require("../../../static/js/footer/header_footer")
 
 
 export { app };
