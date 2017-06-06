@@ -108,7 +108,7 @@ class Profile(models.Model):
 
 
 class Invitation(models.Model):
-    profile = models.OneToOneField(Profile, null=False, blank=False)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     email = models.EmailField(max_length=254, verbose_name='email address')
     first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
     last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
@@ -132,7 +132,7 @@ class Invitation(models.Model):
             invitation.save()
             return invitation
         except Profile.DoesNotExist:
-            raise Exception
+            raise Exception('Profile does not exist')
 
 
 class Feedback(models.Model):

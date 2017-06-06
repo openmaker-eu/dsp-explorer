@@ -3,12 +3,14 @@ from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from utils.mailer import EmailHelper
+from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
 
+import traceback
 
 
 @login_required()
@@ -70,12 +72,12 @@ def invite(request):
 
         # email not present, filling invitation model
         try:
-            invitation = Invitation.create(user=request.user, email=address, first_name=first_name, last_name=last_name)
+            invitation = Invitation.create(user=request.user, email=HashHelper.md5_hash(address), first_name=HashHelper.md5_hash(first_name), last_name=HashHelper.md5_hash(last_name))
             subject = 'INVITATION To OpenMake Digital Social Platform'
             content = '''
-Hello {}!
-Our member {} invited you to the DSP bla bla bla..
-'''.format(invitation.first_name, invitation.profile.user.get_full_name())
+                Hello {}!
+                Our member {} invited you to the DSP bla bla bla..
+                '''.format(invitation.first_name, invitation.profile.user.get_full_name())
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -87,7 +89,8 @@ Our member {} invited you to the DSP bla bla bla..
             messages.error(request, 'User is already a member!')
         except UserAlreadyInvited:
             messages.error(request, 'User has already received an invitation!')
-        except Exception:
+        except Exception as e:
+            print e.message
             messages.error(request, 'Please try again!')
 
     return render(request, 'dashboard/invite.html', {})

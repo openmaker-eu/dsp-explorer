@@ -10,7 +10,7 @@ window.addEventListener("load", function(){
                 "border": "#db4348"
             }
         },
-        "position": "top",
+        "position": "bottom-left",
         "static": true,
         "content": {
             "href": "/privacy",

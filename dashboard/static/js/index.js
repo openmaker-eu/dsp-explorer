@@ -33,7 +33,7 @@ app.config(['$qProvider', function ($qProvider) {
 }]);
 
 app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
-require("../../../static/js/footer/header_footer")
+require("../../../static/js/footer/header.footer")
 
 
 export { app };
@@ -42,4 +42,4 @@ app.controller('dashboardController', require('./controllers/dashboard.controlle
 app.controller('themesController', require('./controllers/themes.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 
-require("../../../static/js/cookie/cookiePolicy");
+require("../../../static/js/cookie/cookie.policy.behaviour");
