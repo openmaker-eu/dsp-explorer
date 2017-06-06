@@ -1,10 +1,12 @@
 from django.http import *
 from django.contrib.sites.shortcuts import get_current_site
+from django.views.decorators.csrf import csrf_exempt
 from crmconnector.capsule import CRMConnector
 from .models import Profile
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
+from utils.api import *
 
 
 def request_membership(request, email):
@@ -94,3 +96,31 @@ def get_influencers(request, theme_name):
 
     return JsonResponse({'status': 'ok',
                          'result': influencers}, status=200)
+
+@csrf_exempt
+def post_om_invitation(request):
+    if request.method != 'POST':
+        return not_authorized()
+
+    try:
+        sender_first_name = request.POST['sender_first_name']
+        sender_last_name = request.POST['sender_last_name']
+        sender_email = request.POST['sender_email']
+        receiver_first_name = request.POST['receiver_first_name']
+        receiver_last_name = request.POST['receiver_last_name']
+        receiver_email = request.POST['receiver_email']
+
+    except KeyError:
+        return bad_request("Please fill al the fields")
+
+    # check if sender is already a dsp user
+        # yes --> tell him to do the invitation from the dsp platform
+        # no --> check if the receiver is not invited yet
+            # already invited --> tell sender that the receiver has been already invited
+            # not already invited --> send to the sender a verification email
+
+    return success("Ok", {})
+
+def post_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
+    return JsonResponse({'status': 'ok',
+                         'result': 'puppa2'}, status=200)

@@ -112,6 +112,7 @@ class Invitation(models.Model):
     email = models.EmailField(max_length=254, verbose_name='email address')
     first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
     last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    sender_verified = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod

@@ -10,8 +10,7 @@ window.addEventListener("load", function(){
                 "border": "#db4348"
             }
         },
-        "position": "bottom-left",
-        "static": true,
+        "position": "bottom-right",
         "content": {
             "href": "/privacy",
             "message": "This site uses cookies, as explained in our Privacy Policy. If you use this site without adjusting your cookies settings, you agree to our use of cookies.\n",
