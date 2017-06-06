@@ -2,7 +2,8 @@ from django.http import *
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from crmconnector.capsule import CRMConnector
-from .models import Profile
+from .models import Profile, Invitation
+from utils.hasher import HashHelper
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
@@ -120,7 +121,30 @@ def post_om_invitation(request):
             # already invited --> tell sender that the receiver has been already invited
             # not already invited --> send to the sender a verification email
 
-    return success("Ok", {})
+    # sender already a DSP user?
+    try:
+        Profile.objects.get(email=sender_email)
+        return success("error", "You are already a DSP member, make the invitation using the DSP platform")
+    except Profile.DoesNotExist:
+        pass
+
+    # receiver already a DSP user?
+    try:
+        Profile.objects.get(email=receiver_email)
+        return success("error", "You are trying to invite an already DSP member")
+    except Profile.DoesNotExist:
+        pass
+
+    # receiver already invited?
+    try:
+        Invitation.objects.get(email=HashHelper.md5_hash(receiver_email))
+        return success("error", "You are trying to invite an already invited user")
+    except Invitation.DoesNotExist:
+        pass
+
+
+
+    return success("ok","Ok", {})
 
 def post_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
     return JsonResponse({'status': 'ok',

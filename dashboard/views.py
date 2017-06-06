@@ -72,6 +72,7 @@ def invite(request):
 
         # email not present, filling invitation model
         try:
+
             invitation = Invitation.create(user=request.user, email=HashHelper.md5_hash(address), first_name=HashHelper.md5_hash(first_name), last_name=HashHelper.md5_hash(last_name))
             subject = 'INVITATION To OpenMake Digital Social Platform'
             content = '''
