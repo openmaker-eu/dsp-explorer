@@ -113,9 +113,10 @@ def post_om_invitation(request):
     except KeyError:
         return bad_request("Please fill al the fields")
 
-    # check if sender is already a dsp user
+    # check if sender is already a dsp user (profile)
         # yes --> tell him to do the invitation from the dsp platform
-        # no --> check if the receiver is not invited yet
+        # no --> check if the receiver is not invited yet or if it's already a dsp user
+            # already dsp user message
             # already invited --> tell sender that the receiver has been already invited
             # not already invited --> send to the sender a verification email
 
