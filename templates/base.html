@@ -85,9 +85,11 @@
 
     {% endblock %}
     <!-- end base container -->
-    <div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">
-        <p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>
-    </div>
+    {% if not user.is_anonymous %}
+        <div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">
+            <p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>
+        </div>
+    {% endif %}
 </div>
 
 {% if user.is_anonymous %}
