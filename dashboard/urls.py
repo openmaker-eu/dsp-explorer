@@ -37,6 +37,9 @@ urlpatterns = [
     # Terms and Conditions
     url(r'terms/$', views.terms_conditions, name='terms_conditions'),
 
+    # Confirmation
+    url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', views.om_confirmation, name='om_confirmation'),
+
     # API v1.0
     url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         api.request_membership, name='api_request_membership'),
@@ -49,7 +52,5 @@ urlpatterns = [
     url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
 
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
-
-    url(r'^api/v1.1/om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', api.get_om_confirmation, name='get_om_confirmation')
 ]
 

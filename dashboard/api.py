@@ -155,7 +155,7 @@ def post_om_invitation(request):
                                    sender_verified=False
                                    ))
 
-    activation_link = 'http://localhost:8000/api/v1.1/om_confirmation/{}/{}/{}/{}/{}/{}'.format(sender_first_name.encode('base64'),
+    activation_link = 'http://localhost:8000/om_confirmation/{}/{}/{}/{}/{}/{}'.format(sender_first_name.encode('base64'),
                                                                                                 sender_last_name.encode('base64'),
                                                                                                 sender_email.encode('base64'),
                                                                                                 receiver_first_name.encode('base64'),
@@ -164,16 +164,16 @@ def post_om_invitation(request):
 
     subject = 'OpenMaker Nomination.. almost done!'
     content = '''
-Hi {},
-we truly appreciate your contribution to the growth of the OpenMaker community.
-Please, click HERE {} to verify your e-mail and confirm your nomination.
-If you wish to get more information on the OpenMaker chain of nomination and on the community, 
-contact us at: info@openmaker.eu
+Hi <strong>{}</strong>,<br>
+we truly appreciate your contribution to the growth of the <strong>OpenMaker community</strong>.<br><br>
+Please, click <strong><a href="{}">HERE</a></strong> to verify your e-mail and confirm your nomination.<br>
+If you wish to get more information on the OpenMaker chain of nomination and on the community,<br>
+contact us at: info@openmaker.eu<br><br>
 
-If you have received this email by mistake please ignore it.
+If you have received this email by mistake please ignore it.<br><br>
 
-Regards, 
-OpenMaker Team
+Regards,<br>
+OpenMaker Team.
 '''.format(sender_first_name, activation_link)
 
     EmailHelper.send_email(
@@ -184,9 +184,3 @@ OpenMaker Team
     )
 
     return success("ok","Pending invitation added", invitation)
-
-def get_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
-    print sender_first_name.decode('base64')
-
-    return JsonResponse({'status': 'ok',
-                         'result': 'puppa2'}, status=200)
