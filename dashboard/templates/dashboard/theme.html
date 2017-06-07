@@ -3,25 +3,32 @@
     <div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
         <div class="row">
             <div class="col-lg-12 "  >
-            <!--<div class="col-lg-12">-->
 
-                <div class="col-md-10 col-sm-8 col-xs-12" style="padding-right:0;">
+                <!--<div class="col-md-10 col-sm-8 col-xs-12" style="padding-right:0;">-->
+                    <!--<ol class="breadcrumb">-->
+                        <!--<li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>-->
+                        <!--<li class="active">{{theme_name}}</li>-->
+                    <!--</ol>-->
+                <!--</div>-->
+
+                <!--<div class="col-md-2 col-sm-4 col-xs-12">-->
+                    <!--<button ng-click="openAside()" style="width: 100%;"  class="btn login-button breadcrumb" >-->
+                        <!--Influencers&nbsp;-->
+                        <!--<span class="glyphicon glyphicon-option-vertical"></span>-->
+                    <!--</button>-->
+                    <!---->
+                <!--</div>-->
+
+                <div class="col-md-8 " style="padding-right:0;">
                     <ol class="breadcrumb">
                         <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                         <li class="active">{{theme_name}}</li>
                     </ol>
                 </div>
 
-                <div class="col-md-2 col-sm-4 col-xs-12">
-                    <!--<div class="open-influencers pointer" ng-click="openAside()">-->
-                        <!--<img ng-repeat="data in influencers | limitTo:3 track by $index"  class="img-circle pull-left" ng-src="{$ data.img_url $}" >-->
-                    <!--</div>-->
-
-                    <button ng-click="openAside()" style="width: 100%;"  class="btn login-button breadcrumb" >
-                        Influencers&nbsp;
-                        <span class="glyphicon glyphicon-option-vertical"></span>
-                    </button>
-
+                <div class="col-md-4">
+                    <img src="" alt=""  >
+                    <img class="img-circle" ng-src="{$ data.img_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                 </div>
 
             </div>
