@@ -15,7 +15,7 @@ def error():
 def bad_request(error_message):
     return JsonResponse({'message': 'Bad request', 'message':error_message}, status=400)
 
-def success(status, success_message, data):
+def success(status, success_message, data={}):
     return JsonResponse({'status': status,
                          'result': data,
                          'message': success_message}, status=200)

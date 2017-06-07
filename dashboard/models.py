@@ -109,10 +109,17 @@ class Profile(models.Model):
 
 class Invitation(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
-    email = models.EmailField(max_length=254, verbose_name='email address')
-    first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
-    last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+
+    sender_email = models.EmailField(max_length=254, verbose_name='email address')
+    sender_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    sender_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+
+    receiver_email = models.EmailField(max_length=254, verbose_name='email address')
+    receiver_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    receiver_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+
     sender_verified = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
