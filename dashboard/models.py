@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from datetime import datetime as dt
+from utils.hasher import HashHelper
 import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
@@ -108,31 +109,50 @@ class Profile(models.Model):
 
 
 class Invitation(models.Model):
-    profile = models.OneToOneField(Profile, null=False, blank=False)
-    email = models.EmailField(max_length=254, verbose_name='email address')
-    first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
-    last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+
+    sender_email = models.EmailField(max_length=254, verbose_name='sender email address')
+    sender_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    sender_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+
+    receiver_email = models.EmailField(max_length=254, verbose_name='receiver email address')
+    receiver_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    receiver_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+
+    sender_verified = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, email, first_name, last_name):
+    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name, receiver_last_name, sender_verified=True):
         try:
-            Invitation.objects.get(email=email)
+            Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
             raise UserAlreadyInvited
         except Invitation.DoesNotExist:
             pass
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email=receiver_email)
             raise EmailAlreadyUsed
         except User.DoesNotExist:
             pass
+
         try:
+            # ToDo Profile could be null
             profile = Profile.objects.get(user=user)
-            invitation = cls(profile=profile, email=email, first_name=first_name, last_name=last_name)
-            invitation.save()
-            return invitation
         except Profile.DoesNotExist:
-            raise Exception
+            profile = None
+            pass
+
+        invitation = cls(profile=profile,
+                         sender_email=HashHelper.md5_hash(sender_email),
+                         sender_first_name=HashHelper.md5_hash(sender_first_name),
+                         sender_last_name=HashHelper.md5_hash(sender_last_name),
+                         receiver_first_name=HashHelper.md5_hash(receiver_first_name),
+                         receiver_last_name=HashHelper.md5_hash(receiver_last_name),
+                         receiver_email=HashHelper.md5_hash(receiver_email),
+                         sender_verified=sender_verified)
+        invitation.save()
+        return invitation
 
 
 class Feedback(models.Model):

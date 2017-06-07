@@ -2,7 +2,7 @@
 {% block container %}
     <div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
         <div class="row">
-            <div class="col-lg-12 "  >
+            <div class="col-lg-12 influencers-breadcrumb"  >
 
                 <!--<div class="col-md-10 col-sm-8 col-xs-12" style="padding-right:0;">-->
                     <!--<ol class="breadcrumb">-->
@@ -20,35 +20,83 @@
                 <!--</div>-->
 
                 <div class="col-md-8 " style="padding-right:0;">
+
                     <ol class="breadcrumb">
                         <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                         <li class="active">{{theme_name}}</li>
                     </ol>
                 </div>
 
-                <div class="col-md-4">
-                    <img src="" alt=""  >
-                    <img class="img-circle" ng-src="{$ data.img_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                <div class="col-md-4 col-sm-4 col-xs-12 open-influencers" ng-click="openAside()">
+                    <span class="pull-right" style="white-space: nowrap;">&nbsp;&nbsp;<i class="glyphicon glyphicon-chevron-right"></i></span>
+                    <img
+                            ng-repeat="data in influencers | limitTo:3 track by $index"
+                            class="img-circle pull-right" ng-src="{$ data.img_url $}"
+                    >
+                    <span class="pull-right" style="white-space: nowrap;"><p>Top 20 Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></span>
+
+
+
+
+                    <!--<button ng-click="openAside()" style="width: 100%;height: 39px;"  class="btn login-button breadcrumb" >-->
+                        <!--Influencers&nbsp;-->
+                        <!--<span class="glyphicon glyphicon-option-vertical"></span>-->
+                    <!--</button>-->
+
                 </div>
 
             </div>
 
+            <style>
+
+                /* Theme selector style */
+                .theme-name .dropdown-menu {
+                    border-color:#db4348 ;
+                    left: 50%;
+                    right: auto;
+                    text-align: center;
+                    transform: translate(-50%, 0);
+                }
+                .theme-name .dropdown-menu * { color:#db4348 }
+                .theme-name button[data-toggle="dropdown"]:focus { outline:none; }
+
+
+                /* Open influencers style */
+
+                .influencers-breadcrumb .breadcrumb { border-top-right-radius: 0; border-bottom-right-radius:0; }
+                .influencers-breadcrumb .open-influencers { border-top-right-radius: 4px; border-bottom-right-radius:4px; }
+
+                .open-influencers { background-color:#db4348; color:#fff;
+                    cursor: pointer;}
+                .open-influencers img:not(:first-child) { margin-left:-8px; }
+                .open-influencers img { border:solid 2px #db4348; }
+                /**/
+
+            </style>
+
             <script>
 
-                jQuery('document').ready(function ($) {
-//
-                    let css = {
-                        "height" : $('.breadcrumb').height()+'px',
-                        "max-height": $('.breadcrumb').height()+'px',
-                        "padding-top": $('.breadcrumb').css('padding-top'),
-                        "padding-bottom": $('.breadcrumb').css('padding-bottom')
+
+
+
+                jQuery('document').ready( function ($) {
+
+                    var css = {
+                        "height" : $('.breadcrumb').height(),
+                        "max-height": $('.breadcrumb').height(),
+                        "paddingtop": ( parseInt( $('.breadcrumb').css('padding-top')) / 2 ),
+                        "paddingbottom": ( parseInt( $('.breadcrumb').css('padding-bottom')) / 2 ),
                     }
-//
-//                    console.log('css', css);
 
-                    $('.open-influencers .breadcrumb').css( css )
-//                    $('.open-influencers img').css( { "width:" : $('.open-influencers').height()+'px'})
+                    var img_heigt = css.height + css.paddingbottom+ css.paddingtop
 
+                    $('.open-influencers').css( { 'padding-top' : css.paddingtop+'px', 'padding-bottom' : css.paddingbottom+'px'  } )
+                    $('.open-influencers > span').css( { 'height' : img_heigt+'px', 'line-height' : img_heigt+'px' } )
+
+
+                    $('body').on('DOMNodeInserted', '.open-influencers', function (e) {
+                        $(e.target).css( { 'height' : img_heigt+'px' } )
+                    })
                 })
 
             </script>
@@ -61,23 +109,6 @@
             <!--</div>-->
         </div>
 
-        <style>
-            .theme-name .dropdown-menu {
-                border-color:#db4348 ;
-                left: 50%;
-                right: auto;
-                text-align: center;
-                transform: translate(-50%, 0);
-            }
-            .theme-name .dropdown-menu * { color:#db4348 }
-            .theme-name button[data-toggle="dropdown"]:focus { outline:none; }
-            /*.theme-name button[data-toggle="dropdown"] { background:#db4348 }*/
-            /*.theme-name button[data-toggle="dropdown"]  * { color:#fff; }*/
-
-            .open-influencers img:not(:first-child) { margin-left:-20px; }
-            .open-influencers img { border:solid 3px #db4348; }
-
-        </style>
         <div class="row margin-bottom-50">
             <div class="col-md-12 text-center theme-name">
                 <span class="text-red">
@@ -167,7 +198,7 @@
                                     <h5 ng-if="!feed.title" >No Title provided </h5>
                                 </div>
                                 <div class="card-action">
-                                    <p ng-if="feed.description">{$ feed.description | limitTo: 100 $} {$ feed.description.length > 100 ? '...' : '' $}</p>
+                                    <p ng-if="feed.description">{$ feed.description | limitTo: 50 $} {$ feed.description.length > 50 ? '...' : '' $}</p>
                                     <p ng-if="!feed.description">No Description provided </p>
                                 </div>
                             </a>

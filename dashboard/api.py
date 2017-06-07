@@ -1,10 +1,15 @@
 from django.http import *
 from django.contrib.sites.shortcuts import get_current_site
+from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
 from crmconnector.capsule import CRMConnector
-from .models import Profile
+from .models import Profile, Invitation, User
+from utils.hasher import HashHelper
+from utils.mailer import EmailHelper
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
+from utils.api import *
 
 
 def request_membership(request, email):
@@ -94,3 +99,88 @@ def get_influencers(request, theme_name):
 
     return JsonResponse({'status': 'ok',
                          'result': influencers}, status=200)
+
+@csrf_exempt
+def post_om_invitation(request):
+    if request.method != 'POST':
+        return not_authorized()
+
+    try:
+        sender_first_name = request.POST['sender_first_name']
+        sender_last_name = request.POST['sender_last_name']
+        sender_email = request.POST['sender_email']
+        receiver_first_name = request.POST['receiver_first_name']
+        receiver_last_name = request.POST['receiver_last_name']
+        receiver_email = request.POST['receiver_email']
+
+    except KeyError:
+        return bad_request("Please fill al the fields")
+
+    # check if sender is already a dsp user (profile)
+        # yes --> tell him to do the invitation from the dsp platform
+        # no --> check if the receiver is not invited yet or if it's already a dsp user
+            # already dsp user message
+            # already invited --> tell sender that the receiver has been already invited
+            # not already invited --> send to the sender a verification email
+
+    # sender already a DSP user?
+    try:
+        User.objects.get(email=sender_email)
+        return success("error", "You are already a DSP member, make the invitation using the DSP platform")
+    except User.DoesNotExist:
+        pass
+
+    # receiver already a DSP user?
+    try:
+        User.objects.get(email=receiver_email)
+        return success("error", "You are trying to invite an already DSP member")
+    except User.DoesNotExist:
+        pass
+
+    # receiver already invited?
+    try:
+        Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+        return success("error", "You are trying to invite an already invited user")
+    except Invitation.DoesNotExist:
+        pass
+
+    # send verification mail and create a invitation entry with profile None and sender_verification to False
+    invitation = model_to_dict(Invitation.create(user=None,
+                                   sender_email=sender_email,
+                                   sender_first_name=sender_first_name,
+                                   sender_last_name=sender_last_name,
+                                   receiver_first_name=receiver_first_name,
+                                   receiver_last_name=receiver_last_name,
+                                   receiver_email=receiver_email,
+                                   sender_verified=False
+                                   ))
+
+    activation_link = 'http://localhost:8000/om_confirmation/{}/{}/{}/{}/{}/{}'.format(sender_first_name.encode('base64'),
+                                                                                                sender_last_name.encode('base64'),
+                                                                                                sender_email.encode('base64'),
+                                                                                                receiver_first_name.encode('base64'),
+                                                                                                receiver_last_name.encode('base64'),
+                                                                                                receiver_email.encode('base64'))
+
+    subject = 'OpenMaker Nomination.. almost done!'
+    content = '''
+Hi <strong>{}</strong>,<br>
+we truly appreciate your contribution to the growth of the <strong>OpenMaker community</strong>.<br><br>
+Please, click <strong><a href="{}">HERE</a></strong> to verify your e-mail and confirm your nomination.<br>
+If you wish to get more information on the OpenMaker chain of nomination and on the community,<br>
+contact us at: info@openmaker.eu<br><br>
+
+If you have received this email by mistake please ignore it.<br><br>
+
+Regards,<br>
+OpenMaker Team.
+'''.format(sender_first_name, activation_link)
+
+    EmailHelper.send_email(
+        message=content,
+        subject=subject,
+        receiver_email=sender_email,
+        receiver_name=''
+    )
+
+    return success("ok","Pending invitation added", invitation)
