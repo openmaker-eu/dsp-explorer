@@ -111,11 +111,11 @@ class Profile(models.Model):
 class Invitation(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
 
-    sender_email = models.EmailField(max_length=254, verbose_name='email address')
+    sender_email = models.EmailField(max_length=254, verbose_name='sender email address')
     sender_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
     sender_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
 
-    receiver_email = models.EmailField(max_length=254, verbose_name='email address')
+    receiver_email = models.EmailField(max_length=254, verbose_name='receiver email address')
     receiver_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
     receiver_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
 
@@ -124,9 +124,9 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name, receiver_last_name, sender_verified):
+    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name, receiver_last_name, sender_verified=True):
         try:
-            Invitation.objects.get(email=HashHelper.md5_hash(receiver_email))
+            Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
             raise UserAlreadyInvited
         except Invitation.DoesNotExist:
             pass
@@ -139,17 +139,20 @@ class Invitation(models.Model):
         try:
             # ToDo Profile could be null
             profile = Profile.objects.get(user=user)
+            print "#####"
+            print "i HAVE A DREAM"
+            print "#####"
         except Profile.DoesNotExist:
             profile = None
             pass
 
         invitation = cls(profile=profile,
-                         sender_email=sender_email,
-                         sender_first_name=sender_first_name,
-                         sender_last_name=sender_last_name,
-                         receiver_first_name=receiver_first_name,
-                         receiver_last_name=receiver_last_name,
-                         receiver_email=receiver_email,
+                         sender_email=HashHelper.md5_hash(sender_email),
+                         sender_first_name=HashHelper.md5_hash(sender_first_name),
+                         sender_last_name=HashHelper.md5_hash(sender_last_name),
+                         receiver_first_name=HashHelper.md5_hash(receiver_first_name),
+                         receiver_last_name=HashHelper.md5_hash(receiver_last_name),
+                         receiver_email=HashHelper.md5_hash(receiver_email),
                          sender_verified=sender_verified)
         invitation.save()
         return invitation
