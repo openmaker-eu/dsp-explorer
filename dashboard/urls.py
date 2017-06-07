@@ -50,6 +50,6 @@ urlpatterns = [
 
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
 
-    url(r'^api/v1.1/om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/(?P<receiver_first_name>.+)/(?P<receiver_second_name>.+)/(?P<receiver_email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', api.post_om_confirmation, name='post_om_confirmation')
+    url(r'^api/v1.1/om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', api.get_om_confirmation, name='get_om_confirmation')
 ]
 

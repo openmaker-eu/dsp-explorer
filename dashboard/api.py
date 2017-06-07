@@ -155,19 +155,26 @@ def post_om_invitation(request):
                                    sender_verified=False
                                    ))
 
+    activation_link = 'http://localhost:8000/api/v1.1/om_confirmation/{}/{}/{}/{}/{}/{}'.format(sender_first_name.encode('base64'),
+                                                                                                sender_last_name.encode('base64'),
+                                                                                                sender_email.encode('base64'),
+                                                                                                receiver_first_name.encode('base64'),
+                                                                                                receiver_last_name.encode('base64'),
+                                                                                                receiver_email.encode('base64'))
+
     subject = 'OpenMaker Nomination.. almost done!'
     content = '''
-                Hi {},
-                we truly appreciate your contribution to the growth of the OpenMaker community.
-                Please, click here to verify your e-mail and confirm your nomination.
-                If you wish to get more information on the OpenMaker chain of nomination and on the community, 
-                contact us at: info@openmaker.eu
-                
-                If you have received this email by mistake please ignore it.
-                
-                Regards, 
-                OpenMaker Team
-                '''.format(sender_first_name)
+Hi {},
+we truly appreciate your contribution to the growth of the OpenMaker community.
+Please, click HERE {} to verify your e-mail and confirm your nomination.
+If you wish to get more information on the OpenMaker chain of nomination and on the community, 
+contact us at: info@openmaker.eu
+
+If you have received this email by mistake please ignore it.
+
+Regards, 
+OpenMaker Team
+'''.format(sender_first_name, activation_link)
 
     EmailHelper.send_email(
         message=content,
@@ -178,6 +185,8 @@ def post_om_invitation(request):
 
     return success("ok","Pending invitation added", invitation)
 
-def post_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
+def get_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
+    print sender_first_name.decode('base64')
+
     return JsonResponse({'status': 'ok',
                          'result': 'puppa2'}, status=200)
