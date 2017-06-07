@@ -139,9 +139,6 @@ class Invitation(models.Model):
         try:
             # ToDo Profile could be null
             profile = Profile.objects.get(user=user)
-            print "#####"
-            print "i HAVE A DREAM"
-            print "#####"
         except Profile.DoesNotExist:
             profile = None
             pass

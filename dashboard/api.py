@@ -2,7 +2,7 @@ from django.http import *
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from crmconnector.capsule import CRMConnector
-from .models import Profile, Invitation
+from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
@@ -123,26 +123,24 @@ def post_om_invitation(request):
 
     # sender already a DSP user?
     try:
-        Profile.objects.get(email=sender_email)
+        User.objects.get(email=sender_email)
         return success("error", "You are already a DSP member, make the invitation using the DSP platform")
-    except Profile.DoesNotExist:
+    except User.DoesNotExist:
         pass
 
     # receiver already a DSP user?
     try:
-        Profile.objects.get(email=receiver_email)
+        User.objects.get(email=receiver_email)
         return success("error", "You are trying to invite an already DSP member")
-    except Profile.DoesNotExist:
+    except User.DoesNotExist:
         pass
 
     # receiver already invited?
     try:
-        Invitation.objects.get(email=HashHelper.md5_hash(receiver_email))
+        Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
         return success("error", "You are trying to invite an already invited user")
     except Invitation.DoesNotExist:
         pass
-
-
 
     return success("ok","Ok", {})
 
