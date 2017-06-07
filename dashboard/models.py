@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from datetime import datetime as dt
+from utils.hasher import HashHelper
 import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
@@ -123,24 +124,35 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, email, first_name, last_name):
+    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name, receiver_last_name, sender_verified):
         try:
-            Invitation.objects.get(email=email)
+            Invitation.objects.get(email=HashHelper.md5_hash(receiver_email))
             raise UserAlreadyInvited
         except Invitation.DoesNotExist:
             pass
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email=receiver_email)
             raise EmailAlreadyUsed
         except User.DoesNotExist:
             pass
+
         try:
+            # ToDo Profile could be null
             profile = Profile.objects.get(user=user)
-            invitation = cls(profile=profile, email=email, first_name=first_name, last_name=last_name)
-            invitation.save()
-            return invitation
         except Profile.DoesNotExist:
-            raise Exception('Profile does not exist')
+            profile = None
+            pass
+
+        invitation = cls(profile=profile,
+                         sender_email=sender_email,
+                         sender_first_name=sender_first_name,
+                         sender_last_name=sender_last_name,
+                         receiver_first_name=receiver_first_name,
+                         receiver_last_name=receiver_last_name,
+                         receiver_email=receiver_email,
+                         sender_verified=sender_verified)
+        invitation.save()
+        return invitation
 
 
 class Feedback(models.Model):
