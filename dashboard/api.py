@@ -1,9 +1,11 @@
 from django.http import *
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
 from crmconnector.capsule import CRMConnector
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
+from utils.mailer import EmailHelper
 from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
@@ -142,7 +144,39 @@ def post_om_invitation(request):
     except Invitation.DoesNotExist:
         pass
 
-    return success("ok","Ok", {})
+    # send verification mail and create a invitation entry with profile None and sender_verification to False
+    invitation = model_to_dict(Invitation.create(user=None,
+                                   sender_email=sender_email,
+                                   sender_first_name=sender_first_name,
+                                   sender_last_name=sender_last_name,
+                                   receiver_first_name=receiver_first_name,
+                                   receiver_last_name=receiver_last_name,
+                                   receiver_email=receiver_email,
+                                   sender_verified=False
+                                   ))
+
+    subject = 'OpenMaker Nomination.. almost done!'
+    content = '''
+                Hi {},
+                we truly appreciate your contribution to the growth of the OpenMaker community.
+                Please, click here to verify your e-mail and confirm your nomination.
+                If you wish to get more information on the OpenMaker chain of nomination and on the community, 
+                contact us at: info@openmaker.eu
+                
+                If you have received this email by mistake please ignore it.
+                
+                Regards, 
+                OpenMaker Team
+                '''.format(sender_first_name)
+
+    EmailHelper.send_email(
+        message=content,
+        subject=subject,
+        receiver_email=sender_email,
+        receiver_name=''
+    )
+
+    return success("ok","Pending invitation added", invitation)
 
 def post_om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
     return JsonResponse({'status': 'ok',

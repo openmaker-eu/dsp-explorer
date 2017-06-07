@@ -79,7 +79,8 @@ def invite(request):
                                            sender_last_name=request.user.last_name,
                                            receiver_first_name=first_name,
                                            receiver_last_name=last_name,
-                                           receiver_email=address
+                                           receiver_email=address,
+
                                            )
             subject = 'INVITATION To OpenMake Digital Social Platform'
             content = '''
