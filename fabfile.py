@@ -63,6 +63,9 @@ def deploy_branch(branch):
     with cd('/var/www/dsp-explorer'):
         run('git checkout %s' % branch)
         run('git pull')
+        run('source env/bin/activate')
+        run('fab install')
+        run('fab migrate')
         run('npm run prod')
         run('fab install_static')
         run('service apache2 reload')
