@@ -69,6 +69,20 @@ def invite(request):
             messages.error(request, 'Please all the fields are required!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
 
+        try:
+            User.objects.get(email=address)
+            messages.error(request, 'User is already a DSP member!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except User.DoesNotExist:
+            pass
+
+        try:
+            Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
+            messages.error(request, 'User is been already invited!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except Invitation.DoesNotExist:
+            pass
+
         # email not present, filling invitation model
         try:
 
@@ -81,12 +95,23 @@ def invite(request):
                                            receiver_email=address,
 
                                            )
-            subject = 'INVITATION To OpenMake Digital Social Platform'
+            subject = 'You are invited to join the OpenMaker community!'
             # TODO FIX MESSAGGIO + CONTROLLI AGGIUNTI
             content = '''
-                Hello {}!
-                Our member {} invited you to the DSP bla bla bla..
-                '''.format(address, invitation.profile.user.get_full_name())
+            Hi <strong>{} {}</strong>,
+            you have been nominated by <strong>{} {}</strong> as an influencer in the current 4th Industrial Revolution.<br><br>
+
+            We are building a community of people eager to drive radical change in our society, making the most of talent, knowledge and capacity to reshape production according to democratic, inclusivity and sustainability principles.<br>
+            We believe in innovation centered on people, and in technology as an enabler of empowered creativity and action for individuals.<br><br>
+
+            We are confident in the ability of open collaboration to tackle complex societal challenges, and we push for a systemic revolution in manufacturing which is  locally focused but globally connected, micro yet massive.<br>  
+            We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.<br><br>
+
+            Click <strong><a href="http://openmaker.eu/">HERE</a></strong> to discover more or subscribe to the NL to get the latest news from the community<br><br>
+            Regards,<br>
+            OpenMaker Team.
+                                    '''.format(invitation.receiver_first_name, invitation.receiver_last_name, invitation.sender_first_name,
+                                               invitation.sender_last_name)
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -163,13 +188,13 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
 
             subject = 'OpenMaker Nomination done!'
             # TODO Fix HERE LINK
+            # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
             content = '''
 Hi {},<br><br>
 nomination Confirmed!<br><br>
 The nominated person is about to receive an invitation to join the OpenMaker Community!<br><br>
 
-Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
-If you are curious about OpenMaker, check our Website and subscribe to our Newsletter to receive the latest updates from the community! <br>
+If you are curious about OpenMaker, check our <strong><a href="http://openmaker.eu/">Website</a></strong> and subscribe to our Newsletter to receive the latest updates from the community! <br>
 
 Regards, 
 OpenMaker Team
