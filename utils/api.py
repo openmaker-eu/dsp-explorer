@@ -12,8 +12,10 @@ def not_found():
 def error():
     return JsonResponse({'status': 'error','message': 'Internal Server Error'}, status=500)
 
+
 def bad_request(error_message):
-    return JsonResponse({'message': 'Bad request', 'message':error_message}, status=400)
+    return JsonResponse({'message': 'Bad request', 'message': error_message}, status=400)
+
 
 def success(status, success_message, data={}):
     return JsonResponse({'status': status,

@@ -1,5 +1,6 @@
 import hashlib
 
+
 class HashHelper(object):
     @staticmethod
     def md5_hash(string):

@@ -13,7 +13,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
     # CRM Data
-    picture_url = models.TextField(_('picture URL'), max_length=500, null=True, blank=True)
+    picture_url = models.TextField(_('Picture URL'), max_length=500, null=True, blank=True)
     
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -111,20 +111,21 @@ class Profile(models.Model):
 class Invitation(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
 
-    sender_email = models.EmailField(max_length=254, verbose_name='sender email address')
-    sender_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
-    sender_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    sender_email = models.EmailField(_('Sender email address'), max_length=254)
+    sender_first_name = models.TextField(_('Sender first name'), max_length=200, null=False, blank=False, default='--')
+    sender_last_name = models.TextField(_('Sender last name'), max_length=200, null=False, blank=False, default='--')
 
-    receiver_email = models.EmailField(max_length=254, verbose_name='receiver email address')
-    receiver_first_name = models.TextField(max_length=200, null=False, blank=False, default='--')
-    receiver_last_name = models.TextField(max_length=200, null=False, blank=False, default='--')
+    receiver_email = models.EmailField(_('Receiver email address'), max_length=254)
+    receiver_first_name = models.TextField(_('Receiver first name'), max_length=200, null=False, blank=False, default='--')
+    receiver_last_name = models.TextField(_('Receiver last name'), max_length=200, null=False, blank=False, default='--')
 
     sender_verified = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name, receiver_last_name, sender_verified=True):
+    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name,
+               receiver_last_name, sender_verified=True):
         try:
             Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
             raise UserAlreadyInvited
@@ -157,8 +158,8 @@ class Invitation(models.Model):
 
 class Feedback(models.Model):
     user = models.ForeignKey(User)
-    title = models.CharField(max_length=100)
-    message_text = models.TextField(max_length=500)
+    title = models.CharField(_('Title'), max_length=100)
+    message_text = models.TextField(_('Message'), max_length=500)
     created_at = models.DateTimeField(default=dt.now)
 
     class Meta:

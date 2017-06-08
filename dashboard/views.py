@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.forms.models import model_to_dict
+from django.contrib.sites.shortcuts import get_current_site
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
@@ -10,8 +10,6 @@ from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
-
-import traceback
 
 
 @login_required()
@@ -84,10 +82,11 @@ def invite(request):
 
                                            )
             subject = 'INVITATION To OpenMake Digital Social Platform'
+            # TODO FIX MESSAGGIO + CONTROLLI AGGIUNTI
             content = '''
                 Hello {}!
                 Our member {} invited you to the DSP bla bla bla..
-                '''.format(invitation.receiver_first_name, invitation.profile.user.get_full_name())
+                '''.format(address, invitation.profile.user.get_full_name())
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -129,7 +128,9 @@ def feedback(request):
             messages.error(request, 'Please all the fields are required!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-def om_confirmation(request,sender_first_name, sender_last_name, sender_email, receiver_first_name, receiver_last_name, receiver_email):
+
+def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
+                    receiver_last_name, receiver_email):
 
     # sender
     sender_first_name = sender_first_name.decode('base64')
@@ -144,37 +145,35 @@ def om_confirmation(request,sender_first_name, sender_last_name, sender_email, r
     try:
         User.objects.get(email=receiver_email)
         messages.error(request, 'User is already a DSP member!')
-        return render(request, 'dashboard/dashboard.html', {})
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
     except User.DoesNotExist:
         pass
 
     try:
-        q = Invitation.objects.filter(sender_email=HashHelper.md5_hash(sender_email),
-                     receiver_email=HashHelper.md5_hash(receiver_email))
-
-        invitation = q[0]
+        invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(sender_email),
+                                            receiver_email=HashHelper.md5_hash(receiver_email))
 
         if invitation.sender_verified:
-            messages.error(request, 'Invitation already sent')
-            return render(request, 'dashboard/login.html', {})
+            messages.error(request, 'Invitation already sent!')
         else:
             # invitation flow start
             invitation.sender_verified = True
             invitation.save()
-            #sending invitation mail
+            # sending invitation mail
 
             subject = 'OpenMaker Nomination done!'
+            # TODO Fix HERE LINK
             content = '''
-Hi {},
-nomination Confirmed!
-The {} {} is about to receive an invitation to join the OpenMaker Community!
+Hi {},<br><br>
+nomination Confirmed!<br><br>
+The nominated person is about to receive an invitation to join the OpenMaker Community!<br><br>
 
-Want to join as well? click here to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!
-If you are curious about OpenMaker, check our Website and subscribe to our Newsletter to receive the latest updates from the community! 
+Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
+If you are curious about OpenMaker, check our Website and subscribe to our Newsletter to receive the latest updates from the community! <br>
 
 Regards, 
 OpenMaker Team
-            '''.format(sender_first_name,receiver_first_name,receiver_last_name)
+            '''.format(sender_first_name)
 
             EmailHelper.send_email(
                 message=content,
@@ -207,8 +206,7 @@ OpenMaker Team.
                 receiver_name=''
             )
             messages.success(request, 'Invitation complete!')
-            return render(request, 'dashboard/login.html', {})
 
     except Invitation.DoesNotExist:
         messages.error(request, 'Invitation does not exist')
-        return render(request, 'dashboard/login.html', {})
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
