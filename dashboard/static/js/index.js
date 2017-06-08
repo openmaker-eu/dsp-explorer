@@ -1,15 +1,8 @@
 window.$ = window.jQuery = require('jquery')
 
 require("bootstrap-sass")
-require("bootstrap-sass/assets/stylesheets/_bootstrap.scss")
-require("../style/dashboard.scss")
-require("../style/card.scss")
-require("../style/material.scss")
-require("angular-toastr/dist/angular-toastr.css")
+require("../style/index.scss")
 require('../../../node_modules/bootstrap-additions/dist/bootstrap-additions.min.css');
-require('../../../node_modules/angular-motion/dist/angular-motion.css');
-require("../../../node_modules/cookieconsent/build/cookieconsent.min.css");
-
 
 import  * as  _  from 'lodash'
 import * as angular from 'angular';
