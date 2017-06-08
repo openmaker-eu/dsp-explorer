@@ -96,7 +96,7 @@ def invite(request):
 
                                            )
             subject = 'You are invited to join the OpenMaker community!'
-            # TODO FIX MESSAGGIO + CONTROLLI AGGIUNTI
+            # ToDo OnBoarding link
             content = '''
             Hi <strong>{} {}</strong>,
             you have been nominated by <strong>{} {}</strong> as an influencer in the current 4th Industrial Revolution.<br><br>
