@@ -17,12 +17,12 @@
 
                 <div class=" open-influencers pull-right">
 
-                    <span class="pull-left" style="white-space: nowrap;"><p>Top 20 Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></span>
+                    <span class="pull-left" style="white-space: nowrap;">View Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <img
-                            ng-repeat="data in influencers | limitTo:3 track by $index"
+                            ng-repeat="data in influencers | limitTo:2 track by $index"
                             class="img-circle pull-left" ng-src="{$ data.img_url $}"
                     >
-                    <span class="pull-left" style="white-space: nowrap;">&nbsp;&nbsp;<i class="glyphicon glyphicon-chevron-right"></i></span>
+                    <!--<span class="pull-left" style="white-space: nowrap;">&nbsp;&nbsp;<i class="glyphicon glyphicon-chevron-right"></i></span>-->
 
                 </div>
 
@@ -44,10 +44,10 @@
                 var img_heigt = css.height + css.paddingbottom+ css.paddingtop
 
                 $('.open-influencers').css( { 'padding-top' : css.paddingtop+'px', 'padding-bottom' : css.paddingbottom+'px'  } )
-                $('.open-influencers > span').css( { 'height' : img_heigt+'px', 'line-height' : img_heigt+'px' } )
+                $('.open-influencers > span').css( { 'height' : img_heigt-2+'px', 'line-height' : img_heigt+'px' } )
 
                 $('body').on('DOMNodeInserted', '.open-influencers', function (e) {
-                    $(e.target).css( { 'height' : img_heigt+'px' } )
+                    $(e.target).css( { 'height' : (img_heigt-2)+'px' } )
                 })
             })
 
@@ -75,17 +75,21 @@
         </div>
     </div>
     <div class="row margin-bottom-25">
-        <div class="col-md-8">
+        <div class="col-md-8 col-md-offset-2">
 
-            <div class="col-md-3 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('yesterday')" type="button" ng-class="filter == 'yesterday' ? 'btn login-button-active':'btn login-button'">Yesterday <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('yesterday')" type="button" ng-class="filter == 'yesterday' ? 'btn login-button-active':'btn login-button'">Yesterday
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'yesterday'"></span></button>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('week')" type="button" ng-class="filter == 'week' ? 'btn login-button-active':'btn login-button'">Week <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('week')" type="button" ng-class="filter == 'week' ? 'btn login-button-active':'btn login-button'">Week
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'week'"></span></button>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('month')" type="button" ng-class="filter == 'month' ? 'btn login-button-active':'btn login-button'">Month <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('month')" type="button" ng-class="filter == 'month' ? 'btn login-button-active':'btn login-button'">Month
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'month'"></span></button>
             </div>
+
         </div>
 
     </div>
