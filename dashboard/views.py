@@ -234,4 +234,4 @@ OpenMaker Team.
 
     except Invitation.DoesNotExist:
         messages.error(request, 'Invitation does not exist')
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    return HttpResponseRedirect('http://openmaker.eu/confirmed/')
