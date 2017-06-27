@@ -1,6 +1,7 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
+from django.http import HttpResponseRedirect
 from crmconnector.capsule import CRMConnector
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
@@ -125,21 +126,24 @@ def post_om_invitation(request):
     # sender already a DSP user?
     try:
         User.objects.get(email=sender_email)
-        return success("error", "You are already a DSP member, make the invitation using the DSP platform")
+        return HttpResponseRedirect('http://openmaker.eu/error_sender/')
+        # return success("error", "You are already a DSP member, make the invitation using the DSP platform")
     except User.DoesNotExist:
         pass
     
     # receiver already a DSP user?
     try:
         User.objects.get(email=receiver_email)
-        return success("error", "You are trying to invite an already DSP member")
+        return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
+        # return success("error", "You are trying to invite an already DSP member")
     except User.DoesNotExist:
         pass
     
     # receiver already invited?
     try:
         Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-        return success("error", "You are trying to invite an already invited user")
+        return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
+        # return success("error", "You are trying to invite an already invited user")
     except Invitation.DoesNotExist:
         pass
     
