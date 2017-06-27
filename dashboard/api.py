@@ -187,5 +187,6 @@ OpenMaker Team.
         receiver_email=sender_email,
         receiver_name=''
     )
-    
-    return success("ok", "Pending invitation added", invitation)
+
+    return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+    # return success("ok", "Pending invitation added", invitation)
