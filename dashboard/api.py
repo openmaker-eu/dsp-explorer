@@ -101,12 +101,17 @@ def post_om_invitation(request):
     if request.method != 'POST':
         return not_authorized()
     try:
+
         sender_first_name = request.POST['sender_first_name']
         sender_last_name = request.POST['sender_last_name']
         sender_email = request.POST['sender_email']
         receiver_first_name = request.POST['receiver_first_name']
         receiver_last_name = request.POST['receiver_last_name']
         receiver_email = request.POST['receiver_email']
+
+        if sender_first_name == '' or  sender_last_name == '' or sender_email == '' or receiver_first_name == '' or receiver_last_name == '' or receiver_email == '':
+            return bad_request("Please fill al the fields")
+
     except KeyError:
         return bad_request("Please fill al the fields")
         
