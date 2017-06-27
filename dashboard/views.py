@@ -207,9 +207,10 @@ OpenMaker Team
                 receiver_name=''
             )
 
-            subject = 'You are invited to join the OpenMaker community!'
-            # ToDo add "Join our community here >> Onboarding" - mail content
+            subject = 'You are invited to join the OpenMaker movement!'
             content = '''
+<center><strong>Join us in making the future together!</strong></center><br><br>
+            
 Hi <strong>{} {}</strong>,
 you have been nominated by <strong>{} {}</strong> as an influencer in the current 4th Industrial Revolution.<br><br>
  
@@ -218,7 +219,8 @@ We believe in innovation centered on people, and in technology as an enabler of 
  
 We are confident in the ability of open collaboration to tackle complex societal challenges, and we push for a systemic revolution in manufacturing which is  locally focused but globally connected, micro yet massive.<br>  
 We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.<br><br>
- 
+
+Join our community <strong><a href="https://survey.tecnalia.com/limesurvey/index.php/554469">HERE</a></strong><br><br> 
 Click <strong><a href="http://openmaker.eu/">HERE</a></strong> to discover more or subscribe to the NL to get the latest news from the community<br><br>
 Regards,<br>
 OpenMaker Team.
