@@ -10,6 +10,7 @@ from .exceptions import EmailAlreadyUsed
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from utils.api import *
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirm
 
 
 def request_membership(request, email):
@@ -115,14 +116,14 @@ def post_om_invitation(request):
 
     except KeyError:
         return bad_request("Please fill al the fields")
-        
+
         # check if sender is already a dsp user (profile)
         # yes --> tell him to do the invitation from the dsp platform
         # no --> check if the receiver is not invited yet or if it's already a dsp user
         # already dsp user message
         # already invited --> tell sender that the receiver has been already invited
         # not already invited --> send to the sender a verification email
-    
+
     # sender already a DSP user?
     try:
         User.objects.get(email=sender_email)
@@ -130,7 +131,7 @@ def post_om_invitation(request):
         # return success("error", "You are already a DSP member, make the invitation using the DSP platform")
     except User.DoesNotExist:
         pass
-    
+
     # receiver already a DSP user?
     try:
         User.objects.get(email=receiver_email)
@@ -138,7 +139,7 @@ def post_om_invitation(request):
         # return success("error", "You are trying to invite an already DSP member")
     except User.DoesNotExist:
         pass
-    
+
     # receiver already invited?
     try:
         Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
@@ -146,7 +147,7 @@ def post_om_invitation(request):
         # return success("error", "You are trying to invite an already invited user")
     except Invitation.DoesNotExist:
         pass
-    
+
     # send verification mail and create a invitation entry with profile None and sender_verification to False
     invitation = model_to_dict(Invitation.create(user=None,
                                                  sender_email=sender_email,
@@ -157,7 +158,7 @@ def post_om_invitation(request):
                                                  receiver_email=receiver_email,
                                                  sender_verified=False
                                                  ))
-    
+
     activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
         get_current_site(request),
         sender_first_name.encode('base64'),
@@ -168,19 +169,11 @@ def post_om_invitation(request):
         receiver_email.encode('base64'))
 
     subject = 'OpenMaker Nomination.. almost done!'
-    content = '''
-Hi <strong>{}</strong>,<br>
-we truly appreciate your contribution to the growth of the <strong>OpenMaker community</strong>.<br><br>
-Please, click <strong><a href="{}">HERE</a></strong> to verify your e-mail and confirm your nomination.<br>
-If you wish to get more information on the OpenMaker chain of nomination and on the community,<br>
-contact us at: info@openmaker.eu<br><br>
+    content = "{}{}{}".format(invitation_base_template_header,
+                        invitation_email_confirm.format(SENDER_NAME=sender_first_name,
+                                                        CONFIRMATION_LINK=activation_link),
+                        invitation_base_template_footer)
 
-If you have received this email by mistake please ignore it.<br><br>
-
-Regards,<br>
-OpenMaker Team.
-'''.format(sender_first_name, activation_link)
-    
     EmailHelper.send_email(
         message=content,
         subject=subject,

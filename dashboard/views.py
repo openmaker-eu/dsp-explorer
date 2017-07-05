@@ -10,6 +10,7 @@ from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver
 
 
 @login_required()
@@ -189,16 +190,10 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             subject = 'OpenMaker Nomination done!'
             # TODO Fix HERE LINK
             # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
-            content = '''
-Hi {},<br><br>
-nomination Confirmed!<br><br>
-The nominated person is about to receive an invitation to join the OpenMaker Community!<br><br>
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_confirmed,
+                                      invitation_base_template_footer)
 
-If you are curious about OpenMaker, check our <strong><a href="http://openmaker.eu/">Website</a></strong> and subscribe to our Newsletter to receive the latest updates from the community! <br>
-
-Regards, 
-OpenMaker Team
-            '''.format(sender_first_name)
 
             EmailHelper.send_email(
                 message=content,
@@ -207,24 +202,13 @@ OpenMaker Team
                 receiver_name=''
             )
 
-            subject = 'You are invited to join the OpenMaker movement!'
-            content = '''
-<center><strong>Join us in making the future together!</strong></center><br><br>
-            
-Hi <strong>{} {}</strong>,
-you have been nominated by <strong>{} {}</strong> as an influencer in the current 4th Industrial Revolution.<br><br>
- 
-We are building a community of people eager to drive radical change in our society, making the most of talent, knowledge and capacity to reshape production according to democratic, inclusivity and sustainability principles.<br>
-We believe in innovation centered on people, and in technology as an enabler of empowered creativity and action for individuals.<br><br>
- 
-We are confident in the ability of open collaboration to tackle complex societal challenges, and we push for a systemic revolution in manufacturing which is  locally focused but globally connected, micro yet massive.<br>  
-We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.<br><br>
-
-Join our community <strong><a href="https://survey.tecnalia.com/limesurvey/index.php/554469">HERE</a></strong><br><br> 
-Click <strong><a href="http://openmaker.eu/">HERE</a></strong> to discover more or subscribe to the NL to get the latest news from the community<br><br>
-Regards,<br>
-OpenMaker Team.
-                        '''.format(receiver_first_name,receiver_last_name,sender_first_name,sender_last_name)
+            subject = 'You are invited to join the OpenMaker community!'
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
+                                                                       RECEIVER_LAST_NAME=receiver_last_name,
+                                                                       SENDER_FIRST_NAME=sender_first_name,
+                                                                       SENDER_LAST_NAME=sender_last_name),
+                                      invitation_base_template_footer)
 
             EmailHelper.send_email(
                 message=content,
