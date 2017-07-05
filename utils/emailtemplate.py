@@ -567,7 +567,7 @@ h4{
 																																							<td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
 																																								
 																																								
-																																								<img align="center" alt="" src="https://gallery.mailchimp.com/51a1d75e512587b6a0c8c1540/images/91933422-9c1d-4f42-8e4b-59040a3c32fd.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+																																								<img align="center" alt="" src="http://openmaker.eu/wp-content/uploads/2017/07/header-OpenMaker-01.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
 																																								
 																																								
 																																							</td>
@@ -646,7 +646,7 @@ invitation_base_template_footer = '''
 																																				<td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
 																																					
 																																					
-																																					<img align="center" alt="" src="https://gallery.mailchimp.com/51a1d75e512587b6a0c8c1540/images/0b5d0d5b-a348-4ad0-9a07-b324a17c46e8.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+																																					<img align="center" alt="" src="http://openmaker.eu/wp-content/uploads/2017/07/footer-OpenMaker-01.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
 																																					
 																																					
 																																				</td>
