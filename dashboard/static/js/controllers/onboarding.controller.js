@@ -39,7 +39,6 @@ export default [ '$scope','$http', function ($scope, $http) {
                     'display':'block',
                     'position': 'absolute'});
             }
-
             reader.readAsDataURL(input.files[0]);
         }
     }

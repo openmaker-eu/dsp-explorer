@@ -63,10 +63,21 @@ def onboarding(request):
     if request.method == 'POST':
         print request.POST['email']
         print request.POST['tags']
+        print request.POST['birthdate']
+        print request.POST['city']
         return render(request, 'dashboard/onboarding.html', {})
+
+    # search locally
+    #       --> if not exist
+    #           --> create tmp user
+    #           --> e-mail confirmation
+    #           --> once confirmed check CRM
+    #           --> if not exist
+    #               --> activate locally and write into CRM
+    #           --> if exist
+    #               --> update CRM infos
+
     return render(request, 'dashboard/onboarding.html', {})
-
-
 
 
 @login_required()
@@ -104,7 +115,6 @@ def invite(request):
                                            receiver_first_name=first_name,
                                            receiver_last_name=last_name,
                                            receiver_email=address,
-
                                            )
             subject = 'You are invited to join the OpenMaker community!'
             # ToDo OnBoarding link

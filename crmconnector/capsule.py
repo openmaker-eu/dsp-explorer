@@ -65,3 +65,5 @@ class CRMConnector(object):
             return party[0]
         except IndexError:
             return None
+
+    # def create user

@@ -44,8 +44,7 @@ urlpatterns = [
     url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', views.om_confirmation, name='om_confirmation'),
 
     # API v1.0
-    url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
-        api.request_membership, name='api_request_membership'),
+    # url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',api.request_membership, name='api_request_membership'),
     url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
     url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members'),
 
