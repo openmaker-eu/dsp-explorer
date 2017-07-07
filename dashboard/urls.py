@@ -25,6 +25,9 @@ urlpatterns = [
     # Invite
     url(r'^invite/$', views.invite, name='invite'),
 
+    # Onboarding
+    url(r'^onboarding/$', views.onboarding, name='onboarding'),
+
     # Privacy
     url(r'^privacy/$', views.privacy, name='privacy'),
 

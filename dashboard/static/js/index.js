@@ -13,9 +13,12 @@ require('angular-sanitize');
 require('angular-animate');
 require('angular-strap');
 require("../../../node_modules/cookieconsent/build/cookieconsent.min");
+require("ui-select")
 require('ng-infinite-scroll')
+require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 
-let app = angular.module('dashboard', ['ui.bootstrap', 'toastr' , 'ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll'])
+
+let app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
@@ -32,6 +35,7 @@ require("../../../static/js/footer/header.footer.behaviour")
 export { app };
 
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
+app.controller('onboardingController', require('./controllers/onboarding.controller').default )
 app.controller('themesController', require('./controllers/themes.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 

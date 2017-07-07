@@ -59,6 +59,16 @@ def privacy(request):
     return render(request, 'dashboard/privacy.html', {})
 
 
+def onboarding(request):
+    if request.method == 'POST':
+        print request.POST['email']
+        print request.POST['tags']
+        return render(request, 'dashboard/onboarding.html', {})
+    return render(request, 'dashboard/onboarding.html', {})
+
+
+
+
 @login_required()
 def invite(request):
     if request.method == 'POST':
