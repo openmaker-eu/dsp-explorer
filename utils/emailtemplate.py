@@ -707,3 +707,13 @@ We are confident in the ability of open collaboration to tackle complex societal
 Click <a href="http://openmaker.eu/" target="_blank">here</a> to discover more.<br>
 Subscribe to the <a href="http://openmaker.eu/" target="_blank">newsletter</a> to get the latest news from the community.</p>
 '''
+
+onboarding_email_template = '''
+<h1>Hi {FIRST_NAME} {LAST_NAME},</h1>
+
+<p>thank you for your interest for the <strong>OpenMaker</strong> community!</p>
+
+<p>Please click <a href="{CONFIRMATION_LINK}">here</a> to verify your e-mail and confirm your registration.</p>
+
+<p>If you are curious about the <strong>OpenMaker</strong> initiative, check out our <a href="http://openmaker.eu/" target="_blank">website</a> and subscribe to our Newsletter to receive the latest updates from the community!</p>
+'''

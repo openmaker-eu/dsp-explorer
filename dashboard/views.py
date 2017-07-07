@@ -10,7 +10,8 @@ from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
-from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver
+from datetime import datetime
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
 
 @login_required()
@@ -61,11 +62,92 @@ def privacy(request):
 
 def onboarding(request):
     if request.method == 'POST':
-        print request.POST['email']
-        print request.POST['tags']
-        print request.POST['birthdate']
-        print request.POST['city']
-        return render(request, 'dashboard/onboarding.html', {})
+        try:
+            # img = request.POST['profile_img'] not required
+            email = request.POST['email']
+            print email
+
+            pasw = request.POST['password']
+            print pasw
+
+            pasw_confirm = request.POST['password_confirm']
+            print pasw_confirm
+
+            first_name = request.POST['first_name']
+            print first_name
+
+            last_name = request.POST['last_name']
+            print last_name
+
+            gender = request.POST['gender']
+            print gender
+
+            birthdate = request.POST['birthdate']
+            print birthdate
+
+            city = request.POST['city']
+            print city
+
+            occupation = request.POST['occupation']
+            print occupation
+
+            tags = request.POST['tags']
+            print tags
+
+            # twitter_username = request.POST['twitter']
+
+        except KeyError:
+            messages.error(request, 'Please fill the required fields!')
+
+        # check password
+        if pasw != pasw_confirm:
+            messages.error(request, 'Password and confirm password must be the same')
+
+        # check birthdate
+        try:
+            date = datetime.strptime(birthdate, '%Y/%m/%d')
+            print date
+        except ValueError:
+            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+
+        try:
+            User.objects.get(email=email)
+            messages.error(request, 'User is already a DSP member!')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except User.DoesNotExist:
+            pass
+
+        # profile create
+        # update profile model
+
+        token = str(profile.reset_token)
+        confirmation_link = '/onboarding/confirmation/{TOKEN}'.format(TOKEN=token)
+
+        # send e-mail
+
+        subject = 'Onboarding... almost done!'
+        content = "{}{}{}".format(invitation_base_template_header,
+                                  onboarding_email_template.format(FIRST_NAME=first_name,
+                                                                   LAST_NAME=last_name,
+                                                                   CONFIRMATION_LINK=confirmation_link,
+                                                                   ),
+                                  invitation_base_template_footer)
+
+        EmailHelper.send_email(
+            message=content,
+            subject=subject,
+            receiver_email=email
+        )
+
+        # and create a user with a connected profile with a inactive flag
+        messages.success(request, 'Confirmation mail sent!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+
+
+
+
+    return render(request, 'dashboard/onboarding.html', {})
 
     # search locally
     #       --> if not exist
@@ -78,6 +160,10 @@ def onboarding(request):
     #               --> update CRM infos
 
     return render(request, 'dashboard/onboarding.html', {})
+
+
+def onboarding_confirmation(request):
+    pass
 
 
 @login_required()

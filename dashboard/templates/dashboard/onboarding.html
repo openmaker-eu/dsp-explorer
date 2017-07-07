@@ -19,43 +19,44 @@
                 <form class="form-group" action="{% url 'dashboard:onboarding' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <div class="col-md-3">
+                    <div class="col-md-4 col-md-offset-4">
                         <div class="profile-image" id="profile-image-div" ng-click="profileImageUpload();">
                             <i class="fa fa-plus" style=""></i>
                             <img src="#" id="profile-image" style="display: none;"/>
                         </div><br />
+                        <p class="text-center"> Profile image</p>
                     </div>
 
-                    <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" style="display: none;"/>
+                    <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img" style="display: none;"/>
 
                     <div class="row">
                         <div class="col-md-12 ">
-                            <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
+                            <input class="form-control" required type="email" name="email" placeholder="E-mail (required)"><br />
                         </div>
                         <div class="col-md-12 ">
-                            <input class="form-control" required type="password" name="password" placeholder="Password"><br />
+                            <input class="form-control" required type="password" minlength="6" name="password" placeholder="Password (required)"><br />
                         </div>
                         <div class="col-md-12 ">
-                            <input class="form-control" required type="password" name="password_confirm" placeholder="Confirm password"><br />
+                            <input class="form-control" required type="password" minlength="6" name="password_confirm" placeholder="Confirm password (required)"><br />
                         </div>
                         <div class="col-md-6">
-                            <input class="form-control" required type="text" name="first_name" placeholder="First name" required><br />
+                            <input class="form-control" required type="text" name="first_name" placeholder="First name (required)" required><br />
                         </div>
                         <div class="col-md-6">
-                            <input class="form-control" required type="text" name="last_name" placeholder="Last name" required><br />
+                            <input class="form-control" required type="text" name="last_name" placeholder="Last name (required)" required><br />
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control">
-                                <option selected="selected" disabled="disabled" name="gender">Gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Not specified</option>
+                            <select class="form-control" name="gender" required>
+                                <option selected="selected" disabled="disabled">Gender (required)</option>
+                                <option value="male" >Male</option>
+                                <option value="female" >Female</option>
+                                <option value="other" >Not specified</option>
                             </select>
-                        </div>
+                        </div><br />
                         <div class="col-md-6">
 {#                            <input placeholder="Birthdate" format="yyyy-MM-dd" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >#}
-                            <p class="input-group">
-                              <input type="text" class="form-control" placeholder="Birthdate"
+                            <p class="input-group" style="margin: 0;">
+                              <input type="text" class="form-control" placeholder="Birthdate (required)"
                                      uib-datepicker-popup="yyyy/MM/dd"
                                      ng-model="birthdate"
                                      name = "birthdate"
@@ -63,7 +64,7 @@
                                      datepicker-options="dateOptions"
                                      ng-required="true"
                                      close-text="Close"
-                                     alt-input-formats="altInputFormats" />
+                                     alt-input-formats="altInputFormats" required/>
                               <span class="input-group-btn">
                                 <button type="button" class="form-control btn btn-default" style="border-radius: 0 4px 4px 0;" ng-click="openDatePopUp()"><i class="glyphicon glyphicon-calendar"></i></button>
                               </span>
@@ -77,23 +78,23 @@
                                    name="city"
                                    id="city"
                                    class="form-control"
-                                   placeholder="Enter city name"><br />
+                                   placeholder="Start typing a city name (required)"><br />
                         </div>
                         <div class="col-md-12">
-                            <input class="form-control" required type="text" name="occupation" placeholder="Occupation" required><br />
+                            <input class="form-control" required type="text" name="occupation" placeholder="Occupation (required)" required><br />
                         </div>
                         <div class="col-md-12" ng-init="tags={}">
-                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag" limit="3">
-                                <ui-select-match placeholder="Up to three keyword">{$ $item $}</ui-select-match>
+                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag (required)" limit="3">
+                                <ui-select-match placeholder="Type a tag and press enter, you can type up to three tags (required)">{$ $item $}</ui-select-match>
                                 <ui-select-choices repeat="tag in tags.sel">
                                 </ui-select-choices>
                             </ui-select><br/>
 
-                            <input type="hidden" name="tags" ng-value="tags.sel"/>
+                            <input type="hidden" name="tags" ng-value="tags.sel" required/>
                         </div>
                         <div class="col-md-12">
                             <!-- ToDo tell them we will use it for following purposes -->
-                            <input class="form-control" required type="text" name="twitter" placeholder="Twitter @username" required><br />
+                            <input class="form-control" type="text" name="twitter" placeholder="Twitter @username"><br />
                         </div>
                         <div class="col-md-12">
                             <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="SignUp">
