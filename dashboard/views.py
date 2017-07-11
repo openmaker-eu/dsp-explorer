@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect
 from form import FeedbackForm
 from datetime import datetime
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
-
+from crmconnector import capsule
 
 @login_required()
 def dashboard(request):
@@ -61,55 +61,48 @@ def privacy(request):
 
 
 def onboarding(request):
+
+    errors = []
+
     if request.method == 'POST':
+
         try:
             # img = request.POST['profile_img'] not required
             email = request.POST['email']
-            print email
-
             pasw = request.POST['password']
-            print pasw
-
             pasw_confirm = request.POST['password_confirm']
-            print pasw_confirm
-
             first_name = request.POST['first_name']
-            print first_name
-
             last_name = request.POST['last_name']
-            print last_name
-
             gender = request.POST['gender']
-            print gender
-
             birthdate = request.POST['birthdate']
-            print birthdate
-
             city = request.POST['city']
-            print city
-
             occupation = request.POST['occupation']
-            print occupation
-
             tags = request.POST['tags']
-            print tags
-
             # twitter_username = request.POST['twitter']
-
         except KeyError:
-            messages.error(request, 'Please fill the required fields!')
-
-        # check password
-        if pasw != pasw_confirm:
-            messages.error(request, 'Password and confirm password must be the same')
+            errors.append('Please fill the required fields!')
 
         # check birthdate
         try:
-            date = datetime.strptime(birthdate, '%Y/%m/%d')
+            date=datetime.strptime(birthdate, '%Y/%m/%d')
+            print birthdate
             print date
+            print date.strftime('%Y/%m/%d')
+            birthdate = str(date.strftime('%Y-%m-%d'))
         except ValueError:
-            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+            errors.append('Incorrect birthdate format: it must be YYYY/MM/DD')
 
+        # check password
+        if pasw != pasw_confirm:
+            errors.append('Password and confirm password must be the same')
+
+        # If form error return to page
+        if len(errors):
+            for error in errors:
+                 messages.error(request, error)
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # Check if user exist
         try:
             User.objects.get(email=email)
             messages.error(request, 'User is already a DSP member!')
@@ -117,14 +110,24 @@ def onboarding(request):
         except User.DoesNotExist:
             pass
 
+        #
+        # @TODO: save image and get url
+        #
+
         # profile create
-        # update profile model
+        try:
+            profile = Profile.create(email, first_name, last_name, "asdasd", pasw, gender, birthdate, city, occupation, tags)
+        except Exception as exc:
+            print 'Error creating profile:'
+            print exc
+            messages.error(request, 'Error creating user')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
 
         token = str(profile.reset_token)
         confirmation_link = '/onboarding/confirmation/{TOKEN}'.format(TOKEN=token)
 
         # send e-mail
-
         subject = 'Onboarding... almost done!'
         content = "{}{}{}".format(invitation_base_template_header,
                                   onboarding_email_template.format(FIRST_NAME=first_name,
@@ -139,12 +142,8 @@ def onboarding(request):
             receiver_email=email
         )
 
-        # and create a user with a connected profile with a inactive flag
         messages.success(request, 'Confirmation mail sent!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
-
-
 
 
     return render(request, 'dashboard/onboarding.html', {})

@@ -66,4 +66,23 @@ class CRMConnector(object):
         except IndexError:
             return None
 
-    # def create user
+    @staticmethod
+    def get_all_parties(paginated=False):
+        pagination = '?page=1&perPage=10' if paginated else ''
+        return CRMConnector._perform_get(settings.CAPSULE_BASE_URL+'/parties'+pagination)
+
+    @staticmethod
+    def search_party(search_string):
+        return CRMConnector._perform_get(settings.CAPSULE_BASE_URL+'/search?q=%s' % search_string)
+
+    @staticmethod
+    def add_party(party):
+        return CRMConnector._perform_post(settings.CAPSULE_BASE_URL+'/parties', party)
+
+    @staticmethod
+    def update_party(party_id, party):
+        return CRMConnector._perform_post(settings.CAPSULE_BASE_URL+'/parties/'+party_id, party)
+
+    @staticmethod
+    def delete_party(party_id):
+        return CRMConnector._perform_delete(settings.CAPSULE_BASE_URL+'/parties/'+party_id)

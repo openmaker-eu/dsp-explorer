@@ -14,7 +14,12 @@ class Profile(models.Model):
     
     # CRM Data
     picture_url = models.TextField(_('Picture URL'), max_length=500, null=True, blank=True)
-    
+    gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
+    city = models.TextField(_('City'), max_length=500, null=True, blank=True)
+    occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
+    tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
+    birthdate = models.DateField(_('Birth Date'), null=True)
+
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
     update_token_at = models.DateTimeField(default=None, null=True, blank=True)
@@ -27,15 +32,24 @@ class Profile(models.Model):
         ordering = ('user',)
     
     @classmethod
-    def create(cls, email, first_name, last_name, picture_url):
+    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None, birthdate=None, city=None, occupation=None, tags=None):
+        password = password if password else User.objects.make_random_password()
+
+        print 'gender='+gender
+        print 'birthdate='+birthdate
+        print 'city='+city
+        print 'occupation='+occupation
+        print 'tags='+tags
+
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             user = User.objects.create_user(username=email,
                                             email=email,
-                                            password=User.objects.make_random_password(),
+                                            password=password,
                                             first_name=first_name,
-                                            last_name=last_name)
+                                            last_name=last_name
+                                            )
             user.is_active = False
             user.save()
         
@@ -44,6 +58,11 @@ class Profile(models.Model):
         except Profile.DoesNotExist:
             profile = cls(user=user)
             profile.picture_url = picture_url
+            profile.gender = gender,
+            profile.birthdate = birthdate,
+            profile.city = city,
+            profile.occupation = occupation,
+            profile.tags = tags
             profile.save()
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()
