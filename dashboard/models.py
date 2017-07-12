@@ -18,7 +18,7 @@ class Profile(models.Model):
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
-    birthdate = models.DateField(_('Birth Date'), null=True)
+    birthdate = models.TextField(_('Birth Date'), blank=True, null=True)
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -32,14 +32,8 @@ class Profile(models.Model):
         ordering = ('user',)
     
     @classmethod
-    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None, birthdate=None, city=None, occupation=None, tags=None):
+    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None, birthdate=None, city=None, occupation=None, tags=None, twitter=None):
         password = password if password else User.objects.make_random_password()
-
-        print 'gender='+gender
-        print 'birthdate='+birthdate
-        print 'city='+city
-        print 'occupation='+occupation
-        print 'tags='+tags
 
         try:
             user = User.objects.get(email=email)
@@ -109,6 +103,14 @@ class Profile(models.Model):
         :return: String
         """
         return str(uuid.uuid4())
+
+    def update_reset_token(self):
+        """
+        Generate a new reset Token
+        :return: String
+        """
+        self.reset_token = (uuid.uuid4())
+        self.save()
 
     @classmethod
     def search_members(cls, search_string):

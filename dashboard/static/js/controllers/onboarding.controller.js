@@ -28,18 +28,31 @@ export default [ '$scope','$http', function ($scope, $http) {
     $scope.previewImage = (input) => {
 
         if (input.files && input.files[0]) {
+            
             var reader = new FileReader();
-
+            
             reader.onload = (e) => {
-                $('#profile-image').attr('src', e.target.result).css( {
-                    'max-width':'150%',
-                    'min-width': '100%',
-                    'min-height':'100%',
-                    'max-height':'150%',
-                    'display':'block',
-                    'position': 'absolute'});
+    
+                let image = $('#profile-image');
+                
+                image.removeAttr('style');
+                
+                image.on('load', ()=>{
+                    
+                    let width = image.get(0).naturalWidth
+                    let height = image.get(0).naturalHeight
+                    
+                    let css = {'display':'block', 'position': 'absolute'}
+                    width > height? css.height = '100%' : css.width = '100%'
+                    image.css(css);
+                    
+                })
+                
+                image.attr('src', e.target.result)
+    
             }
             reader.readAsDataURL(input.files[0]);
+            
         }
     }
 

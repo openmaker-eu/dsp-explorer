@@ -14,6 +14,12 @@ from datetime import datetime
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 from crmconnector import capsule
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
+from django.utils.encoding import smart_bytes
+
+
 @login_required()
 def dashboard(request):
     try:
@@ -67,7 +73,6 @@ def onboarding(request):
     if request.method == 'POST':
 
         try:
-            # img = request.POST['profile_img'] not required
             email = request.POST['email']
             pasw = request.POST['password']
             pasw_confirm = request.POST['password_confirm']
@@ -78,23 +83,41 @@ def onboarding(request):
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
-            # twitter_username = request.POST['twitter']
         except KeyError:
             errors.append('Please fill the required fields!')
+
+        try:
+            twitter_username = request.POST['twitter']
+        except:
+            twitter_username = None
+
+        print 'gender'
+        print gender
 
         # check birthdate
         try:
             date=datetime.strptime(birthdate, '%Y/%m/%d')
             print birthdate
-            print date
-            print date.strftime('%Y/%m/%d')
-            birthdate = str(date.strftime('%Y-%m-%d'))
         except ValueError:
             errors.append('Incorrect birthdate format: it must be YYYY/MM/DD')
 
         # check password
         if pasw != pasw_confirm:
             errors.append('Password and confirm password must be the same')
+
+        # Check image and get url
+        try:
+            file = request.FILES['profile_img']
+            filename, file_extension = os.path.splitext(file.name)
+
+            allowed_extensions = ['.jpg', '.jpeg', '.png']
+            if not (file_extension in allowed_extensions):
+                errors.append('Profile Image is not an image file')
+
+            imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
+            imagepath = '/'+default_storage.save('static/images/user/'+imagename, ContentFile(file.read()))
+        except:
+            imagepath = ''
 
         # If form error return to page
         if len(errors):
@@ -110,13 +133,9 @@ def onboarding(request):
         except User.DoesNotExist:
             pass
 
-        #
-        # @TODO: save image and get url
-        #
-
         # profile create
         try:
-            profile = Profile.create(email, first_name, last_name, "asdasd", pasw, gender, birthdate, city, occupation, tags)
+            profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate, city, occupation, tags)
         except Exception as exc:
             print 'Error creating profile:'
             print exc
@@ -125,7 +144,7 @@ def onboarding(request):
 
 
         token = str(profile.reset_token)
-        confirmation_link = '/onboarding/confirmation/{TOKEN}'.format(TOKEN=token)
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=token))
 
         # send e-mail
         subject = 'Onboarding... almost done!'
@@ -161,8 +180,85 @@ def onboarding(request):
     return render(request, 'dashboard/onboarding.html', {})
 
 
-def onboarding_confirmation(request):
-    pass
+def onboarding_confirmation(request, token):
+
+    # http://localhost:8000/onboarding/confirmation/2cf43830-e1d1-4157-b393-8dd754b138f6
+    print '--------------------------------'
+    print capsule.CRMConnector.get_all_parties().json()['parties'][1]
+    print '--------------------------------'
+
+    # Check for token
+    try:
+        profile = Profile.objects.get(reset_token=token)
+    except:
+        messages.error(request, 'Token expired')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    # Activate user
+    try:
+        profile.user.is_active = 1
+        profile.user.save()
+    except:
+        messages.error(request, 'Some error creating user')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    #Check for user on Capsupe CRM
+    try:
+        # Find if user aleready exists on Capsule CRM
+        user_id = capsule.CRMConnector.search_party(profile.user.email).json()['results']['party'][0]['id']
+        return
+        # User update on Capsule CRM
+        # update_user = capsule.CRMConnector.update_party(user_id , {'party': {
+        #         'about': 'Hello my name is Alex, i\'m just testing the API',
+        #         'emailAddresses': [{'address': profile.user.email}],
+        #         'type': 'person',
+        #         'firstName': profile.user.first_name,
+        #         'lastName': profile.user.last_name
+        #    }
+        # })
+
+    except:
+        # User creation to Capsule CRM
+        party = {'party': {
+            'about': 'Hello my name is Topix, this is a test',
+            'emailAddresses': [{'address': 'massimo.santoli@top-ix.org'}],
+            'type': 'person',
+            'firstName': 'Massimo',
+            'lastName': 'Santoli'
+        }}
+        newuser = capsule.CRMConnector.add_party(party)
+
+        # newuser = capsule.CRMConnector.add_party({'party': {
+        #         'about': 'Hello my name is Alex, i\'m just testing the API',
+        #         'emailAddresses': [{'address': profile.user.email}],
+        #         'type': 'person',
+        #         'firstName': profile.user.first_name,
+        #         'lastName': profile.user.last_name
+        #    }
+        # })
+
+
+    # {u'message': u'Invalid JSON format'}
+    # print 'RESPONSE'
+    # print 'Headers : '
+    # print newuser.headers
+    # print 'Code : '
+    # print newuser.status_code
+    # print 'Body :'
+    # print +newuser.json()
+    # print '------------------'
+
+    # return
+
+    # Return to dashboard
+
+    #
+    # @TODO: uncomment this line
+    #
+    profile.update_reset_token()
+
+    messages.success(request, 'Your account is now active. Please login with your credetials')
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
 @login_required()

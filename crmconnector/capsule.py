@@ -77,6 +77,8 @@ class CRMConnector(object):
 
     @staticmethod
     def add_party(party):
+        print 'party creation:  '+settings.CAPSULE_BASE_URL+'/parties'
+        print party
         return CRMConnector._perform_post(settings.CAPSULE_BASE_URL+'/parties', party)
 
     @staticmethod
