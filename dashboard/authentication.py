@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.sites.shortcuts import get_current_site
 import datetime as dt
 from utils.mailer import EmailHelper
-from .models import Profile, User
+from .models import Profile, User, Invitation
 
 from crmconnector import capsule
 
@@ -17,11 +17,11 @@ import os
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
+from utils.hasher import HashHelper
 
-from utils.emailtemplate import \
-    invitation_base_template_header, \
-    invitation_base_template_footer, \
-    onboarding_email_template
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
+    invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+
 
 
 def logout_page(request):
@@ -62,7 +62,12 @@ def recover_pwd(request):
         username = request.POST['email']
         try:
             profile = Profile.get_by_email(username)
-            # @TODO: check if user is acvtive
+
+            # Check if user is active
+            if not profile.user.is_active:
+                messages.error(request, 'Your user is not yet active, '
+                               'please complete the activation process before requesting a new password')
+                return HttpResponseRedirect(reverse('dashboard:login'))
 
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
@@ -113,7 +118,12 @@ def reset_pwd(request, reset_token):
             messages.warning(request, 'Attention, Please insert at least 8 characters!')
             return HttpResponseRedirect(reverse('dashboard:reset_pwd', kwargs={'reset_token': reset_token}))
 
-        # @TODO: check if user is acvtive
+        # Check if user is active
+        if not profile.user.is_active:
+            messages.error(request, 'Your user is not yet active, '
+                           'please complete the activation process before requesting a new password')
+            return HttpResponseRedirect(reverse('dashboard:login'))
+
         profile.user.set_password(password)
         profile.user.is_active = True
         profile.user.save()
@@ -213,7 +223,6 @@ def onboarding(request):
     return render(request, 'dashboard/onboarding.html', {})
 
 
-
 def onboarding_confirmation(request, token):
     # Check for token
     try:
@@ -261,3 +270,71 @@ def onboarding_confirmation(request, token):
     profile.update_reset_token()
     messages.success(request, 'Your account is now active. Please login with your credentials!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+
+def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
+                    receiver_last_name, receiver_email):
+
+    # sender
+    sender_first_name = sender_first_name.decode('base64')
+    sender_last_name = sender_last_name.decode('base64')
+    sender_email = sender_email.decode('base64')
+
+    # receiver
+    receiver_first_name = receiver_first_name.decode('base64')
+    receiver_last_name = receiver_last_name.decode('base64')
+    receiver_email = receiver_email.decode('base64')
+
+    try:
+        User.objects.get(email=receiver_email)
+        messages.error(request, 'User is already a DSP member!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    except User.DoesNotExist:
+        pass
+
+    try:
+        invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(sender_email),
+                                            receiver_email=HashHelper.md5_hash(receiver_email))
+
+        if invitation.sender_verified:
+            messages.error(request, 'Invitation already sent!')
+        else:
+            # invitation flow start
+            invitation.sender_verified = True
+            invitation.save()
+            # sending invitation mail
+
+            subject = 'OpenMaker Nomination done!'
+            # TODO Fix HERE LINK
+            # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_confirmed,
+                                      invitation_base_template_footer)
+
+
+            EmailHelper.send_email(
+                message=content,
+                subject=subject,
+                receiver_email=sender_email,
+                receiver_name=''
+            )
+
+            subject = 'You are invited to join the OpenMaker community!'
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
+                                                                       RECEIVER_LAST_NAME=receiver_last_name,
+                                                                       SENDER_FIRST_NAME=sender_first_name,
+                                                                       SENDER_LAST_NAME=sender_last_name),
+                                      invitation_base_template_footer)
+
+            EmailHelper.send_email(
+                message=content,
+                subject=subject,
+                receiver_email=receiver_email,
+                receiver_name=''
+            )
+            messages.success(request, 'Invitation complete!')
+
+    except Invitation.DoesNotExist:
+        messages.error(request, 'Invitation does not exist')
+    return HttpResponseRedirect('http://openmaker.eu/confirmed/')
