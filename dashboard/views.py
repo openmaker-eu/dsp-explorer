@@ -2,8 +2,6 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.sites.shortcuts import get_current_site
-from datetime import datetime
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
@@ -12,7 +10,6 @@ from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
-
 
 
 @login_required()
@@ -55,10 +52,6 @@ def profile(request, profile_id=None):
 @login_required()
 def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
-
-
-def privacy(request):
-    return render(request, 'dashboard/privacy.html', {})
 
 
 @login_required()
@@ -130,14 +123,6 @@ def invite(request):
             messages.error(request, 'Please try again!')
     
     return render(request, 'dashboard/invite.html', {})
-
-
-def support(request):
-    return render(request, 'dashboard/support.html', {})
-
-
-def terms_conditions(request):
-    return render(request, 'dashboard/terms_conditions.html', {})
 
 
 @login_required()
