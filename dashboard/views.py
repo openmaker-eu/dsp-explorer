@@ -67,7 +67,6 @@ def privacy(request):
 
 
 def onboarding(request):
-    errors = False
     
     if request.method == 'POST':
         try:
@@ -77,27 +76,22 @@ def onboarding(request):
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
             gender = request.POST['gender']
-            birthdate = request.POST['birthdate']
+            birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
-            twitter_username = request.POST.get('twitter', None)
+            twitter_username = request.POST.get('twitter', '')
+        except ValueError:
+            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
         except KeyError:
             messages.error(request, 'Please fill the required fields!')
-            errors = True
-        # check birthdate
-        try:
-            birthdate_dt = datetime.strptime(birthdate, '%Y/%m/%d')
-            print birthdate_dt
-            print type(birthdate_dt)
-        except:
-            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
-            errors = True
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
         
         # check password
         if pasw != pasw_confirm:
             messages.error(request, 'Password and confirm password must be the same')
-            errors = True
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
         
         # Check image and get url
         try:
@@ -112,14 +106,10 @@ def onboarding(request):
             imagepath = '/'+default_storage.save('static/images/profile/'+imagename, ContentFile(file.read()))
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
-            errors = True
-        except:
-            # TODO Set Default Image
-            imagepath = ''
-        
-        # If form error return to page
-        if errors:
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except:
+            # # TODO Use ABSOLUTE PATH
+            imagepath = 'static/user_icon.png'
         
         # Check if user exist
         try:
@@ -131,12 +121,9 @@ def onboarding(request):
         
         # profile create
         try:
-            # TODO Avoid tuple and set datetime as date
             profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate_dt,
-                                     city, occupation, tags)
+                                     city, occupation, tags, twitter_username)
         except Exception as exc:
-            print 'Error creating profile:'
-            print exc
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
         

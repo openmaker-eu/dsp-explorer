@@ -19,6 +19,7 @@ class Profile(models.Model):
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
+    twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -33,8 +34,7 @@ class Profile(models.Model):
     
     @classmethod
     def create(cls, email, first_name, last_name, picture_url, password=None, gender=None,
-               birthdate=None, city=None, occupation=None, tags=None, twitter=None):
-        #password = password if password else User.objects.make_random_password()
+               birthdate=None, city=None, occupation=None, tags=None, twitter_username=None):
 
         try:
             user = User.objects.get(email=email)
@@ -58,6 +58,7 @@ class Profile(models.Model):
             profile.city = city
             profile.occupation = occupation
             profile.tags = tags
+            profile.twitter_username = twitter_username
             profile.save()
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()
