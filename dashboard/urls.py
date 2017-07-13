@@ -26,8 +26,8 @@ urlpatterns = [
     url(r'^invite/$', views.invite, name='invite'),
 
     # Onboarding
-    url(r'^onboarding/$', views.onboarding, name='onboarding'),
-    url(r'^onboarding/confirmation/(?P<token>.+)/$', views.onboarding_confirmation, name='onboarding_confirmation'),
+    url(r'^onboarding/$', authentication.onboarding, name='onboarding'),
+    url(r'^onboarding/confirmation/(?P<token>.+)/$', authentication.onboarding_confirmation, name='onboarding_confirmation'),
     url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', views.om_confirmation, name='om_confirmation'),
     
     # static
@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^support/$', static.support, name='support'),
     url(r'terms/$', static.terms_conditions, name='terms_conditions'),
     
+
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
