@@ -18,7 +18,7 @@ class Profile(models.Model):
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
-    birthdate = models.TextField(_('Birth Date'), blank=True, null=True)
+    birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -32,8 +32,9 @@ class Profile(models.Model):
         ordering = ('user',)
     
     @classmethod
-    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None, birthdate=None, city=None, occupation=None, tags=None, twitter=None):
-        password = password if password else User.objects.make_random_password()
+    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None,
+               birthdate=None, city=None, occupation=None, tags=None, twitter=None):
+        #password = password if password else User.objects.make_random_password()
 
         try:
             user = User.objects.get(email=email)
@@ -52,10 +53,10 @@ class Profile(models.Model):
         except Profile.DoesNotExist:
             profile = cls(user=user)
             profile.picture_url = picture_url
-            profile.gender = gender,
-            profile.birthdate = birthdate,
-            profile.city = city,
-            profile.occupation = occupation,
+            profile.gender = gender
+            profile.birthdate = birthdate
+            profile.city = city
+            profile.occupation = occupation
             profile.tags = tags
             profile.save()
         if not user.is_active:
@@ -109,7 +110,9 @@ class Profile(models.Model):
         Generate a new reset Token
         :return: String
         """
+        from datetime import datetime as dt
         self.reset_token = (uuid.uuid4())
+        self.update_token_at = dt.now()
         self.save()
 
     @classmethod

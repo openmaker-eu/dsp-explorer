@@ -3,8 +3,6 @@
  */
 export default [ '$scope','$http', function ($scope, $http) {
 
-    console.log('onboarding controller')
-
     $scope.altInputFormats = ['M!/d!/yyyy'];
 
     $scope.dateOptions = {

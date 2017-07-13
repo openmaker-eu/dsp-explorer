@@ -17,7 +17,7 @@ from crmconnector import capsule
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
-from django.utils.encoding import smart_bytes
+import logging
 
 
 @login_required()
@@ -38,7 +38,7 @@ def theme(request, theme_name):
     except DSPConnectorException as e:
         messages.error(request, e.message)
         themes_list = {}
-
+    
     context = {'theme_name': theme_name,
                'themes': themes_list}
     return render(request, 'dashboard/theme.html', context)
@@ -67,11 +67,9 @@ def privacy(request):
 
 
 def onboarding(request):
-
-    errors = []
-
+    errors = False
+    
     if request.method == 'POST':
-
         try:
             email = request.POST['email']
             pasw = request.POST['password']
@@ -83,48 +81,46 @@ def onboarding(request):
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
+            twitter_username = request.POST.get('twitter', None)
         except KeyError:
-            errors.append('Please fill the required fields!')
-
-        try:
-            twitter_username = request.POST['twitter']
-        except:
-            twitter_username = None
-
-        print 'gender'
-        print gender
-
+            messages.error(request, 'Please fill the required fields!')
+            errors = True
         # check birthdate
         try:
-            date=datetime.strptime(birthdate, '%Y/%m/%d')
-            print birthdate
-        except ValueError:
-            errors.append('Incorrect birthdate format: it must be YYYY/MM/DD')
-
+            birthdate_dt = datetime.strptime(birthdate, '%Y/%m/%d')
+            print birthdate_dt
+            print type(birthdate_dt)
+        except:
+            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+            errors = True
+        
         # check password
         if pasw != pasw_confirm:
-            errors.append('Password and confirm password must be the same')
-
+            messages.error(request, 'Password and confirm password must be the same')
+            errors = True
+        
         # Check image and get url
         try:
             file = request.FILES['profile_img']
             filename, file_extension = os.path.splitext(file.name)
-
+            
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
-                errors.append('Profile Image is not an image file')
-
+                raise ValueError
+            # TODO Use ABSOLUTE PATH
             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
             imagepath = '/'+default_storage.save('static/images/user/'+imagename, ContentFile(file.read()))
+        except ValueError:
+            messages.error(request, 'Profile Image is not an image file')
+            errors = True
         except:
+            # TODO Set Default Image
             imagepath = ''
-
+        
         # If form error return to page
-        if len(errors):
-            for error in errors:
-                 messages.error(request, error)
+        if errors:
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
-
+        
         # Check if user exist
         try:
             User.objects.get(email=email)
@@ -132,20 +128,20 @@ def onboarding(request):
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
         except User.DoesNotExist:
             pass
-
+        
         # profile create
         try:
-            profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate, city, occupation, tags)
+            # TODO Avoid tuple and set datetime as date
+            profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate_dt,
+                                     city, occupation, tags)
         except Exception as exc:
             print 'Error creating profile:'
             print exc
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
-
-
-        token = str(profile.reset_token)
-        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=token))
-
+        
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+        
         # send e-mail
         subject = 'Onboarding... almost done!'
         content = "{}{}{}".format(invitation_base_template_header,
@@ -154,110 +150,65 @@ def onboarding(request):
                                                                    CONFIRMATION_LINK=confirmation_link,
                                                                    ),
                                   invitation_base_template_footer)
-
+        
         EmailHelper.send_email(
             message=content,
             subject=subject,
             receiver_email=email
         )
-
+        
         messages.success(request, 'Confirmation mail sent!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
-
-    return render(request, 'dashboard/onboarding.html', {})
-
-    # search locally
-    #       --> if not exist
-    #           --> create tmp user
-    #           --> e-mail confirmation
-    #           --> once confirmed check CRM
-    #           --> if not exist
-    #               --> activate locally and write into CRM
-    #           --> if exist
-    #               --> update CRM infos
-
+    
     return render(request, 'dashboard/onboarding.html', {})
 
 
 def onboarding_confirmation(request, token):
-
-    # http://localhost:8000/onboarding/confirmation/2cf43830-e1d1-4157-b393-8dd754b138f6
-    print '--------------------------------'
-    print capsule.CRMConnector.get_all_parties().json()['parties'][1]
-    print '--------------------------------'
-
     # Check for token
     try:
         profile = Profile.objects.get(reset_token=token)
-    except:
+    except Profile.DoesNotExist:
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
-    # Activate user
-    try:
-        profile.user.is_active = 1
-        profile.user.save()
-    except:
-        messages.error(request, 'Some error creating user')
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
+    
     #Check for user on Capsupe CRM
-    try:
-        # Find if user aleready exists on Capsule CRM
-        user_id = capsule.CRMConnector.search_party(profile.user.email).json()['results']['party'][0]['id']
-        return
-        # User update on Capsule CRM
-        # update_user = capsule.CRMConnector.update_party(user_id , {'party': {
-        #         'about': 'Hello my name is Alex, i\'m just testing the API',
-        #         'emailAddresses': [{'address': profile.user.email}],
-        #         'type': 'person',
-        #         'firstName': profile.user.first_name,
-        #         'lastName': profile.user.last_name
-        #    }
-        # })
-
-    except:
-        # User creation to Capsule CRM
-        party = {'party': {
-            'about': 'Hello my name is Topix, this is a test',
-            'emailAddresses': [{'address': 'massimo.santoli@top-ix.org'}],
-            'type': 'person',
-            'firstName': 'Massimo',
-            'lastName': 'Santoli'
-        }}
-        newuser = capsule.CRMConnector.add_party(party)
-
-        # newuser = capsule.CRMConnector.add_party({'party': {
-        #         'about': 'Hello my name is Alex, i\'m just testing the API',
-        #         'emailAddresses': [{'address': profile.user.email}],
-        #         'type': 'person',
-        #         'firstName': profile.user.first_name,
-        #         'lastName': profile.user.last_name
-        #    }
-        # })
-
-
-    # {u'message': u'Invalid JSON format'}
-    # print 'RESPONSE'
-    # print 'Headers : '
-    # print newuser.headers
-    # print 'Code : '
-    # print newuser.status_code
-    # print 'Body :'
-    # print +newuser.json()
-    # print '------------------'
-
-    # return
-
-    # Return to dashboard
-
-    #
-    # @TODO: uncomment this line
-    #
+    user = capsule.CRMConnector.search_party_by_email(profile.user.email)
+    if user:
+        try:
+            update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
+                        'emailAddresses': [{'address': profile.user.email}],
+                        'type': 'person',
+                        'firstName': profile.user.first_name,
+                        'lastName': profile.user.last_name,
+                        'jobTitle': profile.occupation,
+                        'pictureURL': profile.picture_url
+                    }
+                })
+        except:
+            messages.error(request, 'Some error occures, please try again!')
+            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
+            # TODO SEND ERROR EMAIL TO ADMIN
+            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    else:
+        try:
+            capsule.CRMConnector.add_party({'party': {
+                    'emailAddresses': [{'address': profile.user.email}],
+                    'type': 'person',
+                    'firstName': profile.user.first_name,
+                    'lastName': profile.user.last_name,
+                    'jobTitle': profile.occupation,
+                    'pictureURL': profile.picture_url
+                }
+            })
+        except:
+            messages.error(request, 'Some error occures, please try again!')
+            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
+            # TODO SEND ERROR EMAIL TO ADMIN
+            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    profile.user.is_active = True
+    profile.user.save()
     profile.update_reset_token()
-
-    messages.success(request, 'Your account is now active. Please login with your credetials')
+    messages.success(request, 'Your account is now active. Please login with your credentials!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
@@ -271,24 +222,24 @@ def invite(request):
         except KeyError:
             messages.error(request, 'Please all the fields are required!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
-
+        
         try:
             User.objects.get(email=address)
             messages.error(request, 'User is already a DSP member!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except User.DoesNotExist:
             pass
-
+        
         try:
             Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
             messages.error(request, 'User is been already invited!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except Invitation.DoesNotExist:
             pass
-
+        
         # email not present, filling invitation model
         try:
-
+            
             invitation = Invitation.create(user=request.user,
                                            sender_email=request.user.email,
                                            sender_first_name=request.user.first_name,
@@ -328,7 +279,7 @@ def invite(request):
         except Exception as e:
             print e.message
             messages.error(request, 'Please try again!')
-
+    
     return render(request, 'dashboard/invite.html', {})
 
 
@@ -358,28 +309,28 @@ def feedback(request):
 
 def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
                     receiver_last_name, receiver_email):
-
+    
     # sender
     sender_first_name = sender_first_name.decode('base64')
     sender_last_name = sender_last_name.decode('base64')
     sender_email = sender_email.decode('base64')
-
+    
     # receiver
     receiver_first_name = receiver_first_name.decode('base64')
     receiver_last_name = receiver_last_name.decode('base64')
     receiver_email = receiver_email.decode('base64')
-
+    
     try:
         User.objects.get(email=receiver_email)
         messages.error(request, 'User is already a DSP member!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     except User.DoesNotExist:
         pass
-
+    
     try:
         invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(sender_email),
                                             receiver_email=HashHelper.md5_hash(receiver_email))
-
+        
         if invitation.sender_verified:
             messages.error(request, 'Invitation already sent!')
         else:
@@ -387,22 +338,22 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             invitation.sender_verified = True
             invitation.save()
             # sending invitation mail
-
+            
             subject = 'OpenMaker Nomination done!'
             # TODO Fix HERE LINK
             # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
             content = "{}{}{}".format(invitation_base_template_header,
                                       invitation_email_confirmed,
                                       invitation_base_template_footer)
-
-
+            
+            
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
                 receiver_email=sender_email,
                 receiver_name=''
             )
-
+            
             subject = 'You are invited to join the OpenMaker community!'
             content = "{}{}{}".format(invitation_base_template_header,
                                       invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
@@ -410,7 +361,7 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
                                                                        SENDER_FIRST_NAME=sender_first_name,
                                                                        SENDER_LAST_NAME=sender_last_name),
                                       invitation_base_template_footer)
-
+            
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -418,7 +369,7 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
                 receiver_name=''
             )
             messages.success(request, 'Invitation complete!')
-
+    
     except Invitation.DoesNotExist:
         messages.error(request, 'Invitation does not exist')
     return HttpResponseRedirect('http://openmaker.eu/confirmed/')

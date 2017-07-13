@@ -121,6 +121,7 @@ DSP_GET_INFLUENCERS = '/get_influencers'
 # CRM SETTINGS
 
 SECRET_TOKEN = ''
+CAPSULE_BASE_URL = 'https://api.capsulecrm.com/api/v2'
 
 # EMAIL SETTINGS
 
