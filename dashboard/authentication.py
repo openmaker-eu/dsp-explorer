@@ -171,10 +171,11 @@ def onboarding(request):
             if not (file_extension in allowed_extensions):
                 raise ValueError
             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
-            imagepath = default_storage.save('{CURRENT_SITE}/static/images/profile/{IMAGE}'.format(
+            imagepath = default_storage.save(request.build_absolute_uri('{CURRENT_SITE}/static/images/profile/{IMAGE}'.format(
                 CURRENT_SITE=get_current_site(request),
-                IMAGE=imagename
-            ), ContentFile(file.read()))
+                IMAGE=imagename), ContentFile(file.read()))
+            )
+
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
@@ -197,10 +198,7 @@ def onboarding(request):
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
-        confirmation_link = '{CURRENT_SITE}/onboarding/confirmation/{TOKEN}'.format(
-            TOKEN=profile.reset_token,
-            CURRENT_SITE=get_current_site(request)
-        )
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
 
         # send e-mail
         subject = 'Onboarding... almost done!'
