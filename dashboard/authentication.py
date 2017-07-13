@@ -62,6 +62,8 @@ def recover_pwd(request):
         username = request.POST['email']
         try:
             profile = Profile.get_by_email(username)
+            # @TODO: check if user is acvtive
+
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
             profile.save()
@@ -110,6 +112,8 @@ def reset_pwd(request, reset_token):
         if len(password) < 8:
             messages.warning(request, 'Attention, Please insert at least 8 characters!')
             return HttpResponseRedirect(reverse('dashboard:reset_pwd', kwargs={'reset_token': reset_token}))
+
+        # @TODO: check if user is acvtive
         profile.user.set_password(password)
         profile.user.is_active = True
         profile.user.save()

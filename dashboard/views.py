@@ -61,9 +61,6 @@ def privacy(request):
     return render(request, 'dashboard/privacy.html', {})
 
 
-
-
-
 @login_required()
 def invite(request):
     if request.method == 'POST':
