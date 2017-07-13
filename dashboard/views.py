@@ -62,10 +62,6 @@ def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
 
 
-def privacy(request):
-    return render(request, 'dashboard/privacy.html', {})
-
-
 def onboarding(request):
     
     if request.method == 'POST':
@@ -269,14 +265,6 @@ def invite(request):
             messages.error(request, 'Please try again!')
     
     return render(request, 'dashboard/invite.html', {})
-
-
-def support(request):
-    return render(request, 'dashboard/support.html', {})
-
-
-def terms_conditions(request):
-    return render(request, 'dashboard/terms_conditions.html', {})
 
 
 @login_required()

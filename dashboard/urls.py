@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from . import views, authentication, api
+from . import views, authentication, api, static
 
 app_name = 'dashboard'
 
@@ -28,24 +28,17 @@ urlpatterns = [
     # Onboarding
     url(r'^onboarding/$', views.onboarding, name='onboarding'),
     url(r'^onboarding/confirmation/(?P<token>.+)/$', views.onboarding_confirmation, name='onboarding_confirmation'),
-
-    # Privacy
-    url(r'^privacy/$', views.privacy, name='privacy'),
-
+    url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', views.om_confirmation, name='om_confirmation'),
+    
+    # static
+    url(r'^privacy/$', static.privacy, name='privacy'),
+    url(r'^support/$', static.support, name='support'),
+    url(r'terms/$', static.terms_conditions, name='terms_conditions'),
+    
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
-    # FAQ page
-    url(r'^support/$', views.support, name='support'),
-
-    # Terms and Conditions
-    url(r'terms/$', views.terms_conditions, name='terms_conditions'),
-
-    # Confirmation
-    url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', views.om_confirmation, name='om_confirmation'),
-
     # API v1.0
-    # url(r'^api/v1.0/request_membership/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',api.request_membership, name='api_request_membership'),
     url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
     url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members'),
 
@@ -53,7 +46,6 @@ urlpatterns = [
     url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds'),
     url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes'),
     url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
-
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
 ]
 
