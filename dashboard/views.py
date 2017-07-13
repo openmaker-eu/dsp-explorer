@@ -123,8 +123,9 @@ def onboarding(request):
         try:
             profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate_dt,
                                      city, occupation, tags, twitter_username)
-        except Exception as exc:
+        except Exception as e:
             messages.error(request, 'Error creating user')
+            logging.error('Error creating user: %s' % str(e))
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
         
         confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
@@ -162,7 +163,7 @@ def onboarding_confirmation(request, token):
     user = capsule.CRMConnector.search_party_by_email(profile.user.email)
     if user:
         try:
-            update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
+            capsule.CRMConnector.update_party(user['id'], {'party': {
                         'emailAddresses': [{'address': profile.user.email}],
                         'type': 'person',
                         'firstName': profile.user.first_name,
