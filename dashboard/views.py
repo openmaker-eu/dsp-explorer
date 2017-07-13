@@ -109,7 +109,7 @@ def onboarding(request):
                 raise ValueError
             # TODO Use ABSOLUTE PATH
             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
-            imagepath = '/'+default_storage.save('static/images/user/'+imagename, ContentFile(file.read()))
+            imagepath = '/'+default_storage.save('static/images/profile/'+imagename, ContentFile(file.read()))
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
             errors = True
