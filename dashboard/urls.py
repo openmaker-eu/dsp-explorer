@@ -26,8 +26,8 @@ urlpatterns = [
     url(r'^invite/$', views.invite, name='invite'),
 
     # Onboarding
-    url(r'^onboarding/$', views.onboarding, name='onboarding'),
-    url(r'^onboarding/confirmation/(?P<token>.+)/$', views.onboarding_confirmation, name='onboarding_confirmation'),
+    url(r'^onboarding/$', authentication.onboarding, name='onboarding'),
+    url(r'^onboarding/confirmation/(?P<token>.+)/$', authentication.onboarding_confirmation, name='onboarding_confirmation'),
 
     # Privacy
     url(r'^privacy/$', views.privacy, name='privacy'),
