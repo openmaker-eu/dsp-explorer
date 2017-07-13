@@ -9,7 +9,7 @@ from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
-from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
 
 
 @login_required()
@@ -90,23 +90,16 @@ def invite(request):
                                            receiver_last_name=last_name,
                                            receiver_email=address,
                                            )
+
             subject = 'You are invited to join the OpenMaker community!'
-            # ToDo OnBoarding link
-            content = '''
-            Hi <strong>{} {}</strong>,
-            you have been nominated by <strong>{} {}</strong> as an influencer in the current 4th Industrial Revolution.<br><br>
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name,
+                                                                       RECEIVER_LAST_NAME=last_name,
+                                                                       SENDER_FIRST_NAME=request.user.first_name,
+                                                                       SENDER_LAST_NAME=request.user.last_name,
+                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                                      invitation_base_template_footer)
 
-            We are building a community of people eager to drive radical change in our society, making the most of talent, knowledge and capacity to reshape production according to democratic, inclusivity and sustainability principles.<br>
-            We believe in innovation centered on people, and in technology as an enabler of empowered creativity and action for individuals.<br><br>
-
-            We are confident in the ability of open collaboration to tackle complex societal challenges, and we push for a systemic revolution in manufacturing which is  locally focused but globally connected, micro yet massive.<br>  
-            We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.<br><br>
-
-            Click <strong><a href="http://openmaker.eu/">HERE</a></strong> to discover more or subscribe to the NL to get the latest news from the community<br><br>
-            Regards,<br>
-            OpenMaker Team.
-                                    '''.format(invitation.receiver_first_name, invitation.receiver_last_name, invitation.sender_first_name,
-                                               invitation.sender_last_name)
             EmailHelper.send_email(
                 message=content,
                 subject=subject,

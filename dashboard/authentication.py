@@ -303,10 +303,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             # sending invitation mail
 
             subject = 'OpenMaker Nomination done!'
-            # TODO Fix HERE LINK
-            # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
             content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_confirmed,
+                                      invitation_email_confirmed.format(ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 
 
@@ -322,7 +320,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
                                       invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
                                                                        RECEIVER_LAST_NAME=receiver_last_name,
                                                                        SENDER_FIRST_NAME=sender_first_name,
-                                                                       SENDER_LAST_NAME=sender_last_name),
+                                                                       SENDER_LAST_NAME=sender_last_name,
+                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 
             EmailHelper.send_email(
