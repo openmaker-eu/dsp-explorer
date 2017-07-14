@@ -15,26 +15,7 @@ export default ['$scope','$uibModal','$http','$rootScope','toastr', function ($s
     
     $scope.closeModal = () => { $scope.modalInstance.close();  $scope.modal_message = null;}
     
-    $scope.modal_message = null
-    $scope.request_membership = (email) => {
-        
-        return $http({
-            'method':'GET',
-            'url' : '/api/v1.0/request_membership/'+email
-        }).then(
-            r => {
-                // $scope.modal_message = { message: r.data.message , status : 'success' }
-                $scope.modalInstance.close();
-                toastr.success(r.data.message)
-            }
-            ,
-            r => {
-                if( r.data.hasOwnProperty('message') ) $scope.modal_message = r.data;
-                else $scope.modal_message = { message: r.statusText , status : 'error' }
-            }
-        )
-
-    }
+    $scope.modal_message = null;
 
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
         newValue.forEach(function (el) {

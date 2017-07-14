@@ -81,15 +81,15 @@ def invite(request):
         
         # email not present, filling invitation model
         try:
-            
-            invitation = Invitation.create(user=request.user,
-                                           sender_email=request.user.email,
-                                           sender_first_name=request.user.first_name,
-                                           sender_last_name=request.user.last_name,
-                                           receiver_first_name=first_name,
-                                           receiver_last_name=last_name,
-                                           receiver_email=address,
-                                           )
+    
+            Invitation.create(user=request.user,
+                              sender_email=request.user.email,
+                              sender_first_name=request.user.first_name,
+                              sender_last_name=request.user.last_name,
+                              receiver_first_name=first_name,
+                              receiver_last_name=last_name,
+                              receiver_email=address,
+                              )
 
             subject = 'You are invited to join the OpenMaker community!'
             content = "{}{}{}".format(invitation_base_template_header,

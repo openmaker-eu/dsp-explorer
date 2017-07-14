@@ -52,25 +52,18 @@
                             <a href="#" class="dropdown-toggle"
                                data-toggle="dropdown" role="button"
                                aria-haspopup="true" aria-expanded="false">
-                                {#                                <button type="button" class="btn">#}
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="caret"></span>
-                                {#                                </button>#}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
                                 <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <!--<li><a href="{% url 'dashboard:support' %}">Support</a></li>-->
-{#                                <li><a href="#" ng-click="openModal('#feedback_modal')">Feedback</a></li>#}
                                 <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                             </ul>
                         </li>
-                        {#                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>#}
                     {% else %}
-{#                        <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>#}
                         <li><a href="{% url 'dashboard:onboarding' %}">Onboarding</a></li>
-                        <!--<li><a href="{% url 'dashboard:support' %}">Support</a></li>-->
                         <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
@@ -127,7 +120,6 @@
 </div>
 
 {% include "./modals/login.html" %}
-{% include "./modals/request_membership.html" %}
 {% include "./modals/feedback.html" %}
 
 
