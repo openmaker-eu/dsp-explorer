@@ -4,16 +4,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.sites.shortcuts import get_current_site
 import datetime as dt
 from utils.mailer import EmailHelper
 from .models import Profile, User, Invitation
-
 from crmconnector import capsule
-
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
+import pytz
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
@@ -21,7 +19,6 @@ from utils.hasher import HashHelper
 
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
-
 
 
 def logout_page(request):
@@ -137,6 +134,8 @@ def reset_pwd(request, reset_token):
 
 
 def onboarding(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
         try:
             email = request.POST['email']
@@ -146,6 +145,7 @@ def onboarding(request):
             last_name = request.POST['last_name']
             gender = request.POST['gender']
             birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
+            birthdate_dt = pytz.utc.localize(birthdate_dt)
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
@@ -234,7 +234,7 @@ def onboarding_confirmation(request, token):
     if user:
         try:
             update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
-                'emailAddresses': [{'address': profile.user.email}],
+                'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
                 'type': 'person',
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
@@ -303,10 +303,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             # sending invitation mail
 
             subject = 'OpenMaker Nomination done!'
-            # TODO Fix HERE LINK
-            # Want to join as well? click HERE to onboard and discover how you can contribute to accelerate the 4th Industrial Revolution!<br>
             content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_confirmed,
+                                      invitation_email_confirmed.format(ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 
 
@@ -322,7 +320,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
                                       invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
                                                                        RECEIVER_LAST_NAME=receiver_last_name,
                                                                        SENDER_FIRST_NAME=sender_first_name,
-                                                                       SENDER_LAST_NAME=sender_last_name),
+                                                                       SENDER_LAST_NAME=sender_last_name,
+                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 
             EmailHelper.send_email(

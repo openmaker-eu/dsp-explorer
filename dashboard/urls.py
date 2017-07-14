@@ -48,4 +48,3 @@ urlpatterns = [
     url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
 ]
-

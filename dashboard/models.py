@@ -112,8 +112,9 @@ class Profile(models.Model):
         :return: String
         """
         from datetime import datetime as dt
+        import pytz
         self.reset_token = (uuid.uuid4())
-        self.update_token_at = dt.now()
+        self.update_token_at = pytz.utc.localize(dt.now())
         self.save()
 
     @classmethod
@@ -163,16 +164,14 @@ class Invitation(models.Model):
             pass
 
         try:
-            # ToDo Profile could be null
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             profile = None
-            pass
-
+            
         invitation = cls(profile=profile,
-                         sender_email=HashHelper.md5_hash(sender_email),
-                         sender_first_name=HashHelper.md5_hash(sender_first_name),
-                         sender_last_name=HashHelper.md5_hash(sender_last_name),
+                         sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
+                         sender_first_name=HashHelper.md5_hash(sender_first_name) if not profile else sender_first_name,
+                         sender_last_name=HashHelper.md5_hash(sender_last_name) if not profile else sender_last_name,
                          receiver_first_name=HashHelper.md5_hash(receiver_first_name),
                          receiver_last_name=HashHelper.md5_hash(receiver_last_name),
                          receiver_email=HashHelper.md5_hash(receiver_email),
