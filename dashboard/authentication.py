@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 import datetime as dt
+from datetime import datetime
 from utils.mailer import EmailHelper
 from .models import Profile, User, Invitation
 from crmconnector import capsule
@@ -160,6 +161,11 @@ def onboarding(request):
         # check password
         if pasw != pasw_confirm:
             messages.error(request, 'Password and confirm password must be the same')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # check birthdate
+        if birthdate_dt > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *birthdate_dt.timetuple()[1:-2])):
+            messages.error(request, 'You must be older than thirteen')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
         # Check image and get url

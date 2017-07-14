@@ -1,4 +1,5 @@
 window.$ = window.jQuery = require('jquery')
+window.m = window.moment = require("../../../node_modules/moment/moment")
 
 require("bootstrap-sass")
 require("../style/index.scss")
