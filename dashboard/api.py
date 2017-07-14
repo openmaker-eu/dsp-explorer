@@ -103,7 +103,6 @@ def post_om_invitation(request):
     if request.method != 'POST':
         return not_authorized()
     try:
-
         sender_first_name = request.POST['sender_first_name']
         sender_last_name = request.POST['sender_last_name']
         sender_email = request.POST['sender_email']
@@ -111,24 +110,17 @@ def post_om_invitation(request):
         receiver_last_name = request.POST['receiver_last_name']
         receiver_email = request.POST['receiver_email']
 
-        if sender_first_name == '' or  sender_last_name == '' or sender_email == '' or receiver_first_name == '' or receiver_last_name == '' or receiver_email == '':
+        if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
+                or receiver_last_name == '' or receiver_email == '':
             return bad_request("Please fill al the fields")
 
     except KeyError:
         return bad_request("Please fill al the fields")
 
-        # check if sender is already a dsp user (profile)
-        # yes --> tell him to do the invitation from the dsp platform
-        # no --> check if the receiver is not invited yet or if it's already a dsp user
-        # already dsp user message
-        # already invited --> tell sender that the receiver has been already invited
-        # not already invited --> send to the sender a verification email
-
     # sender already a DSP user?
     try:
         User.objects.get(email=sender_email)
         return HttpResponseRedirect('http://openmaker.eu/error_sender/')
-        # return success("error", "You are already a DSP member, make the invitation using the DSP platform")
     except User.DoesNotExist:
         pass
 
@@ -136,7 +128,6 @@ def post_om_invitation(request):
     try:
         User.objects.get(email=receiver_email)
         return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
-        # return success("error", "You are trying to invite an already DSP member")
     except User.DoesNotExist:
         pass
 
@@ -144,20 +135,18 @@ def post_om_invitation(request):
     try:
         Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
         return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
-        # return success("error", "You are trying to invite an already invited user")
     except Invitation.DoesNotExist:
         pass
 
-    # send verification mail and create a invitation entry with profile None and sender_verification to False
-    invitation = model_to_dict(Invitation.create(user=None,
-                                                 sender_email=sender_email,
-                                                 sender_first_name=sender_first_name,
-                                                 sender_last_name=sender_last_name,
-                                                 receiver_first_name=receiver_first_name,
-                                                 receiver_last_name=receiver_last_name,
-                                                 receiver_email=receiver_email,
-                                                 sender_verified=False
-                                                 ))
+    Invitation.create(user=None,
+                      sender_email=sender_email,
+                      sender_first_name=sender_first_name,
+                      sender_last_name=sender_last_name,
+                      receiver_first_name=receiver_first_name,
+                      receiver_last_name=receiver_last_name,
+                      receiver_email=receiver_email,
+                      sender_verified=False
+                      )
 
     activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
         get_current_site(request),
@@ -170,16 +159,13 @@ def post_om_invitation(request):
 
     subject = 'OpenMaker Nomination.. almost done!'
     content = "{}{}{}".format(invitation_base_template_header,
-                        invitation_email_confirm.format(SENDER_NAME=sender_first_name,
-                                                        CONFIRMATION_LINK=activation_link),
-                        invitation_base_template_footer)
-
+                              invitation_email_confirm.format(SENDER_NAME=sender_first_name,
+                                                              CONFIRMATION_LINK=activation_link),
+                              invitation_base_template_footer)
     EmailHelper.send_email(
         message=content,
         subject=subject,
         receiver_email=sender_email,
         receiver_name=''
     )
-
     return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
-    # return success("ok", "Pending invitation added", invitation)

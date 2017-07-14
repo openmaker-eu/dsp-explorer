@@ -4,13 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.sites.shortcuts import get_current_site
 import datetime as dt
 from utils.mailer import EmailHelper
 from .models import Profile, User, Invitation
-
 from crmconnector import capsule
-
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
@@ -21,7 +18,6 @@ from utils.hasher import HashHelper
 
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
-
 
 
 def logout_page(request):
@@ -137,6 +133,8 @@ def reset_pwd(request, reset_token):
 
 
 def onboarding(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
         try:
             email = request.POST['email']
