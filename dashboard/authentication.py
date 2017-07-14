@@ -176,17 +176,18 @@ def onboarding(request):
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
                 raise ValueError
+
             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
-            imagepath = default_storage.save(request.build_absolute_uri('{CURRENT_SITE}/static/images/profile/{IMAGE}'.format(
-                CURRENT_SITE=get_current_site(request),
-                IMAGE=imagename), ContentFile(file.read()))
-            )
+            imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
+
+            default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
 
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
         except:
-            imagepath = '{CURRENT_SITE}/static/user_icon.png'.format(CURRENT_SITE=get_current_site(request))
+            imagepath = request.build_absolute_uri('/static/user_icon.png')
+
 
         # Check if user exist
         try:
