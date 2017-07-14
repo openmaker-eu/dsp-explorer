@@ -1,13 +1,14 @@
 /**
  * Created by andreafspeziale on 06/07/17.
  */
-export default [ '$scope','$http', function ($scope, $http) {
+export default [ '$scope','$http', function ($scope) {
 
     $scope.altInputFormats = ['M!/d!/yyyy'];
 
     $scope.dateOptions = {
         formatYear: 'yy',
-        maxDate: new Date(),
+        maxDate: new m().subtract(13, 'years'),
+        initDate: new Date(new m().subtract(13, 'years')),
         startingDay: 1,
     };
 
