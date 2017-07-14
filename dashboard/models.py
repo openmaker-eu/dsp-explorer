@@ -112,8 +112,9 @@ class Profile(models.Model):
         :return: String
         """
         from datetime import datetime as dt
+        import pytz
         self.reset_token = (uuid.uuid4())
-        self.update_token_at = dt.now()
+        self.update_token_at = pytz.utc.localize(dt.now())
         self.save()
 
     @classmethod

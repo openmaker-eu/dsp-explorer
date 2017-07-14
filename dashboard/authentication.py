@@ -11,6 +11,7 @@ from crmconnector import capsule
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
+import pytz
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
@@ -144,6 +145,7 @@ def onboarding(request):
             last_name = request.POST['last_name']
             gender = request.POST['gender']
             birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
+            birthdate_dt = pytz.utc.localize(birthdate_dt)
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
@@ -232,7 +234,7 @@ def onboarding_confirmation(request, token):
     if user:
         try:
             update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
-                'emailAddresses': [{'address': profile.user.email}],
+                'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
                 'type': 'person',
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
