@@ -2,6 +2,7 @@
 
 Django Application, frontend project of OpenMaker Digital Social Platform.
 
+
 ## Requirements
 
 First of all you need to have:

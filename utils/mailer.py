@@ -27,7 +27,8 @@ class EmailHelper(object):
                    receiver_email=None):
         receivers = [receiver_email]
         formatted_message = Message()
-        formatted_message['Subject'] = Header("%s - %s" % (subject, time.strftime("%d/%m/%Y %H:%M:%S")), 'utf-8')
+        formatted_message['Content-Type'] = 'text/html'
+        formatted_message['Subject'] = Header("%s" % (subject))
         formatted_message['From'] = EmailHelper._format_email(sender_name, sender_email)
         formatted_message['To'] = EmailHelper._format_email(receiver_name, receiver_email)
         formatted_message.set_payload("""{}""".format(message))

@@ -1,13 +1,25 @@
 from django.shortcuts import render
 from django.http import *
-from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
-from django.contrib.sites.shortcuts import get_current_site
 import datetime as dt
-from .models import Profile
+from datetime import datetime
+from utils.mailer import EmailHelper
+from .models import Profile, User, Invitation
+from crmconnector import capsule
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
+import pytz
+import logging
+from django.contrib.sites.shortcuts import get_current_site
+from datetime import datetime
+from utils.hasher import HashHelper
+
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
+    invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
 
 def logout_page(request):
@@ -48,6 +60,13 @@ def recover_pwd(request):
         username = request.POST['email']
         try:
             profile = Profile.get_by_email(username)
+
+            # Check if user is active
+            if not profile.user.is_active:
+                messages.error(request, 'Your user is not yet active, '
+                               'please complete the activation process before requesting a new password')
+                return HttpResponseRedirect(reverse('dashboard:login'))
+
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
             profile.save()
@@ -96,6 +115,13 @@ def reset_pwd(request, reset_token):
         if len(password) < 8:
             messages.warning(request, 'Attention, Please insert at least 8 characters!')
             return HttpResponseRedirect(reverse('dashboard:reset_pwd', kwargs={'reset_token': reset_token}))
+
+        # Check if user is active
+        if not profile.user.is_active:
+            messages.error(request, 'Your user is not yet active, '
+                           'please complete the activation process before requesting a new password')
+            return HttpResponseRedirect(reverse('dashboard:login'))
+
         profile.user.set_password(password)
         profile.user.is_active = True
         profile.user.save()
@@ -106,3 +132,213 @@ def reset_pwd(request, reset_token):
         messages.success(request, 'Password reset completed!')
         return HttpResponseRedirect(reverse('dashboard:login'))
     return render(request, 'dashboard/reset_pwd.html', {"profile": profile, "reset_token": reset_token})
+
+
+def onboarding(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    if request.method == 'POST':
+        try:
+            email = request.POST['email']
+            pasw = request.POST['password']
+            pasw_confirm = request.POST['password_confirm']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            gender = request.POST['gender']
+            birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
+            birthdate_dt = pytz.utc.localize(birthdate_dt)
+            city = request.POST['city']
+            occupation = request.POST['occupation']
+            tags = request.POST['tags']
+            twitter_username = request.POST.get('twitter', '')
+        except ValueError:
+            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except KeyError:
+            messages.error(request, 'Please fill the required fields!')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # check password
+        if pasw != pasw_confirm:
+            messages.error(request, 'Password and confirm password must be the same')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # check birthdate
+        if birthdate_dt > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *birthdate_dt.timetuple()[1:-2])):
+            messages.error(request, 'You must be older than thirteen')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # Check image and get url
+        try:
+            file = request.FILES['profile_img']
+            filename, file_extension = os.path.splitext(file.name)
+
+            allowed_extensions = ['.jpg', '.jpeg', '.png']
+            if not (file_extension in allowed_extensions):
+                raise ValueError
+
+            imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
+            imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
+
+            default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
+
+        except ValueError:
+            messages.error(request, 'Profile Image is not an image file')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except:
+            imagepath = request.build_absolute_uri('/static/user_icon.png')
+
+
+        # Check if user exist
+        try:
+            User.objects.get(email=email)
+            messages.error(request, 'User is already a DSP member!')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except User.DoesNotExist:
+            pass
+
+        # profile create
+        try:
+            profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate_dt,
+                                     city, occupation, tags, twitter_username)
+        except Exception as exc:
+            messages.error(request, 'Error creating user')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+
+        # send e-mail
+        subject = 'Onboarding... almost done!'
+        content = "{}{}{}".format(invitation_base_template_header,
+                                  onboarding_email_template.format(FIRST_NAME=first_name,
+                                                                   LAST_NAME=last_name,
+                                                                   CONFIRMATION_LINK=confirmation_link,
+                                                                   ),
+                                  invitation_base_template_footer)
+
+        EmailHelper.send_email(
+            message=content,
+            subject=subject,
+            receiver_email=email
+        )
+
+        messages.success(request, 'Confirmation mail sent!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    return render(request, 'dashboard/onboarding.html', {})
+
+
+def onboarding_confirmation(request, token):
+    # Check for token
+    try:
+        profile = Profile.objects.get(reset_token=token)
+    except Profile.DoesNotExist:
+        messages.error(request, 'Token expired')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    #Check for user on Capsupe CRM
+    user = capsule.CRMConnector.search_party_by_email(profile.user.email)
+    if user:
+        try:
+            update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
+                'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
+                'type': 'person',
+                'firstName': profile.user.first_name,
+                'lastName': profile.user.last_name,
+                'jobTitle': profile.occupation,
+                'pictureURL': profile.picture_url
+            }
+            })
+        except:
+            messages.error(request, 'Some error occures, please try again!')
+            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
+            # TODO SEND ERROR EMAIL TO ADMIN
+            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    else:
+        try:
+            capsule.CRMConnector.add_party({'party': {
+                'emailAddresses': [{'address': profile.user.email}],
+                'type': 'person',
+                'firstName': profile.user.first_name,
+                'lastName': profile.user.last_name,
+                'jobTitle': profile.occupation,
+                'pictureURL': profile.picture_url
+            }
+            })
+        except:
+            messages.error(request, 'Some error occures, please try again!')
+            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
+            # TODO SEND ERROR EMAIL TO ADMIN
+            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    profile.user.is_active = True
+    profile.user.save()
+    profile.update_reset_token()
+    messages.success(request, 'Your account is now active. Please login with your credentials!')
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+
+def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
+                    receiver_last_name, receiver_email):
+
+    # sender
+    sender_first_name = sender_first_name.decode('base64')
+    sender_last_name = sender_last_name.decode('base64')
+    sender_email = sender_email.decode('base64')
+
+    # receiver
+    receiver_first_name = receiver_first_name.decode('base64')
+    receiver_last_name = receiver_last_name.decode('base64')
+    receiver_email = receiver_email.decode('base64')
+
+    try:
+        User.objects.get(email=receiver_email)
+        messages.error(request, 'User is already a DSP member!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    except User.DoesNotExist:
+        pass
+
+    try:
+        invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(sender_email),
+                                            receiver_email=HashHelper.md5_hash(receiver_email))
+
+        if invitation.sender_verified:
+            messages.error(request, 'Invitation already sent!')
+        else:
+            # invitation flow start
+            invitation.sender_verified = True
+            invitation.save()
+            # sending invitation mail
+
+            subject = 'OpenMaker Nomination done!'
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_confirmed.format(ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                                      invitation_base_template_footer)
+
+
+            EmailHelper.send_email(
+                message=content,
+                subject=subject,
+                receiver_email=sender_email,
+                receiver_name=''
+            )
+
+            subject = 'You are invited to join the OpenMaker community!'
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
+                                                                       RECEIVER_LAST_NAME=receiver_last_name,
+                                                                       SENDER_FIRST_NAME=sender_first_name,
+                                                                       SENDER_LAST_NAME=sender_last_name,
+                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                                      invitation_base_template_footer)
+
+            EmailHelper.send_email(
+                message=content,
+                subject=subject,
+                receiver_email=receiver_email,
+                receiver_name=''
+            )
+            messages.success(request, 'Invitation complete!')
+
+    except Invitation.DoesNotExist:
+        messages.error(request, 'Invitation does not exist')
+    return HttpResponseRedirect('http://openmaker.eu/confirmed/')

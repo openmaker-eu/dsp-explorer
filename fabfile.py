@@ -55,8 +55,19 @@ def deploy_dev():
         run('git checkout .')
         run('git pull')
         run('npm run prod')
+        run('fab install_static')
         run('service apache2 reload')
 
+@hosts(['topix@dspexplorer.top-ix.org'])
+def deploy_branch(branch):
+    with cd('/var/www/dsp-explorer'):
+        run('git checkout %s' % branch)
+        run('git pull')
+        run('fab install')
+        run('fab migrate')
+        run('npm run prod')
+        run('fab install_static')
+        run('service apache2 reload')
 
 # fab release:'RELEASE-COMMIT-MESSAGE'
 def release(message):

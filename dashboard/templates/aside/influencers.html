@@ -1,0 +1,25 @@
+<div id="influencers_aside" class="aside left col-lg-2 col-md-4 col-sm-6 col-xs-12 padding-0" tabindex="1" role="dialog">
+    <div class="aside-dialog">
+        <div class="aside-content" >
+
+            <div class="aside-header bg-red">
+                <h3><span>Influencers</span>
+                    <span class="glyphicon glyphicon-remove pull-right" style="color:#fff; cursor:pointer; font-size: 15px;" ng-click="closeAside()"></span>
+                </h3>
+            </div>
+
+            <div class="aside-body" style="padding:20px;">
+                <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
+                    <a href="https://www.twitter.com/{$ data['username'] $}" target="_blank">
+                        <h5 class="pull-left" style="height: 2em;">
+                            <img class="img-circle" ng-src="{$ data.img_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                        <h5 class="pull-left" style="line-height: 2em;">
+                            <p style="line-height: 40px;">{$ data.username $}</p>
+                        </h5>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

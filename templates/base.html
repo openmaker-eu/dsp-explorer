@@ -22,12 +22,12 @@
                             message : '{{ message }}',
                             tags: '{{ message.tags }}'
                          {% endif %}
-                     }
+                     },
                 {% endfor %}
           ];
       ">
 <div id="top-div">
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -46,29 +46,24 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-{#                        <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>#}
+                        {#                        <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>#}
                         <li><a href="{% url 'dashboard:search_members' %}">Search</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle"
                                data-toggle="dropdown" role="button"
                                aria-haspopup="true" aria-expanded="false">
-{#                                <button type="button" class="btn">#}
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <span class="caret"></span>
-{#                                </button>#}
-                                </a>
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="caret"></span>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
                                 <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
                                 <li role="separator" class="divider"></li>
-                                <!--<li><a href="{% url 'dashboard:support' %}">Support</a></li>-->
                                 <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
                             </ul>
                         </li>
-{#                        <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>#}
                     {% else %}
-                        <li><a href="#" ng-click="openModal('#request_membership_modal')">Request Membership</a></li>
-                        <!--<li><a href="{% url 'dashboard:support' %}">Support</a></li>-->
+                        <li><a href="{% url 'dashboard:onboarding' %}">Onboarding</a></li>
                         <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                     {% endif %}
@@ -84,7 +79,13 @@
 
     {% endblock %}
     <!-- end base container -->
+    {% if not user.is_anonymous %}
+        <div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">
+            <p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>
+        </div>
+    {% endif %}
 </div>
+
 {% if user.is_anonymous %}
 
     <div class="container-fluid" id="footer">
@@ -107,7 +108,7 @@
                 <div class="row margin-top-20">
                     <div class="col-md-12 pull-right">
                         <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker </a><span class="text-red">&mdash;</span>
-                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>
+{#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
                         <a href="/terms" class="text-red">Terms & Conditions </a><span class="text-red">&mdash;</span>
                         <a href="/privacy" class="text-red">Privacy Policy</a>
                     </div>
@@ -119,7 +120,8 @@
 </div>
 
 {% include "./modals/login.html" %}
-{% include "./modals/request_membership.html" %}
+{% include "./modals/feedback.html" %}
+
 
 </body>
 </html>

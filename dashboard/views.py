@@ -1,11 +1,15 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from utils.mailer import EmailHelper
+from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
-from .models import Profile, Invitation
+from .models import Profile, Invitation, Feedback
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
+from form import FeedbackForm
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
 
 
 @login_required()
@@ -21,20 +25,14 @@ def dashboard(request):
 @login_required()
 def theme(request, theme_name):
     try:
-        feeds = DSPConnector.get_feeds(theme_name)
-        influencers = DSPConnector.get_influencers(theme_name)
         themes = DSPConnector.get_themes()
         themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
     except DSPConnectorException as e:
         messages.error(request, e.message)
-        feeds = []
-        influencers = []
-        themes_list = []
-
+        themes_list = {}
+    
     context = {'theme_name': theme_name,
-               'feeds': feeds.get('feeds', []),
-               'themes': themes_list,
-               'influencers': influencers.get('influencers', [])}
+               'themes': themes_list}
     return render(request, 'dashboard/theme.html', context)
 
 
@@ -56,10 +54,6 @@ def search_members(request):
     return render(request, 'dashboard/search_members.html', {})
 
 
-def privacy(request):
-    return render(request, 'dashboard/privacy.html', {})
-
-
 @login_required()
 def invite(request):
     if request.method == 'POST':
@@ -70,15 +64,42 @@ def invite(request):
         except KeyError:
             messages.error(request, 'Please all the fields are required!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
-
+        
+        try:
+            User.objects.get(email=address)
+            messages.error(request, 'User is already a DSP member!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except User.DoesNotExist:
+            pass
+        
+        try:
+            Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
+            messages.error(request, 'User is been already invited!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except Invitation.DoesNotExist:
+            pass
+        
         # email not present, filling invitation model
         try:
-            invitation = Invitation.create(user=request.user, email=address, first_name=first_name, last_name=last_name)
-            subject = 'INVITATION To OpenMake Digital Social Platform'
-            content = '''
-Hello {}!
-Our member {} invited you to the DSP bla bla bla..
-'''.format(invitation.first_name, invitation.profile.user.get_full_name())
+    
+            Invitation.create(user=request.user,
+                              sender_email=request.user.email,
+                              sender_first_name=request.user.first_name,
+                              sender_last_name=request.user.last_name,
+                              receiver_first_name=first_name,
+                              receiver_last_name=last_name,
+                              receiver_email=address,
+                              )
+
+            subject = 'You are invited to join the OpenMaker community!'
+            content = "{}{}{}".format(invitation_base_template_header,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name,
+                                                                       RECEIVER_LAST_NAME=last_name,
+                                                                       SENDER_FIRST_NAME=request.user.first_name,
+                                                                       SENDER_LAST_NAME=request.user.last_name,
+                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                                      invitation_base_template_footer)
+
             EmailHelper.send_email(
                 message=content,
                 subject=subject,
@@ -90,15 +111,24 @@ Our member {} invited you to the DSP bla bla bla..
             messages.error(request, 'User is already a member!')
         except UserAlreadyInvited:
             messages.error(request, 'User has already received an invitation!')
-        except Exception:
+        except Exception as e:
+            print e.message
             messages.error(request, 'Please try again!')
-
+    
     return render(request, 'dashboard/invite.html', {})
 
 
-def support(request):
-    return render(request, 'dashboard/support.html', {})
-
-
-def terms_conditions(request):
-    return render(request, 'dashboard/terms_conditions.html', {})
+@login_required()
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            try:
+                Feedback(user=request.user, title=request.POST['title'],
+                         message_text=request.POST['message_text']).save()
+                messages.success(request, 'Thanks for your feedback!')
+            except KeyError:
+                messages.warning(request, 'Error, please try again.')
+        else:
+            messages.error(request, 'Please all the fields are required!')
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))

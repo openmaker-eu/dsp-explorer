@@ -1,100 +1,133 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-12">
-                    <ol class="breadcrumb">
-                        <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-                        <li class="active">{{theme_name}}</li>
-                    </ol>
-                </div>
+
+<div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
+    <div class="row">
+        <div class="col-lg-12 influencers-breadcrumb"  >
+
+            <div class="col-md-8 col-sm-7 col-xs-12">
+
+                <ol class="breadcrumb">
+                    <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    <li class="active">{{theme_name}}</li>
+                </ol>
+
             </div>
+
+            <div class="col-md-4 col-sm-5 col-xs-12" ng-click="openAside()">
+
+                <div class=" open-influencers pull-right">
+
+                    <span class="pull-left" style="white-space: nowrap;">View Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <img
+                            ng-repeat="data in influencers | limitTo:2 track by $index"
+                            class="img-circle pull-left" ng-src="{$ data.img_url $}"
+                    >
+                    <!--<span class="pull-left" style="white-space: nowrap;">&nbsp;&nbsp;<i class="glyphicon glyphicon-chevron-right"></i></span>-->
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="row margin-bottom-50">
-            <div class="col-md-12 text-center">
-                <h2 class="text-red">{{theme_name}}
-                    <button type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <script>
+
+            jQuery('document').ready( function ($) {
+
+                var css = {
+                    "height" : $('.breadcrumb').height(),
+                    "max-height": $('.breadcrumb').height(),
+                    "paddingtop": ( parseInt( $('.breadcrumb').css('padding-top')) / 2 ),
+                    "paddingbottom": ( parseInt( $('.breadcrumb').css('padding-bottom')) / 2 ),
+                }
+
+                var img_heigt = css.height + css.paddingbottom+ css.paddingtop
+
+                $('.open-influencers').css( { 'padding-top' : css.paddingtop+'px', 'padding-bottom' : css.paddingbottom+'px'  } )
+                $('.open-influencers > span').css( { 'height' : img_heigt-2+'px', 'line-height' : img_heigt+'px' } )
+
+                $('body').on('DOMNodeInserted', '.open-influencers', function (e) {
+                    $(e.target).css( { 'height' : (img_heigt-2)+'px' } )
+                })
+            })
+
+        </script>
+
+    </div>
+
+    <div class="row margin-bottom-50">
+        <div class="col-md-12 text-center theme-name">
+                <span class="text-red">
+                    <h2>{{theme_name}}</h2>
+
+                    <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{theme_name}}</h2>
                         <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                     </button>
+
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         {% for t in themes %}
                             <li><a href="{% url 'dashboard:theme' t %}">{{t}}</a></li>
                         {% endfor %}
                     </ul>
-                </h2>
-            </div>
+
+                </span>
         </div>
-        <div class="row margin-bottom-25">
-            <div class="col-md-6">
-                {#                <button type="button" class="feed-button active-btn">Yesterday</button>#}
-                {#                <button type="button" class="feed-button">Week</button>#}
-                {#                <button type="button" class="feed-button">Month</button>#}
-                <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Yesterday <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
-                </div>
-                <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Week <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
-                </div>
-                <div class="col-md-3 col-xs-12 margin-bottom-10">
-                    <button type="button" class="btn login-button">Month <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true"></span></button>
-                </div>
+    </div>
+    <div class="row margin-bottom-25">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('yesterday')" type="button" ng-class="filter == 'yesterday' ? 'btn login-button-active':'btn login-button'">Yesterday
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'yesterday'"></span></button>
             </div>
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('week')" type="button" ng-class="filter == 'week' ? 'btn login-button-active':'btn login-button'">Week
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'week'"></span></button>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                <button style="min-width:100%;" ng-click="setFilter('month')" type="button" ng-class="filter == 'month' ? 'btn login-button-active':'btn login-button'">Month
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'month'"></span></button>
+            </div>
+
         </div>
-        <div class="row">
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="col-md-12">
-                <div class="col-md-8">
-                    <h3>Feed</h3>
-                    <p class="lead">Social media recommended news.</p>
-                    <!-- FEED SPACE -->
-                    {% for feed in feeds %}
-                        <div class="row margin-bottom-25">
-                            <div class="col-md-3">
-                                {% if feed.im %}
-                                    <img src="{{feed.im}}" class="img-responsive feed_img" alt="{{feed.title}}">
-                                {% else %}
-                                    <img src="http://placehold.it/150x150" class="img-responsive  feed_img" alt="{{feed.title}}">
-                                {% endif %}
+                <h3>Feed</h3>
+                <p class="lead">Social media recommended news.</p>
+            </div>
+            <!-- FEED SPACE -->
+            <div
+                    class="col-md-12 infinite-container"
+                    infinite-scroll="FeedModel.next()"
+                    style="margin-bottom:10%;"
+            >
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3" ng-repeat="feed in FeedModel.data" ng-cloak="FeedModel.data.length">
+
+                    <div class="card margin-bottom-20">
+                        <a href="{$feed.url$}" target="_blank">
+                            <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                <img style="min-width:100%;" ng-if="feed.im" src="{$ feed.im $}" class="img-responsive" alt="{$feed.title$}">
+                                <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
                             </div>
-                            <div class="col-md-9">
-                                <p><h5><a href="{{feed.url}}" target="_blank">{{feed.title}}</a></h5></p>
-                                <p>
-                                    {% if feed.description %}
-                                        <p>{{feed.description}}</p>
-                                    {% else %}
-                                        <p>No Description provided </p>
-                                    {% endif %}
-                                </p>
+                            <div class="card-content text-center">
+                                <h5 ng-if="feed.title">{$ feed.title | limitTo: 40 $} {$ feed.title.length > 50 ? '...' : '' $}</h5>
+                                <h5 ng-if="!feed.title" >No Title provided </h5>
                             </div>
-                            <div class="col-md-12 margin-top-25">
-                                <hr>
+                            <div class="card-action">
+                                <p ng-if="feed.description">{$ feed.description | limitTo: 50 $} {$ feed.description.length > 50 ? '...' : '' $}</p>
+                                <p ng-if="!feed.description">No Description provided </p>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="col-md-4 influencers_box">
-                    <h3>TOP Influencers</h3>
-                    <p class="lead"></p>
-                    <!-- INFLUENCERS SPACE -->
-                    {% for account in influencers %}
-                        <div class="row influencers_separator">
-                            <div class="col-md-3">
-                                <a href="http://twitter.com/{{account.username}}" target="_blank">
-                                    <img src="{{account.img_url}}" alt="{{account.username}}" class="img-circle">
-                                </a>
-                            </div>
-                            <div class="col-md-9">
-                                <address>
-                                    <strong><a href="http://twitter.com/{{account.username}}" target="_blank">{{account.name}}</a></strong>
-                                    {% if account.location_user %} {{account.location_user}} {% endif %}
-                                </address>
-                                <p>{{account.description_user}}</p>
-                            </div>
-                        </div>
-                    {% endfor%}
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
