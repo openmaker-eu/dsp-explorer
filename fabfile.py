@@ -73,6 +73,7 @@ def deploy_branch(branch):
 def release(message):
     local('git checkout release')
     local('git merge master')
+    local('npm install')
     local('npm run prod')
     local('fab install_static')
     local('git commit -am "%s"' % message)
