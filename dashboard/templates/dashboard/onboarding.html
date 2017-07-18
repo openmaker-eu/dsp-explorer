@@ -103,7 +103,7 @@
                         </div>
                         <div class="col-md-12" ng-init="tags={}">
                             <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag *" limit="3">
-                                <ui-select-match placeholder="Type a tag and press enter, you can type up to three tags *">{$ $item $}</ui-select-match>
+                                <ui-select-match placeholder="Type a tag and press enter *">{$ $item $}</ui-select-match>
                                 <ui-select-choices repeat="tag in tags.sel">
                                 </ui-select-choices>
                             </ui-select><br/>
