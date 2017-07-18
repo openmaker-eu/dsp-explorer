@@ -58,6 +58,7 @@ def deploy_dev():
         run('fab install_static')
         run('service apache2 reload')
 
+
 @hosts(['topix@dspexplorer.top-ix.org'])
 def deploy_branch(branch):
     with cd('/var/www/dsp-explorer'):
@@ -69,6 +70,7 @@ def deploy_branch(branch):
         run('fab install_static')
         run('service apache2 reload')
 
+
 # fab release:'RELEASE-COMMIT-MESSAGE'
 def release(message):
     local('git checkout release')
@@ -76,6 +78,6 @@ def release(message):
     local('npm install')
     local('npm run prod')
     local('fab install_static')
-    local('git commit -am "%s"' % message)
+    #local('git commit -am "%s"' % message)
     local('git push')
     local('git checkout master')
