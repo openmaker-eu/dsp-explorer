@@ -78,6 +78,6 @@ def release(message):
     local('npm install')
     local('npm run prod')
     local('fab install_static')
-    local('git commit -am "%s"' % message)
+    #local('git commit -am "%s"' % message)
     local('git push')
     local('git checkout master')
