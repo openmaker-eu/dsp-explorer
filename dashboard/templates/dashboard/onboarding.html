@@ -7,14 +7,28 @@
             </h3>
         </div>
         <div class="row">
-
-        </div>
-        <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <hr>
             </div>
         </div>
-        <div class="row margin-top-20">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-50">
+                <p>
+                    You are about to join the <strong>OpenMaker</strong> community for accelerating the <span class="text-red">4th Industrial Revolution</span>! <br>
+                </p>
+                <p>
+                    By filling this onboarding form, you will join a cross-border movement of people eager to steer radical change in our society, making the most of the 4th Industrial Revolution to drive distribution, decentralisation and mass collaboration in the European manufacturing sector.
+                </p>
+                <p>
+                    OpenMaker is an enabling environment that offers a unique ecosystem of inspiration, learning and collaboration opportunities and resources to grow your innovation capacity in this emerging world.<br>
+                    Whether you are a maker, a manufacturer, a practitioner, a researcher or an enthusiast within the making domain, join us in this open and collaborative journey towards a better world for all!
+                </p>
+                <p>
+                    <strong class="text-red">OpenMaker</strong> is powered by <strong>Horizon2020</strong>.
+                </p>
+            </div>
+        </div>
+        <div class="row margin-top-20 margin-bottom-30">
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
                 <form class="form-group" action="{% url 'dashboard:onboarding' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -28,38 +42,36 @@
                             <p class="text-center"> Profile image</p>
                         </div>
                     </div>
-
                     <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img" style="display: none;"/>
-
                     <div class="row">
-                        <div class="col-md-12 ">
-                            <input class="form-control" required type="email" name="email" placeholder="E-mail (required)"><br />
-                        </div>
-                        <div class="col-md-12 ">
-                            <input class="form-control" required type="password" minlength="8" name="password" placeholder="Password (required)"><br />
-                        </div>
-                        <div class="col-md-12 ">
-                            <input class="form-control" required type="password" minlength="8" name="password_confirm" placeholder="Confirm password (required)"><br />
+                        <div class="col-md-6">
+                            <input class="form-control" required type="text" name="first_name" placeholder="First name *" ><br />
                         </div>
                         <div class="col-md-6">
-                            <input class="form-control" required type="text" name="first_name" placeholder="First name (required)" ><br />
+                            <input class="form-control" required type="text" name="last_name" placeholder="Last name *" ><br />
                         </div>
-                        <div class="col-md-6">
-                            <input class="form-control" required type="text" name="last_name" placeholder="Last name (required)" ><br />
+                        <div class="col-md-12 ">
+                            <input class="form-control" required type="email" name="email" placeholder="E-mail *"><br />
+                        </div>
+                        <div class="col-md-12 ">
+                            <input class="form-control" required type="password" minlength="8" name="password" placeholder="Password *"><br />
+                        </div>
+                        <div class="col-md-12 ">
+                            <input class="form-control" required type="password" minlength="8" name="password_confirm" placeholder="Confirm password *"><br />
                         </div>
                         <div class="col-md-6">
                             <select class="form-control" name="gender" required style="color:rgba(119, 119, 119, 0.81);">
                                 <option selected="selected" disabled="disabled" >Gender (required)</option>
                                 <option value="male" >Male</option>
                                 <option value="female" >Female</option>
-                                <option value="other" >Not specified</option>
+                                <option value="other" >Does it matter?</option>
                             </select>
                         </div><br />
 
                         <div class="col-md-6">
                             {#                            <input placeholder="Birthdate" format="yyyy-MM-dd" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >#}
                             <p class="input-group" style="margin: 0;">
-                                <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD (required) "
+                                <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
                                        uib-datepicker-popup="yyyy/MM/dd"
                                        ng-model="birthdate"
                                        name = "birthdate"
@@ -81,14 +93,17 @@
                                    name="city"
                                    id="city"
                                    class="form-control"
-                                   placeholder="Start typing a city name (required)"><br />
+                                   placeholder="Start typing the city name where you are based *"><br />
                         </div>
                         <div class="col-md-12">
-                            <input class="form-control" required type="text" name="occupation" placeholder="Occupation (required)"><br />
+                            <input class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
+                        </div>
+                        <div class="col-md-12">
+                            Enter up to 3 keywords about you, your profession and/or your values.<br>This will help us in providing you a <strong>valuable experience</strong>!<br><br>
                         </div>
                         <div class="col-md-12" ng-init="tags={}">
-                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag (required)" limit="3">
-                                <ui-select-match placeholder="Type a tag and press enter, you can type up to three tags (required)">{$ $item $}</ui-select-match>
+                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag *" limit="3">
+                                <ui-select-match placeholder="Type a tag and press enter, you can type up to three tags *">{$ $item $}</ui-select-match>
                                 <ui-select-choices repeat="tag in tags.sel">
                                 </ui-select-choices>
                             </ui-select><br/>
@@ -101,6 +116,10 @@
                             <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-at"></span></span>
                                 <input type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Twitter username">
                             </div>
+                        </div>
+
+                        <div class="col-md-12 margin-top-20">
+                            * required fields
                         </div>
 
                         <div class="col-md-12 margin-top-20">
