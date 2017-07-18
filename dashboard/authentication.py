@@ -186,7 +186,7 @@ def onboarding(request):
             messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
         except:
-            imagepath = request.build_absolute_uri('/static/user_icon.png')
+            imagepath = request.build_absolute_uri('/static/images/user_icon.png')
 
 
         # Check if user exist
