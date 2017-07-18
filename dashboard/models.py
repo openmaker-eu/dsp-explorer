@@ -13,7 +13,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
     # CRM Data
-    picture_url = models.TextField(_('Picture URL'), max_length=500, null=True, blank=True)
+    picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
@@ -33,7 +33,7 @@ class Profile(models.Model):
         ordering = ('user',)
     
     @classmethod
-    def create(cls, email, first_name, last_name, picture_url, password=None, gender=None,
+    def create(cls, email, first_name, last_name, picture, password=None, gender=None,
                birthdate=None, city=None, occupation=None, tags=None, twitter_username=None):
 
         try:
@@ -52,7 +52,7 @@ class Profile(models.Model):
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             profile = cls(user=user)
-            profile.picture_url = picture_url
+            profile.picture = picture
             profile.gender = gender
             profile.birthdate = birthdate
             profile.city = city

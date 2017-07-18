@@ -1,5 +1,6 @@
 # Images
 static/images/profile
+media/images/profile
 
 # Custom setting
 local_settings.py
@@ -23,7 +24,6 @@ env
 __pycache__/
 local_settings.py
 db.sqlite3
-media
 
 # End of https://www.gitignore.io/api/django
 
