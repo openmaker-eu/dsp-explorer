@@ -15,8 +15,7 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
         }).then($scope.handleSearchLastMembersResponse, $scope.handleSearchError)
 
     }
-
-
+    
     $scope.search = function(){
         if($scope.search_filter.length < 3){
             $scope.results = $scope.last_members;
@@ -45,7 +44,5 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.handleSearchError = function(){
         $scope.results = []
     };
-
-
 
 }]
