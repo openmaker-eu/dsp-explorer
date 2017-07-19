@@ -18,8 +18,7 @@ require("ui-select")
 require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 
-
-let app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])
+var app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
@@ -29,11 +28,10 @@ app.config(['$qProvider', function ($qProvider) {
     $qProvider.errorOnUnhandledRejections(false);
 }]);
 
-app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
+// Require static angular componenets
+require("../../../static/js/index").default(app)
+
 require("../../../static/js/footer/header.footer.behaviour")
-
-
-export { app };
 
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )

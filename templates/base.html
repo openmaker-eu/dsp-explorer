@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700" rel="stylesheet">
 
 </head>
+
 <body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl"
       ng-init="
           toastrMessage = [
@@ -26,6 +27,7 @@
                 {% endfor %}
           ];
       ">
+
 <div id="top-div">
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">

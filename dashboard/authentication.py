@@ -17,7 +17,8 @@ import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
 from utils.hasher import HashHelper
-
+from django.shortcuts import redirect
+import json
 
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
@@ -195,7 +196,6 @@ def onboarding(request):
             logging.error('[VALIDATION_ERROR] Error during image upload: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
-
     # Check if user exist
         try:
             User.objects.get(email=email)
@@ -278,10 +278,18 @@ def onboarding_confirmation(request, token):
             logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
             # TODO SEND ERROR EMAIL TO ADMIN
             return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
     profile.user.is_active = True
     profile.user.save()
     profile.update_reset_token()
-    messages.success(request, 'Your account is now active. Please login with your credentials!')
+    # messages.success(request, 'Your account is now active. Please login with your credentials!')
+
+    # Modal creation
+    modal_options = {
+        "title": "Onboarding completed!",
+        "body": "Your account is now active. Please login with your credentials!"
+    }
+    messages.info(request, json.dumps(modal_options),  extra_tags='modal')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 

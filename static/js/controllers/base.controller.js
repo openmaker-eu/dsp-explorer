@@ -1,6 +1,10 @@
-export default ['$scope','$uibModal','$http','$rootScope','toastr', function ($scope,$uibModal,$http,$rootScope,toastr) {
+export default
+    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal',
+    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal) {
     
     $scope.rootScope = $rootScope;
+
+    console.log(MessageModal);
     
     $scope.openModal = (m) => {
         let modal = $(m);
@@ -18,8 +22,37 @@ export default ['$scope','$uibModal','$http','$rootScope','toastr', function ($s
     $scope.modal_message = null;
 
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
-        newValue.forEach(function (el) {
-            toastr[el.tags](el.message);
+        
+        _.forEach( newValue, (el) => {
+            
+            el.tags = el.tags.split(" ")
+            let toastr_tags = [ 'debug', 'info', 'success', 'warning', 'error' ]
+            
+            // Is a Modal
+            if( el.tags.indexOf('modal') > -1 ){
+                try{
+                    let modal_options = JSON.parse( el.message )
+                    modal_options.title
+                        && modal_options.body
+                        && MessageModal.openModal(modal_options.title || null, modal_options.body || null, null, null, null)
+                }
+                catch(e){console.log('[ERROR] : modal message object is not valid');}
+                return
+            }
+            // Is a Toastr
+            else
+            {
+                _.forEach(el.tags, (tag)=>{
+                    
+                    let tag_index = toastr_tags.indexOf(tag)
+                    
+                    console.log('tags', tag_index);
+                    console.log('tags', el.tags[tag_index]);
+                    
+                    if(tag_index > -1) toastr[toastr_tags[tag_index]](el.message);
+                })
+            }
+            
         })
     })
 

@@ -1,0 +1,21 @@
+<div id="message_modal" >
+    <div class="modal-content" >
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="closeModal()"><span aria-hidden="true" >&times;</span></button>
+            <h4 class="modal-title text-center sub-title" id="myModalLabel"><strong class="text-red">{$ title $}</strong></h4>
+        </div>
+
+        <div class="modal-body">
+            <p> {$ message $} </p>
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="btn close-button" data-dismiss="modal" ng-click="closeModal()">Close</button>
+            <a ng-if="button_url && button_title" href="{$ button_url $}"><button type="button" class="btn login-button">{$ button_title $}</button></a>
+
+        </div>
+
+    </div>
+</div>
