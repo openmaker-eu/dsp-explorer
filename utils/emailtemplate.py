@@ -703,9 +703,9 @@ We are confident in the ability of open collaboration to tackle complex societal
 
 <p>We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.</p>
 
-<p>Join our community <a href="{ONBOARDING_LINK}" target="_blank">here</a>.<br> 
-Click <a href="http://openmaker.eu/" target="_blank">here</a> to discover more.<br>
-Subscribe to the <a href="http://openmaker.eu/" target="_blank">newsletter</a> to get the latest news from the community.</p>
+<p>
+<strong>Join</strong> our community <a href="{ONBOARDING_LINK}" target="_blank">here</a>.<br> 
+<strong>Nominate</strong> someone as well clicking <a href="http://openmaker.eu/nominate" target="_blank">here</a>.
 '''
 
 onboarding_email_template = '''
