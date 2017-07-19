@@ -170,17 +170,17 @@ def onboarding(request):
 
         # Check image and get url
         try:
-            file = request.FILES['profile_img']
-            filename, file_extension = os.path.splitext(file.name)
+            imagefile = request.FILES['profile_img']
+            filename, file_extension = os.path.splitext(imagefile.name)
 
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
                 raise ValueError
 
-            imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
-            imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
-
-            default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
+            imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
+            # imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
+            #
+            # default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
 
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
@@ -199,7 +199,7 @@ def onboarding(request):
 
         # profile create
         try:
-            profile = Profile.create(email, first_name, last_name, imagepath, pasw, gender, birthdate_dt,
+            profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
                                      city, occupation, tags, twitter_username)
         except Exception as exc:
             messages.error(request, 'Error creating user')
@@ -246,7 +246,7 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture_url
+                'pictureURL': profile.picture.url
             }
             })
         except:
@@ -262,7 +262,7 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture_url
+                'pictureURL': profile.picture.url
             }
             })
         except:

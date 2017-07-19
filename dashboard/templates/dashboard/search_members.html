@@ -48,7 +48,7 @@
                     <h3>Results: {$results.length$}</h3>
                     <div class="col-md-4" ng-repeat="data in results">
                         <a href="/profile/{$data['id']$}">
-                            <h4 class="pull-left" style="height: 4em;"><img class="img-circle" ng-src="{$ data.picture_url $}" alt="" style="height: 80px; width: 80px;">&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+                            <h4 class="pull-left" style="height: 4em;"><img class="img-circle" ng-src="{$ data.picture $}" alt="" style="height: 80px; width: 80px;">&nbsp;&nbsp;&nbsp;&nbsp;</h4>
                             <h4 class="pull-left" style="line-height: 4em;">
                                 <p style="line-height: 81px;"  ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></p>
                             </h4>

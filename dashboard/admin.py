@@ -3,7 +3,7 @@ from .models import Profile, Feedback
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'picture_url', 'reset_token')
+    list_display = ('user', 'reset_token')
 
 
 class FeedbackAdmin(admin.ModelAdmin):
