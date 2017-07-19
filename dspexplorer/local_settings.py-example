@@ -122,7 +122,7 @@ DSP_GET_INFLUENCERS = '/get_influencers'
 
 SECRET_TOKEN = ''
 CAPSULE_BASE_URL = 'https://api.capsulecrm.com/api/v2'
-CAPSULE_BASE_URL_PARTIES = CAPSULE_BASE_URL + '/parties'
+CAPSULE_BASE_URL_PARTIES = CAPSULE_BASE_URL + '/parties'0
 
 # EMAIL SETTINGS
 
