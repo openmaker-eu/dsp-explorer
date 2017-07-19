@@ -18,6 +18,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
 from utils.hasher import HashHelper
 
+
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
@@ -138,6 +139,8 @@ def onboarding(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
+        imagefile = None
+
         try:
             email = request.POST['email']
             pasw = request.POST['password']
@@ -185,11 +188,15 @@ def onboarding(request):
         except ValueError:
             messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
-        except:
-            imagepath = request.build_absolute_uri('/static/images/user_icon.png')
+        except KeyError:
+            imagefile = 'images/profile/default_user_icon.png'
+        except Exception as exc:
+            messages.error(request, 'Error during image upload, please try again')
+            logging.error('[VALIDATION_ERROR] Error during image upload: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
 
-        # Check if user exist
+    # Check if user exist
         try:
             User.objects.get(email=email)
             messages.error(request, 'User is already a DSP member!')
@@ -202,6 +209,7 @@ def onboarding(request):
             profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
                                      city, occupation, tags, twitter_username)
         except Exception as exc:
+            logging.error('[PROFILE_CREATION_ERROR] Error during local profile creation for user email: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
