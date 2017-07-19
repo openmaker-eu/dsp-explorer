@@ -142,8 +142,8 @@ def onboarding(request):
             email = request.POST['email']
             pasw = request.POST['password']
             pasw_confirm = request.POST['password_confirm']
-            first_name = request.POST['first_name'].lower().capitalize()
-            last_name = request.POST['last_name'].lower().capitalize()
+            first_name = request.POST['first_name'].title()
+            last_name = request.POST['last_name'].title()
             gender = request.POST['gender']
             birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
             birthdate_dt = pytz.utc.localize(birthdate_dt)
