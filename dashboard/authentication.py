@@ -179,10 +179,11 @@ def onboarding(request):
             # imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
             # default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
 
-        except ValueError:
+        except ValueError as exc:
             messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
-        except KeyError:
+        except KeyError as exc:
+            logging.error('[WARN] no image provded: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             imagefile = 'images/profile/default_user_icon.png'
         except Exception as exc:
             messages.error(request, 'Error during image upload, please try again')

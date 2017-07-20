@@ -1,6 +1,6 @@
 export default
-    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal',
-    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal) {
+    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory',
+    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory) {
     
     $scope.rootScope = $rootScope;
 
@@ -20,7 +20,7 @@ export default
     $scope.closeModal = () => { $scope.modalInstance.close();  $scope.modal_message = null;}
     
     $scope.modal_message = null;
-
+    
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
         
         _.forEach( newValue, (el) => {

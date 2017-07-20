@@ -7,7 +7,7 @@ export default ['$uibModal','$http','ModalFactory', function($uibModal,$http,Mod
                 $scope.message = message
                 $scope.button_title = button_title
                 $scope.button_url = button_url
-                $scope.action = action
+                $scope.button_action = action
             }
             
             this.modalInstance = ModalFactory.createModal(require('../../../templates/modals/message.html'), controller );
