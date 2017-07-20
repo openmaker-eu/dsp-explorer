@@ -688,7 +688,8 @@ invitation_email_confirmed = '''
 <p>The nominated person is about to receive an invitation to join the <strong>OpenMaker</strong> community!</p>
 <p>Want to join as well? Click here to <a href="{ONBOARDING_LINK}" target="_blank">Onboard</a> and discover how you can contribute to accelerating the <strong>4th Industrial Revolution</strong>!</p>
                                   
-<p>If you are curious about the <strong>OpenMaker</strong> initiative, check out our <a href="http://openmaker.eu/" target="_blank">website</a> and subscribe to our Newsletter to receive the latest updates from the community!</p>
+<p>
+If you want to nominate another person, do it <a href="http://openmaker.eu/nominate" target="_blank">here</a>!</p>
 '''
 
 invitation_email_receiver = '''
