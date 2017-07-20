@@ -3,8 +3,6 @@ export default
     function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory) {
     
     $scope.rootScope = $rootScope;
-
-    console.log(MessageModal);
     
     $scope.openModal = (m) => {
         let modal = $(m);
@@ -43,12 +41,7 @@ export default
             else
             {
                 _.forEach(el.tags, (tag)=>{
-                    
                     let tag_index = toastr_tags.indexOf(tag)
-                    
-                    console.log('tags', tag_index);
-                    console.log('tags', el.tags[tag_index]);
-                    
                     if(tag_index > -1) toastr[toastr_tags[tag_index]](el.message);
                 })
             }

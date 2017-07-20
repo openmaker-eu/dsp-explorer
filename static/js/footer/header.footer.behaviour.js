@@ -16,7 +16,6 @@
         }
 
         $("body").css("padding-top", $(".navbar").height() + header_padding + header_margin + header_border);
-        console.log($(".navbar").height());
     }
 
     $(window).on('resize', re_render);

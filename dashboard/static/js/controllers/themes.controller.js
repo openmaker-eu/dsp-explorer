@@ -45,8 +45,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             },
             
             get : ( theme = model.theme , filter = model.filter , cursor = model.next_cursor) => {
-    
-                console.log('get');
+
                 model.data = []
                 model.current_cursor = null
                 model.next_cursor = -1
@@ -61,11 +60,11 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         
     }) ()
     
-    $(window).scroll(function() {
-        console.log( $(window).scrollTop() );
-        console.log('top', $('.infinite-container').offset() )
-        
-    });
+    // $(window).scroll(function() {
+    //     console.log( $(window).scrollTop() );
+    //     console.log('top', $('.infinite-container').offset() )
+    //
+    // });
     
     
     // ToDo make yesterday filter active as default [css] and change active class when other filters are selected
@@ -102,14 +101,13 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     // fired when django theme var in loaded in angular
     $scope.$watch('dj', function (newValue, oldValue) {
         $scope.theme = newValue.theme
-        console.log($scope.FeedModel, newValue, oldValue );
         
         // $scope.theme = newValue.theme
         $scope.FeedModel.theme = newValue.theme
         
         // get feeds
         // getFeed($scope.theme, $scope.filter, $scope.cursor)
-        $scope.FeedModel.next().then(()=>{console.log($scope.FeedModel, newValue, oldValue );})
+        $scope.FeedModel.next();
         
         // get influencers
         getInfluencers($scope.theme)
