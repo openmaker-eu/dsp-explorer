@@ -1,3 +1,5 @@
+require('../styles/base.scss')
+
 export default function(app){
     
     app.factory('ModalFactory', require('./factories/modal.factory').default )

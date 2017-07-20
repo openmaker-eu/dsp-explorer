@@ -2,15 +2,22 @@
 {% block container %}
 
 <div class="container-fluid" ng-controller="dashboardController">
-    <div class="row" xmlns="http://www.w3.org/1999/html">
-        <div class="col-md-12 text-center">
+    <div class="row">
+        <div class="    col-lg-4 col-lg-offset-4
+                        col-md-6 col-md-offset-3
+                        col-sm-6 col-sm-offset-3
+                        col-xs-12
+        ">
             <img class="cover-img" src="/static/images/cover-image.png">
-            <p class="text-center claim">
+        </div>
+        <div class="col-md-12" >
+            <p class="text-center claim margin-top-4-perc" style="display: inline-block; width: 100%;">
                 <span class="text-red">Explore</span> the <span class="text-red"><strong>Maker</strong> Community</span>.<br>
                 Find <span class="text-red">Fresh</span> and <span class="text-red">Popular</span> <strong class="text-red">News</strong>, Meet the <strong class="text-red">Influencers</strong>
             </p>
         </div>
-        <div class="col-md-12 text-center margin-top-50">
+
+        <div class="col-md-12 text-center margin-top-4-perc">
             <p>
                 New to the OpenMaker community?
             </p>
@@ -19,18 +26,18 @@
     </div>
 
 
-    <div class="row margin-top-50 margin-bottom-50">
+    <div class="row margin-top-4-perc margin-bottom-4-perc">
         <div class="col-md-6 col-md-offset-3"><hr></div>
     </div>
 
 
-    <div class="row margin-bottom-50">
+    <div class="row margin-bottom-4-perc">
         <div class="container">
 
             <div class="col-md-9 col-md-offset-2">
                 <p class="sub-title margin-bottom-25">Some of our <strong>Members</strong></p>
                     <div class="row margin-top-25">
-                        <div class="col-md-3">
+                        <div class="col-md-3 margin-bottom-2-perc">
                             <img class="img-circle" src="/static/images/user/roberto_rubini_icon.jpg">
                         </div>
                         <div class="col-md-8">
@@ -47,7 +54,7 @@
                         <div class="col-md-12"><hr></div>
                     </div>
                     <div class="row margin-top-25">
-                        <div class="col-md-3">
+                        <div class="col-md-3 margin-bottom-2-perc">
                             <img class="img-circle" src="/static/images/user/giacomo_falaschi_icon.jpg">
                         </div>
                         <div class="col-md-8">
@@ -62,7 +69,7 @@
                         <div class="col-md-12"><hr></div>
                     </div>
                     <div class="row margin-top-25">
-                        <div class="col-md-3">
+                        <div class="col-md-3 margin-bottom-2-perc">
                             <img class="img-circle" src="/static/images/user/daniele_d_arrigo_icon.jpg">
                         </div>
                         <div class="col-md-8">
@@ -99,21 +106,21 @@
                 <p class="sub-title text-center">Read fresh and popular about maker movement (login required)</p>
             </div>
             <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-4 col-xs-12">
+                <div class="col-md-4 col-xs-12 margin-bottom-1-perc">
                     <a ng-click="openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>Arduino</p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-4 col-xs-12">
+                <div class="col-md-4 col-xs-12 box-container margin-bottom-1-perc">
                     <a ng-click="openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>Raspberry</p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-4 col-xs-12">
+                <div class="col-md-4 col-xs-12 margin-bottom-1-perc">
                     <a ng-click="openModal('#login_modal')">
                         <div class="col-md-12 box">
                             <p>3D Printer</p>
