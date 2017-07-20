@@ -248,7 +248,7 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture.url
+                #'pictureURL': profile.picture.url
             }
             })
         except:
@@ -264,7 +264,7 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture.url
+                #'pictureURL': profile.picture.url
             }
             })
         except:
