@@ -680,7 +680,7 @@ invitation_email_confirm = '''
 <p>Please click <a href="{CONFIRMATION_LINK}">here</a> to verify your e-mail and confirm your nomination.</p>
 
 <p>If you have received this e-mail by mistake, please ignore it.<br>
-If you wish to get more information on the&nbsp;<strong>OpenMaker </strong>initiative, the chain of nomination process and the community as a whole, contact us at: <a href="mailto:info@openmaker.eu">info@openmaker.eu</a></p>
+For more information, check the <a href="http://openmaker.eu/" target="_blank">website</a> or contact us at: <a href="mailto:info@openmaker.eu">info@openmaker.eu</a></p>
 '''
 
 invitation_email_confirmed = '''
