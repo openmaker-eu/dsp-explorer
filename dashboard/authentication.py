@@ -5,19 +5,15 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 import datetime as dt
-from datetime import datetime
 from utils.mailer import EmailHelper
 from .models import Profile, User, Invitation
 from crmconnector import capsule
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 import os
 import pytz
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
 from utils.hasher import HashHelper
-from django.shortcuts import redirect
 import json
 
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
@@ -140,8 +136,6 @@ def onboarding(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
-        imagefile = None
-
         try:
             email = request.POST['email']
             pasw = request.POST['password']
@@ -183,7 +177,6 @@ def onboarding(request):
 
             imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
             # imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
-            #
             # default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
 
         except ValueError:
@@ -248,7 +241,7 @@ def onboarding_confirmation(request, token):
     user = capsule.CRMConnector.search_party_by_email(profile.user.email)
     if user:
         try:
-            update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
+            capsule.CRMConnector.update_party(user['id'], {'party': {
                 'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
                 'type': 'person',
                 'firstName': profile.user.first_name,
@@ -282,7 +275,6 @@ def onboarding_confirmation(request, token):
     profile.user.is_active = True
     profile.user.save()
     profile.update_reset_token()
-    # messages.success(request, 'Your account is now active. Please login with your credentials!')
 
     # Modal creation
     modal_options = {
