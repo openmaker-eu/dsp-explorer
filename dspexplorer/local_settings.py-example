@@ -135,3 +135,7 @@ SMTP_KEY = ''
 
 MEDIA_ROOT = ''
 MEDIA_URL = ''
+
+# CSRF_FAILURE
+
+CSRF_FAILURE_VIEW = 'dashboard.authentication.csrf_failure'
