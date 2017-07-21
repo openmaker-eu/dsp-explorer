@@ -9,17 +9,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-md-offset-3 margin-top-50">
+            <div class="col-xs-12 col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-3 margin-top-50">
                 <div class="row">
-                    <div class="col-sm-6 col-md-4">
-                        {% if profile %}
+                    <div class="col-sm-6 col-sm-offset-0 col-md-4 col-md-offset-0 col-xs-4 col-xs-offset-4 ">
                         <img src="{{profile.picture.url}}" alt="" class="img-circle img-responsive" />
-                        {% else %}
-                        <img src="/static/images/user_icon.png" alt="" class="img-circle img-responsive" />
-                        {% endif %}
                     </div>
-                    <div class="col-sm-6 col-md-8">
-                        <h4>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <div>
+                            <h4>
                             {{profile.user.first_name}} {{profile.user.last_name}}
                         </h4>
                         <small>
@@ -31,6 +28,7 @@
                             <i class="glyphicon glyphicon-globe"></i><a href="http://openmaker.eu">  http://openmaker.eu</a>
                             <br />
                             <i class="glyphicon glyphicon-gift"></i> ...</p>
+                        </div>
                     </div>
                 </div>
 

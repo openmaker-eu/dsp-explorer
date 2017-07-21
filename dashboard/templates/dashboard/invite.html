@@ -1,31 +1,50 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container">
-        <div class="row margin-bottom-15">
-            <div class="text-center col-md-6 col-md-offset-3"><h1>Invite People</h1></div>
-        </div>
-        <div class="row">
-            <p class="col-xs-12 col-md-10 col-md-offset-1">
-                Do you know someone interested in the future of industry and the acceleration of the <strong>4th Industrial Revolution</strong> in Europe?<br /><br />
-                Help us bring together <strong>makers</strong>, <strong>manufacturers</strong>, <strong>innovators</strong> and <strong>thought leaders</strong> in the manufacturing sector by nominating anyone you know with great ideas, projects and vision on new forms of production and making.<br /><br />
-                We will send them an invitation to join our wider community – we won’t email them more than once and we aren’t interested in exploiting contacts for commercial interests.<br /><br />
-                If you wish to find out more about OpenMaker’s chain of nomination, <a href="mailto:info@openmaker.eu" class="text-red"><strong>contact us</strong></a>!
-            </p>
-        </div>
+
         <div class="row">
             <div class="col-md-12">
-                <hr>
+                <div class="col-md-12">
+                    <ol class="breadcrumb">
+                        <li>Search</li>
+                        <li class="active">Members</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-bottom-15">
+            <div class="col-md-12">
+                <div class="text-center col-md-6 col-md-offset-3"><h1>Invite People</h1></div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
-                    {% csrf_token %}
-                    <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
-                    <input class="form-control" required type="text" name="first_name" placeholder="First name" required><br />
-                    <input class="form-control" required type="text" name="last_name" placeholder="Last name" required><br />
-                    <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
-                </form>
+            <div class="col-md-12">
+                <p class="col-xs-12 col-md-10 col-md-offset-1">
+                    Do you know someone interested in the future of industry and the acceleration of the <strong>4th Industrial Revolution</strong> in Europe?<br /><br />
+                    Help us bring together <strong>makers</strong>, <strong>manufacturers</strong>, <strong>innovators</strong> and <strong>thought leaders</strong> in the manufacturing sector by nominating anyone you know with great ideas, projects and vision on new forms of production and making.<br /><br />
+                    We will send them an invitation to join our wider community – we won’t email them more than once and we aren’t interested in exploiting contacts for commercial interests.<br /><br />
+                    If you wish to find out more about OpenMaker’s chain of nomination, <a href="mailto:info@openmaker.eu" class="text-red"><strong>contact us</strong></a>!
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-8 col-md-offset-2">
+                    <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
+                        {% csrf_token %}
+                        <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
+                        <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
+                        <input class="form-control" required type="text" name="last_name" placeholder="Last name"><br />
+                        <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
+                    </form>
+                </div>
             </div>
         </div>
     </div>
