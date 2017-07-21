@@ -351,3 +351,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
     except Invitation.DoesNotExist:
         messages.error(request, 'Invitation does not exist')
     return HttpResponseRedirect('http://openmaker.eu/confirmed/')
+
+
+def csrf_failure(request, reason=""):
+    messages.warning(request, 'Some error occurs!')
+    return HttpResponseRedirect(reverse('dashboard:login'))
