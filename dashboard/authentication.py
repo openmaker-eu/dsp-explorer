@@ -262,7 +262,7 @@ def onboarding_confirmation(request, token):
     }
     
     messages.info(request, json.dumps(modal_options), extra_tags='modal')
-    return HttpResponseRedirect(reverse('dashboard:invite'))
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
 def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
