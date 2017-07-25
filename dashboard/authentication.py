@@ -8,19 +8,19 @@ import datetime as dt
 from utils.mailer import EmailHelper
 from .models import Profile, User, Invitation
 from crmconnector import capsule
-import os
 import pytz
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
 from utils.hasher import HashHelper
+from utils.generic import *
 import json
-
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
 
 def logout_page(request):
+
     logout(request)
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
@@ -254,13 +254,24 @@ def onboarding_confirmation(request, token):
     profile.user.save()
     profile.update_reset_token()
     login(request, profile.user)
-    # Modal creation
-    # TODO USE HTML FOR MODAL CONTENT
+    # Modal creation after first login
+    body = '' \
+           '<div class="row">' \
+           '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
+           '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
+           '<div class="col-md-6 text-center">' \
+           '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
+           '</div>' \
+           '<div class="col-md-6 text-center">' \
+           '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
+           '</div>' \
+           '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
+
     modal_options = {
         "title": "Welcome onboard {}!".format(profile.user.first_name),
-        "body": "Start discover the community and build great projects! Remember to nominate your friends!",
+        "body": escape_html(body),
+        "footer": False
     }
-    
     messages.info(request, json.dumps(modal_options), extra_tags='modal')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 

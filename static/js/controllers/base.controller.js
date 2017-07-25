@@ -29,10 +29,15 @@ export default
             // Is a Modal
             if( el.tags.indexOf('modal') > -1 ){
                 try{
-                    let modal_options = JSON.parse( el.message )
+
+                    console.log(el.message);
+
+                    let modal_options = JSON.parse( el.message );
+                    modal_options.body = modal_options.body.replace(/ESCAPE/g, '"');
                     modal_options.title
                         && modal_options.body
                         && MessageModal.openModal(modal_options.title || null, modal_options.body || null, null, null, null)
+
                 }
                 catch(e){console.log('[ERROR] : modal message object is not valid');}
                 return

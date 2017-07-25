@@ -1,4 +1,4 @@
-wwindow.addEventListener("load", function(){
+window.addEventListener("load", function(){
     window.cookieconsent.initialise({
         "palette": {
             "popup": {

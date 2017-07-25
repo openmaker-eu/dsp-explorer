@@ -7,11 +7,11 @@
         </div>
 
         <div class="modal-body">
-            <p> {$ message $} </p>
+            <span ng-bind-html="message"></span>
         </div>
 
-        <div class="modal-footer">
 
+        <div class="modal-footer" ng-if="footer">
             <button type="button" class="btn close-button" data-dismiss="modal" ng-click="closeModal()">Close</button>
             <a ng-if="button_title && button_url && !button_action " href="{$ button_url $}">
                 <button type="button" class="btn login-button">{$ button_title $}</button></a>
