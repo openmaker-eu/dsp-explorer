@@ -13,9 +13,10 @@
         <div class="modal-footer">
 
             <button type="button" class="btn close-button" data-dismiss="modal" ng-click="closeModal()">Close</button>
-            <a ng-if="button_title && button_url && button_title && !button_action " href="{$ button_url $}"><button type="button" class="btn login-button">{$ button_title $}</button></a>
-            <a ng-if="button_title && button_action && !button_url" ng-click="button_action()"><button type="button" class="btn login-button">{$ button_title $}</button></a>
-
+            <a ng-if="button_title && button_url && !button_action " href="{$ button_url $}">
+                <button type="button" class="btn login-button">{$ button_title $}</button></a>
+            <a ng-if="button_title && button_action && !button_url" ng-click="button_action()">
+                <button type="button" class="btn login-button">{$ button_title $}</button></a>
         </div>
 
     </div>

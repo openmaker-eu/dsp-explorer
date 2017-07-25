@@ -167,30 +167,9 @@ def onboarding(request):
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
         # Check image and get url
-        try:
-            imagefile = request.FILES['profile_img']
-            filename, file_extension = os.path.splitext(imagefile.name)
+        imagefile = 'images/profile/default_user_icon.png'
 
-            allowed_extensions = ['.jpg', '.jpeg', '.png']
-            if not (file_extension in allowed_extensions):
-                raise ValueError
-
-            imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
-            # imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
-            # default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
-
-        except ValueError as exc:
-            messages.error(request, 'Profile Image is not an image file')
-            return HttpResponseRedirect(reverse('dashboard:onboarding'))
-        except KeyError as exc:
-            logging.error('[WARN] no image provded: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
-            imagefile = 'images/profile/default_user_icon.png'
-        except Exception as exc:
-            messages.error(request, 'Error during image upload, please try again')
-            logging.error('[VALIDATION_ERROR] Error during image upload: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
-            return HttpResponseRedirect(reverse('dashboard:onboarding'))
-
-    # Check if user exist
+        # Check if user exist
         try:
             User.objects.get(email=email)
             messages.error(request, 'User is already a DSP member!')
@@ -238,7 +217,7 @@ def onboarding_confirmation(request, token):
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    #Check for user on Capsupe CRM
+    # Check for user on Capsule CRM
     user = capsule.CRMConnector.search_party_by_email(profile.user.email)
     if user:
         try:
@@ -248,7 +227,6 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                #'pictureURL': profile.picture.url
             }
             })
         except:
@@ -264,7 +242,6 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                #'pictureURL': profile.picture.url
             }
             })
         except:
@@ -276,14 +253,16 @@ def onboarding_confirmation(request, token):
     profile.user.is_active = True
     profile.user.save()
     profile.update_reset_token()
-
+    login(request, profile.user)
     # Modal creation
+    # TODO USE HTML FOR MODAL CONTENT
     modal_options = {
-        "title": "Onboarding completed!",
-        "body": "Your account is now active. Please login with your credentials!"
+        "title": "Welcome onboard {}!".format(profile.user.first_name),
+        "body": "Start discover the community and build great projects! Remember to nominate your friends!",
     }
-    messages.info(request, json.dumps(modal_options),  extra_tags='modal')
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    
+    messages.info(request, json.dumps(modal_options), extra_tags='modal')
+    return HttpResponseRedirect(reverse('dashboard:invite'))
 
 
 def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
