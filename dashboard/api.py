@@ -68,6 +68,9 @@ def post_om_invitation(request):
                 or receiver_last_name == '' or receiver_email == '':
             return bad_request("Please fill al the fields")
 
+        if sender_email == receiver_email:
+            return bad_request("Sender and reciver must be different")
+
     except KeyError:
         return bad_request("Please fill al the fields")
 
