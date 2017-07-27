@@ -57,7 +57,7 @@ def search_members(request):
 def invite(request):
     if request.method == 'POST':
         try:
-            address = request.POST['email']
+            address = request.POST['email'].lower()
             first_name = request.POST['first_name'].title()
             last_name = request.POST['last_name'].title()
         except KeyError:
