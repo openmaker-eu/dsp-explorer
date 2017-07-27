@@ -137,7 +137,7 @@ def onboarding(request):
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
         try:
-            email = request.POST['email']
+            email = request.POST['email'].lower()
             pasw = request.POST['password']
             pasw_confirm = request.POST['password_confirm']
             first_name = request.POST['first_name'].title()
