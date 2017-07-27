@@ -558,7 +558,7 @@ invitation_base_template_header = '''
                 <![endif]-->
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
                     <tr>
-                        <td valign="top" id="templatePreheader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
+                        <td valign="top" id="templatePreheader"><table border="0" cellpadding="0" cellspacing="0" class="mcnImageBlock" style="min-width:100%;" >
                             <tbody class="mcnImageBlockOuter">
                             <tr>
                                 <td valign="top" style="padding:9px" class="mcnImageBlockInner">
@@ -582,23 +582,21 @@ invitation_base_template_header = '''
                         <td valign="top" id="templateHeader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
                             <tbody class="mcnDividerBlockOuter">
                             <tr>
-                                <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px;">
-                                    <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top: 2px solid #EAEAEA;">
+                                <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px; ; padding-bottom:0px; ">
+                                    <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" align="center"
+                                           style="max-width:564px; padding:18px; ; padding-bottom:0px; border-top: 2px solid #EAEAEA;">
                                         <tbody><tr>
                                             <td>
                                                 <span></span>
                                             </td>
                                         </tr>
                                         </tbody></table>
-                                    <!--
-                                    <td class="mcnDividerBlockInner" style="padding: 18px;">
-                                    <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
-                                -->
                                 </td>
                             </tr>
                             </tbody>
                         </table></td>
                     </tr>
+
                     <tr>
                         <td valign="top" id="templateBody" style=" border-bottom:none!important;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
                             <tbody class="mcnTextBlockOuter">
@@ -615,62 +613,86 @@ invitation_base_template_header = '''
                                     <table align="center" border="0" cellpadding="0" cellspacing="0"
                                            style="max-width:564px; margin:auto;" class="mcnTextContentContainer">
                                         <tbody><tr>
-
-                                            <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
-                                        
+                                            <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;">
+                                                         
 '''
 
 invitation_base_template_footer = '''
-                                                                                                                                                        </td>
-																																						</tr>
-																																					</tbody></table>
-																																					<!--[if mso]>
-																																				</td>
-																																				<![endif]-->
-																																				
-																																				<!--[if mso]>
-																																			</tr>
-																																		</table>
-																																		<![endif]-->
-																																	</td>
-																																</tr>
-																															</tbody>
-																														</table></td>
-																													</tr>
-																													<tr>
-																														<td valign="top" id="templateFooter"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width:100%;">
-																															<tbody class="mcnImageBlockOuter">
-																																<tr>
-																																	<td valign="top" style="padding:9px" class="mcnImageBlockInner">
-																																		<table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
-																																			<tbody><tr>
-																																				<td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
-																																					
-																																					
-																																					<img align="center" alt="" src="http://openmaker.eu/wp-content/uploads/2017/07/footer-OpenMaker-01.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-																																					
-																																					
-																																				</td>
-																																			</tr>
-																																		</tbody></table>
-																																	</td>
-																																</tr>
-																															</tbody>
-																														</table></td>
-																													</tr>
-																												</table>
-																												<!--[if gte mso 9]>
-																											</td>
-																										</tr>
-																									</table>
-																									<![endif]-->
-																									<!-- // END TEMPLATE -->
-																								</td>
-																							</tr>
-																						</table>
-																					</center>
-																				</body>
-																				</html>
+                                            </td>
+                                        </tr>
+                                        </tbody></table>
+                                    <!--[if mso]>
+                                    </td>
+                                    <![endif]-->
+
+                                    <!--[if mso]>
+                                    </tr>
+                                    </table>
+                                    <![endif]-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    </tr>
+
+                    <tr>
+                        <td valign="top" id="templateHeader"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+                            <tbody class="mcnDividerBlockOuter">
+                            <tr>
+                                <td class="mcnDividerBlockInner" style="min-width:100%; padding:18px; padding-bottom:0px; ">
+                                    <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" align="center"
+                                           style="max-width:564px; padding:18px; padding-bottom:0px; border-top: 2px solid #EAEAEA;">
+                                        <tbody><tr>
+                                            <td>
+                                                <span></span>
+                                            </td>
+                                        </tr>
+                                        </tbody></table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    </tr>
+
+
+                    <tr>
+                        <td valign="top" id="templateFooter"><table border="0" cellpadding="0" cellspacing="0" class="mcnImageBlock" style="min-width:100%;">
+                            <tbody class="mcnImageBlockOuter">
+                            <tr>
+                                <td valign="top" style="padding:9px" class="mcnImageBlockInner">
+                                    <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
+                                        <tbody><tr>
+                                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
+
+
+                                                <img align="center" alt="" src="http://openmaker.eu/wp-content/uploads/2017/07/footer-OpenMaker-01.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+
+
+
+
+
+
+                                            </td>
+                                        </tr>
+                                        </tbody></table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    </tr>
+                </table>
+                <!--[if gte mso 9]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+                <!-- // END TEMPLATE -->
+            </td>
+        </tr>
+    </table>
+</center>
+</body>
+</html>
 '''
 
 invitation_email_confirm = '''

@@ -20,7 +20,6 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 
 
 def logout_page(request):
-
     logout(request)
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
