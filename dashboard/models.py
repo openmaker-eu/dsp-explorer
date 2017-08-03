@@ -135,6 +135,7 @@ class Profile(models.Model):
 
 
 class Invitation(models.Model):
+
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
 
     sender_email = models.EmailField(_('Sender email address'), max_length=254)
