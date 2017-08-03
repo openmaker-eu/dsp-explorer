@@ -57,12 +57,15 @@ def post_om_invitation(request):
     if request.method != 'POST':
         return not_authorized()
     try:
+
         sender_first_name = request.POST['sender_first_name'].title()
         sender_last_name = request.POST['sender_last_name'].title()
         sender_email = request.POST['sender_email'].lower()
         receiver_first_name = request.POST['receiver_first_name'].title()
         receiver_last_name = request.POST['receiver_last_name'].title()
         receiver_email = request.POST['receiver_email'].lower()
+
+
 
         if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
                 or receiver_last_name == '' or receiver_email == '':
@@ -107,11 +110,11 @@ def post_om_invitation(request):
 
     activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
         get_current_site(request),
-        sender_first_name.encode('base64'),
-        sender_last_name.encode('base64'),
+        sender_first_name.encode('utf-8').encode('base64'),
+        sender_last_name.encode('utf-8').encode('base64'),
         sender_email.encode('base64'),
-        receiver_first_name.encode('base64'),
-        receiver_last_name.encode('base64'),
+        receiver_first_name.encode('utf-8').encode('base64'),
+        receiver_last_name.encode('utf-8').encode('base64'),
         receiver_email.encode('base64'))
 
     subject = 'OpenMaker Nomination.. almost done!'
