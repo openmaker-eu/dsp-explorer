@@ -100,3 +100,4 @@ Copy static files on Apache Alias:
     fab install_static
 
 Here we go!
+
