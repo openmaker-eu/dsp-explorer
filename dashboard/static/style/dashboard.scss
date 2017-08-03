@@ -375,3 +375,18 @@ li {
 
 .btn:focus, a:focus{ outline-color: rgba(255,255,255,0)!important; outline-width: 0!important;}
 
+.carousel-inner .item {
+    display: block;
+    height: 0;
+    opacity: 0;
+}
+.carousel-inner .item.active {
+    height: auto;
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+.glyphicon-chevron-left:before, .glyphicon-chevron-right:before {
+    color: #db4348;
+}
+
