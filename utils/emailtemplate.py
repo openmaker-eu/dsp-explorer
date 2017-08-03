@@ -729,7 +729,7 @@ We are confident in the ability of open collaboration to tackle complex societal
 
 <p>
 <strong>Join</strong> our community <a href="{ONBOARDING_LINK}" target="_blank">here</a>.<br> 
-<strong>Nominate</strong> someone as well clicking <a href="http://openmaker.eu/nominate" target="_blank">here</a>.
+<strong>Nominate</strong> someone else here <a href="http://openmaker.eu/nominate" target="_blank">here</a>.
 '''
 
 onboarding_email_template = '''
