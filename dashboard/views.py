@@ -21,6 +21,7 @@ def dashboard(request):
         messages.error(request, e.message)
     return render(request, 'dashboard/dashboard.html', context)
 
+
 @login_required()
 def theme(request, theme_name):
     try:

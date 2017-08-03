@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="container">
+        <div class="row margin-bottom-15 margin-top-30" style="margin-bottom: 15px; margin-top: 30px;">
+            <h3 class="modal-title text-center text-red">Application Form
+            </h3>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
+                <p>
+                    You are about to join the <strong class="text-red">OpenMaker</strong> community for accelerating the <strong class="text-red">4th Industrial Revolution</strong>! <br>
+                </p>
+                <p>
+                    By filling this onboarding form, you will join a cross-border movement of people eager to steer radical change in our society, making the most of the 4th Industrial Revolution to drive distribution, decentralisation and mass collaboration in the European manufacturing sector.
+                </p>
+                <p>
+                    OpenMaker is an enabling environment that offers a unique ecosystem of inspiration, learning and collaboration opportunities and resources to grow your innovation capacity in this emerging world.<br>
+                    Whether you are a maker, a manufacturer, a practitioner, a researcher or an enthusiast within the making domain, join us in this open and collaborative journey towards a better world for all!
+                </p>
+                <p>
+                    <strong class="text-red">OpenMaker</strong> is powered by <strong class="text-red">Horizon2020</strong>.
+                </p>
+            </div>
+        </div>
+        <div class="row margin-top-20 margin-bottom-30">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+                <form class="form-group" action="{% url 'pss:application' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                </form>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

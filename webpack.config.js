@@ -7,7 +7,8 @@ var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 module.exports = {
 
     entry: {
-        dashboard: path.resolve(__dirname, 'dashboard/static/js')
+        dashboard: path.resolve(__dirname, 'dashboard/static/js'),
+        pss: path.resolve(__dirname, 'pss/static/js')
         // enter a new entry point here
     },
     output: {
