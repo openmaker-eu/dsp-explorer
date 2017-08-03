@@ -3,6 +3,12 @@
 
 $dsp-red:#db4348;
 
+html {
+  width: 100vw;
+  overflow-x: hidden;
+
+}
+
 .liactive * {
   @media (max-width: $screen-xs-max) {
     color:$dsp-red!important;
