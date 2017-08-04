@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .models import Application
 from dashboard.models import Profile
+from django.contrib.admin.views.decorators import staff_member_required
 import logging
 
 
@@ -29,3 +30,9 @@ def application(request):
         messages.success(request, 'Thanks for your submission!')
         app.send_email()
     return render(request, 'pss/application.html')
+
+
+@staff_member_required(login_url='dashboard:login')
+def application_result(request):
+    context = {'applications': Application.objects.all()}
+    return render(request, 'pss/application_result.html', context)

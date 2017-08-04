@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="container">
+        <div class="row margin-bottom-15 margin-top-30" style="margin-bottom: 15px; margin-top: 30px;">
+            <h3 class="modal-title text-center text-red">Application Form
+            </h3>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
+                <p>
+                    BLA BLA BLA <strong class="text-red">OpenMaker</strong> community for accelerating the
+                    <strong class="text-red">4th Industrial Revolution</strong>! <br>
+                </p>
+            </div>
+        </div>
+        <div class="row margin-top-20 margin-bottom-30">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>User First Name</th>
+                        <th>User Last Name</th>
+                        <th>Project Name</th>
+                        <th>LES</th>
+                        <th>DOWNLOAD FILES</th>
+                        <th>UPLOADED AT</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>{{  app.profile.user.email  }}</td>
+                            <td>{{ app.profile.user.first_name  }}</td>
+                            <td>{{ app.profile.user.last_name }}</td>
+                            <td>{{ app.project_name }}</td>
+                            <td>{{ app.les }}</td>
+                            <td><a href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>
+                            <td>{{ app.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -20,7 +20,7 @@ from django.views.static import serve
 
 urlpatterns = [
     url(r'^', include('dashboard.urls')),
-    url(r'^application', include('pss.urls')),
+    url(r'^application/', include('pss.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {
         'document_root': settings.MEDIA_ROOT,
