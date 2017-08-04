@@ -52,12 +52,20 @@ def get_influencers(request, theme_name):
                          'result': influencers}, status=200)
 
 
+def get_hot_tags(request, tag_number=4):
+    from itertools import chain
+    from collections import Counter
+    tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
+    flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
+    return JsonResponse({'status': 'ok',
+                         'tags': [t[0] for t in Counter(flat_tags).most_common(int(tag_number))]}, status=200)
+
+
 @csrf_exempt
 def post_om_invitation(request):
     if request.method != 'POST':
         return not_authorized()
     try:
-
         sender_first_name = request.POST['sender_first_name'].title()
         sender_last_name = request.POST['sender_last_name'].title()
         sender_email = request.POST['sender_email'].lower()

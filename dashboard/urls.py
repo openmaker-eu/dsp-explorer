@@ -47,4 +47,6 @@ urlpatterns = [
     url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes'),
     url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
+    url(r'^api/v1.1/get_hot_tags/$', api.get_hot_tags, name='get_hot_tags'),
+    url(r'^api/v1.1/get_hot_tags/(?P<tag_number>\d+)/$', api.get_hot_tags, name='get_hot_tags'),
 ]
