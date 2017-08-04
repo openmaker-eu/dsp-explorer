@@ -13,17 +13,8 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
                 <p>
-                    You are about to join the <strong class="text-red">OpenMaker</strong> community for accelerating the <strong class="text-red">4th Industrial Revolution</strong>! <br>
-                </p>
-                <p>
-                    By filling this onboarding form, you will join a cross-border movement of people eager to steer radical change in our society, making the most of the 4th Industrial Revolution to drive distribution, decentralisation and mass collaboration in the European manufacturing sector.
-                </p>
-                <p>
-                    OpenMaker is an enabling environment that offers a unique ecosystem of inspiration, learning and collaboration opportunities and resources to grow your innovation capacity in this emerging world.<br>
-                    Whether you are a maker, a manufacturer, a practitioner, a researcher or an enthusiast within the making domain, join us in this open and collaborative journey towards a better world for all!
-                </p>
-                <p>
-                    <strong class="text-red">OpenMaker</strong> is powered by <strong class="text-red">Horizon2020</strong>.
+                    BLA BLA BLA <strong class="text-red">OpenMaker</strong> community for accelerating the
+                    <strong class="text-red">4th Industrial Revolution</strong>! <br>
                 </p>
             </div>
         </div>
@@ -31,6 +22,16 @@
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
                 <form class="form-group" action="{% url 'pss:application' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+
+                    Project Name <input class="form-control" type="text" name="project_name" placeholder="Project Name.." required/> <br><br>
+
+                    Your LES <select class="form-control" name="les_choice">
+                                <option value="0">Lama</option>
+                                <option value="1">Topix</option>
+                                <option value="2">NoIdea</option>
+                            </select> <br><br>
+                    <input class="form-control" type="file" name="zip_location" required/> <br><br>
+                    <input class="btn btn-info" type="submit" value="UPLOAD" />
                 </form>
                 <br>
             </div>

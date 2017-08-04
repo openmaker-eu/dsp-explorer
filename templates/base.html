@@ -58,6 +58,9 @@
                         <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:invite' %}">Invite</a>
                         </li>
+                        <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >
+                            <a href="{% url 'pss:application' %}">Application</a>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle"
                                data-toggle="dropdown" role="button"
