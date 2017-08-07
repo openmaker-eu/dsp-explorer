@@ -51,7 +51,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
-                        {#                        <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>#}
                         <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:search_members' %}">Member wall</a>
                         </li>
