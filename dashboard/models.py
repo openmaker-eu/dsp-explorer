@@ -111,7 +111,6 @@ class Profile(models.Model):
         Generate a new reset Token
         :return: String
         """
-        from datetime import datetime as dt
         import pytz
         self.reset_token = (uuid.uuid4())
         self.update_token_at = pytz.utc.localize(dt.now())
@@ -122,7 +121,11 @@ class Profile(models.Model):
         from django.db.models import Q
         profiles = cls.objects.filter(Q(user__email__contains=search_string) |
                                       Q(user__first_name__contains=search_string) |
-                                      Q(user__last_name__contains=search_string))
+                                      Q(user__last_name__contains=search_string) |
+                                      Q(tags__contains=search_string) |
+                                      Q(twitter_username__contains=search_string) |
+                                      Q(occupation__contains=search_string) |
+                                      Q(city__contains=search_string))
         return profiles
 
     @classmethod
