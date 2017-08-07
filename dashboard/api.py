@@ -58,6 +58,20 @@ def get_hot_tags(request, tag_number=4):
                          'tags': [t[0] for t in Profile.get_hot_tags(tag_number)]}, status=200)
 
 
+def get_user_stats(request):
+    n_profiles = len(Profile.objects.all())
+    n_male = len(Profile.objects.filter(gender='male'))
+    n_female = len(Profile.objects.filter(gender='female'))
+    n_other = n_profiles - n_male - n_female
+    return JsonResponse({'status': 'ok',
+                         'n_profiles': n_profiles,
+                         'gender_info': {'n_male': n_male, 'n_female': n_female, 'other': n_other,
+                                         'n_male_%': float(n_male)*100/n_profiles,
+                                         'n_female_%': float(n_female) * 100 / n_profiles,
+                                         'n_other_%': float(n_other) * 100 / n_profiles},
+                         }, status=200)
+
+
 @csrf_exempt
 def post_om_invitation(request):
     if request.method != 'POST':

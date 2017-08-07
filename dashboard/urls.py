@@ -39,15 +39,14 @@ urlpatterns = [
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
-    # API v1.0
-    url(r'^api/v1.0/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
-    url(r'^api/v1.0/search/last_members/$', api.get_last_members, name='api_get_last_members'),
-
     # API v1.1
+    url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
+    url(r'^api/v1.1/search/last_members/$', api.get_last_members, name='api_get_last_members'),
     url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds'),
     url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes'),
     url(r'^api/v1.1/get_influencers/(?P<theme_name>.+)/$', api.get_influencers, name='api_get_influencers'),
     url(r'^api/v1.1/om_invitation/$', api.post_om_invitation, name='post_om_invitation'),
     url(r'^api/v1.1/get_hot_tags/$', api.get_hot_tags, name='get_hot_tags'),
     url(r'^api/v1.1/get_hot_tags/(?P<tag_number>\d+)/$', api.get_hot_tags, name='get_hot_tags'),
+    url(r'^api/v1.1/get_user_stats/$', api.get_user_stats, name='get_user_stats'),
 ]

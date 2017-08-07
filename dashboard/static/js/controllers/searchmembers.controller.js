@@ -15,7 +15,7 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
         }
         $http({
             'method': 'GET',
-            'url': '/api/v1.0/search/last_members/'
+            'url': '/api/v1.1/search/last_members/'
         }).then($scope.handleSearchLastMembersResponse, $scope.handleSearchError);
     };
 
@@ -27,7 +27,7 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
         }
         $http({
             'method': 'GET',
-            'url': '/api/v1.0/search/members/'+$scope.search_filter+'/'
+            'url': '/api/v1.1/search/members/'+$scope.search_filter+'/'
         }).then($scope.handleSearchResponse, $scope.handleSearchError)
     };
 

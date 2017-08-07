@@ -45,11 +45,11 @@
                     <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
                 </div>
                 <div class="col-md-5">
-                    <img class="featurette-image img-responsive center-block" src="/static/images/chart-2.png" >
+                    <svg id='theme_graph' viewBox="0 0 600 600">
+                    </svg>
                 </div>
             </div>
         </div>
-
         <div class="container margin-top-4-perc">
             <div class="row featurette">
                 <div class="col-md-7 col-md-push-5">
@@ -61,16 +61,17 @@
                 </div>
             </div>
         </div>
-            <div class="row color-row">
-                <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
-                    <p class="text-white claim margin-bottom-50">
-                        <strong>JOIN THE <span class="text-red">OPEN MAKER</span> COMMUNITY</strong>
-                    </p>
-                    <a class="btn custom-button" href="{% url 'dashboard:onboarding' %}">
-                        Onboarding
-                    </a>
-                </div>
+
+        <div class="row color-row">
+            <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
+                <p class="text-white claim margin-bottom-50">
+                    <strong>JOIN THE <span class="text-red">OPEN MAKER</span> COMMUNITY</strong>
+                </p>
+                <a class="btn custom-button" href="{% url 'dashboard:onboarding' %}">
+                    Onboarding
+                </a>
             </div>
+        </div>
 
         <div class="row margin-bottom-4-perc margin-top-4-perc">
             <div class="container">
