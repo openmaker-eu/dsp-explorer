@@ -15,11 +15,25 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 @login_required()
 def dashboard(request):
     try:
-        context = {'themes': DSPConnector.get_themes(),
+        import random
+        themes = DSPConnector.get_themes()['themes']
+        random_theme = themes[random.randint(0, len(themes) - 1)]
+        random_feeds = DSPConnector.get_feeds(random_theme['name'])['feeds'][:4]
+        top_influencers = DSPConnector.get_influencers(random_theme['name'])['influencers'][:4]
+        context = {'themes': [t.get('name', '') for t in themes if t.get('name', '') != random_theme['name']],
                    'last_members': Profile.get_last_n_members(3),
-                   'hot_tags': [t[0] for t in Profile.get_hot_tags(6)]}
+                   'hot_tags': [t[0] for t in Profile.get_hot_tags(6)],
+                   'random_theme_name': random_theme['name'],
+                   'random_feeds': random_feeds,
+                   'top_influencers': top_influencers}
     except DSPConnectorException as e:
-        context = {'themes': []}
+        context = {'themes': [],
+                   'last_members': [],
+                   'hot_tags': [],
+                   'random_theme_name': 'Not Provided',
+                   'random_feeds': [],
+                   'top_influencers': []
+                   }
         messages.error(request, e.message)
     return render(request, 'dashboard/dashboard.html', context)
 

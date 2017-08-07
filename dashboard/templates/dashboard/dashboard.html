@@ -13,24 +13,24 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container margin-bottom-50">
         <div class="row">
             <!-- Last Members -->
             <div class="col-md-6 col-sm-12">
                 <h2><strong class="text-red">Last Onboarded </strong> Members <small><a href="{% url 'dashboard:search_members' %}"> >View All</a></small></h2>
                 {% for profile in last_members %}
-                <div class="col-md-12 margin-top-10">
-                    <a href="/profile/{{ profile.id }}">
-                        <div class="col-md-4">
-                            <img class="img-circle" src="{{ profile.picture.url }}" style="height: 100px; width: 100px;">
-                        </div>
-                        <div class="col-md-8">
-                            <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
-                            <br><span>{{ profile.city }}</span>
-                            <br><i><strong>#&nbsp;</strong><span>{{ profile.tags }}</span></i>
-                        </div>
-                    </a>
-                </div>
+                    <div class="col-md-12 margin-top-10">
+                        <a href="/profile/{{ profile.id }}">
+                            <div class="col-md-4">
+                                <img class="img-circle" src="{{ profile.picture.url }}" style="height: 100px; width: 100px;">
+                            </div>
+                            <div class="col-md-8">
+                                <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
+                                <br><span>{{ profile.city }}</span>
+                                <br><i><strong>#&nbsp;</strong><span>{{ profile.tags }}</span></i>
+                            </div>
+                        </a>
+                    </div>
                 {% endfor %}
             </div>
             <!-- Hot Tags Section -->
@@ -41,19 +41,6 @@
                 {% endfor %}
             </div>
         </div>
-
-    </div>
-
-    <br><br><br><br><br><br><br><br>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-12">
-                    <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}!</h2>
-                    <p class="lead">Start exploring maker community</p>
-                </div>
-            </div>
-        </div>
         <div class="row margin-top-25 margin-bottom-25">
             <div class="col-md-12">
                 <div class="col-md-12">
@@ -62,26 +49,63 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 margin-bottom-25">
-                <div class="col-md-12">
-                    <p class="logo">
-                        Themes
-                    </p>
-                </div>
-            </div>
             <div class="col-md-12">
-                {% for theme in themes.themes %}
-                    <div class="col-md-2">
-                        <a href="{% url 'dashboard:theme' theme.name %}">
-                            <div class="col-md-12 box">
-                                <p>
-                                    {{theme.name}}
-                                </p>
+                <div class="col-md-12 text-center theme-name">
+                    <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}!</h2>
+                    <p class="lead">Explore the maker community! Start with</p>
+                    <span class="text-red">
+                        <h2><a href="{% url 'dashboard:theme' random_theme_name %}">{{ random_theme_name }}</a></h2>
+                        <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{random_theme_name}}</h2>
+                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        {% for t in themes %}
+                            <li><a href="{% url 'dashboard:theme' t %}">{{t}}</a></li>
+                        {% endfor %}
+                    </ul>
+                    </span>
+
+                </div>
+                <div class="col-md-12">
+                    {% for feed in random_feeds %}
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="card margin-bottom-20">
+                                <a href="{{ feed.url }}" target="_blank">
+                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                        <img style="min-width:100%;" src="{{ feed.im }}" class="img-responsive"
+                                             alt="{{ feed.title }}">
+                                    </div>
+                                    <div class="card-content text-center">
+                                        <h5>{{ feed.title|truncatechars:40 }}</h5>
+                                    </div>
+                                    <div class="card-action">
+                                        <p>{{ feed.description|truncatechars:50 }}</p>
+                                    </div>
+                                </a>
                             </div>
-                        </a>
-                    </div>
-                {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-12 text-center">
+                    {% for influencer in top_influencers %}
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="pull-left" style="clear: both;">
+                                <a href="https://www.twitter.com/{{influencer.username}}" target="_blank">
+                                    <h5 class="pull-left" style="height: 2em;">
+                                        <img class="img-circle" src="{{influencer.img_url}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                    <h5 class="pull-left" style="line-height: 2em;">
+                                        <p style="line-height: 40px;">{{influencer.username}}</p>
+                                    </h5>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
+
+
 {% endblock %}

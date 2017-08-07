@@ -101,13 +101,8 @@
                 <p class="lead">Social media recommended news.</p>
             </div>
             <!-- FEED SPACE -->
-            <div
-                    class="col-md-12 infinite-container"
-                    infinite-scroll="FeedModel.next()"
-                    style="margin-bottom:10%;"
-            >
+            <div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="feed in FeedModel.data" ng-cloak="FeedModel.data.length">
-
                     <div class="card margin-bottom-20">
                         <a href="{$feed.url$}" target="_blank">
                             <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
@@ -124,7 +119,6 @@
                             </div>
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
