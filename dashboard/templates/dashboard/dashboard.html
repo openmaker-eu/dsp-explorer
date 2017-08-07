@@ -12,6 +12,39 @@
             </div>
         </div>
     </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Last Members -->
+            <div class="col-md-6 col-sm-12">
+                <h2><strong class="text-red">Last Onboarded </strong> Members <small><a href="{% url 'dashboard:search_members' %}"> >View All</a></small></h2>
+                {% for profile in last_members %}
+                <div class="col-md-12 margin-top-10">
+                    <a href="/profile/{{ profile.id }}">
+                        <div class="col-md-4">
+                            <img class="img-circle" src="{{ profile.picture.url }}" style="height: 100px; width: 100px;">
+                        </div>
+                        <div class="col-md-8">
+                            <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
+                            <br><span>{{ profile.city }}</span>
+                            <br><i><strong>#&nbsp;</strong><span>{{ profile.tags }}</span></i>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Hot Tags Section -->
+            <div class="col-md-6 col-sm-12">
+                <h2>Hot <strong class="text-red">Tags</strong> <small><a href="{% url 'dashboard:search_members' %}"> >View All</a></small></h2>
+                {% for tag in hot_tags %}
+                    <div class="col-md-6"><h2><a href="{% url 'dashboard:search_members' tag %}">#{{ tag }}</a> </h2></div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <br><br><br><br><br><br><br><br>
     <div class="container">
         <div class="row">
             <div class="col-md-12">

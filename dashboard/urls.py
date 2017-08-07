@@ -21,6 +21,7 @@ urlpatterns = [
     
     # Search
     url(r'^search/members/$', views.search_members, name='search_members'),
+    url(r'^search/members/(?P<search_string>[\w\-]+)$', views.search_members, name='search_members'),
 
     # Invite
     url(r'^invite/$', views.invite, name='invite'),

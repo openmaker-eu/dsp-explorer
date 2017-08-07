@@ -129,12 +129,24 @@ class Profile(models.Model):
         return profiles
 
     @classmethod
+    def get_last_n_members(cls, n):
+        return cls.objects.order_by('-user__date_joined')[:n]
+    
+    @classmethod
     def get_by_email(cls, email):
         return cls.objects.get(user__email=email)
 
     @classmethod
     def get_by_id(cls, profile_id):
         return cls.objects.get(id=profile_id)
+    
+    @classmethod
+    def get_hot_tags(cls, tag_number=4):
+        from itertools import chain
+        from collections import Counter
+        tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
+        flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
+        return Counter(flat_tags).most_common(int(tag_number))
 
 
 class Invitation(models.Model):

@@ -15,7 +15,9 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 @login_required()
 def dashboard(request):
     try:
-        context = {'themes': DSPConnector.get_themes()}
+        context = {'themes': DSPConnector.get_themes(),
+                   'last_members': Profile.get_last_n_members(3),
+                   'hot_tags': [t[0] for t in Profile.get_hot_tags(6)]}
     except DSPConnectorException as e:
         context = {'themes': []}
         messages.error(request, e.message)
@@ -50,8 +52,8 @@ def profile(request, profile_id=None):
 
 
 @login_required()
-def search_members(request):
-    return render(request, 'dashboard/search_members.html', {})
+def search_members(request, search_string=0):
+    return render(request, 'dashboard/search_members.html', {'search_string': search_string})
 
 
 @login_required()

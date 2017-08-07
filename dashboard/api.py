@@ -7,7 +7,8 @@ from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException
 from utils.api import *
-from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_confirm
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
+    invitation_email_confirm
 
 
 def search_members(request, search_string):
@@ -19,9 +20,8 @@ def search_members(request, search_string):
 
 
 def get_last_members(request):
-    last_twenty = Profile.objects.order_by('-user__date_joined')[:21]
+    last_twenty = Profile.get_last_n_members(21)
     serializer = ProfileSerializer(instance=last_twenty, many=True)
-    print serializer.data
     return JsonResponse({'status': 'ok',
                          'result': serializer.data}, status=200)
 
@@ -54,12 +54,8 @@ def get_influencers(request, theme_name):
 
 
 def get_hot_tags(request, tag_number=4):
-    from itertools import chain
-    from collections import Counter
-    tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
-    flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
     return JsonResponse({'status': 'ok',
-                         'tags': [t[0] for t in Counter(flat_tags).most_common(int(tag_number))]}, status=200)
+                         'tags': [t[0] for t in Profile.get_hot_tags(tag_number)]}, status=200)
 
 
 @csrf_exempt
@@ -73,40 +69,37 @@ def post_om_invitation(request):
         receiver_first_name = request.POST['receiver_first_name'].title()
         receiver_last_name = request.POST['receiver_last_name'].title()
         receiver_email = request.POST['receiver_email'].lower()
-
-
-
         if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
                 or receiver_last_name == '' or receiver_email == '':
             return bad_request("Please fill al the fields")
-
+        
         if sender_email == receiver_email:
             return bad_request("Sender and receiver must be different")
-
+    
     except KeyError:
         return bad_request("Please fill al the fields")
-
+    
     # sender already a DSP user?
     try:
         User.objects.get(email=sender_email)
         return HttpResponseRedirect('http://openmaker.eu/error_sender/')
     except User.DoesNotExist:
         pass
-
+    
     # receiver already a DSP user?
     try:
         User.objects.get(email=receiver_email)
         return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
     except User.DoesNotExist:
         pass
-
+    
     # receiver already invited?
     try:
         Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
         return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
     except Invitation.DoesNotExist:
         pass
-
+    
     Invitation.create(user=None,
                       sender_email=sender_email,
                       sender_first_name=sender_first_name,
@@ -116,7 +109,7 @@ def post_om_invitation(request):
                       receiver_email=receiver_email,
                       sender_verified=False
                       )
-
+    
     activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
         get_current_site(request),
         sender_first_name.encode('utf-8').encode('base64'),
@@ -125,7 +118,7 @@ def post_om_invitation(request):
         receiver_first_name.encode('utf-8').encode('base64'),
         receiver_last_name.encode('utf-8').encode('base64'),
         receiver_email.encode('base64'))
-
+    
     subject = 'OpenMaker Nomination.. almost done!'
     content = "{}{}{}".format(invitation_base_template_header,
                               invitation_email_confirm.format(SENDER_NAME=sender_first_name,
