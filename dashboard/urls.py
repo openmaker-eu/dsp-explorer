@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
     
     # Explore
-    url(r'^dashboard/theme/(?P<theme_name>.*)$', views.theme, name='theme'),
+    url(r'^dashboard/theme/(?P<theme_name>.*)/$', views.theme, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
     
     # Profiles
@@ -21,7 +21,7 @@ urlpatterns = [
     
     # Search
     url(r'^search/members/$', views.search_members, name='search_members'),
-    url(r'^search/members/(?P<search_string>[\w\-]+)$', views.search_members, name='search_members'),
+    url(r'^search/members/(?P<search_string>[\w\-]+)/$', views.search_members, name='search_members'),
 
     # Invite
     url(r'^invite/$', views.invite, name='invite'),
