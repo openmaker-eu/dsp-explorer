@@ -22,7 +22,7 @@ def dashboard(request):
         random_feeds = DSPConnector.get_feeds(random_theme_name)['feeds'][:4]
         top_influencers = DSPConnector.get_influencers(random_theme_name)['influencers'][:4]
         other_themes = [t.get('name', '') for t in themes if t.get('name', '') != random_theme_name]
-    except DSPConnectorException as e:
+    except DSPConnectorException:
         random_theme_name = 'Not Provided'
         random_feeds = []
         top_influencers = []
