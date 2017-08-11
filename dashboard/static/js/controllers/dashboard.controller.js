@@ -3,8 +3,8 @@
  */
 import * as d3 from 'd3';
 export default [ '$scope','$uibModal','$http', function ($scope,$uibModal,$http) {
-    let root_node_size = 20;
-    let child_node_size = 10;
+    let root_node_size = 30;
+    let child_node_size = 20;
     let data_nodes = [{id: 0, amount:root_node_size, name:"ARDUINO"},
         {id: 1, amount: root_node_size, name:"3D PRINTER"},
         {id: 2, amount: root_node_size, name:"RASPBERRY Pi"},
@@ -47,7 +47,7 @@ function createNetwork(data_links, svg_id, c, data_nodes){
         .data(data_links)
         .enter()
         .append('line')
-        .style('stroke', '#9C959A');
+        .style('stroke', '#7A7378');
 
     let nodes = svg.selectAll(".node")
         .data(data_nodes)
