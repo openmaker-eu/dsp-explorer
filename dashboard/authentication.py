@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 import datetime as dt
 from utils.mailer import EmailHelper
-from .models import Profile, User, Invitation
+from .models import Profile, User, Invitation, Tag
 from crmconnector import capsule
 import pytz
 import logging
@@ -179,15 +179,21 @@ def onboarding(request):
         # profile create
         try:
             profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
-                                     city, occupation, tags, twitter_username)
+                                     city, occupation, twitter_username)
         except Exception as exc:
             logging.error('[PROFILE_CREATION_ERROR] Error during local profile creation for user email: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
-        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+        # Add tags to profile
+        # @TODO : handle tag Creation exception
+        for tag in map(lambda x: x.lower().capitalize(), tags.split(",")):
+            tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
+            profile.tags.add(tagInstance)
+        profile.save()
 
         # send e-mail
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
         subject = 'Onboarding... almost done!'
         content = "{}{}{}".format(invitation_base_template_header,
                                   onboarding_email_template.format(FIRST_NAME=first_name,
@@ -205,7 +211,7 @@ def onboarding(request):
         messages.success(request, 'Confirmation mail sent!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    return render(request, 'dashboard/onboarding.html', {})
+    return render(request, 'dashboard/onboarding.html', {'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))})
 
 
 def onboarding_confirmation(request, token):

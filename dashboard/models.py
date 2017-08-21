@@ -9,15 +9,26 @@ import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
 
+class Tag(models.Model):
+    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+
+    @classmethod
+    def create(cls, name):
+        tag = Tag(name=name)
+        tag.save()
+        return tag
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
+
     # CRM Data
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
-    tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
+    # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
+    tags = models.ManyToManyField(Tag)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
 
@@ -34,7 +45,7 @@ class Profile(models.Model):
     
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
-               birthdate=None, city=None, occupation=None, tags=None, twitter_username=None):
+               birthdate=None, city=None, occupation=None, twitter_username=None):
 
         try:
             user = User.objects.get(email=email)
@@ -57,7 +68,6 @@ class Profile(models.Model):
             profile.birthdate = birthdate
             profile.city = city
             profile.occupation = occupation
-            profile.tags = tags
             profile.twitter_username = twitter_username
             profile.save()
         if not user.is_active:

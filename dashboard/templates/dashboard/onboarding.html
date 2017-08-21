@@ -30,6 +30,7 @@
         </div>
         <div class="row margin-top-20 margin-bottom-30">
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+
                 <form class="form-group" action="{% url 'dashboard:onboarding' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
@@ -69,7 +70,6 @@
                         </div><br />
 
                         <div class="col-md-6">
-                            {#                            <input placeholder="Birthdate" format="yyyy-MM-dd" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >#}
                             <p class="input-group" style="margin: 0;">
                                 <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
                                        uib-datepicker-popup="yyyy/MM/dd"
@@ -99,17 +99,34 @@
                             <input class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
                         </div>
                         <div class="col-md-12">
-                            Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable experience</strong>!<br><br>
+                            Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br>
                         </div>
-                        <div class="col-md-12" ng-init="tags={}">
-                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag *" limit="3">
-                                <ui-select-match placeholder="Type a tag and press enter *">{$ $item $}</ui-select-match>
-                                <ui-select-choices repeat="tag in tags.sel">
+                        <div class="col-md-12" ng-init="tags={ available: {{ tags }} }">
+
+                            <ui-select multiple tagging
+                                       tagging-label="false"
+                                       tagging-label="&nbsp;&nbsp;( + Add new tag )"
+                                       sortable="true"
+                                       spinner-enabled="true"
+                                       ng-class="{'form-control':true}"
+                                       ng-model="tags.selected"
+                                       title="Choose a tag *" limit="3"
+                            >
+
+                                <ui-select-match placeholder="Type a tag and press enter *">
+                                    {$ $item $}
+                                </ui-select-match>
+
+                                <ui-select-choices repeat="tag in tags.available | filter:$select.search track by $index">
+                                    <div ng-bind-html="tag | highlight: $select.search"></div>
                                 </ui-select-choices>
+
                             </ui-select><br/>
 
-                            <input type="hidden" name="tags" ng-value="tags.sel" required/>
+                            <input type="hidden" name="tags" ng-value="tags.selected" required/>
+
                         </div>
+
                         <div class="col-md-12">
                             <!-- ToDo tell them we will use it for following purposes -->
                             <div class="input-group">

@@ -32,4 +32,25 @@
 	}
 }
 
+.ui-select-bootstrap  {
+
+	& > .ui-select-choices{
+		left:0;
+		text-align: left;
+	}
+
+	.ui-select-highlight { color :$red;}
+	.ui-select-highlight + .ui-select-highlight { color :initial; font-weight: initial; }
+
+	.ui-select-choices-row.active {
+		span { background: $red; }
+		.ui-select-highlight { color : #fff;}
+	}
+
+	.ui-select-match-item {
+		&.btn-primary { background: $red; border:$red;}
+	}
+
+}
+
 /*rgba(204, 204, 204, 0.5)*/
