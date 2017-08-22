@@ -10,7 +10,7 @@ from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
 
 class Tag(models.Model):
-    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
 
     @classmethod
     def create(cls, name):
@@ -28,7 +28,7 @@ class Profile(models.Model):
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name='profile_tags')
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
 
@@ -36,13 +36,13 @@ class Profile(models.Model):
     reset_token = models.TextField(max_length=200, null=True, blank=True)
     update_token_at = models.DateTimeField(default=None, null=True, blank=True)
     ask_reset_at = models.DateTimeField(default=dt.now, null=True, blank=True)
-    
+
     def __str__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
-    
+
     class Meta:
         ordering = ('user',)
-    
+
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
                birthdate=None, city=None, occupation=None, twitter_username=None):
@@ -58,7 +58,7 @@ class Profile(models.Model):
                                             )
             user.is_active = False
             user.save()
-        
+
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
@@ -75,7 +75,7 @@ class Profile(models.Model):
             profile.save()
             return profile
         raise EmailAlreadyUsed
-    
+
     def send_email(self, subject, message):
         """
         Send Async Email to the user
@@ -91,7 +91,7 @@ class Profile(models.Model):
                                            receiver_email=self.user.email
                                            ))
         thr.start()
-    
+
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
         """
@@ -107,7 +107,7 @@ class Profile(models.Model):
                                subject=subject,
                                receiver_name=receiver_name,
                                receiver_email=receiver_email)
-        
+
     @staticmethod
     def get_new_reset_token():
         """
@@ -141,7 +141,7 @@ class Profile(models.Model):
     @classmethod
     def get_last_n_members(cls, n):
         return cls.objects.order_by('-user__date_joined')[:n]
-    
+
     @classmethod
     def get_by_email(cls, email):
         return cls.objects.get(user__email=email)
@@ -149,14 +149,18 @@ class Profile(models.Model):
     @classmethod
     def get_by_id(cls, profile_id):
         return cls.objects.get(id=profile_id)
-    
+
     @classmethod
     def get_hot_tags(cls, tag_number=4):
         from itertools import chain
         from collections import Counter
-        tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
-        flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
-        return Counter(flat_tags).most_common(int(tag_number))
+
+        # tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
+        # flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
+        # return Counter(flat_tags).most_common(int(tag_number))
+
+        tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(), Profile.objects.all())])
+        return Counter(tags).most_common(int(tag_number))
 
 
 class Invitation(models.Model):
