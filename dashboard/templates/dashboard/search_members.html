@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <form>
                         <div class="input-group has-feedback has-feedback-left" style="width: 50%">
-                            <input ng-change="search()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search members for name, city, tagwords and more" value="">
+                            <input ng-change="search_filter.length < 3 ? search() : searchDebounced()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search members for name, city, tagwords and more" value="">
                             <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                         </div>
                     </form>
@@ -28,24 +28,32 @@
                 <div class="col-md-12">
                     <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
                     <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
-                    <div class="col-md-4" ng-repeat="data in results">
-                        <a href="/profile/{$data['id']$}">
-                            <div class="col-md-4">
-                                <img class="img-circle" ng-src="{$ data.picture $}" alt="" style="height: 100px; width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;
-                            </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4" ng-repeat="data in results">
+
+                                <div class="col-md-4">
+                                    <a href="/profile/{$data['id']$}">
+                                        <img class="img-circle" ng-src="{$ data.picture $}" alt="" style="height: 100px; width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </a>
+                        </div>
+                        <div class="col-md-8">
+                            <a href="/profile/{$data['id']$}">
                                 <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
-                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
-                                <br>
+                            </a>
+                            <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
+                            <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
+                            <br>
 
-                                <i ng-repeat="tag in data.tags">
-                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
-                                </i>
+                            <i
+                               ng-repeat="tag in data.tags"
+                               ng-class="{ 'text-red' : search_filter == tag.name }"
+                               ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
+                               class="pointer"
+                            >
+                                <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
+                            </i>
 
-                            </div>
+                        </div>
 
-                        </a>
                     </div>
                 </div>
             </div>

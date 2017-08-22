@@ -129,7 +129,6 @@ class Profile(models.Model):
     @classmethod
     def search_members(cls, search_string):
         from django.db.models import Q
-
         return cls.objects\
             .filter(Q(user__email__contains=search_string) |
                 Q(user__first_name__contains=search_string) |

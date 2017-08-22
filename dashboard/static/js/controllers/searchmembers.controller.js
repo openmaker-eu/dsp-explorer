@@ -2,8 +2,10 @@
  * Created by alexcomu on 04/05/17.
  */
 
+import { debounce } from 'lodash'
+
 export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
-    $scope.search_filter = "";
+    $scope.search_filter = '';
     $scope.results = [];
     $scope.last_members = [];
 
@@ -18,8 +20,12 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
             'url': '/api/v1.1/search/last_members/'
         }).then($scope.handleSearchLastMembersResponse, $scope.handleSearchError);
     };
-
-    $scope.search = function(){
+    
+    $scope.search = (searchString) => {
+        
+        $scope.search_filter = searchString || $scope.search_filter;
+        console.log($scope.search_filter)
+        
         if($scope.search_filter.length < 3){
             $scope.results = $scope.last_members;
             $scope.is_last_members_label = true;
@@ -30,10 +36,12 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
             'url': '/api/v1.1/search/members/'+$scope.search_filter+'/'
         }).then($scope.handleSearchResponse, $scope.handleSearchError)
     };
+    
+    $scope.searchDebounced = debounce($scope.search , 500)
 
     $scope.highlight = function(text, search) {
         if (!search) {return $sce.trustAsHtml(text);}
-        return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red">$&</span>'));
+        return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red bold">$&</span>'));
     };
 
     $scope.handleSearchLastMembersResponse = function (result) {

@@ -29,7 +29,7 @@
                                 <br><span>{{ profile.city }}</span>
                                 <br>
                                 {% for tag in profile.tags.all %}
-                                    <i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;
+                                    <a href="{% url 'dashboard:search_members' tag.name %}"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
                                 {% endfor %}
                             </div>
                         </a>
