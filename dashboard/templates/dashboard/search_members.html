@@ -35,9 +35,14 @@
                             </div>
                             <div class="col-md-8">
                                 <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
-                                    <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                                    <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
-                                <br><i><strong>#&nbsp;</strong><span ng-bind-html="highlight((data.tags), search_filter)"></span></i>
+                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
+                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
+                                <br>
+
+                                <i ng-repeat="tag in data.tags">
+                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
+                                </i>
+
                             </div>
 
                         </a>

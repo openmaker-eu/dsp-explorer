@@ -129,14 +129,16 @@ class Profile(models.Model):
     @classmethod
     def search_members(cls, search_string):
         from django.db.models import Q
-        profiles = cls.objects.filter(Q(user__email__contains=search_string) |
-                                      Q(user__first_name__contains=search_string) |
-                                      Q(user__last_name__contains=search_string) |
-                                      Q(tags__contains=search_string) |
-                                      Q(twitter_username__contains=search_string) |
-                                      Q(occupation__contains=search_string) |
-                                      Q(city__contains=search_string))
-        return profiles
+
+        return cls.objects\
+            .filter(Q(user__email__contains=search_string) |
+                Q(user__first_name__contains=search_string) |
+                Q(user__last_name__contains=search_string) |
+                Q(tags__name__contains=search_string) |
+                Q(twitter_username__contains=search_string) |
+                Q(occupation__contains=search_string) |
+                Q(city__contains=search_string))\
+            .distinct()
 
     @classmethod
     def get_last_n_members(cls, n):

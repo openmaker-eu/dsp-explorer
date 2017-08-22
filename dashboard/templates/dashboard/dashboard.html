@@ -27,7 +27,10 @@
                             <div class="col-md-8">
                                 <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
                                 <br><span>{{ profile.city }}</span>
-                                <br><i><strong>#&nbsp;</strong><span>{{ profile.tags }}</span></i>
+                                <br>
+                                {% for tag in profile.tags.all %}
+                                    <i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;
+                                {% endfor %}
                             </div>
                         </a>
                     </div>
