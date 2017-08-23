@@ -1,8 +1,10 @@
 /**
  * Created by andreafspeziale on 06/07/17.
  */
-export default [ '$scope','$http', function ($scope) {
-
+export default [ '$scope', function ($scope) {
+    
+    $scope.$watch('birthdate', (a,b) => a===b && ( $scope.birthdate = new Date(a) ) )
+    
     $scope.altInputFormats = ['M!/d!/yyyy'];
 
     $scope.dateOptions = {

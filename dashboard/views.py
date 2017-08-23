@@ -1,16 +1,23 @@
+import pytz
 from django.contrib.auth.models import User
+from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
-from .models import Profile, Invitation, Feedback
+from .models import Profile, Invitation, Feedback, Tag
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
-
+import datetime as dt
+import json
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
 
 @login_required()
 def dashboard(request):
@@ -39,7 +46,6 @@ def dashboard(request):
                'top_influencers': top_influencers}
     return render(request, 'dashboard/dashboard.html', context)
 
-
 @login_required()
 def theme(request, theme_name):
     try:
@@ -55,7 +61,7 @@ def theme(request, theme_name):
 
 
 @login_required()
-def profile(request, profile_id=None):
+def profile(request, profile_id=None, action=None):
     try:
         if profile_id:
             user_profile = Profile.get_by_id(profile_id)
@@ -63,7 +69,77 @@ def profile(request, profile_id=None):
             user_profile = Profile.get_by_email(request.user.email)
     except Profile.DoesNotExist:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    context = {'profile': user_profile}
+
+    if request.method == 'POST':
+        new_profile = {}
+        new_user = {}
+        try:
+            new_user['first_name'] = request.POST['first_name'].title()
+            new_user['last_name'] = request.POST['last_name'].title()
+            new_profile['gender'] = request.POST['gender']
+            new_profile['birthdate_dt'] = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
+            new_profile['birthdate_dt'] = pytz.utc.localize(new_profile['birthdate_dt'])
+            new_profile['city'] = request.POST['city']
+            new_profile['occupation'] = request.POST['occupation']
+            new_profile['twitter_username'] = request.POST.get('twitter', '')
+            tags = request.POST['tags']
+        except ValueError:
+            messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
+            return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+        except KeyError:
+            print(KeyError)
+            messages.error(request, 'Please fill the required fields!')
+            return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+
+        # check birthdate
+        if new_profile['birthdate_dt'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate_dt'].timetuple()[1:-2])):
+            messages.error(request, 'You must be older than thirteen')
+            return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+
+        user = User.objects.filter(email=request.user.email).first()
+
+        # Update user fields
+        user.__dict__.update(new_user)
+        user.save()
+        # Update profile fields
+        user.profile.__dict__.update(new_profile)
+        user.profile.save()
+
+        user.profile.tags.through.objects.all().delete()
+
+        # Update tags
+        for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
+            user.profile.tags.add(Tag.create(name=tagName))
+
+        # Update image
+        try:
+             file = request.FILES['profile_img']
+             filename, file_extension = os.path.splitext(file.name)
+
+             allowed_extensions = ['.jpg', '.jpeg', '.png']
+             if not (file_extension in allowed_extensions):
+                     raise ValueError
+             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
+             imagepath = default_storage.save('{CURRENT_SITE}/static/images/profile/{IMAGE}'.format(CURRENT_SITE=get_current_site(request),IMAGE=imagename), ContentFile(file.read()))
+        except ValueError:
+             messages.error(request, 'Profile Image is not an image file')
+             return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except:
+             imagepath = '{CURRENT_SITE}/static/user_icon.png'.format(CURRENT_SITE=get_current_site(request))
+
+
+        return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+
+
+    user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
+
+    context = {
+        'profile': user_profile,
+        'profile_action': action,
+        'is_my_profile': request.user.profile.id == user_profile.id,
+        'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))
+    }
+
     return render(request, 'dashboard/profile.html', context)
 
 

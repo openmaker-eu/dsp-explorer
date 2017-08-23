@@ -1,17 +1,11 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container">
-{#        <div class="row">#}
-{#            <div class="col-md-12">#}
-{#                <div class="col-md-12">#}
-{#                <ol class="breadcrumb">#}
-{#                    <li class="active">Profile</li>#}
-{#                </ol>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
+    <div class="container" ng-controller="onboardingController" ng-init=" is_edit = '{{ profile_action }}' === 'edit';">
+
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-3 margin-top-50">
+
+            <div ng-show="!is_edit" class="col-xs-12 col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-3 margin-top-50">
+
                 <div class="row">
                     <div class="col-sm-6 col-sm-offset-0 col-md-4 col-md-offset-0 col-xs-4 col-xs-offset-4 ">
                         <img src="{{profile.picture.url}}" alt="" class="img-circle img-responsive" />
@@ -34,6 +28,149 @@
                 </div>
 
             </div>
+
+            {% if is_my_profile %}
+
+            <button class="btn btn-default pull-right" ng-click="is_edit=!is_edit" >
+                {$  is_edit ? 'Return to profile' : 'Edit' $}
+            </button>
+
+            <div class="row margin-top-20 margin-bottom-30" ng-show="is_edit" >
+
+                <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+
+                    <h1>Edit profile</h1>
+                    <br>
+
+                    <form class="form-group" action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!--Image-->
+                        <div class="row margin-bottom-30">
+                            <div class="col-md-12">
+                                <label for="" style="width:100%; text-align: center;">Profile Image</label>
+                            </div>
+                            <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
+                                <div class="profile-image" id="profile-image-div" ng-click="profileImageUpload();">
+                                    <i class="fa fa-plus" style=""></i>
+                                    <img src="{{profile.picture.url}}" id="profile-image" style="width:100%; height:100%; display: block; position: absolute; "/>
+                                </div>
+                                <input id="profile-image-input" class="hidden" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img"/>
+                            </div>
+                            <br>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">First Name</label>
+                                <input  value="{{profile.user.first_name}}"
+                                        class="form-control" required type="text" name="first_name"  placeholder="First name *" ><br />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">Last Name</label>
+                                <input value="{{profile.user.last_name}}"
+                                        class="form-control" required type="text" name="last_name" placeholder="Last name *" ><br />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="">Gender</label>
+                                <select class="form-control" name="gender" required style="color:rgba(119, 119, 119, 0.81);">
+
+                                    <option {% if profile.gender == 'male'   %}selected="selected"{% endif %} value="male" >Male</option>
+                                    <option {% if profile.gender == 'female' %}selected="selected"{% endif %} value="female" >Female</option>
+                                    <option {% if profile.gender == 'other'  %}selected="selected"{% endif %} value="other" >Does it matter?</option>
+
+                                </select>
+                            </div><br />
+
+                            <div class="col-md-6" ng-init="birthdate ='{{ profile.birthdate | date:"Y-m-d" }}'">
+                                <label for="">Birthdate</label>
+                                <p class="input-group" style="margin: 0;">
+                                    <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
+                                           uib-datepicker-popup="yyyy/MM/dd"
+                                           ng-model="birthdate"
+                                           name = "birthdate"
+                                           is-open="datePopup.opened"
+                                           datepicker-options="dateOptions"
+                                           ng-required="true"
+                                           close-text="Close"
+                                           alt-input-formats="altInputFormats" required
+                                    />
+                                    <span class="input-group-btn">
+                                <button type="button" class="form-control btn btn-default" style="border-radius: 0 4px 4px 0;" ng-click="openDatePopUp()"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                                </p>
+                                <br />
+                            </div>
+
+                            <div class="col-md-12" ng-init="city='{{ profile.city }}'">
+                                <label for="" >City</label>
+                                <input required class="form-control" vs-google-autocomplete="{ types:['(cities)'] }"
+                                       ng-model="city"
+                                       type="text"
+                                       name="city"
+                                       id="city"
+                                       class="form-control"
+                                       placeholder="Start typing the city name where you are based *"><br />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="">Occupation</label>
+                                <input value="{{ profile.occupation }}"
+                                        class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
+                            </div>
+                            <div class="col-md-12">
+                                Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br>
+                            </div>
+
+                            <div class="col-md-12" ng-init="tags={ available: {{ tags }} , selected : {{ profile.jsonTags}} }">
+
+                                <ui-select multiple tagging
+                                           sortable="true"
+                                           spinner-enabled="true"
+                                           ng-class="{'form-control':true}"
+                                           ng-model="tags.selected"
+                                           title="Choose a tag *" limit="3"
+                                >
+
+                                    <ui-select-match placeholder="Type a tag and press enter *">
+                                        {$ $item $}
+                                    </ui-select-match>
+
+                                    <ui-select-choices repeat="tag in tags.available | filter:$select.search track by $index">
+                                        <div ng-bind-html="tag | highlight: $select.search"></div>
+                                    </ui-select-choices>
+
+                                </ui-select><br/>
+
+                                <input type="hidden" name="tags" ng-value="tags.selected" required/>
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="">Twitter Username</label>
+                                <!-- ToDo tell them we will use it for following purposes -->
+                                <div class="input-group">
+                                    <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-at"></span></span>
+                                    <input value="{{ profile.twitter_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Twitter username">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 margin-top-20">
+                                * required fields
+                            </div>
+
+                            <div class="col-md-12">
+                                <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Update">
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                </div>
+
+            </div>
+            {% endif %}
+
         </div>
     </div>
 {% endblock %}

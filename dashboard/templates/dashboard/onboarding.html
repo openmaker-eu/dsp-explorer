@@ -34,15 +34,6 @@
                 <form class="form-group" action="{% url 'dashboard:onboarding' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <!--<div class="row">-->
-                        <!--<div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">-->
-                            <!--<div class="profile-image" id="profile-image-div" ng-click="profileImageUpload();">-->
-                                <!--<i class="fa fa-plus" style=""></i>-->
-                                <!--<img src="#" id="profile-image" style="display: none;"/>-->
-                            <!--</div><br />-->
-                            <!--<p class="text-center"> Profile image</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
                     <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img" style="display: none;"/>
                     <div class="row">
                         <div class="col-md-6">

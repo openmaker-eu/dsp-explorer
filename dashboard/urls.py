@@ -16,9 +16,10 @@ urlpatterns = [
     url(r'^dashboard', views.dashboard, name='dashboard'),
     
     # Profiles
-    url(r'^profile/$', views.profile, name='profile'),
-    url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, name='user_detail'),
-    
+    url(r'^profile/$', views.profile, {'action': None}, name='profile'),
+    url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
+    url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
+
     # Search
     url(r'^search/members/$', views.search_members, name='search_members'),
     url(r'^search/members/(?P<search_string>[\w\-]+)/$', views.search_members, name='search_members'),
