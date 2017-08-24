@@ -5,6 +5,8 @@ from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
+
+from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
@@ -137,9 +139,28 @@ def profile(request, profile_id=None, action=None):
         for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
             user.profile.tags.add(Tag.create(name=tagName))
 
+        # Check for user on Capsule CRM
+        crmUser = capsule.CRMConnector.search_party_by_email(user.email)
+        if crmUser:
+            try:
+                capsule.CRMConnector.update_party(crmUser['id'], {'party': {
+                    'emailAddresses': [{'id': crmUser['emailAddresses'][0]['id'], 'address': user.email}],
+                    'type': 'person',
+                    'firstName': user.first_name,
+                    'lastName': user.last_name,
+                    'jobTitle': user.profile.occupation,
+                }
+                })
+            except:
+                messages.error(request, 'Some error occures, please try again!')
+                logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
+                # TODO SEND ERROR EMAIL TO ADMIN
+                return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        else:
+            print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
+            logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
 
         return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
-
 
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
 
