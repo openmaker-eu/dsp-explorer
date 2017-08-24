@@ -160,7 +160,8 @@ def profile(request, profile_id=None, action=None):
             print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
             logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
 
-        return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+        messages.success(request, 'Profile updated!')
+        return HttpResponseRedirect(reverse('dashboard:profile'))
 
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
 
