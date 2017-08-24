@@ -18,6 +18,8 @@ import json
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
+import logging
+
 
 @login_required()
 def dashboard(request):
@@ -77,8 +79,8 @@ def profile(request, profile_id=None, action=None):
             new_user['first_name'] = request.POST['first_name'].title()
             new_user['last_name'] = request.POST['last_name'].title()
             new_profile['gender'] = request.POST['gender']
-            new_profile['birthdate_dt'] = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
-            new_profile['birthdate_dt'] = pytz.utc.localize(new_profile['birthdate_dt'])
+            new_profile['birthdate'] = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
+            new_profile['birthdate'] = pytz.utc.localize(new_profile['birthdate'])
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
             new_profile['twitter_username'] = request.POST.get('twitter', '')
@@ -92,9 +94,33 @@ def profile(request, profile_id=None, action=None):
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
 
         # check birthdate
-        if new_profile['birthdate_dt'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate_dt'].timetuple()[1:-2])):
+        if new_profile['birthdate'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate'].timetuple()[1:-2])):
             messages.error(request, 'You must be older than thirteen')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
+
+        # Update image
+        try:
+            imagefile = request.FILES['profile_img']
+            filename, file_extension = os.path.splitext(imagefile.name)
+
+            allowed_extensions = ['.jpg', '.jpeg', '.png']
+            if not (file_extension in allowed_extensions):
+                raise ValueError
+
+            imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
+
+        except ValueError as exc:
+            messages.error(request, 'Profile Image is not an image file')
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        except KeyError as exc:
+            imagefile = request.user.profile.picture
+        except Exception as exc:
+            messages.error(request, 'Error during image upload, please try again')
+            logging.error('[VALIDATION_ERROR] Error during image upload: {USER} , EXCEPTION {EXC}'.format(
+                USER=request.user.email, EXC=exc
+            ))
+            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+        new_profile['picture'] = imagefile
 
         user = User.objects.filter(email=request.user.email).first()
 
@@ -110,22 +136,6 @@ def profile(request, profile_id=None, action=None):
         # Update tags
         for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
             user.profile.tags.add(Tag.create(name=tagName))
-
-        # Update image
-        try:
-             file = request.FILES['profile_img']
-             filename, file_extension = os.path.splitext(file.name)
-
-             allowed_extensions = ['.jpg', '.jpeg', '.png']
-             if not (file_extension in allowed_extensions):
-                     raise ValueError
-             imagename = str(datetime.now().microsecond) + '_' + str(file._size) + file_extension
-             imagepath = default_storage.save('{CURRENT_SITE}/static/images/profile/{IMAGE}'.format(CURRENT_SITE=get_current_site(request),IMAGE=imagename), ContentFile(file.read()))
-        except ValueError:
-             messages.error(request, 'Profile Image is not an image file')
-             return HttpResponseRedirect(reverse('dashboard:onboarding'))
-        except:
-             imagepath = '{CURRENT_SITE}/static/user_icon.png'.format(CURRENT_SITE=get_current_site(request))
 
 
         return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
