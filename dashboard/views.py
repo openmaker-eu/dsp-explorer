@@ -113,7 +113,7 @@ def profile(request, profile_id=None, action=None):
 
         except ValueError as exc:
             messages.error(request, 'Profile Image is not an image file')
-            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+            return HttpResponseRedirect(reverse('dashboard:profile'))
         except KeyError as exc:
             imagefile = request.user.profile.picture
         except Exception as exc:
@@ -121,7 +121,7 @@ def profile(request, profile_id=None, action=None):
             logging.error('[VALIDATION_ERROR] Error during image upload: {USER} , EXCEPTION {EXC}'.format(
                 USER=request.user.email, EXC=exc
             ))
-            return HttpResponseRedirect(reverse('dashboard:onboarding'))
+            return HttpResponseRedirect(reverse('dashboard:profile'))
         new_profile['picture'] = imagefile
 
         user = User.objects.filter(email=request.user.email).first()
@@ -142,27 +142,29 @@ def profile(request, profile_id=None, action=None):
         # Check for user on Capsule CRM
         crmUser = capsule.CRMConnector.search_party_by_email(user.email)
         if crmUser:
+
             try:
                 capsule.CRMConnector.update_party(crmUser['id'], {'party': {
-                    'emailAddresses': [{'id': crmUser['emailAddresses'][0]['id'], 'address': user.email}],
-                    'type': 'person',
-                    'firstName': user.first_name,
-                    'lastName': user.last_name,
-                    'jobTitle': user.profile.occupation,
-                    'pictureURL': user.profile.picture.url
-                }
+                        'firstName': user.first_name,
+                        'lastName': user.last_name,
+                        'jobTitle': user.profile.occupation,
+                        'pictureURL': request.build_absolute_uri(user.profile.picture.url)
+                    }
                 })
             except:
                 messages.error(request, 'Some error occures, please try again!')
                 logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
                 # TODO SEND ERROR EMAIL TO ADMIN
-                return HttpResponseRedirect(reverse('dashboard:dashboard'))
+                return HttpResponseRedirect(reverse('dashboard:profile'))
         else:
             print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
             logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
 
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
+
+        crmUser = capsule.CRMConnector.search_party_by_email(user.email)
+
 
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
 
