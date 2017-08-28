@@ -35,7 +35,15 @@
 	border-radius: 50%;
 }
 
+
 .ui-select-container {
+
+	&:not(.ui-select-multiple){
+		padding:0;
+		border:none!important;
+		box-shadow: none;
+	}
+
 	input {
 		@extend .form-control;
 		box-shadow: none!important;
@@ -43,6 +51,7 @@
 			box-shadow: none!important;
 		}
 	}
+
 }
 
 .ui-select-bootstrap  {

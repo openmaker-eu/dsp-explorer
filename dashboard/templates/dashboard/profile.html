@@ -8,10 +8,12 @@
         tags={ available: {{ tags }} , selected : {{ profile.jsonTags}} } ;
         birthdate ='{{ profile.birthdate | date:"Y-m-d" }}' ;
         city='{{ profile.city }}' ;
+
+
     " ></span>
 
     <div class="row">
-        <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
+        <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
 
             <!--Title-->
             <div class="">
@@ -79,18 +81,18 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="">First Name</label>
+                            <label for="">First Name <span class="text-red">*</span></label>
                             <input  value="{{profile.user.first_name}}"
                                     class="form-control" required type="text" name="first_name"  placeholder="First name *" ><br />
                         </div>
                         <div class="col-md-6">
-                            <label for="">Last Name</label>
+                            <label for="">Last Name <span class="text-red">*</span></label>
                             <input value="{{profile.user.last_name}}"
                                     class="form-control" required type="text" name="last_name" placeholder="Last name *" ><br />
                         </div>
 
                         <div class="col-md-6">
-                            <label for="">Gender</label>
+                            <label for="">Gender <span class="text-red">*</span></label>
                             <select class="form-control" name="gender" required style="color:rgba(119, 119, 119, 0.81);">
 
                                 <option {% if profile.gender == 'male'   %}selected="selected"{% endif %} value="male" >Male</option>
@@ -101,7 +103,7 @@
                         </div><br />
 
                         <div class="col-md-6">
-                            <label for="">Birthdate</label>
+                            <label for="">Birthdate <span class="text-red">*</span></label>
                             <p class="input-group" style="margin: 0;">
                                 <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
                                        uib-datepicker-popup="yyyy/MM/dd"
@@ -121,7 +123,7 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="" >City</label>
+                            <label for="" >City <span class="text-red">*</span></label>
                             <input required class="form-control" vs-google-autocomplete="{ types:['(cities)'] }"
                                    ng-model="city"
                                    type="text"
@@ -132,12 +134,58 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">Occupation</label>
-                            <input value="{{ profile.occupation }}"
-                                    class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
+                            <label for="">Role <span class="text-red">*</span></label>
+                            <ui-select class="form-control" ng-model="occupation.selected" title="Choose your role">
+                                <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="occupation in occupation.available | filter:$select.search track by $index">
+                                    <div>{$ occupation $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="occupation" ng-value="occupation.selected" required/>
                         </div>
+
                         <div class="col-md-12">
-                            Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br>
+                            <label for="">Organization</label>
+                            <input class="form-control" type="text" name="organization">
+                            <br/>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Sector</label>
+                            <ui-select class="form-control" ng-model="sector.selected" title="Choose your sector">
+                                <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="sector in sector.available | filter:$select.search track by $index">
+                                    <div>{$ sector $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="sector" ng-value="sector.selected" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Size</label>
+                            <ui-select class="form-control" ng-model="size.selected" title="Size">
+                                <ui-select-match placeholder="Size">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="size in size.available | filter:$select.search track by $index">
+                                    <div>{$ size $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="size" ng-value="size.selected" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Types of innovation</label>
+                            <ui-select multiple tagging class="form-control" ng-model="types_of_innovation.selected" title="Types of innovations">
+                                <ui-select-match placeholder="Types of innovations">{$ $item $}</ui-select-match>
+                                <ui-select-choices repeat="type in types_of_innovation.available | filter:$select.search track by $index">
+                                    <div>{$ type $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="types_of_innovation" ng-value="types_of_innovation.selected" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Tags <span class="text-red">*</span></label>
+                            <p>Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br></p>
                         </div>
 
                         <div class="col-md-12">
@@ -165,16 +213,26 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">Twitter Username</label>
+                            <label for="">Link ai Social</label>
                             <!-- ToDo tell them we will use it for following purposes -->
                             <div class="input-group">
-                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-at"></span></span>
+                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-twitter"></span></span>
                                 <input value="{{ profile.twitter_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Twitter username">
+                            </div>
+                            <br>
+                            <div class="input-group">
+                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-google"></span></span>
+                                <input value="{{ profile.google_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Google username">
+                            </div>
+                            <br>
+                            <div class="input-group">
+                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-facebook"></span></span>
+                                <input value="{{ profile.facebook_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Facebook username">
                             </div>
                         </div>
 
                         <div class="col-md-12 margin-top-20">
-                            * required fields
+                            <span class="text-red">*</span> required fields
                         </div>
 
                         <div class="col-md-12">

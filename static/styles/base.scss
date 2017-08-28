@@ -2,7 +2,10 @@
 @import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
 
 $dsp-red:#db4348;
+.text-red{
+  color: $dsp-red;
 
+}
 html {
   width: 100vw;
   overflow-x: hidden;
