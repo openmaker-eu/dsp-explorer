@@ -149,6 +149,7 @@ def profile(request, profile_id=None, action=None):
                     'firstName': user.first_name,
                     'lastName': user.last_name,
                     'jobTitle': user.profile.occupation,
+                    'pictureURL': user.profile.picture.url
                 }
                 })
             except:
