@@ -75,6 +75,7 @@ def profile(request, profile_id=None, action=None):
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
     if request.method == 'POST':
+
         new_profile = {}
         new_user = {}
         try:

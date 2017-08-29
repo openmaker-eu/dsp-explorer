@@ -57,7 +57,7 @@
             ]
         };
 
-        socialLinks =   [
+        socialLinks =  [
             { name: 'twitter', link : '' },
             { name: 'google-plus', link : '' },
             { name: 'facebook', link : '' }
@@ -302,15 +302,24 @@
                             <!--</div>-->
 
 
+                            <input type="hidden" name="socialLinks" value="{$ socialLinks $}">
                             <div class="input-group" ng-repeat="social in socialLinks ">
+
                                 <span class="input-group-addon">
                                     <span class="fa fa-fw fa-{$ social.name $}" ></span>
                                 </span>
+
                                 <input type="text" class="form-control"
-                                       value="{$ social.link $}"
+                                       ng-model="social.link"
                                        name="{$ social.name $}"
-                                       placeholder="{$ social.name $} link"
+                                       placeholder="{$ social.name $} username or link to your profile page"
                                 >
+                                <span class="input-group-addon pointer"
+                                      ng-if="['facebook', 'twitter', 'google-plus'].indexOf(social.name) == -1"
+                                      ng-click="socialLinks.splice($index, 1)"
+                                >
+                                    <span class="fa fa-fw fa-remove text-red" ></span>
+                                </span>
                             </div>
 
 
