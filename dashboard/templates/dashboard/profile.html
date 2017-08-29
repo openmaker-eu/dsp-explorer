@@ -4,10 +4,70 @@
 
     <!--Pass Django vars to Angular-->
     <span ng-init="
+
+        role = {
+            selected : '{{ profile.role }}',
+            available : [
+                'Entrepreneur',
+                'Manager',
+                'Employee',
+                'Free-lance',
+                'Researcher',
+                'Policy-Maker',
+                'Student',
+                'Other'
+            ]
+        };
+        sector = {
+            selected : '{{ profile.sector }}',
+            available : [
+                'Food industries',
+                'Textiles and clothing industries',
+                'Wood and furniture industries',
+                'Paper and printing industries',
+                'Jewelry industries',
+                'Mining and mineral processing industries',
+                'Electrical and electronic industries',
+                'Metal Industries',
+                'Engineering industries',
+                'Chemicals and Drugs industries',
+                'Rubber and plastic industries',
+                'Public utilities',
+                'Constructions',
+                'Other manufacturing'
+            ]
+        };
+        size = {
+            selected : '{{ profile.size }}',
+            available : [
+                'A micro enterprise (<10 staff)',
+                'A small enterprise (<50 staff)',
+                'A medium enterprise (<250 staff)',
+                'A large enterprise (>250 staff)'
+            ]
+        };
+        types_of_innovation = {
+            selected: '{{ profile.typesOfInnovation }}',
+            available : [
+                'Product innovation',
+                'Process innovation',
+                'Technological innovation',
+                'Business model innovation',
+                'Social innovation'
+            ]
+        };
+
+        socialLinks =   [
+            { name: 'twitter', link : '' },
+            { name: 'google-plus', link : '' },
+            { name: 'facebook', link : '' }
+        ];
+
         is_edit = '{{ profile_action }}' === 'edit';
         tags={ available: {{ tags }} , selected : {{ profile.jsonTags}} } ;
         birthdate ='{{ profile.birthdate | date:"Y-m-d" }}' ;
         city='{{ profile.city }}' ;
+
 
 
     " ></span>
@@ -80,6 +140,7 @@
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-6">
                             <label for="">First Name <span class="text-red">*</span></label>
                             <input  value="{{profile.user.first_name}}"
@@ -134,14 +195,20 @@
                         </div>
 
                         <div class="col-md-12">
-                            <label for="">Role <span class="text-red">*</span></label>
-                            <ui-select class="form-control" ng-model="occupation.selected" title="Choose your role">
+                            <label for="">Occupation  <span class="text-red">*</span></label>
+                            <input type="text" value="{{ profile.occupation }}" class="form-control" placeholder="occupation" name="occupation" required>
+                            <br>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Role</label>
+                            <ui-select ng-model="role.selected" title="Choose your role">
                                 <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
-                                <ui-select-choices repeat="occupation in occupation.available | filter:$select.search track by $index">
-                                    <div>{$ occupation $}</div>
+                                <ui-select-choices repeat="role in role.available | filter:$select.search track by $index">
+                                    <div class="btn">{$ role $}</div>
                                 </ui-select-choices>
                             </ui-select><br/>
-                            <input type="hidden" name="occupation" ng-value="occupation.selected" required/>
+                            <input type="hidden" name="role" ng-value="role.selected"/>
                         </div>
 
                         <div class="col-md-12">
@@ -152,10 +219,10 @@
 
                         <div class="col-md-12">
                             <label for="">Sector</label>
-                            <ui-select class="form-control" ng-model="sector.selected" title="Choose your sector">
+                            <ui-select ng-model="sector.selected" title="Choose your sector">
                                 <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
                                 <ui-select-choices repeat="sector in sector.available | filter:$select.search track by $index">
-                                    <div>{$ sector $}</div>
+                                    <div class="btn">{$ sector $}</div>
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="sector" ng-value="sector.selected" />
@@ -163,10 +230,10 @@
 
                         <div class="col-md-12">
                             <label for="">Size</label>
-                            <ui-select class="form-control" ng-model="size.selected" title="Size">
+                            <ui-select  ng-model="size.selected" title="Size">
                                 <ui-select-match placeholder="Size">{$ $select.selected $}</ui-select-match>
                                 <ui-select-choices repeat="size in size.available | filter:$select.search track by $index">
-                                    <div>{$ size $}</div>
+                                    <div class="btn">{$ size $}</div>
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="size" ng-value="size.selected" />
@@ -174,10 +241,10 @@
 
                         <div class="col-md-12">
                             <label for="">Types of innovation</label>
-                            <ui-select multiple tagging class="form-control" ng-model="types_of_innovation.selected" title="Types of innovations">
+                            <ui-select multiple class="form-control" tagging ng-model="types_of_innovation.selected" title="Types of innovations">
                                 <ui-select-match placeholder="Types of innovations">{$ $item $}</ui-select-match>
                                 <ui-select-choices repeat="type in types_of_innovation.available | filter:$select.search track by $index">
-                                    <div>{$ type $}</div>
+                                    <div class="btn">{$ type $}</div>
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="types_of_innovation" ng-value="types_of_innovation.selected" />
@@ -193,7 +260,6 @@
                             <ui-select multiple tagging
                                        sortable="true"
                                        spinner-enabled="true"
-                                       ng-class="{'form-control':true}"
                                        ng-model="tags.selected"
                                        title="Choose a tag *" limit="3"
                             >
@@ -202,33 +268,63 @@
                                     {$ $item $}
                                 </ui-select-match>
 
-                                <ui-select-choices repeat="tag in tags.available | filter:$select.search track by $index">
-                                    <div ng-bind-html="tag | highlight: $select.search"></div>
+                                <ui-select-choices  repeat="tag in tags.available | filter:$select.search track by $index">
+                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}" ng-bind-html="tag | highlight: $select.search"></div>
                                 </ui-select-choices>
 
                             </ui-select><br/>
+
 
                             <input type="hidden" name="tags" ng-value="tags.selected" required/>
 
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 social-links-form">
+
                             <label for="">Link ai Social</label>
+
                             <!-- ToDo tell them we will use it for following purposes -->
-                            <div class="input-group">
-                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-twitter"></span></span>
-                                <input value="{{ profile.twitter_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Twitter username">
+                            <!--<div class="input-group">-->
+                                <!--<span class="input-group-addon" ><span class="fa fa-fw fa-twitter"></span></span>-->
+                                <!--<input value="{{ profile.twitter_username }}"type="text" class="form-control" name="twitter" placeholder="Twitter username">-->
+                            <!--</div>-->
+                            <!--<br>-->
+                            <!--<div class="input-group">-->
+                                <!--<span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-google-plus"></span></span>-->
+                                <!--<input value="{{ profile.google_username }}"type="text" class="form-control" name="google" placeholder="Google username">-->
+                            <!--</div>-->
+                            <!--<br>-->
+                            <!--<div class="input-group">-->
+                                <!--<span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-facebook"></span></span>-->
+                                <!--<input value="{{ profile.facebook_username }}"type="text" class="form-control"-->
+                                       <!--style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;"-->
+                                       <!--name="facebook" placeholder="Facebook username">-->
+                            <!--</div>-->
+
+
+                            <div class="input-group" ng-repeat="social in socialLinks ">
+                                <span class="input-group-addon">
+                                    <span class="fa fa-fw fa-{$ social.name $}" ></span>
+                                </span>
+                                <input type="text" class="form-control"
+                                       value="{$ social.link $}"
+                                       name="{$ social.name $}"
+                                       placeholder="{$ social.name $} link"
+                                >
                             </div>
-                            <br>
-                            <div class="input-group">
-                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-google"></span></span>
-                                <input value="{{ profile.google_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Google username">
-                            </div>
-                            <br>
-                            <div class="input-group">
-                                <span class="input-group-addon" style="background-color: #fff;" ><span class="fa fa-fw fa-facebook"></span></span>
-                                <input value="{{ profile.facebook_username }}"type="text" class="form-control" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" name="twitter" placeholder="Facebook username">
-                            </div>
+
+
+                           <div class="row" ng-init="newSocial = { name: '', link: '' }">
+                               <br>
+                               <div class="col-md-12"><label for="">Aggiungi nuovo social</label></div>
+                               <div class="col-md-4"><input class="form-control" placeholder="Social" type="text" ng-model="newSocial.name"></div>
+                               <div class="col-md-7"><input class="form-control" placeholder="Link" type="text" ng-model="newSocial.link"></div>
+                               <div class="col-md-1">
+                                   <span class="btn btn-outline-inverse btn-default"
+                                       ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"
+                                   ><span class="fa fa-plus"></span></span></div>
+                           </div>
+
                         </div>
 
                         <div class="col-md-12 margin-top-20">

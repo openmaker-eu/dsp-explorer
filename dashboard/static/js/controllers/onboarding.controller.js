@@ -52,57 +52,7 @@ export default [ '$scope', function ($scope) {
     $scope.fitImageToCircle($('#profile-image'))
     $scope.fitImageToCircle($('.profile-image-static img'))
     
-    $scope.occupation = {
-        selected : '',
-        available : [
-            'Entrepreneur',
-            'Manager',
-            'Employee',
-            'Free-lance',
-            'Researcher',
-            'Policy-Maker',
-            'Student',
-            'Other'
-        ]
-    };
-    $scope.sector = {
-        selected : '',
-        available : [
-            'Food industries',
-            'Textiles and clothing industries',
-            'Wood and furniture industries',
-            'Paper and printing industries',
-            'Jewelry industries',
-            'Mining and mineral processing industries',
-            'Electrical and electronic industries',
-            'Metal Industries',
-            'Engineering industries',
-            'Chemicals and Drugs industries',
-            'Rubber and plastic industries',
-            'Public utilities',
-            'Constructions',
-            'Other manufacturing'
-        ]
-    };
-    $scope.size = {
-        selected : '',
-        available : [
-            'A micro enterprise (<10 staff)',
-            'A small enterprise (<50 staff)',
-            'A medium enterprise (<250 staff)',
-            'A large enterprise (>250 staff)'
-        ]
-    };
-    $scope.types_of_innovation = {
-        selected: '',
-        available : [
-            'Product innovation',
-            'Process innovation',
-            'Technological innovation',
-            'Business model innovation',
-            'Social innovation'
-        ]
-    };
+
     
 
 }]

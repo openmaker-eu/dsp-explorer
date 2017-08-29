@@ -1,16 +1,29 @@
+$icon-font-path : '../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+@import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_variables';
 
-@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss";
+$fa-font-path : '../../../node_modules/font-awesome/fonts/';
+@import "../../../node_modules/font-awesome/scss/font-awesome.scss";
+
+@import "../../../node_modules/angular-toastr/dist/angular-toastr.css";
+@import '../../../node_modules/angular-motion/dist/angular-motion.css';
+@import "../../../node_modules/cookieconsent/build/cookieconsent.min.css";
+@import "../../../node_modules/ui-select/dist/select.css";
 
 $dsp-red:#db4348;
 .text-red{
   color: $dsp-red;
-
 }
+
 html {
   width: 100vw;
   overflow-x: hidden;
-
 }
+
+.no-margin { margin:0; }
+.no-padding { padding:0; }
+
+a, a * { color: #2C2C2C; text-decoration: none; }
 
 .liactive * {
   @media (max-width: $screen-xs-max) {

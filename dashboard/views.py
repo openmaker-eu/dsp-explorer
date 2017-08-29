@@ -137,7 +137,7 @@ def profile(request, profile_id=None, action=None):
 
         # Update tags
         for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
-            user.profile.tags.add(Tag.create(name=tagName))
+            user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
 
         # Check for user on Capsule CRM
         crmUser = capsule.CRMConnector.search_party_by_email(user.email)
@@ -174,6 +174,9 @@ def profile(request, profile_id=None, action=None):
         'is_my_profile': request.user.profile.id == user_profile.id,
         'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))
     }
+
+    print('context')
+    print(context)
 
     return render(request, 'dashboard/profile.html', context)
 
