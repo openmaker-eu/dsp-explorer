@@ -86,6 +86,7 @@ def profile(request, profile_id=None, action=None):
             new_profile['birthdate'] = pytz.utc.localize(new_profile['birthdate'])
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
+            new_profile['statement'] = request.POST['statement']
 
             new_profile['role'] = request.POST.get('role', None)
             new_profile['occupation'] = request.POST.get('occupation', None)
