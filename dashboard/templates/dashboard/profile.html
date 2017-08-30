@@ -343,7 +343,7 @@
 
                         <div class="col-md-12 social-links-form">
 
-                            <label for="">Link ai Social</label>
+                            <label for="">Social Links</label>
 
                             <input type="hidden" name="socialLinks" value="{$ socialLinks $}">
                             <div class="input-group"
@@ -369,15 +369,37 @@
 
 
                            <div class="row" ng-init="newSocial = { name: '', link: '' }">
-                               <br>
-                               <div class="col-md-12"><label for="">Aggiungi nuovo social</label></div>
-                               <div class="col-md-4"><input class="form-control" placeholder="Social" type="text" ng-model="newSocial.name"></div>
-                               <div class="col-md-7"><input class="form-control" placeholder="Link" type="text" ng-model="newSocial.link"></div>
-                               <div class="col-md-1">
-                                   <span class="btn btn-outline-inverse btn-default"
-                                       ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"
-                                   ><span class="fa fa-plus"></span></span></div>
+                               <div class="col-md-12 ">
+                                   <br>
+                                   <label for="">Add new social</label>
+
+                                   <div class="input-group">
+                                       <input class="form-control" style="width:40%;" placeholder="Social (E.G.: Twitter)" type="text" ng-model="newSocial.name">
+                                       <input class="form-control" style="width:60%;" placeholder="Username or Link to your homepage" type="text" ng-model="newSocial.link">
+                                       <span class="input-group-addon pointer"
+                                             ng-if="['facebook', 'twitter', 'google-plus'].indexOf(social.name) == -1"
+                                             ng-click="socialLinks.splice($index, 1)"
+                                       >
+                                            <span class="fa fa-fw fa-plus"
+                                                  ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"
+                                            ></span>
+                                        </span>
+
+                                    </div>
+
+                               </div>
                            </div>
+
+                            <!--<div class="row" ng-init="newSocial = { name: '', link: '' }">-->
+                                <!--<br>-->
+                                <!--<div class="col-md-12"><label for="">Aggiungi nuovo social</label></div>-->
+                                <!--<div class="col-md-4"><input class="form-control" placeholder="Social" type="text" ng-model="newSocial.name"></div>-->
+                                <!--<div class="col-md-7"><input class="form-control" placeholder="Link" type="text" ng-model="newSocial.link"></div>-->
+                                <!--<div class="col-md-1">-->
+                                   <!--<span class="btn btn-outline-inverse btn-default"-->
+                                         <!--ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"-->
+                                   <!--&gt;<span class="fa fa-plus"></span></span></div>-->
+                            <!--</div>-->
 
                         </div>
 
