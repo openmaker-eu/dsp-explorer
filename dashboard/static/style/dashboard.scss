@@ -394,3 +394,10 @@ li {
 .carousel-control .icon-prev, .carousel-control .glyphicon-chevron-left {left: 0%;
     margin-left: -10px}
 
+.tags-align {
+    text-align: right;
+    @media (max-width: 992px) {
+        text-align: left;
+        margin-top: 50px;
+  }
+}
