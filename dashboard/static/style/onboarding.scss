@@ -66,4 +66,12 @@
 
 }
 
+.well-red {
+	@extend .well;
+	color: $red;
+	border-color: $red;
+	background: #fff;
+}
+
+
 /*rgba(204, 204, 204, 0.5)*/
