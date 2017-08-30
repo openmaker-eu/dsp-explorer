@@ -18,6 +18,15 @@ class Tag(models.Model):
         tag.save()
         return tag
 
+class SourceOfInspiration(models.Model):
+    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
+
+    @classmethod
+    def create(cls, name):
+        source = SourceOfInspiration(name=name)
+        source.save()
+        return source
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -28,9 +37,25 @@ class Profile(models.Model):
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
-    tags = models.ManyToManyField(Tag, related_name='profile_tags')
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
+
+    role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
+    organization = models.TextField(_('Organization'), max_length=200, null=True, blank=True, default='')
+    sector = models.TextField(_('Sector'), max_length=200, null=True, blank=True, default='')
+    types_of_innovation = models.TextField(_('Types of Innovation'), max_length=200, null=True, blank=True, default='')
+    size = models.TextField(_('Size'), max_length=200, null=True, blank=True, default='')
+
+    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+    source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
+
+    socialLinks = models.TextField(
+        _('Size'),
+        max_length=200,
+        null=True,
+        blank=True,
+        default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
+    )
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)

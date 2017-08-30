@@ -10,7 +10,7 @@ from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnector, DSPConnectorException
-from .models import Profile, Invitation, Feedback, Tag
+from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
@@ -86,8 +86,28 @@ def profile(request, profile_id=None, action=None):
             new_profile['birthdate'] = pytz.utc.localize(new_profile['birthdate'])
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
-            new_profile['twitter_username'] = request.POST.get('twitter', '')
+
+            new_profile['role'] = request.POST.get('role', None)
+            new_profile['occupation'] = request.POST.get('occupation', None)
+            new_profile['role'] = request.POST.get('role', '')
+            new_profile['organization'] = request.POST.get('organization', None)
+            new_profile['sector'] = request.POST.get('sector', None)
+            new_profile['size'] = request.POST.get('size', None)
+
+            # Multiple choice fields
+            new_profile['types_of_innovation'] = request.POST.get('types_of_innovation', None)
+            new_profile['socialLinks'] = request.POST.get('socialLinks', None)
+
+            # Many to many fields
+            source_of_inspiration = request.POST.get('source_of_inspiration', None)
             tags = request.POST['tags']
+
+            print('types_of_innovation')
+            print(new_profile['types_of_innovation'])
+
+            print('source_of_inspiration')
+            print(source_of_inspiration)
+
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
@@ -134,16 +154,24 @@ def profile(request, profile_id=None, action=None):
         user.profile.__dict__.update(new_profile)
         user.profile.save()
 
-        user.profile.tags.through.objects.all().delete()
 
         # Update tags
+        user.profile.tags.through.objects.all().delete()
         for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+
+        # Update sourceofinnovation
+        user.profile.source_of_inspiration.through.objects.all().delete()
+        if source_of_inspiration:
+            for tagName in map(lambda x: x.lower().capitalize(), source_of_inspiration.split(",")):
+                user.profile.source_of_inspiration.add(
+                    SourceOfInspiration.objects.filter(name=tagName).first() or
+                    SourceOfInspiration.create(name=tagName)
+                )
 
         # Check for user on Capsule CRM
         crmUser = capsule.CRMConnector.search_party_by_email(user.email)
         if crmUser:
-
             try:
                 capsule.CRMConnector.update_party(crmUser['id'], {'party': {
                         'firstName': user.first_name,
@@ -166,18 +194,17 @@ def profile(request, profile_id=None, action=None):
 
         crmUser = capsule.CRMConnector.search_party_by_email(user.email)
 
-
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
+    user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
+    user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
 
     context = {
         'profile': user_profile,
         'profile_action': action,
         'is_my_profile': request.user.profile.id == user_profile.id,
-        'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))
+        'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())),
+        'source_of_inspiration': json.dumps(map(lambda x: x.name, SourceOfInspiration.objects.all()))
     }
-
-    print('context')
-    print(context)
 
     return render(request, 'dashboard/profile.html', context)
 
