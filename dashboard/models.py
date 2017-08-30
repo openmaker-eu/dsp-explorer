@@ -38,7 +38,10 @@ class Profile(models.Model):
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
+
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
+
+    statement = models.TextField(_('Statement'), blank=True, null=True)
 
     role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
     organization = models.TextField(_('Organization'), max_length=200, null=True, blank=True, default='')

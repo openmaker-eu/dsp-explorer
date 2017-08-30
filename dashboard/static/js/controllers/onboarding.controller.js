@@ -1,7 +1,11 @@
 /**
  * Created by andreafspeziale on 06/07/17.
  */
+import * as _ from 'lodash'
+
 export default [ '$scope', function ($scope) {
+    
+    $scope._ = _
     
     $scope.$watch('birthdate', (a,b) => a===b && ( $scope.birthdate = new Date(a) ) )
     

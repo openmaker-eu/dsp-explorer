@@ -75,8 +75,6 @@
         birthdate ='{{ profile.birthdate | date:"Y-m-d" }}';
         city='{{ profile.city }}';
 
-
-
     " ></span>
 
     <div class="row">
@@ -99,29 +97,72 @@
             <div ng-show="!is_edit">
                 <div class="row Aligner">
 
-                    <div class="col-sm-6 col-sm-offset-0 col-md-4 col-md-offset-0 col-xs-4 col-xs-offset-4 ">
-                        <div class="profile-image-static">
-                            <img src="{{profile.picture.url}}"  style="width:100%; height:100%; display: block; position: absolute; "/>
+                    <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-4 col-xs-offset-4 ">
+                        <div class="col-md-8 col-md-offset-4">
+                            <div class="profile-image-static">
+                                <img src="{{profile.picture.url}}"  style="width:100%; height:100%; display: block; position: absolute; "/>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-8 col-sm-6 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
                         <div style=" padding-left:5%;">
-
-                            <p><i class="fa fa-fw fa-envelope"></i>&nbsp;&nbsp;{{profile.user.email}}</p>
-                            <p><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{{profile.gender}}</p>
-                            <p><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{profile.city}}</p>
-                            <p><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{{ profile.birthdate | date:'M d Y' }}</p>
                             <p><i class="fa fa-fw fa-briefcase"></i>&nbsp;&nbsp;{{ profile.occupation }}</p>
+                            <p><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{profile.city}}</p>
+
                             <p><i class="fa fa-fw fa-hashtag"></i>&nbsp;
                                 {% for tag in profile.tags.all %}
                                 <a href="{% url 'dashboard:search_members' tag.name %}"><i><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
                                 {% endfor %}
                             </p>
-                            <p><i class="fa fa-fw fa-twitter"></i>&nbsp;&nbsp;{{ profile.twitter_username }}</p>
+                            <p><i class="fa fa-fw fa-envelope"></i>&nbsp;&nbsp;{{profile.user.email}}</p>
+                            <p><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{{profile.gender}}</p>
+                            <p><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{{ profile.birthdate | date:'M d Y' }}</p>
 
+                            <!--<p><i class="fa fa-fw fa-twitter"></i>&nbsp;&nbsp;{{ profile.twitter_username }}</p>-->
                         </div>
                     </div>
+
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        <div class="well"><i> {{ profile.statement }}  </i></div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="well-red">SOCIAL LINKS</div>
+                        <p ng-repeat=" social in _.clone(socialLinks) "
+                        ><span class="fa fa-fw fa-home fa-{$ social.name $}" ></span>&nbsp; {$ social.link $} </p>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="well-red">ABOUT MY WORK</div>
+                        <p><strong>Role : </strong>&nbsp;{{ profile.role }}</p>
+                        <p><strong>Organization :</strong>&nbsp;{{ profile.organization }}</p>
+                        <p><strong>Sector :</strong>&nbsp;{{ profile.sector }}</p>
+                        <p><strong>Size :</strong>&nbsp;{{ profile.size }}</p>
+
+                        <div class="well-red">AND MY PASSION</div>
+                        <p><strong>Source of inspiration :</strong>&nbsp;
+                            <span ng-repeat="source in _.clone(source_of_inspiration.selected)">
+                                {$ source $}{$ $last ? '&nbsp;' : ',&nbsp;' $}
+                            </span>
+                        </p>
+                        <p><strong>Types of innovation :</strong>&nbsp;
+                            <span ng-repeat="type in _.clone(types_of_innovation.selected)">
+                                {$ type $}{$ $last ? '&nbsp;' : ',&nbsp;' $}
+                            </span>
+                        </p>
+
+
+                    </div>
+
+                </div>
+
 
             </div>
 
@@ -239,6 +280,14 @@
                             <input type="hidden" name="tags" ng-value="tags.selected" required/>
 
                         </div>
+
+                        <div class="col-md-12">
+                            <label for="">Statement</label>
+                            <textarea class="form-control" name="statement" placeholder="Write something about you" rows="6" >{{ profile.statement }}</textarea>
+                            <br>
+                        </div>
+
+
                     </div>
 
                     <div class="row">
@@ -331,7 +380,6 @@
                             <input type="hidden" name="types_of_innovation" ng-value="types_of_innovation.selected" />
                         </div>
 
-
                     </div>
 
 
@@ -389,17 +437,6 @@
 
                                </div>
                            </div>
-
-                            <!--<div class="row" ng-init="newSocial = { name: '', link: '' }">-->
-                                <!--<br>-->
-                                <!--<div class="col-md-12"><label for="">Aggiungi nuovo social</label></div>-->
-                                <!--<div class="col-md-4"><input class="form-control" placeholder="Social" type="text" ng-model="newSocial.name"></div>-->
-                                <!--<div class="col-md-7"><input class="form-control" placeholder="Link" type="text" ng-model="newSocial.link"></div>-->
-                                <!--<div class="col-md-1">-->
-                                   <!--<span class="btn btn-outline-inverse btn-default"-->
-                                         <!--ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"-->
-                                   <!--&gt;<span class="fa fa-plus"></span></span></div>-->
-                            <!--</div>-->
 
                         </div>
 

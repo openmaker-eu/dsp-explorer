@@ -86,6 +86,7 @@ def profile(request, profile_id=None, action=None):
             new_profile['birthdate'] = pytz.utc.localize(new_profile['birthdate'])
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
+            new_profile['statement'] = request.POST['statement']
 
             new_profile['role'] = request.POST.get('role', None)
             new_profile['occupation'] = request.POST.get('occupation', None)
@@ -196,6 +197,7 @@ def profile(request, profile_id=None, action=None):
 
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
+
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
 
     context = {
