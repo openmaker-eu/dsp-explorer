@@ -21,6 +21,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
 import logging
+import re
 
 
 @login_required()
@@ -155,10 +156,9 @@ def profile(request, profile_id=None, action=None):
         user.profile.__dict__.update(new_profile)
         user.profile.save()
 
-
         # Update tags
         user.profile.tags.through.objects.all().delete()
-        for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
+        for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
 
         # Update sourceofinnovation
@@ -213,7 +213,8 @@ def profile(request, profile_id=None, action=None):
 
 @login_required()
 def search_members(request, search_string=0):
-    return render(request, 'dashboard/search_members.html', {'search_string': search_string})
+    import urllib
+    return render(request, 'dashboard/search_members.html', {'search_string': search_string })
 
 
 @login_required()

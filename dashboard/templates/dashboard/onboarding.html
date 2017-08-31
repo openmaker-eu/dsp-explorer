@@ -94,9 +94,8 @@
                         </div>
                         <div class="col-md-12" ng-init="tags={ available: {{ tags }} }">
 
-                            <ui-select multiple tagging
-                                       tagging-label="false"
-                                       tagging-label="&nbsp;&nbsp;( + Add new tag )"
+                            <ui-select
+                                       multiple tagging tagging-label="&nbsp;&nbsp;&#x25C0;&nbsp;ADD NEW" tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
                                        sortable="true"
                                        spinner-enabled="true"
                                        ng-class="{'form-control':true}"
