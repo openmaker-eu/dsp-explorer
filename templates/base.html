@@ -59,9 +59,26 @@
                         <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:invite' %}">Invite</a>
                         </li>
+
+                        {% if not request.user.is_superuser %}
                         <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >
                             <a href="{% url 'pss:application' %}">Application</a>
                         </li>
+                        {% else %}
+                        <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Application&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'pss:application' %}">Submission</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'pss:application_result' %}">Results</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle"
                                data-toggle="dropdown" role="button"

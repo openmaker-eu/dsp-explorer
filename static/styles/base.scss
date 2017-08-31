@@ -36,7 +36,7 @@ a:hover { color: $dsp-red!important; text-decoration: none; }
   }
 }
 
-.liactive a::after{
+.liactive > a::after{
   content:"";
   position:absolute;
   border-bottom: 2px solid #db4348;
