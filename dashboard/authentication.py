@@ -17,6 +17,7 @@ from utils.generic import *
 import json
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+from itertools import ifilter
 
 
 def logout_page(request):
@@ -190,6 +191,12 @@ def onboarding(request):
         for tag in map(lambda x: x.lower().capitalize(), tags.split(",")):
             tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
             profile.tags.add(tagInstance)
+        profile.save()
+
+        # Add twitter username to social links
+        social_links = json.loads(profile.socialLinks)
+        social_links[0]['link'] = twitter_username
+        profile.socialLinks = json.dumps(social_links)
         profile.save()
 
         # send e-mail

@@ -53,7 +53,7 @@
 
         tags={
             available: {% firstof tags 'False' %} || [],
-            selected : {% firstof profile.jsonTags 'False' %} || []
+            selected : {% firstof profile.jsonTags '[]' %}
         };
 
         types_of_innovation = {
@@ -68,8 +68,8 @@
         };
 
         source_of_inspiration={
-            available: {% firstof source_of_inspiration 'False' %} || [] ,
-            selected : {% firstof profile.jsonSourceOfInspiration 'False' %} || []
+            available: {% firstof source_of_inspiration '[]' %} || [] ,
+            selected : {% firstof profile.jsonSourceOfInspiration '[]' %} || []
         };
 
         birthdate ='{{ profile.birthdate | date:"Y-m-d" }}';
@@ -127,16 +127,24 @@
                 <div class="row">
                     <div class="col-md-12">
                         <br>
-                        <div class="well"><i> {{ profile.statement }}  </i></div>
+                        {% if profile.statement != 'None' %}
+                            <div class="well"><i> {{ profile.statement }}  </i></div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="row">
-
                     <div class="col-md-6">
                         <div class="well-red">SOCIAL LINKS</div>
-                        <p ng-repeat=" social in _.clone(socialLinks) "
-                        ><span class="fa fa-fw fa-home fa-{$ social.name $}" ></span>&nbsp; {$ social.link $} </p>
+                        <p
+                            ng-repeat=" social in _.clone(socialLinks) "
+                            ng-if="social.link"
+                            tooltip-placement="top-left" uib-tooltip="{$ social.name $}"
+                        >
+                            <span
+                                  class="fa fa-fw fa-home fa-{$ social.name $}"
+                            ></span>&nbsp; {$ social.link $}
+                        </p>
                     </div>
                     <div class="col-md-6">
 
@@ -259,7 +267,7 @@
 
                         <div class="col-md-12">
 
-                            <ui-select multiple tagging
+                            <ui-select multiple tagging tagging-label="&nbsp;&nbsp;&#x25C0; ADD NEW"
                                        sortable="true"
                                        spinner-enabled="true"
                                        ng-model="tags.selected"
@@ -271,7 +279,9 @@
                                 </ui-select-match>
 
                                 <ui-select-choices  repeat="tag in tags.available | filter:$select.search track by $index">
-                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}" ng-bind-html="tag | highlight: $select.search"></div>
+                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}"
+
+                                         ng-bind-html="tag | highlight: $select.search"></div>
                                 </ui-select-choices>
 
                             </ui-select><br/>
@@ -283,7 +293,10 @@
 
                         <div class="col-md-12">
                             <label for="">Statement</label>
-                            <textarea class="form-control" name="statement" placeholder="Write something about you" rows="6" >{{ profile.statement }}</textarea>
+                            <textarea class="form-control" name="statement"
+                                      placeholder="Write something about you"
+                                      rows="6"
+                            >{% if profile.statement != 'None' %}{{ profile.statement }}{% endif %}</textarea>
                             <br>
                         </div>
 
@@ -300,7 +313,7 @@
 
                             <label for="">Role</label>
                             <ui-select ng-model="role.selected" title="Choose your role">
-                                <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
+                                <ui-select-match placeholder="Choose your role">{$ $select.selected $}</ui-select-match>
                                 <ui-select-choices repeat="role in role.available | filter:$select.search track by $index">
                                     <div class="btn">{$ role $}</div>
                                 </ui-select-choices>
@@ -347,18 +360,18 @@
                         <div class="col-md-12">
                             <label for="">Source of inspiration</label>
                             <p>Enter up to 3 Source of your inspiration. Write a word and press enter or select one from the list .</p>
-                            <ui-select multiple tagging
+                            <ui-select multiple tagging tagging-label="&nbsp;&nbsp;&#x25C0;&nbsp;ADD NEW"
                                        sortable="true"
                                        spinner-enabled="true"
                                        ng-model="source_of_inspiration.selected"
-                                       title="Choose a Source of inspiration *" limit="3"
+                                       title="Choose a Source of inspiration or add a new one" limit="3"
                             >
-                                <ui-select-match placeholder="Type and press enter">
+                                <ui-select-match placeholder="Select your source of inspiration or add new one">
                                     {$ $item $}
                                 </ui-select-match>
 
-                                <ui-select-choices  repeat="source in source_of_inspiration.available | filter:$select.search track by $index">
-                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}" ng-bind-html="tag | highlight: $select.search"></div>
+                                <ui-select-choices repeat="source in source_of_inspiration.available  | filter:$select.search track by $index">
+                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}" ng-bind-html="source | highlight: $select.search"></div>
                                 </ui-select-choices>
 
                             </ui-select><br/>
@@ -371,10 +384,10 @@
                         <div class="col-md-12">
                             <label for="">Types of innovation</label>
                             <p>Select one or more of the below Types of innovation categories.</p>
-                            <ui-select multiple class="form-control" tagging ng-model="types_of_innovation.selected" title="Select yout Types of innovation">
-                                <ui-select-match placeholder="Types of innovation">{$ $item $}</ui-select-match>
-                                <ui-select-choices repeat="type in types_of_innovation.available | filter:$select.search track by $index">
-                                    <div class="btn">{$ type $}</div>
+                            <ui-select multiple class="form-control" ng-model="types_of_innovation.selected" title="Select yout Types of innovation">
+                                <ui-select-match placeholder="Choose one or more Types of innovation">{$ $item $}</ui-select-match>
+                                <ui-select-choices repeat="innovationType in types_of_innovation.available | filter:$select.search track by $index">
+                                    <div class="btn" ng-bind-html="innovationType | highlight: $select.search"></div>
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="types_of_innovation" ng-value="types_of_innovation.selected" />
@@ -416,20 +429,23 @@
                             </div>
 
 
-                           <div class="row" ng-init="newSocial = { name: '', link: '' }">
+                           <div class="row" ng-init="newSocial={name:'',link:''}">
                                <div class="col-md-12 ">
                                    <br>
                                    <label for="">Add new social</label>
 
                                    <div class="input-group">
-                                       <input class="form-control" style="width:40%;" placeholder="Social (E.G.: Twitter)" type="text" ng-model="newSocial.name">
-                                       <input class="form-control" style="width:60%;" placeholder="Username or Link to your homepage" type="text" ng-model="newSocial.link">
+                                       <input class="form-control" style="width:40%;" placeholder="Social (E.G.: Twitter)" type="text"
+                                              ng-model="newSocial.name">
+                                       <input class="form-control" style="width:60%;" placeholder="Username or Link to your homepage" type="text"
+                                              ng-model="newSocial.link">
                                        <span class="input-group-addon pointer"
                                              ng-if="['facebook', 'twitter', 'google-plus'].indexOf(social.name) == -1"
-                                             ng-click="socialLinks.splice($index, 1)"
                                        >
                                             <span class="fa fa-fw fa-plus"
-                                                  ng-click="socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link }); newSocial = { name: '', link: '' }"
+                                                  ng-click="
+                                                  socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link });
+                                                  newSocial.name=''; newSocial.link='';"
                                             ></span>
                                         </span>
 

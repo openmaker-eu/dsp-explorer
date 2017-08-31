@@ -47,10 +47,17 @@
 	input {width:100%!important;}
 
 	.ui-select-highlight { color :$red; }
-	.ui-select-highlight + .ui-select-highlight { color :initial; font-weight: initial; }
 
-	.ui-select-choices-row.active {
-		.ui-select-choices-row-inner { background: $red; color : #fff; }
+	.ui-select-choices {
+		.btn { width:100%; text-align: left;}
+	}
+
+	.ui-select-choices-row {
+		&.active .ui-select-choices-row-inner {
+			background-color: $red!important; color : #fff!important;
+			.ui-select-highlight { color: $dsp-grey; }
+		}
+
 	}
 
 	.ui-select-match-item {
