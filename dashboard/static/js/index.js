@@ -10,7 +10,6 @@ baseImports.angularForm()
 // Stuff
 require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
-require("../../../static/js/footer/header.footer.behaviour")
 
 // Init Angular APP
 var app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])

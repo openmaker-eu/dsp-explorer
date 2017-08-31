@@ -1,6 +1,7 @@
 // Import Js library
 window.$ = window.jQuery = require('jquery')
 window.m = window.moment = require("../../node_modules/moment/moment")
+import  * as  _  from 'lodash'
 
 // Import bootstrap sass
 require("bootstrap-sass")
@@ -8,7 +9,9 @@ require("bootstrap-sass")
 // Import cookie consent
 require("../../node_modules/cookieconsent/build/cookieconsent.min"); // library
 require("../../static/js/cookie/cookie.policy.behaviour"); // Config
-import  * as  _  from 'lodash'
+
+// Header and footer behaviour
+require("../../static/js/footer/header.footer.behaviour")
 
 export function angularBase(app=null){
     
