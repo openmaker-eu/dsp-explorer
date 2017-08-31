@@ -55,8 +55,5 @@ export default [ '$scope', function ($scope) {
     
     $scope.fitImageToCircle($('#profile-image'))
     $scope.fitImageToCircle($('.profile-image-static img'))
-    
-
-    
 
 }]
