@@ -5,9 +5,10 @@ from dashboard.models import Profile
 from django.utils import timezone
 
 LES_CHOICE = (
-    (0, 'Lama'),
-    (1, 'Topix'),
-    (2, 'NoIdea'),
+    (0, 'Bilbao'),
+    (1, 'Italy'),
+    (2, 'Bratislava'),
+    (3, 'United Kingdom'),
 )
 
 

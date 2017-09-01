@@ -3,20 +3,30 @@
     <div class="container">
         <div class="row margin-bottom-15">
             <div class="col-md-12">
-                <h1 class="text-red">Application Form</h1>
+                <h1 class="margin-bottom-30">Application<br><strong class="text-red"> form</strong></h1>
             </div>
         </div>
         <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <p class="col-xs-12 col-md-10 col-md-offset-1">
+                        Dear applicant, <br>here you can submit your <strong>application form</strong> and the related documents.<br><br>
+                        You can start by taking a look to the following documents:
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 text-center margin-top-25">
+                <div class="col-md-6">
+                    <a class="btn login-button col-md-6 col-md-offset-3" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-Application-Template.pdf">Application Template</a>
+                </div>
+                <div class="col-md-6">
+                    <a class="btn login-button col-md-6 col-md-offset-3" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-ToR.pdf">Terms of Reference</a>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top-25">
             <div class="col-md-6 col-md-offset-3">
                 <hr>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
-                <p>
-                    BLA BLA BLA <strong class="text-red">OpenMaker</strong> community for accelerating the
-                    <strong class="text-red">4th Industrial Revolution</strong>! <br>
-                </p>
             </div>
         </div>
         <div class="row margin-top-20 margin-bottom-30">
@@ -24,15 +34,17 @@
                 <form class="form-group" action="{% url 'pss:application' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    Project Name <input class="form-control" type="text" name="project_name" placeholder="Project Name.." required/> <br><br>
+                    <input class="form-control" type="text" name="project_name" placeholder="Insert project..." required/> <br><br>
 
-                    Your LES <select class="form-control" name="les_choice">
-                                <option value="0">Lama</option>
-                                <option value="1">Topix</option>
-                                <option value="2">NoIdea</option>
-                            </select> <br><br>
+                    <select class="form-control" name="les_choice">
+                            <option selected="selected" disabled>Select your LESS...</option>
+                            <option value="0">Bilbao</option>
+                            <option value="1">Italy</option>
+                            <option value="2">Bratislava</option>
+                            <option value="3">United Kingdom</option>
+                    </select> <br><br>
                     <input class="form-control" type="file" name="zip_location" required/> <br><br>
-                    <input class="btn btn-info" type="submit" value="UPLOAD" />
+                    <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Upload">
                 </form>
                 <br>
             </div>

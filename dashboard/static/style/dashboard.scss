@@ -126,35 +126,6 @@ BUTTONS
     box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
 }
 
-.login-button {
-    background: transparent;
-    color: #db4348;
-    border: solid 1px;
-    font-weight: 300;
-}
-
-.login-button:hover, .login-button:focus, .login-button:active {
-    background: #db4348!important;
-    color: #fff!important;
-}
-
-.login-button-active {
-    background: #db4348!important;
-    color: #fff!important;
-}
-
-.close-button {
-    background: transparent;
-    color: #f0ad4e;
-    border: solid 1px;
-    font-weight: 300;
-}
-
-.close-button:hover {
-    background: #f0ad4e;
-    color: #fff;
-}
-
 .claim {
     font-weight: 400;
     font-size: 24px;
@@ -229,10 +200,6 @@ input:focus {
     MARGIN LIST:
 
 */
-
-li {
-    margin-top: 5px;
-}
 
 .no-scroll { overflow-y: hidden; }
 

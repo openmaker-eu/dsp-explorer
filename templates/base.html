@@ -65,6 +65,7 @@
                             <a href="{% url 'pss:application' %}">Application</a>
                         </li>
                         {% else %}
+                        {# TODO check permission super admin and isstaff #}
                         <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Application&nbsp;<span class="caret"></span></a>
                             <ul class="dropdown-menu">

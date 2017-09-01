@@ -28,7 +28,6 @@ html {
 .no-padding { padding:0; }
 
 a, a * { color: #2C2C2C; text-decoration: none; }
-a:hover { color: $dsp-red!important; text-decoration: none; }
 
 .liactive * {
   @media (max-width: $screen-xs-max) {
@@ -204,4 +203,33 @@ textarea {
 
 a, a:hover {
     color: #333;
+}
+
+.login-button {
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+}
+
+.login-button:hover, .login-button:focus, .login-button:active {
+    background: #db4348!important;
+    color: #fff!important;
+}
+
+.login-button-active {
+    background: #db4348!important;
+    color: #fff!important;
+}
+
+.close-button {
+    background: transparent;
+    color: #f0ad4e;
+    border: solid 1px;
+    font-weight: 300;
+}
+
+.close-button:hover {
+    background: #f0ad4e;
+    color: #fff;
 }
