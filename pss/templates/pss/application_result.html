@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container">
-        <div class="row margin-bottom-15 margin-top-30" style="margin-bottom: 15px; margin-top: 30px;">
-            <h3 class="modal-title text-center text-red">Application Form
-            </h3>
+        <div class="row margin-bottom-15">
+            <div class="col-md-12">
+                <h1 class="margin-bottom-30">Application<br><strong class="text-red"> results</strong></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <p class="col-xs-12 col-md-10 col-md-offset-1">
+                        Here administrator can find the PSS application results.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <hr>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
-                <p>
-                    BLA BLA BLA <strong class="text-red">OpenMaker</strong> community for accelerating the
-                    <strong class="text-red">4th Industrial Revolution</strong>! <br>
-                </p>
-            </div>
-        </div>
         <div class="row margin-top-20 margin-bottom-30">
-            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+            <div class="col-md-12 table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
@@ -40,7 +42,7 @@
                             <td>{{ app.profile.user.last_name }}</td>
                             <td>{{ app.project_name }}</td>
                             <td>{{ app.les }}</td>
-                            <td><a href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>
+                            <td><a class="text-red" href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>
                             <td>{{ app.created_at }}</td>
                         </tr>
                     {% endfor %}
