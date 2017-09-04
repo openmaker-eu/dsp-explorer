@@ -35,6 +35,7 @@
                     {% csrf_token %}
 
                     <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img" style="display: none;"/>
+
                     <div class="row">
                         <div class="col-md-6">
                             <input class="form-control" required type="text" name="first_name" placeholder="First name *" ><br />

@@ -4,3 +4,4 @@
 
 require("../style/index.scss")
 let baseImports = require("../../../static/js/index")
+require("./upload.behaviour")

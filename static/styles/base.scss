@@ -210,6 +210,7 @@ a, a:hover {
     color: #db4348;
     border: solid 1px;
     font-weight: 300;
+
 }
 
 .login-button:hover, .login-button:focus, .login-button:active {
@@ -232,4 +233,10 @@ a, a:hover {
 .close-button:hover {
     background: #f0ad4e;
     color: #fff;
+}
+
+.input-group-btn {
+    .login-button:hover {
+        border:1px solid transparent;
+    }
 }

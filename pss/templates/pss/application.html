@@ -36,15 +36,69 @@
 
                     <input class="form-control" type="text" name="project_name" placeholder="Insert project..." required/> <br><br>
 
-                    <select class="form-control" name="les_choice">
-                            <option selected="selected" disabled>Select your LESS...</option>
-                            <option value="0">Bilbao</option>
-                            <option value="1">Italy</option>
-                            <option value="2">Bratislava</option>
-                            <option value="3">United Kingdom</option>
-                    </select> <br><br>
-                    <input class="form-control" type="file" name="zip_location" required/> <br><br>
-                    <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Upload">
+                    <select class="form-control margin-bottom-30" name="les_choice">
+                        <option selected="selected" disabled>Select your LESS...</option>
+                        <option value="0">Bilbao</option>
+                        <option value="1">Italy</option>
+                        <option value="2">Bratislava</option>
+                        <option value="3">United Kingdom</option>
+                    </select>
+                    <small>
+                        Before submitting be sure to add all the required information regarding your submission are included into the zipfile.<br>
+                        Take another look to the <a class="text-red" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-ToR.pdf">Terms of Reference</a>.<br>
+                        Here is a recap of those information:
+                        <ul>
+                            <li>
+                                Application
+                            </li>
+                            <li>
+                                Legal entity (leading partner)
+                            </li>
+                            <li>
+                                Legal existence (leading partner)
+                            </li>
+                            <li>
+                                SME checklist (leafing partner)
+                            </li>
+                            <li>
+                                Financial identification (leading partner)
+                            </li>
+                            <li>
+                                Additional financial information (leading partner)
+                            </li>
+                            <li>
+                                Other supporting documentation (leading partner)
+                            </li>
+                            <li>
+                                Declaration (leading partner)
+                            </li>
+                            <li>
+                                Legal entity (other partners)
+                            </li>
+                            <li>
+                                Legal existence (other partners)
+                            </li>
+                        </ul>
+                    </small>
+
+
+                    {#                    <div class="custom-search input-group margin-top-30">#}
+                    {#                        <input type="text" class="form-control" placeholder="Click and search a file..." readonly>#}
+                    {#                        <div class="input-group-addon"><i class="glyphicon glyphicon-search">#}
+                    {#                            <input class="hidden" type="file" name="zip_location" required/>#}
+                    {#                        </i></div>#}
+                    {#                    </div>#}
+
+                    <div class="input-group margin-top-30">
+                        <label class="input-group-btn">
+                            <span class="btn login-button">
+                                Browse&hellip; <input type="file" style="display: none;" multiple>
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" style="height: 33px; border-left: 1px solid #db4348;" readonly>
+                    </div>
+
+                    <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Upload">
                 </form>
                 <br>
             </div>
