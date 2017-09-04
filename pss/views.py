@@ -6,16 +6,23 @@ from django.urls import reverse
 from .models import Application
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
-import logging
+import logging, os
 
 
 @login_required
 def application(request):
     if request.method == 'POST':
+        allowed_extensions = ['.zip']
         try:
             project_name = request.POST['project_name'].strip().title()
             les_choice = int(request.POST.getlist('les_choice')[0])
+
+            # check zipfile
             zip_location = request.FILES['zip_location']
+            filename, file_extension = os.path.splitext(zip_location.name)
+            if not (file_extension in allowed_extensions):
+                raise ValueError
+
             if not project_name or not zip_location:
                 raise KeyError
         except (ValueError, KeyError, IndexError):

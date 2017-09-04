@@ -36,7 +36,7 @@
 
                     <input class="form-control" type="text" name="project_name" placeholder="Insert project..." required/> <br><br>
 
-                    <select class="form-control margin-bottom-30" name="les_choice">
+                    <select class="form-control margin-bottom-30" name="les_choice" required>
                         <option selected="selected" disabled>Select your LESS...</option>
                         <option value="0">Bilbao</option>
                         <option value="1">Italy</option>
@@ -83,12 +83,11 @@
                     <div class="input-group margin-top-30">
                         <label class="input-group-btn">
                             <span class="btn login-button">
-                                Browse&hellip; <input type="file" style="display: none;" multiple>
+                                Browse&hellip; <input type="file" name="zip_location" style="display: none;" multiple required>
                             </span>
                         </label>
-                        <input type="text" class="form-control" style="height: 33px; border-left: 1px solid #db4348;" readonly>
+                        <input type="text" class="form-control" style="height: 33px;" readonly>
                     </div>
-
                     <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Upload">
                 </form>
                 <br>

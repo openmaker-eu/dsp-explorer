@@ -740,3 +740,35 @@ onboarding_email_template = '''
 
 <p>If you are curious about the <strong>OpenMaker</strong> initiative, check out our <a href="http://openmaker.eu/" target="_blank">website</a> and subscribe to our Newsletter to receive the latest updates from the community!</p>
 '''
+
+pss_upload_confirmation = '''
+<h1>Hi {FIRST_NAME} {LAST_NAME},</h1>
+<p>thank you for your application!<br> Your submission has been successfully submitted to the <strong>OpenMaker Call for Ideas!</strong></p>
+<p>For any additional information or request, please contact:</p>
+<ul>
+<li>Spain: <a href="mailto:jorge.garcia@tecnalia.com">Garcia Valbuena, Jorge</a></li>
+<li>Italy: <a href="mailto:dario.marmo@agenzialama.eu">Marmo, Dario</a></li>
+<li>Slovakia: <a href="mailto:lubomir.billy@centire.com">Billy, Lubomir</a></li>
+<li>UK: <a href="mailto:erika.rushton@gmail.com">Rushton, Erika</a></li>
+</ul>
+'''
+
+pss_admin_upload_confirmation = '''
+<h1>Dear Admin,</h1>
+<p>an application has been submitted to the <strong>Pilot Support Scheme!</strong></p>
+<p>Here you can find a recap about it:</p>
+<ul>
+<li>
+    Sent from: {APPLIER_FIRST_NAME} {APPLIER_LAST_NAME} 
+</li>
+<li>
+    Title: {APPLICATION_NAME} 
+</li>
+<li>
+    LES: {LES} 
+</li>
+</ul>
+<p>
+    Login into the DSPExplorer with your Admin credential and check the results. 
+</p>
+'''
