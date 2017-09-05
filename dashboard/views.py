@@ -42,6 +42,7 @@ def dashboard(request):
         other_themes = []
         
     hot_tags = [t[0] for t in Profile.get_hot_tags(6)]
+
     last_members = Profile.get_last_n_members(3)
     context = {'themes': other_themes,
                'last_members': last_members,
@@ -102,13 +103,10 @@ def profile(request, profile_id=None, action=None):
 
             # Many to many fields
             source_of_inspiration = request.POST.get('source_of_inspiration', None)
+
             tags = request.POST['tags']
-
-            print('types_of_innovation')
-            print(new_profile['types_of_innovation'])
-
-            print('source_of_inspiration')
-            print(source_of_inspiration)
+            if tags == '' or tags == None or tags == 'undefined':
+                raise KeyError
 
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')

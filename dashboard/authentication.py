@@ -149,6 +149,10 @@ def onboarding(request):
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
+
+            if tags == '' or tags == None or tags == 'undefined':
+                raise KeyError
+
             twitter_username = request.POST.get('twitter', '')
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
