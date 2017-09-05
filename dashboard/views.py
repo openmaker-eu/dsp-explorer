@@ -128,13 +128,21 @@ def profile(request, profile_id=None, action=None):
 
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
-                raise ValueError
+                raise ValueError('nonvalid')
+
+            # limit to 1MB
+            if imagefile.size > 1048576:
+                raise ValueError('sizelimit')
 
             imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
 
         except ValueError as exc:
-            messages.error(request, 'Profile Image is not an image file')
+            if str(exc) == 'sizelimit':
+                messages.error(request, 'Image size must be less than 1MB')
+            if str(exc) == 'nonvalid':
+                messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:profile'))
+
         except KeyError as exc:
             imagefile = request.user.profile.picture
         except Exception as exc:

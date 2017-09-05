@@ -21,11 +21,32 @@ def application(request):
             zip_location = request.FILES['zip_location']
             filename, file_extension = os.path.splitext(zip_location.name)
             if not (file_extension in allowed_extensions):
-                raise ValueError
+                raise ValueError('notvalid')
 
             if not project_name or not zip_location:
                 raise KeyError
-        except (ValueError, KeyError, IndexError):
+
+            # limit to 1MB
+            if zip_location.size > 10485760:
+                raise ValueError('sizelimit')
+
+        except ValueError as exc:
+            if str(exc) == 'sizelimit':
+                logging.info('ERROR - File size uploaded is larger than 10Mb')
+                messages.error(request, 'File size uploaded must be smaller than 10Mb')
+            elif str(exc) == 'notvalid':
+                logging.info('ERROR - File uploaded extension is not valid')
+                messages.error(
+                    request,
+                    'File uploaded extension is not valid, ( must be : %s )' % ', '.join(allowed_extensions)
+                )
+            else:
+                logging.info('ERROR - Please fill all the fields')
+                messages.error(request, 'Please fill all the fields')
+
+            return HttpResponseRedirect(reverse('pss:application'))
+
+        except (KeyError, IndexError):
             logging.info('ERROR - Please fill all the fields')
             messages.error(request, 'Please fill all the fields')
             return HttpResponseRedirect(reverse('pss:application'))
