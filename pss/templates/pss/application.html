@@ -34,10 +34,10 @@
                 <form class="form-group" action="{% url 'pss:application' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <input class="form-control" type="text" name="project_name" placeholder="Insert project..." required/> <br><br>
+                    <input class="form-control" type="text" name="project_name" placeholder="Type your project title" required/> <br><br>
 
                     <select class="form-control margin-bottom-30" name="les_choice" required>
-                        <option selected="selected" disabled>Select your LESS...</option>
+                        <option selected="selected" disabled>Select your accelerator</option>
                         <option value="0">Bilbao</option>
                         <option value="1">Italy</option>
                         <option value="2">Bratislava</option>

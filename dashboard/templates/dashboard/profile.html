@@ -305,7 +305,7 @@
                             <textarea class="form-control" name="statement"
                                       placeholder="Write something about you"
                                       rows="6"
-                            >{% if profile.statement != 'None' %}{{ profile.statement }}{% endif %}</textarea>
+                            >{% if profile.statement != None and profile.statement != 'None' %}{{ profile.statement }}{% endif %}</textarea>
                             <br>
                         </div>
 
