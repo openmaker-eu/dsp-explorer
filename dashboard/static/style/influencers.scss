@@ -31,6 +31,12 @@
 
   }
 
+  &.no-influencers{
+    .breadcrumb { border-radius:4px; }
+    .open-influencers-wrapper{ display:none; }
+    .breadcrumb-wrapper{ @extend .col-md-12, .col-sm-12, .col-xs-12; }
+  }
+
   // Influencers Red button
   & > :last-child {
 

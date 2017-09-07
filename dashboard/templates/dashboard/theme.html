@@ -3,21 +3,16 @@
 
 <div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
     <div class="row">
-        <div class="col-md-12 influencers-breadcrumb"  >
+        <div class="col-md-12 influencers-breadcrumb" ng-class="{ 'no-influencers': influencers.length < 1 }">
 
-            <div class="col-md-8 col-sm-7 col-xs-12">
-
+            <div class="col-md-8 col-sm-7 col-xs-12 breadcrumb-wrapper">
                 <ol class="breadcrumb">
                     <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li class="active">{{theme_name}}</li>
                 </ol>
-
             </div>
-
-            <div class="col-md-4 col-sm-5 col-xs-12" ng-click="openAside()">
-
-                <div class=" open-influencers pull-right">
-
+            <div class="col-md-4 col-sm-5 col-xs-12 open-influencers-wrapper" ng-click="openAside()">
+                <div class="open-influencers pull-right">
                     <span class="pull-left" style="white-space: nowrap;">View Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <img
                             ng-repeat="data in influencers | limitTo:2 track by $index"
