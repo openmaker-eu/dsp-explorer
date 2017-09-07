@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>DSP Explorer</title>
+    <title>Open Maker Explorer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
@@ -45,7 +45,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand logo text-red" href="/">
-                    DSP<span>explorer</span>
+                    OM<span>explorer</span>
                 </a>
             </div>
 
@@ -53,6 +53,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if not user.is_anonymous %}
+                        <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:dashboard' %}">Home</a>
+                        </li>
                         <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:search_members' %}">Member wall</a>
                         </li>

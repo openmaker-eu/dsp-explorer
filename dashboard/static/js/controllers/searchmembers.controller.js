@@ -60,5 +60,5 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
         $scope.is_last_members_label = false;
         $scope.results = []
     };
-
+    
 }]

@@ -32,8 +32,11 @@
 
                                 <div class="col-md-4">
                                     <a href="/profile/{$data['id']$}">
-                                        <img class="img-circle" ng-src="{$ data.picture $}" alt="" style="height: 100px; width: 100px;">&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <div class="profile-image-static">
+                                            <img src="{$ data.picture $}" style="width:100%; height:100%; position: absolute; "/>
+                                        </div>
                                     </a>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                         </div>
                         <div class="col-md-8">
                             <a href="/profile/{$data['id']$}">

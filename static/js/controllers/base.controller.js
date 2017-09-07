@@ -53,5 +53,22 @@ export default
             
         })
     })
+    
+    
+    $scope.fitImageToCircle = (image)=> {
+        
+        image.removeAttr('style')
+        let width = image.get(0).naturalWidth
+        let height = image.get(0).naturalHeight
+        let css = {'display':'block', 'position': 'absolute'}
+        width > height? css.height = '100%' : css.width = '100%'
+        image.css({ display:'block' , width: 'auto'})
+        image.css(css)
+        
+    }
+    angular.element(document).ready(function () {
+        $.each($('.profile-image-static img'), function(i, el){ $scope.fitImageToCircle($(el))})
+        $scope.fitImageToCircle($('#profile-image'))
+    });
 
 }]
