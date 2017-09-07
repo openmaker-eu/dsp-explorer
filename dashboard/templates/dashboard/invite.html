@@ -34,7 +34,40 @@
                         <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
                         <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
                         <input class="form-control" required type="text" name="last_name" placeholder="Last name"><br />
+
+                        <div class="col-md-12 margin-top-20">
+
+                            <div class="form-group" ng-init="privacy=false; tac=false;" style="padding: 1%;">
+
+                            <span  class="pointer" style="cursor:pointer;">
+                                <label style="font-weight: 500!important;" >
+                                    <span ng-click="tac=!tac;">
+                                        <span ng-show="tac" class="glyphicon glyphicon-check text-red"></span>
+                                        <span ng-show="!tac" class="glyphicon glyphicon-unchecked text-red"></span>
+                                        <input type="checkbox" ng-model="tac" required="required" class="fake-check">
+                                        &nbsp;I allow for the use of my online publicly available data
+                                    </span>
+                                </label>
+                                (<a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+                            </span>
+                                <br>
+                                <span  class="pointer" style="cursor:pointer;">
+                                <label style="font-weight: 500!important;" >
+                                    <span ng-click="privacy=!privacy;" >
+                                        <span ng-show="privacy" class="glyphicon glyphicon-check text-red"></span>
+                                        <span ng-show="!privacy" class="glyphicon glyphicon-unchecked text-red"></span>
+                                        <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
+                                        &nbsp;I allow for the use of the data provided in this form
+                                    </span>
+                                </label>
+                                (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)
+                            </span>
+                            </div>
+                        </div>
+
                         <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
+
+
                     </form>
                 </div>
             </div>
