@@ -105,7 +105,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div style=" padding-left:5%;">
+                        <div style="padding-left:5%;">
                             <p><i class="fa fa-fw fa-briefcase"></i>&nbsp;&nbsp;{{ profile.occupation }}</p>
                             <p><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{profile.city}}</p>
 
@@ -141,9 +141,18 @@
                             ng-if="social.link"
                             tooltip-placement="top-left" uib-tooltip="{$ social.name $}"
                         >
-                            <span
-                                  class="fa fa-fw fa-home fa-{$ social.name $}"
-                            ></span>&nbsp; {$ social.link $}
+                            <a ng-if="checkSocialUrl(social.link)"
+                               href="{$ addHttpToSocialUrl(social.link) $}"
+                               target="_blank"
+                               class="social-anchor"
+                            >
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"
+                                ></span>&nbsp; {$ extractUserFromSocialUrl(social.link) $}
+                            </a>
+                            <span ng-if="!checkSocialUrl(social.link)" >
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"
+                                    ></span>&nbsp; {$ extractUserFromSocialUrl(social.link) $}
+                            </span>
                         </p>
                     </div>
                     <div class="col-md-6">

@@ -232,3 +232,8 @@ input:focus {
         margin-top: 50px;
   }
 }
+
+a {
+    text-decoration: none!important;
+    &:hover{color: $dsp-red;}
+}
