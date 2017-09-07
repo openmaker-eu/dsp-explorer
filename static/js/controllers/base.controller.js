@@ -56,7 +56,7 @@ export default
     
     
     $scope.fitImageToCircle = (image)=> {
-        
+        if(!image)return
         image.removeAttr('style')
         let width = image.get(0).naturalWidth
         let height = image.get(0).naturalHeight
