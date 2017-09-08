@@ -91,7 +91,7 @@
                             <input class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
                         </div>
                         <div class="col-md-12">
-                            Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br>
+                            Enter up to 3 keywords about you, your profession and/or your values.<br><br>
                         </div>
                         <div class="col-md-12" ng-init="tags={ available: {{ tags }} }">
 
@@ -117,7 +117,9 @@
                             <input type="hidden" name="tags" ng-value="tags.selected" required/>
 
                         </div>
-
+                        <div class="col-md-12">
+                             <strong>Twitter username.</strong> Will help us in providing you a <strong>valuable eperience</strong>!<br><br>
+                        </div>
                         <div class="col-md-12">
                             <!-- ToDo tell them we will use it for following purposes -->
                             <div class="input-group">
