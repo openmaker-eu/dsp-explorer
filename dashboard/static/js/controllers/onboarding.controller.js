@@ -84,6 +84,5 @@ export default [ '$scope', function ($scope) {
         let user = url.replace(/\/$/, '').split('/').pop().trim()
         return user !== '' ? user : url ;
     }
-    
 
 }]
