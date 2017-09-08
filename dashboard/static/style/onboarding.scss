@@ -80,5 +80,10 @@
 	background: #fff;
 }
 
+.social-anchor {
+	&:hover, &:hover * { color: $dsp-red; font-weight: 900; }
+
+}
+
 
 /*rgba(204, 204, 204, 0.5)*/

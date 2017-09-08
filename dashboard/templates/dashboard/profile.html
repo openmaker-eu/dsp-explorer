@@ -137,21 +137,27 @@
                     <div class="col-md-6">
                         <div class="well-red">SOCIAL LINKS</div>
                         <p
-                            ng-repeat=" social in _.clone(socialLinks) "
-                            ng-if="social.link"
-                            tooltip-placement="top-left" uib-tooltip="{$ social.name $}"
-                        >
-                            <a ng-if="checkSocialUrl(social.link)"
-                               href="{$ addHttpToSocialUrl(social.link) $}"
-                               target="_blank"
-                               class="social-anchor"
+                            ng-repeat=" socialX in _.clone(socialLinks) "
+                            ng-if="socialX.link"
+                            tooltip-placement="top-left" uib-tooltip="{$ '&nbsp;'+ social.name + '&nbsp;' $}"
+                            tooltip-popup-delay="1000"
+                            ng-init="
+                                social = {
+                                    link:addHttpToSocialUrl(socialX.link) ,
+                                    name:socialX.name ,
+                                    display_name:  extractUserFromSocialUrl(socialX.link),
+                                    is_link:checkSocialUrl(socialX.link)
+                                }
+                            ">
+                            <a ng-if="social.is_link"
+                               href="{$ social.link $}"
+                               target="_blank" class="social-anchor"
                             >
-                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"
-                                ></span>&nbsp; {$ extractUserFromSocialUrl(social.link) $}
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"></span>&nbsp; {$ social.display_name $}
                             </a>
-                            <span ng-if="!checkSocialUrl(social.link)" >
+                            <span ng-if="!social.is_link" >
                                     <span class="fa fa-fw fa-home fa-{$ social.name $}"
-                                    ></span>&nbsp; {$ extractUserFromSocialUrl(social.link) $}
+                                    ></span>&nbsp; {$ social.display_name $}
                             </span>
                         </p>
                     </div>

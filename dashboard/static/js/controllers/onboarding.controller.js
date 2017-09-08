@@ -55,7 +55,7 @@ export default [ '$scope', function ($scope) {
     
     // $scope.fitImageToCircle($('.profile-image-static img'))
     
-    $scope.checkSocialUrl =(url)=>{
+    $scope.checkSocialUrl=(url)=>{
         return (
             url.match(/http:\/\//) || url.match(/https:\/\//) ||
             url.match(/www\./) ||

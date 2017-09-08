@@ -20,7 +20,6 @@ export default
     $scope.modal_message = null;
     
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
-        
         _.forEach( newValue, (el) => {
             
             el.tags = el.tags.split(" ")
@@ -54,7 +53,7 @@ export default
         })
     })
     
-    
+
     $scope.fitImageToCircle = (image)=> {
         if(!image)return
         image.removeAttr('style')
@@ -64,10 +63,10 @@ export default
         width > height? css.height = '100%' : css.width = '100%'
         image.css({ display:'block' , width: 'auto'})
         image.css(css)
-        
+
     }
-    angular.element(document).ready(function () {
-        $.each($('.profile-image-static img'), function(i, el){ $scope.fitImageToCircle($(el))})
+    angular.element(document).ready(function (a,b,c) {
+        _.each($('.profile-image-static img'), function( el, i){ $scope.fitImageToCircle($(el))})
         $scope.fitImageToCircle($('#profile-image'))
     });
 
