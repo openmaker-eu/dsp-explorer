@@ -9,9 +9,9 @@ from django.conf import settings
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, pss_upload_confirmation, pss_admin_upload_confirmation
 
 LES_CHOICE = (
-    (0, 'Bilbao'),
+    (0, 'Spain'),
     (1, 'Italy'),
-    (2, 'Bratislava'),
+    (2, 'Slovakia'),
     (3, 'United Kingdom'),
 )
 
