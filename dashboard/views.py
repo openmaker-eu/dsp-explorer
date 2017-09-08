@@ -63,7 +63,7 @@ def theme(request, theme_name):
         messages.error(request, e.message)
         themes_list = {}
     
-    context = {'theme_name': theme_name or themes_list[random.randint(0,len(themes_list))], 'themes': themes_list}
+    context = {'theme_name': theme_name or themes_list[random.randint(0,len(themes_list)-1)], 'themes': themes_list}
 
     print('themes_list')
     print(themes_list)
