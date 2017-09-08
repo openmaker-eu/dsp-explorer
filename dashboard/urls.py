@@ -10,11 +10,12 @@ urlpatterns = [
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
-    
+
     # Explore
     url(r'^dashboard/theme/(?P<theme_name>.*)/$', views.theme, name='theme'),
+    url(r'^dashboard/theme/$', views.theme, {'theme_name': ''}, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
-    
+
     # Profiles
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
@@ -31,7 +32,7 @@ urlpatterns = [
     url(r'^onboarding/$', authentication.onboarding, name='onboarding'),
     url(r'^onboarding/confirmation/(?P<token>.+)/$', authentication.onboarding_confirmation, name='onboarding_confirmation'),
     url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', authentication.om_confirmation, name='om_confirmation'),
-    
+
     # static
     url(r'^privacy/$', static.privacy, name='privacy'),
     url(r'^support/$', static.support, name='support'),

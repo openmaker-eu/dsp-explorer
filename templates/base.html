@@ -57,8 +57,11 @@
                         <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:dashboard' %}">Home</a>
                         </li>
+                        <li class="{% if current_url == 'dashboard:theme' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:theme' %}">Explore</a>
+                        </li>
                         <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
-                            <a href="{% url 'dashboard:search_members' %}">Member wall</a>
+                            <a href="{% url 'dashboard:search_members' %}">Comunity</a>
                         </li>
                         <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:invite' %}">Invite</a>

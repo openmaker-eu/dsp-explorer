@@ -22,6 +22,7 @@ from django.core.files.base import ContentFile
 import os
 import logging
 import re
+import random
 
 
 @login_required()
@@ -57,12 +58,16 @@ def theme(request, theme_name):
     try:
         themes = DSPConnector.get_themes()
         themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
+
     except DSPConnectorException as e:
         messages.error(request, e.message)
         themes_list = {}
     
-    context = {'theme_name': theme_name,
-               'themes': themes_list}
+    context = {'theme_name': theme_name or themes_list[random.randint(0,len(themes_list))], 'themes': themes_list}
+
+    print('themes_list')
+    print(themes_list)
+
     return render(request, 'dashboard/theme.html', context)
 
 
