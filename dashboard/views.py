@@ -45,12 +45,14 @@ def dashboard(request):
     hot_tags = [t[0] for t in Profile.get_hot_tags(6)]
 
     last_members = Profile.get_last_n_members(3)
-    context = {'themes': other_themes,
-               'last_members': last_members,
-               'hot_tags': hot_tags,
-               'random_theme_name': random_theme_name,
-               'random_feeds': random_feeds,
-               'top_influencers': top_influencers}
+    context = {
+        'themes': other_themes,
+        'last_members': last_members,
+        'hot_tags': hot_tags,
+        'random_theme_name': random_theme_name,
+        'random_feeds': random_feeds,
+        'top_influencers': top_influencers
+    }
     return render(request, 'dashboard/dashboard.html', context)
 
 @login_required()
@@ -225,7 +227,10 @@ def profile(request, profile_id=None, action=None):
 @login_required()
 def search_members(request, search_string=0):
     import urllib
-    return render(request, 'dashboard/search_members.html', {'search_string': search_string })
+    return render(request, 'dashboard/search_members.html', {
+        'search_string': search_string ,
+        'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(6)])
+    })
 
 
 @login_required()

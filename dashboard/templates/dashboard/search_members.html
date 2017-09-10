@@ -25,10 +25,11 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-12">
+
+                <div class="col-md-6">
                     <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
                     <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
-                            <div class="col-md-4" ng-repeat="data in results">
+                        <div class="col-md-12" ng-repeat="data in results">
 
                                 <div class="col-md-4">
                                     <a href="/profile/{$data['id']$}">
@@ -37,7 +38,7 @@
                                         </div>
                                     </a>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                        </div>
+                            </div>
                         <div class="col-md-8">
                             <a href="/profile/{$data['id']$}">
                                 <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
@@ -58,6 +59,11 @@
                         </div>
 
                     </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h3>Hot Tags</h3>
+                    <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
                 </div>
             </div>
         </div>

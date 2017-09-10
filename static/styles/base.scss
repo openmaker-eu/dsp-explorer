@@ -6,9 +6,14 @@ $icon-font-path : '../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/'
 $fa-font-path : '../../../node_modules/font-awesome/fonts/';
 @import "../../../node_modules/font-awesome/scss/font-awesome.scss";
 
+$fa-font-path : '../../../node_modules/font-awesome/fonts/';
+@import "../../../node_modules/material-design-icons/iconfont/material-icons.css";
+
 @import "../../../node_modules/angular-toastr/dist/angular-toastr.css";
 @import '../../../node_modules/angular-motion/dist/angular-motion.css';
 @import "../../../node_modules/cookieconsent/build/cookieconsent.min.css";
+@import "../../../node_modules/ui-select/dist/select.css";
+
 @import "../../../node_modules/ui-select/dist/select.css";
 
 @import "./material.scss";
@@ -23,6 +28,8 @@ html {
   width: 100vw;
   overflow-x: hidden;
 }
+
+.bolder { font-weight: 900; }
 
 .no-margin { margin:0; }
 .no-padding { padding:0; }
@@ -67,6 +74,12 @@ textarea.form-control:focus{
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.Aligner-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .Aligner-item--top {

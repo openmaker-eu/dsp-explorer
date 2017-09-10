@@ -117,7 +117,6 @@
                             <p><i class="fa fa-fw fa-envelope"></i>&nbsp;&nbsp;{{profile.user.email}}</p>
                             <p><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{{profile.gender}}</p>
                             <p><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{{ profile.birthdate | date:'M d Y' }}</p>
-
                             <!--<p><i class="fa fa-fw fa-twitter"></i>&nbsp;&nbsp;{{ profile.twitter_username }}</p>-->
                         </div>
                     </div>
@@ -257,11 +256,13 @@
                             </p>
                             <br />
                         </div>
-
+                        <!--vs-latitude =""-->
+                        <!--vs-longitude=""-->
                         <div class="col-md-12">
                             <label for="" >City <span class="text-red">*</span></label>
                             <input required class="form-control" vs-google-autocomplete="{ types:['(cities)'] }"
                                    ng-model="city"
+
                                    type="text"
                                    name="city"
                                    id="city"

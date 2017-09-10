@@ -189,7 +189,9 @@ class Profile(models.Model):
         # return Counter(flat_tags).most_common(int(tag_number))
 
         tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(), Profile.objects.all())])
-        return Counter(tags).most_common(int(tag_number))
+        hot = Counter(tags).most_common(int(tag_number))
+        print hot
+        return hot
 
 
 class Invitation(models.Model):

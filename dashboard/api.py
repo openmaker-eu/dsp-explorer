@@ -55,7 +55,8 @@ def get_influencers(request, theme_name):
 
 def get_hot_tags(request, tag_number=4):
     return JsonResponse({'status': 'ok',
-                         'tags': [t[0] for t in Profile.get_hot_tags(tag_number)]}, status=200)
+                         'tags': [
+                             {'name': t[0], 'size': t[1]} for t in Profile.get_hot_tags(tag_number)]}, status=200)
 
 
 def get_user_stats(request):
