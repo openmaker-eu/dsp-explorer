@@ -26,6 +26,7 @@ var app = angular.module('dashboard', [
 baseImports.angularBase(app)
 
 
+app.controller('landingController', require('./controllers/landing.controller').default )
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )
 app.controller('themesController', require('./controllers/themes.controller').default )
