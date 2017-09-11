@@ -154,3 +154,22 @@ def post_om_invitation(request):
         receiver_name=''
     )
     return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+
+def get_om_events(request):
+    from django.conf import settings
+    from eventbrite import Eventbrite
+    eventbrite = Eventbrite(settings.ITA_API_KEY)
+    try:
+        ita_events = eventbrite.get('/users/me/owned_events')
+        return JsonResponse({
+            'status': 'ok',
+            'results': {
+                'italy': ita_events
+            }}, status=200)
+    except Exception as e:
+        print e.message
+        return JsonResponse({
+            'status': 'error',
+            'results': {}},
+            status=500)
+

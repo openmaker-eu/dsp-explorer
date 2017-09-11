@@ -140,6 +140,10 @@ EMAIL_ADMIN_2 = ''
 MEDIA_ROOT = ''
 MEDIA_URL = ''
 
+# EVENTBRITE
+
+ITA_API_KEY = ''
+
 # CSRF_FAILURE
 
 CSRF_FAILURE_VIEW = 'dashboard.authentication.csrf_failure'
