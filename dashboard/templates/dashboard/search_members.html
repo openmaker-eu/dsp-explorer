@@ -43,36 +43,43 @@
 
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div class="row"><br><br>
+                    </div>
+                </div>
 
 
                 <div class="col-md-12">
-                    <form>
-                        <div class="input-group has-feedback has-feedback-left" style="width: 50%">
-                            <input ng-change="search_filter.length < 3 ? search() : searchDebounced()"
-                                   ng-model-options="{allowInvalid: true}"
-                                   ng-model="search_filter" id="filter" type="text" class="form-control"
-                                   placeholder="Search members for name, city, tagwords and more" value=""
-                            >
-                            <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                        <div class="col-md-12">
+                            <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
+                            <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
                         </div>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                </div>
-
-                <div class="col-md-12">
-                    <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
-                    <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
+                        <div class="col-md-12">
+                            <form>
+                                <div class="input-group has-feedback has-feedback-left" style="width: 50%">
+                                    <input ng-change="search_filter.length < 3 ? search() : searchDebounced()"
+                                           ng-model-options="{allowInvalid: true}"
+                                           ng-model="search_filter" id="filter" type="text" class="form-control"
+                                           placeholder="Search members for name, city, tagwords and more" value=""
+                                    >
+                                    <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                                </div>
+                            </form>
+                            <br>
+                        </div>
                         <div class="col-md-6" ng-repeat="data in results">
 
-                                <div class="col-md-4">
-                                    <a href="/profile/{$data['id']$}">
-                                        <div class="profile-image-static">
-                                            <img ng-src="{$ data.picture $}" style="width:100%; height:100%; position: absolute; "/>
-                                        </div>
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="col-md-4">
+                                <a href="/profile/{$data['id']$}">
+                                    <div class="profile-image-static">
+                                        <img ng-src="{$ data.picture $}" style="width:100%; height:100%; position: absolute; "/>
+                                    </div>
+                                </a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
                             </div>
+
+
+
                             <div class="col-md-8">
                                 <a href="/profile/{$data['id']$}">
                                     <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
