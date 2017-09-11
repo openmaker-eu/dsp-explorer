@@ -7,10 +7,10 @@ let template = `
         </div>
         
         <div class="col-md-3" ng-repeat="story in stories">
-            <div class="card margin-bottom-20">
+            <div class="card margin-bottom-20" ng-if="story">
                 <a href="{$ story.link $}" target="_blank">
                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                        <img style="min-width:100%;" src="{$ story.image $}" class="img-responsive"alt="image">
+                        <img ng-if="story.image" style="min-width:100%;" ng-src="{$ story.image $}" class="img-responsive" alt="Story image">
                     </div>
                     <div class="card-content text-center">
                         <!--<h5>{{ feed.title|truncatechars:40 }}</h5>-->
@@ -46,14 +46,12 @@ export default [function(){
                             _.get(res, "data[0]['_embedded']['wp:featuredmedia'][0].source_url") ||
                             '/static/images/openmaker-logo.svg'
                         $scope.stories.push(res.data[0])
-                        console.log(res)
                     }
                     ,
                     err => console.log('Error : ', err)
                 )
             })
             
-            console.log('stories : ',  $scope.stories)
             
         }]
     }

@@ -190,9 +190,16 @@ class Profile(models.Model):
 
         tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(), Profile.objects.all())])
         hot = Counter(tags).most_common(int(tag_number))
-        print hot
         return hot
 
+    @classmethod
+    def get_sectors(cls):
+
+        from collections import Counter
+        flat_sectors = Profile.objects.values_list('sector', flat=True)
+        sectors = Counter(flat_sectors).most_common(1000)
+
+        return sectors
 
 class Invitation(models.Model):
 

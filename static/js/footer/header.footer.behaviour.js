@@ -14,10 +14,7 @@
         if ((content_height + footer_height) < body_height) {
             $('#top-div').height(body_height - footer_height)
         }
-
-
-        console.log("ALTEZZA: ", $(".navbar").height());
-
+        
         $("body").css("padding-top", $(".navbar").height() + header_padding + header_margin + header_border);
     }
 

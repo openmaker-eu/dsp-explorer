@@ -29,4 +29,5 @@ app.controller('themesController', require('./controllers/themes.controller').de
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
 app.directive('tagBubbles', require('./directives/TagBubbles').default )
+app.directive('pieSector', require('./directives/PieSector').default )
 

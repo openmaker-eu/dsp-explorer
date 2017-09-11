@@ -38,20 +38,20 @@ export default [ '$scope', function ($scope) {
         }
     }
     
-    $scope.fitImageToCircle = (image)=> {
-
-        image.removeAttr('style').hide(0)
-        image.on('load', ()=>{
-
-            let width = image.get(0).naturalWidth
-            let height = image.get(0).naturalHeight
-
-            let css = {'display':'block', 'position': 'absolute'}
-            width > height? css.height = '100%' : css.width = '100%'
-            image.css(css).show(0)
-
-        })
-    }
+    // $scope.fitImageToCircle = (image)=> {
+    //
+    //     image.removeAttr('style').hide(0)
+    //     image.on('load', ()=>{
+    //
+    //         let width = image.get(0).naturalWidth
+    //         let height = image.get(0).naturalHeight
+    //
+    //         let css = {'display':'block', 'position': 'absolute'}
+    //         width > height? css.height = '100%' : css.width = '100%'
+    //         image.css(css).show(0)
+    //
+    //     })
+    // }
     
     // $scope.fitImageToCircle($('.profile-image-static img'))
     

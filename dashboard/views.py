@@ -60,12 +60,13 @@ def theme(request, theme_name):
     try:
         themes = DSPConnector.get_themes()
         themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
-
+        random_theme = themes_list[random.randint(0, len(themes_list)-1)]
     except DSPConnectorException as e:
         messages.error(request, e.message)
         themes_list = {}
-    
-    context = {'theme_name': theme_name or themes_list[random.randint(0,len(themes_list)-1)], 'themes': themes_list}
+        random_theme = 'No themes'
+
+    context = {'theme_name': theme_name or random_theme, 'themes': themes_list }
 
     print('themes_list')
     print(themes_list)

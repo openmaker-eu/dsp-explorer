@@ -59,11 +59,19 @@ def get_hot_tags(request, tag_number=4):
                              {'name': t[0], 'size': t[1]} for t in Profile.get_hot_tags(tag_number)]}, status=200)
 
 
+def get_sector(request):
+    return JsonResponse({'status': 'ok',
+                         'sectors': [
+                             {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]}, status=200)
+
+
 def get_user_stats(request):
     n_profiles = len(Profile.objects.all())
+
     n_male = len(Profile.objects.filter(gender='male'))
     n_female = len(Profile.objects.filter(gender='female'))
     n_other = n_profiles - n_male - n_female
+
     return JsonResponse({'status': 'ok',
                          'n_profiles': n_profiles,
                          'gender_info': {'n_male': n_male, 'n_female': n_female, 'other': n_other,
