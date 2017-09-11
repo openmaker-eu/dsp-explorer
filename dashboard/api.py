@@ -9,7 +9,7 @@ from dspconnector.connector import DSPConnector, DSPConnectorException
 from utils.api import *
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirm
-
+import json
 
 def search_members(request, search_string):
     result = Profile.search_members(search_string)
@@ -63,7 +63,10 @@ def get_sector(request):
     return JsonResponse({'status': 'ok',
                          'sectors': [
                              {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]}, status=200)
+def get_places(request):
 
+    return JsonResponse({'status': 'ok',
+                         'places': Profile.get_places()}, status=200)
 
 def get_user_stats(request):
     n_profiles = len(Profile.objects.all())

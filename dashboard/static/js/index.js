@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+require('ngMap')
 
 // Import this app style
 require("../style/index.scss")
@@ -12,7 +13,9 @@ require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 
 // Init Angular APP
-var app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])
+var app = angular.module('dashboard', [
+    'ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
+])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
@@ -30,4 +33,5 @@ app.controller('searchController', require('./controllers/searchmembers.controll
 app.directive('userStories', require('./directives/UserStories.directive').default )
 app.directive('tagBubbles', require('./directives/TagBubbles').default )
 app.directive('pieSector', require('./directives/PieSector').default )
+app.directive('locationsMap', require('./directives/LocationsMap').default )
 

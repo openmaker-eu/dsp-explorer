@@ -256,17 +256,29 @@
                             </p>
                             <br />
                         </div>
-                        <!--vs-latitude =""-->
-                        <!--vs-longitude=""-->
+
                         <div class="col-md-12">
                             <label for="" >City <span class="text-red">*</span></label>
-                            <input required class="form-control" vs-google-autocomplete="{ types:['(cities)'] }"
+                            <input ng-init="place={};" required class="form-control"
+                                   vs-google-autocomplete="{ types:['(cities)'] }"
+
                                    ng-model="city"
-                                   type="text"
-                                   name="city"
-                                   id="city"
+                                   vs-latitude ="place.lat"
+                                   vs-longitude="place.long"
+                                   vs-street-number="place.street_number"
+                                   vs-street="place.street"
+                                   vs-city="place.city"
+                                   vs-state="place.state"
+                                   vs-country="place.country"
+                                   vs-country-short="place.country_short"
+                                   vs-post-code="place.post_code"
+
+                                   type="text" name="city" id="city"
                                    class="form-control"
                                    placeholder="Start typing the city name where you are based *"><br />
+
+                            <input type="hidden" value="{$ place $}" name="place">
+
                         </div>
 
                         <div class="col-md-12">

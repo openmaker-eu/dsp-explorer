@@ -1,21 +1,13 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container" ng-controller="searchController" ng-init="get_last_members('{{search_string}}')">
+
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
-                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">Member Wall</strong></h1>
+                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">Community</strong></h1>
                 </div>
-                <div class="col-md-12">
-                    <form>
-                        <div class="input-group has-feedback has-feedback-left" style="width: 50%">
-                            <input ng-change="search_filter.length < 3 ? search() : searchDebounced()" ng-model-options="{allowInvalid: true}" ng-model="search_filter" id="filter" type="text" class="form-control" placeholder="Search members for name, city, tagwords and more" value="">
-                            <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                </div>
+
             </div>
             <div class="col-md-12 margin-top-30">
                 <div class="col-md-12">
@@ -26,10 +18,52 @@
         <div class="row">
             <div class="col-md-12">
 
+                <div class="col-md-12">
+                    <div class="row">
+
+
+                        <div class="col-md-6" >
+                            <h3>Hot Tags</h3>
+                            <div class="" style="padding:10%;">
+                                <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" >
+                            <h3>Sector</h3>
+                            <div class="" style="padding:10%;">
+                                <pie-sector></pie-sector>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <h3>Location</h3>
+                            <locations-map></locations-map>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                <div class="col-md-12">
+                    <form>
+                        <div class="input-group has-feedback has-feedback-left" style="width: 50%">
+                            <input ng-change="search_filter.length < 3 ? search() : searchDebounced()"
+                                   ng-model-options="{allowInvalid: true}"
+                                   ng-model="search_filter" id="filter" type="text" class="form-control"
+                                   placeholder="Search members for name, city, tagwords and more" value=""
+                            >
+                            <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                        </div>
+                    </form>
+                </div>
                 <div class="col-md-6">
+                </div>
+
+                <div class="col-md-12">
                     <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
                     <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
-                        <div class="col-md-12" ng-repeat="data in results">
+                        <div class="col-md-6" ng-repeat="data in results">
 
                                 <div class="col-md-4">
                                     <a href="/profile/{$data['id']$}">
@@ -39,35 +73,25 @@
                                     </a>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                             </div>
-                        <div class="col-md-8">
-                            <a href="/profile/{$data['id']$}">
-                                <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
-                            </a>
-                            <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                            <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
-                            <br>
+                            <div class="col-md-8">
+                                <a href="/profile/{$data['id']$}">
+                                    <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
+                                </a>
+                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
+                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
+                                <br>
 
-                            <i
-                               ng-repeat="tag in data.tags"
-                               ng-class="{ 'text-red' : search_filter == tag.name }"
-                               ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
-                               class="pointer"
-                            >
-                                <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
-                            </i>
+                                <i
+                                   ng-repeat="tag in data.tags"
+                                   ng-class="{ 'text-red' : search_filter == tag.name }"
+                                   ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
+                                   class="pointer"
+                                >
+                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
+                                </i>
 
+                            </div>
                         </div>
-
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <h3>Hot Tags</h3>
-                    <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
-                </div>
-                <div class="col-md-6">
-                    <h3>Sector</h3>
-                    <pie-sector tags="{{ hot_tags }}"></pie-sector>
                 </div>
 
             </div>

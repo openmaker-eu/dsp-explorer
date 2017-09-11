@@ -52,4 +52,5 @@ urlpatterns = [
     url(r'^api/v1.1/get_hot_tags/(?P<tag_number>\d+)/$', api.get_hot_tags, name='get_hot_tags'),
     url(r'^api/v1.1/get_user_stats/$', api.get_user_stats, name='get_user_stats'),
     url(r'^api/v1.1/get_sectors/$', api.get_sector, name='get_sector'),
+    url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
 ]

@@ -51,6 +51,7 @@ module.exports = {
                 loader: 'file-loader?limit=100000&name=../fonts/[hash].[ext]'
 
             }
+
         ]
     },
     plugins: [

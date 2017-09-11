@@ -40,6 +40,7 @@ class Profile(models.Model):
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
+    place = models.TextField(_('Place'), max_length=500, blank=True, null=True)
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
 
@@ -200,6 +201,13 @@ class Profile(models.Model):
         sectors = Counter(flat_sectors).most_common(1000)
 
         return sectors
+
+    @classmethod
+    def get_places(cls):
+        from collections import Counter
+        places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
+        print places
+        return places
 
 class Invitation(models.Model):
 

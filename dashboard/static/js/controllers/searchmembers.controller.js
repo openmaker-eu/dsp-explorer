@@ -48,17 +48,21 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
         $scope.last_members = result['data']['result'];
         $scope.is_last_members_label = !$scope.preset_search;
         if(!$scope.preset_search)  $scope.results = $scope.last_members;
+        $scope.resizeCircleImages()
 
     };
 
     $scope.handleSearchResponse = function (result) {
         $scope.is_last_members_label = false;
         $scope.results = result['data']['result']
+        $scope.resizeCircleImages()
     };
 
     $scope.handleSearchError = function(){
         $scope.is_last_members_label = false;
         $scope.results = []
     };
+    
+    
     
 }]

@@ -52,9 +52,11 @@ export default
             
         })
     })
-    
 
     $scope.fitImageToCircle = (image)=> {
+        
+        console.log(image)
+        console.log(image.get(0))
         
         if( !image || !image.get(0) ) return
         image.removeAttr('style')
@@ -67,9 +69,12 @@ export default
         image.css(css)
 
     }
-    angular.element(document).ready(function (a,b,c) {
+    
+    $scope.resizeCircleImages = () =>{
         _.each($('.profile-image-static img'), function( el, i){ $scope.fitImageToCircle($(el))})
         $scope.fitImageToCircle($('#profile-image'))
-    });
+    }
+    
+    angular.element(document).ready(function (a,b,c) {$scope.resizeCircleImages()});
 
 }]

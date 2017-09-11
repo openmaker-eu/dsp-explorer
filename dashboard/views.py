@@ -105,6 +105,8 @@ def profile(request, profile_id=None, action=None):
             new_profile['sector'] = request.POST.get('sector', None)
             new_profile['size'] = request.POST.get('size', None)
 
+            if request.POST.get('place', None) != '{}': new_profile['place'] = request.POST.get('place', None)
+
             # Multiple choice fields
             new_profile['types_of_innovation'] = request.POST.get('types_of_innovation', None)
             new_profile['socialLinks'] = request.POST.get('socialLinks', None)
