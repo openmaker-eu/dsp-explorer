@@ -32,3 +32,15 @@ export function angularForm(){
     require("ui-select")
     return this
 }
+
+export function directives(app){
+    app.directive('circleImage', require('./directives/CircleImage').default )
+    return this
+}
+
+export function dataVizDirectives(app){
+    app.directive('tagBubbles', require('./directives/TagBubbles').default )
+    app.directive('pieSector', require('./directives/PieSector').default )
+    app.directive('locationsMap', require('./directives/LocationsMap').default )
+    return this
+}

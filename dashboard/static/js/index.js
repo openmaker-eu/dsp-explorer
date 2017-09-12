@@ -24,6 +24,8 @@ var app = angular.module('dashboard', [
 
 // Require base angular componenets
 baseImports.angularBase(app)
+    .directives(app)
+    .dataVizDirectives(app)
 
 
 app.controller('landingController', require('./controllers/landing.controller').default )
@@ -32,7 +34,5 @@ app.controller('onboardingController', require('./controllers/onboarding.control
 app.controller('themesController', require('./controllers/themes.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
-app.directive('tagBubbles', require('./directives/TagBubbles').default )
-app.directive('pieSector', require('./directives/PieSector').default )
-app.directive('locationsMap', require('./directives/LocationsMap').default )
+
 

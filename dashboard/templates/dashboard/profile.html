@@ -99,9 +99,7 @@
 
                     <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-4 col-xs-offset-4 ">
                         <div class="col-md-8 col-md-offset-4">
-                            <div class="profile-image-static">
-                                <img src="{{profile.picture.url}}"  style="width:100%; height:100%; position: absolute; "/>
-                            </div>
+                            <circle-image src="'{{profile.picture.url}}'" ></circle-image>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -201,8 +199,9 @@
                         </div>
                         <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                             <div class="profile-image" id="profile-image-div" ng-click="profileImageUpload();">
-                                <i class="fa fa-cloud-upload" style=""></i>
-                                <img src="{{profile.picture.url}}" id="profile-image" style="width:100%; height:100%; display: block; position: absolute; "/>
+                                <i class="fa fa-cloud-upload"></i>
+                                <!--<img src="{{profile.picture.url}}" id="profile-image" style="width:100%; height:100%; display: block; position: absolute; "/>-->
+                                <circle-image src="'{{profile.picture.url}}'"></circle-image>
                             </div>
                             <input id="profile-image-input" class="hidden" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img"/>
                         </div>

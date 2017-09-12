@@ -53,28 +53,25 @@ export default
         })
     })
 
-    $scope.fitImageToCircle = (image)=> {
-        
-        console.log(image)
-        console.log(image.get(0))
-        
-        if( !image || !image.get(0) ) return
-        image.removeAttr('style')
-        
-        let width = image.get(0).naturalWidth
-        let height = image.get(0).naturalHeight
-        let css = {'display':'block', 'position': 'absolute'}
-        width > height? css.height = '100%' : css.width = '100%'
-        image.css({ display:'block' , width: 'auto'})
-        image.css(css)
-
-    }
-    
-    $scope.resizeCircleImages = () =>{
-        _.each($('.profile-image-static img'), function( el, i){ $scope.fitImageToCircle($(el))})
-        $scope.fitImageToCircle($('#profile-image'))
-    }
-    
-    angular.element(document).ready(function (a,b,c) {$scope.resizeCircleImages()});
+    // $scope.fitImageToCircle = (image)=> {
+    //
+    //     if( !image || !image.get(0) ) return
+    //     image.removeAttr('style')
+    //
+    //     let width = image.get(0).naturalWidth
+    //     let height = image.get(0).naturalHeight
+    //     let css = {'display':'block', 'position': 'absolute'}
+    //     width > height? css.height = '100%' : css.width = '100%'
+    //     image.css({ display:'block' , width: 'auto'})
+    //     image.css(css)
+    //
+    // }
+    //
+    // $scope.resizeCircleImages = () =>{
+    //     _.each($('.profile-image-static img'), function( el, i){ $scope.fitImageToCircle($(el))})
+    //     $scope.fitImageToCircle($('#profile-image'))
+    // }
+    //
+    // angular.element(document).ready(function (a,b,c) {$scope.resizeCircleImages()});
 
 }]
