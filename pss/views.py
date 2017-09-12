@@ -63,7 +63,4 @@ def application(request):
 @staff_member_required(login_url='dashboard:login')
 def application_result(request):
     context = {'applications': Application.objects.all()}
-
-    print getattr(context['applications'][0], 'get_les_display')()
-
     return render(request, 'pss/application_result.html', context)

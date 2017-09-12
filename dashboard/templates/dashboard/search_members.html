@@ -7,10 +7,9 @@
                 <div class="col-md-12">
                     <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">Community</strong></h1>
                 </div>
-
             </div>
-
         </div>
+
         <div class="row">
             <div class="col-md-12">
 
@@ -19,18 +18,16 @@
                     <locations-map></locations-map>
                 </div>
 
-                <!--Anchor for tag on page load-->
-                <div class="col-md-12"> <a id="tags" href="#" >&nbsp;</a></div>
-                <!--Anchor for members on page load-->
-                <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
-
-                <div class="col-md-12 margin-top-30">
-                    <div class="col-md-12">
-                        <hr>
-                    </div>
-                </div>
 
                 <div class="col-md-6" style="padding-right:5%;">
+                    <!--Anchor for members on page load-->
+                    <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
+                    <div class="col-md-12 margin-top-30">
+                        <div class="col-md-12">
+                            <br>
+                        </div>
+                    </div>
+
                     <div class="col-md-12">
                         <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
                         <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
@@ -50,35 +47,46 @@
                         <br>
                     </div>
                     <div class="col-md-12" ng-repeat="data in results">
+                        <div class="row">
+                            <div class="col-md-4 col-xs-4">
+                                <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
+                            </div>
 
-                        <div class="col-md-4">
-                            <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
-                        </div>
+                            <div class="col-md-8 col-xs-8">
+                                <a href="/profile/{$data['id']$}">
+                                    <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
+                                </a>
+                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
+                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
+                                <br>
 
-                        <div class="col-md-8">
-                            <a href="/profile/{$data['id']$}">
-                                <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
-                            </a>
-                            <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                            <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
-                            <br>
+                                <i
+                                        ng-repeat="tag in data.tags"
+                                        ng-class="{ 'text-red' : search_filter == tag.name }"
+                                        ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
+                                        class="pointer"
+                                >
+                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
+                                </i>
 
-                            <i
-                                    ng-repeat="tag in data.tags"
-                                    ng-class="{ 'text-red' : search_filter == tag.name }"
-                                    ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
-                                    class="pointer"
-                            >
-                                <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
-                            </i>
-
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!--Anchor for tag on page load-->
+
 
                 <div class="col-md-6">
                     <div class="row">
+
+                        <!--Anchor for members on page load-->
+                        <div class="col-md-12"><a id="tags" href="#" ></a>&nbsp;</a></div>
+                        <div class="col-md-12 margin-top-30">
+                            <div class="col-md-12">
+                                <br>
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <h3>Hot Tags</h3>
                             <div class="" >

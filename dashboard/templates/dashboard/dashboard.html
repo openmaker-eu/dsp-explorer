@@ -107,16 +107,18 @@
                 {% for profile in last_members %}
                     <div class="col-md-12 margin-top-25">
                         <a href="/profile/{{ profile.id }}">
-                            <div class="col-md-3">
-                                <circle-image src="'{{ profile.picture.url }}'" href="'/profile/'+data['id']" ></circle-image>
-                            </div>
-                            <div class="col-md-9">
-                                <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
-                                <br><span>{{ profile.city }}</span>
-                                <br>
-                                {% for tag in profile.tags.all %}
+                            <div class="row">
+                                <div class="col-md-4 col-xs-4">
+                                    <circle-image src="'{{ profile.picture.url }}'" href="'/profile/'+data['id']" ></circle-image>
+                                </div>
+                                <div class="col-md-8 col-xs-8">
+                                    <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
+                                    <br><span>{{ profile.city }}</span>
+                                    <br>
+                                    {% for tag in profile.tags.all %}
                                     <a href="{% url 'dashboard:search_members' tag.name %}#members"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </a>
                     </div>

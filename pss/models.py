@@ -8,12 +8,6 @@ from django.utils import timezone
 from django.conf import settings
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, pss_upload_confirmation, pss_admin_upload_confirmation
 
-def retrieve_les_label(code):
-    for les in Application.les_choices:
-        if code == les[0]: return les[1]
-    return 'less found undefined'
-
-
 def upload_to_and_rename(instance, filename):
     from datetime import datetime as dt
     import os
@@ -42,6 +36,11 @@ class Application(models.Model):
     class Meta:
         ordering = ('created_at', )
 
+    def retrieve_les_label(self, code):
+        for les in Application.les_choices:
+            if code == les[0]: return les[1]
+        return 'less found undefined'
+
     def send_email(self):
 
         applier_first_name = User.objects.get(id=self.profile.user_id).first_name
@@ -59,10 +58,10 @@ class Application(models.Model):
             APPLIER_FIRST_NAME=applier_first_name,
             APPLIER_LAST_NAME=applier_last_name,
             APPLICATION_NAME=latest_project_name_uploaded_by_current_user,
-            LES=retrieve_les_label(latest_les_uploaded_by_current_user)
+            LES=Application.retrieve_les_label(latest_les_uploaded_by_current_user)
         ))
 
         self.profile.send_email('PSS Open Maker application done!', user_content_mail)
-
         self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_1)
         self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_2)
+

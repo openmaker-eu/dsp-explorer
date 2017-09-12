@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }" >
+    <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }" style="display: block;">
         <div class="profile-image-static" style="border-radius:50%; overflow: hidden; z-index:1000;">
             <img ng-src="{$ src $}" style="width:100%; height:100%; position: absolute;  "/>
         </div>
@@ -23,6 +23,7 @@ export default [function(){
         },
         link : function($scope, element, attrs){
 
+            $(element).css({display:'block'})
             console.log('href', $scope.href)
             
             $scope.fitImageToCircle = (image)=> {
