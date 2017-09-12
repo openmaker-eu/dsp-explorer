@@ -130,8 +130,8 @@
             </div>
             <!-- Hot Tags Section -->
             <div class="col-md-4 col-sm-12 tags-align">
-                <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong> int the community</h2>
-                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}">View <strong class="text-red">All</strong></a></small></h2>
+                <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
+                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}">View <strong class="text-red">All</strong> Community Tags</a></small></h2>
                 {% for tag in hot_tags %}
                     <div class="pull-left">
                         <h4><a href="{% url 'dashboard:search_members' tag %}">
