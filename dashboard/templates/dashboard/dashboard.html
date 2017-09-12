@@ -101,27 +101,21 @@
             <!-- Last Members -->
             <div class="col-md-8 col-sm-12">
                 <h2 class="margin-bottom-25"><strong class="text-red">Last Onboarded </strong> Members</h2>
-                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}">View <strong class="text-red">All</strong></a></small></h2>
+                <h2 class="margin-top-25"><small>
+                    <a href="{% url 'dashboard:search_members' %}#members">View <strong class="text-red">All</strong>&nbsp;Community Members</a></small>
+                </h2>
                 {% for profile in last_members %}
                     <div class="col-md-12 margin-top-25">
                         <a href="/profile/{{ profile.id }}">
                             <div class="col-md-3">
-                                <!--<img class="img-circle" src="{{ profile.picture.url }}" style="height: 100px; width: 100px;">-->
-                                <!--<a href="/profile/{$data['id']$}" >-->
-                                    <!--<div class="profile-image-static">-->
-                                        <!--<img src="{{ profile.picture.url }}" style="width:100%; height:100%; position: absolute; "/>-->
-                                    <!--</div>-->
-                                <!--</a>-->
-
                                 <circle-image src="'{{ profile.picture.url }}'" href="'/profile/'+data['id']" ></circle-image>
-
                             </div>
                             <div class="col-md-9">
                                 <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong>
                                 <br><span>{{ profile.city }}</span>
                                 <br>
                                 {% for tag in profile.tags.all %}
-                                    <a href="{% url 'dashboard:search_members' tag.name %}"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
+                                    <a href="{% url 'dashboard:search_members' tag.name %}#members"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
                                 {% endfor %}
                             </div>
                         </a>
@@ -131,10 +125,10 @@
             <!-- Hot Tags Section -->
             <div class="col-md-4 col-sm-12 tags-align">
                 <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
-                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}">View <strong class="text-red">All</strong> Community Tags</a></small></h2>
+                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a></small></h2>
                 {% for tag in hot_tags %}
                     <div class="pull-left">
-                        <h4><a href="{% url 'dashboard:search_members' tag %}">
+                        <h4><a href="{% url 'dashboard:search_members' tag %}#tags">
                             <span class="text-black">#</span>{{ tag }}</a>
                             <span>&nbsp;&nbsp;</span>
                         </h4>
