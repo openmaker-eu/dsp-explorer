@@ -57,10 +57,13 @@ def application(request):
         app.save()
         messages.success(request, 'Thanks for your submission!')
         app.send_email()
-    return render(request, 'pss/application.html')
+    return render(request, 'pss/application.html', {'les_choices': Application.les_choices})
 
 
 @staff_member_required(login_url='dashboard:login')
 def application_result(request):
     context = {'applications': Application.objects.all()}
+
+    print getattr(context['applications'][0], 'get_les_display')()
+
     return render(request, 'pss/application_result.html', context)

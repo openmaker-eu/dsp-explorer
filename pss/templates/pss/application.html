@@ -38,10 +38,11 @@
 
                     <select class="form-control margin-bottom-30" name="les_choice" required>
                         <option selected="selected" disabled>Select your accelerator</option>
-                        <option value="0">Spain</option>
-                        <option value="1">Italy</option>
-                        <option value="2">Slovakia</option>
-                        <option value="3">United Kingdom</option>
+
+                        {% for choice in les_choices %}
+                            <option value="{{ forloop.counter0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+
                     </select>
                     <small>
                         Before submitting be sure to add all the required information regarding your submission are included into the <strong>zipfile.</strong><br>

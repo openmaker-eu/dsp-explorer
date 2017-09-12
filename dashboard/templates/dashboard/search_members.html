@@ -25,15 +25,16 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6" style="padding-right:5%;">
                     <div class="col-md-12">
                         <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search result <span class="text-red">{$results.length$}</span></h3>
                         <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
                     </div>
                     <div class="col-md-12">
                         <form>
-                            <div class="input-group has-feedback has-feedback-left" style="width: 50%">
-                                <input ng-change="search_filter.length < 3 ? search() : searchDebounced()"
+                            <div class="has-feedback has-feedback-left" style="width:100%">
+                                <input class="form-control"
+                                       ng-change="search_filter.length < 3 ? search() : searchDebounced()"
                                        ng-model-options="{allowInvalid: true}"
                                        ng-model="search_filter" id="filter" type="text" class="form-control"
                                        placeholder="Search members for name, city, tagwords and more" value=""
@@ -48,7 +49,6 @@
                         <div class="col-md-4">
                             <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
                         </div>
-
 
                         <div class="col-md-8">
                             <a href="/profile/{$data['id']$}">
@@ -76,16 +76,16 @@
                     <div class="row">
 
 
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <h3>Hot Tags</h3>
-                            <div class="" style="padding:10%;">
+                            <div class="" >
                                 <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
                             </div>
                         </div>
 
-                        <div class="col-md-12" >
-                            <h3>Sector</h3>
-                            <div class="" style="padding:10%;">
+                        <div class="col-md-12">
+                            <h3>Sector</h3><br>
+                            <div class="" >
                                 <pie-sector></pie-sector>
                             </div>
                         </div>

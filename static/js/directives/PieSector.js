@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="row">
+    <div style="width:100%;">
         <svg id="pie_container"></svg>
     </div>
     <style>
@@ -27,39 +27,37 @@ export default [function(){
 
 let pie = (div_id, sectors) => {
     
-    let bar_height = 50;
-    let bar_margin = 5;
     
     var container =  $(div_id)
     var parent = container.parent()
-    var diameter = parent.width()
     
-    var width = diameter;
-    var height = (sectors.length * bar_height)+(sectors.length * bar_margin);
+    var width  = parent.width()
+    var height = width
     
     container.attr('width' , width)
-    container.attr('height' , height)
+    container.attr('height' , width)
     
-    var data = _.orderBy(sectors, 'size', 'desc')
+    let bar_margin = 5;
+    let bar_height = height/(sectors.length)-(bar_margin*2);
     
-    var maxValue = _.maxBy(data, 'size').size
-    console.log(maxValue);
+    var data = _.orderBy(sectors, (n,m)=>n<m)
+    
+    var maxValue = _.maxBy(data,n=>Number(n.size)).size
+    
+    console.log((maxValue/4)*3, (maxValue/4)*2)
     
     var colorScale = d3.scaleQuantile()
-        .domain([ 0 , (maxValue)/4, (maxValue)/2 , (maxValue)])
+        .domain([ maxValue/4, maxValue ])
         .range([ '#efefef', '#bbbbbb', '#ff97a1', '#db4348'])
-    
     
     var svg = d3.select(div_id).append("g")
     
     var x = d3.scaleLinear()
         .range([0, width])
-        .domain([0, d3.max(data, function (d) {
-            return d.size;
-        })]);
+        .domain([0, d3.max(data, (d) => d.size)]);
     
     var y = d3.scaleBand([height, 0], .1)
-        .domain(data.map(function (d) {return d.name;}));
+        .domain(data.map((d)=>d.name));
     
     var bars = svg.selectAll(".bar")
         .data(data)
@@ -77,17 +75,19 @@ let pie = (div_id, sectors) => {
     
     
     bars.append('text')
+        .each((d)=>{
+            if(maxValue/d.size > 2) { d.x = x(d.size)+bar_margin*2;  d.is_small = true}
+            else { d.x = (x(d.size)/2 || bar_height/2); d.is_small = false}
+        })
         .attr("y", function(d, i){
             return (i * bar_height)+(i * bar_margin)+bar_height/2
         })
-        .attr("x", function(d, i){
-            return x(d.size)/2 || bar_height/2
-        })
+        .attr("x",(d, i)=>d.x)
         .attr("font-family", "Arial Black")
         .attr("font-size", "20px")
         .attr("fill", "#222")
         .attr("style", 'font-weight:900;')
-        .style("text-anchor", "middle")
+        .style("text-anchor", d=>d.is_small ? 'start' : 'middle')
         .text(function(d, i){ return d.name+' ('+ d.size +')'});
     
 }

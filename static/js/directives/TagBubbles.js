@@ -48,9 +48,9 @@ let bubble = (div_id, tags) => {
     var parent = container.parent()
     
     var diameter = parent.width()
+    
     container.attr('width' , diameter)
     container.attr('height' , diameter)
-    
     
     let sizes = _.map(tags, 'size')
     
