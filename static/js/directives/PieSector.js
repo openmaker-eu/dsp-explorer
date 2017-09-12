@@ -41,9 +41,13 @@ let pie = (div_id, sectors) => {
     container.attr('height' , height)
     
     var data = _.orderBy(sectors, 'size', 'desc')
+    
+    var maxValue = _.maxBy(data, 'size').size
+    console.log(maxValue);
+    
     var colorScale = d3.scaleQuantile()
-        .domain([ 0 , (data.length-1)/4, (data.length-1)/2 , (data.length-1)])
-        .range([ '#efefef', '#db4348', '#ff97a1', '#bbbbbb'])
+        .domain([ 0 , (maxValue)/4, (maxValue)/2 , (maxValue)])
+        .range([ '#efefef', '#bbbbbb', '#ff97a1', '#db4348'])
     
     
     var svg = d3.select(div_id).append("g")
@@ -69,9 +73,9 @@ let pie = (div_id, sectors) => {
         .attr("height", bar_height)
         .attr("x", 0)
         .attr("width", function (d) { return x(d.size); })
-        .attr("fill",  (d, i) => colorScale( Math.floor(Math.random() * (10 - 0 + 1)) + 0) )
+        .attr("fill",  (d, i) => colorScale(d.size) )
     
-    //
+    
     bars.append('text')
         .attr("y", function(d, i){
             return (i * bar_height)+(i * bar_margin)+bar_height/2

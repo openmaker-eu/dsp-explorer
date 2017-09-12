@@ -2,9 +2,9 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }">
-        <div class="profile-image-static">
-            <img ng-src="{$ src $}" style="width:100%; height:100%; position: absolute; "/>
+    <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }" >
+        <div class="profile-image-static" style="border-radius:50%; overflow: hidden; z-index:1000;">
+            <img ng-src="{$ src $}" style="width:100%; height:100%; position: absolute;  "/>
         </div>
     </a>
     <style>
@@ -34,7 +34,7 @@ export default [function(){
                 let height = image.get(0).naturalHeight
                 let css = {'display':'block', 'position': 'absolute'}
                 width > height? css.height = '100%' : css.width = '100%'
-                image.css({ display:'block' , width: 'auto'})
+                image.css({ display:'block'})
                 image.css(css)
         
             }
