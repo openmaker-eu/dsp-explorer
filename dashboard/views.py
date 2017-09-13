@@ -173,7 +173,7 @@ def profile(request, profile_id=None, action=None):
         user.profile.save()
 
         # Update tags
-        user.profile.tags.through.objects.all().delete()
+        user.profile.tags.clear()
         for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
 

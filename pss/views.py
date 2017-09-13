@@ -8,7 +8,6 @@ from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging, os
 
-
 @login_required
 def application(request):
     if request.method == 'POST':
