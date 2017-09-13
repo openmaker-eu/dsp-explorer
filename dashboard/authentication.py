@@ -150,6 +150,8 @@ def onboarding(request):
             occupation = request.POST['occupation']
             tags = request.POST['tags']
 
+            place = request.POST.get('place', None) if request.POST.get('place', None) != '{}' else None
+
             if tags == '' or tags == None or tags == 'undefined':
                 raise KeyError
 
@@ -185,7 +187,7 @@ def onboarding(request):
         # profile create
         try:
             profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
-                                     city, occupation, twitter_username)
+                                     city, occupation, twitter_username, place)
         except Exception as exc:
             logging.error('[PROFILE_CREATION_ERROR] Error during local profile creation for user email: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             messages.error(request, 'Error creating user')

@@ -74,7 +74,7 @@ class Profile(models.Model):
 
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
-               birthdate=None, city=None, occupation=None, twitter_username=None):
+               birthdate=None, city=None, occupation=None, twitter_username=None, place=None):
 
         try:
             user = User.objects.get(email=email)
@@ -98,6 +98,7 @@ class Profile(models.Model):
             profile.city = city
             profile.occupation = occupation
             profile.twitter_username = twitter_username
+            profile.place=place
             profile.save()
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()
@@ -197,9 +198,10 @@ class Profile(models.Model):
     def get_sectors(cls):
 
         from collections import Counter
-        flat_sectors = Profile.objects.values_list('sector', flat=True)
+        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         sectors = Counter(flat_sectors).most_common(1000)
-
+        print('sectors')
+        print(sectors)
         return sectors
 
     @classmethod

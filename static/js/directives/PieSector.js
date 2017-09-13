@@ -13,12 +13,10 @@ export default [function(){
     
     return {
         template:template,
-        scope: {
-            tags: '='
-        },
-        controller : ['$scope','$http', function($scope, $http){
+        controller : ['$scope','$http', '$element', function($scope, $http, $element){
             $http.get('/api/v1.1/get_sectors').then( (results)=>{
-                pie('#pie_container', _.get( results, 'data.sectors' ) );
+                results = _.get( results, 'data.sectors' )
+                results.length === 0 ? $('.sector-bar-container').hide() : pie('#pie_container', results )
             })
         }]
     }
