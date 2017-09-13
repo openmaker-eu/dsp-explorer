@@ -17,7 +17,7 @@
 
 </head>
 
-<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl"
+<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl" style="background-image: url(/static/images/landing-cover.jpeg); background-size: cover;"
       ng-init="
           toastrMessage = [
                  {% for message in messages %}
@@ -31,8 +31,8 @@
           ];
       ">
 
+<div id="cover-wrapper" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.6); z-index: 0;"></div>
 <div id="top-div">
-
     {% with current_url=request.resolver_match.view_name  %}
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -69,7 +69,7 @@
 
                         {% if not request.user.is_superuser %}
                         <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >
-                            <a href="{% url 'pss:application' %}">Application PSS</a>
+                            <a href="{% url 'pss:application' %}">PSS Application</a>
                         </li>
                         {% else %}
                         {# TODO check permission super admin and isstaff #}
@@ -130,10 +130,24 @@
         </div>
     {% endif %}
 </div>
-
 {% if user.is_anonymous %}
 
-    <div class="container-fluid" id="footer">
+    <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+            <div class="row" style="background: #efefef;">
+            <div class="col-md-12 text-center margin-top-30 margin-bottom-30" >
+                <p class="text-white claim text-center">
+                <p class="claim text-center">
+                    <strong>The PSS 2017</strong><br>Piloting Supporting Scheme
+                </p>
+                <!--<p class="text-white margin-top-50 margin-bottom-50">-->
+                <p class="margin-top-20 margin-bottom-20">
+                    CALL CONTEST IS OPEN
+                </p>
+                <a class="btn custom-button margin-left-5" ng-click="openModal('#login_modal')">
+                    Learn more
+                </a>
+            </div>
+        </div>
         <div class="row back padding-bottom-20">
             <div class="container">
                 <div class="row margin-top-25">
