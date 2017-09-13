@@ -15,9 +15,7 @@
 
     <div class="container margin-bottom-50" ng-controller="dashboardController">
         <div class="row margin-top-50">
-
             <div class="row">
-
                 <div class="col-md-12">
                     <div class="col-md-12 theme-name">
                         <h2><strong class="text-red">Hi</strong> {{request.user.first_name}},</h2>
@@ -39,7 +37,7 @@
                         </div>
 
                     </div>
-                    <div class="col-md-12 margin-top-25">
+                    <div class="margin-top-25">
                         {% for feed in random_feeds|slice:":3" %}
                         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card margin-bottom-20">
@@ -71,7 +69,7 @@
                         </div>
                     </div>
                     {% if top_influencers %}
-                    <div class="col-md-12 text-center">
+                    <div class="text-center">
                         <div class="col-md-12">
                             <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Influencers</strong></h2>
                         </div>
@@ -93,12 +91,12 @@
                 </div>
             </div>
 
-            <div class="col-md-12">
+            <div class="col-md-12 margin-top-50">
                 <user-stories></user-stories>
             </div>
 
             <!-- Last Members -->
-            <div class="col-md-8 col-sm-12">
+            <div class="col-md-8 col-sm-12 margin-top-50">
                 <h2 class="margin-bottom-25"><strong class="text-red">Last Onboarded </strong> Members</h2>
                 <h2 class="margin-top-25"><small>
                     <a href="{% url 'dashboard:search_members' %}#members">View <strong class="text-red">All</strong>&nbsp;Community Members</a></small>
@@ -124,7 +122,7 @@
                 {% endfor %}
             </div>
             <!-- Hot Tags Section -->
-            <div class="col-md-4 col-sm-12 tags-align">
+            <div class="col-md-4 col-sm-12 tags-align margin-top-50">
                 <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
                 <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a></small></h2>
                 {% for tag in hot_tags %}
@@ -138,12 +136,5 @@
                 {% endfor %}
             </div>
         </div>
-
-        <div class="row margin-top-25 margin-bottom-25">
-            <div class="col-md-12">
-                <hr>
-            </div>
-        </div>
-
     </div>
 {% endblock %}
