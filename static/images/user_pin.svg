@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-83.57 -217.577 742 1095.239">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #95989a;
+        stroke: #95989a;
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        filter: url(#Exclusion_2);
+      }
+    </style>
+    <filter id="Exclusion_2" x="-83.57" y="-217.577" width="742" height="1095.239" filterUnits="userSpaceOnUse">
+      <feOffset dx="3" dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g class="cls-2" transform="matrix(1, 0, 0, 1, 0, 0)">
+    <path id="Exclusion_2-2" data-name="Exclusion 2" class="cls-1" d="M361,1074.486l0,0c-.9-1.284-91.392-130.186-180.5-281.463C98.157,653.225,0,464.921,0,361.725,0,162.269,161.945,0,361,0S722,162.269,722,361.725c0,103.2-98.156,291.5-180.5,431.3C452.392,944.3,361.907,1073.2,361,1074.483Zm1.562-966.656C229,107.831,120.334,219.3,120.334,356.312S229,604.793,362.564,604.793,604.793,493.325,604.793,356.312,496.129,107.831,362.564,107.831Z" transform="translate(-76.57 -210.58)"/>
+  </g>
+</svg>
