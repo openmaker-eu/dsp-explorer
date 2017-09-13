@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-require('../../../node_modules/ngMap')
+require('../../../node_modules/ngmap')
 
 // Import this app style
 require("../style/index.scss")
