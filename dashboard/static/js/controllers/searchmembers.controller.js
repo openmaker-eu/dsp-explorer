@@ -24,7 +24,6 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     $scope.search = (searchString) => {
         
         $scope.search_filter = searchString || $scope.search_filter;
-        console.log($scope.search_filter)
         
         if($scope.search_filter.length < 3){
             $scope.results = $scope.last_members;
