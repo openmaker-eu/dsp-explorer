@@ -13,13 +13,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="col-md-12">
-                    <!--<h3>Location</h3>-->
-                    <locations-map></locations-map>
-                </div>
-
-
-                <div class="col-md-5" style="padding-right:5%;">
+                <div class="col-md-5" style="padding-right:3%;">
                     <!--Anchor for members on page load-->
                     <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                     <div class="col-md-12 margin-top-30">
@@ -29,8 +23,8 @@
                     </div>
 
                     <div class="col-md-12">
-                        <h3 ng-hide="is_last_members_label" class="margin-bottom-50">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
-                        <h3 ng-show="is_last_members_label" class="margin-bottom-50">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
+                        <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
+                        <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
                     </div>
                     <div class="col-md-12">
                         <form>
@@ -44,6 +38,8 @@
                                 <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                             </div>
                         </form>
+                        <br>
+                        <br>
                         <br>
                     </div>
                     <div class="col-md-12" ng-repeat="data in results">
@@ -80,13 +76,21 @@
                 <div class="col-md-7">
                     <div class="row">
 
-                        <!--Anchor for members on page load-->
-                        <div class="col-md-12"><a id="tags" href="#" ></a>&nbsp;</a></div>
                         <div class="col-md-12 margin-top-30">
                             <div class="col-md-12">
                                 <br>
                             </div>
                         </div>
+
+                        <div class="col-md-12"><a id="maps" href="#" ></a>&nbsp;</a></div>
+                        <div class="col-md-12">
+                            <h3>Location</h3>
+                            <br>
+                            <locations-map></locations-map>
+                        </div>
+
+                        <!--Anchor for members on page load-->
+                        <div class="col-md-12"><a id="tags" href="#" ></a>&nbsp;</a></div>
                         <div class="col-md-12">
                             <h3>Hot Tags</h3>
                             <div class="" >
