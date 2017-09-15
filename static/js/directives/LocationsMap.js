@@ -3,34 +3,10 @@ import * as d3 from 'd3';
 require('js-marker-clusterer/src/markerclusterer')
 
 let template = `
-    <div
-        style="position:relative;
-        padding-bottom:40%;"
-    >
+    <div style="position:relative; padding-bottom:40%;" >
         <div id="locationmap" style="position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;" ></div>
-        
-        <!--<ng-map style="position:absolute; top:0; left:0; bottom:0; right:0; width:100%; height: 100%;"-->
-                <!--center="46.8815115,9.1133242"-->
-                <!--zoom="4"-->
-        <!--&gt;-->
-            <!--<marker-->
-                <!--position="{$ place.lat $},{$ place.long $}"-->
-                <!--ng-repeat="place in places"-->
-                <!--icon="{ url:'/static/images/user_pin.png', scaledSize:[30,30]} "-->
-            <!--&gt;</marker>-->
-            <!---->
-            <!--<marker-->
-                <!--ng-repeat="les in leslist"-->
-                <!--icon="{ url:'/static/images/les_pin.png', scaledSize:[30,30]} "-->
-                <!--position="{$ les.lat+','+les.long $}"-->
-            <!--&gt;-->
-            <!--<info-window>Ciao</info-window>-->
-            <!--</marker>-->
-        <!--</ng-map>-->
-
     </div>
 `
-
 export default [function(){
     
     return {
@@ -57,54 +33,27 @@ export default [function(){
                 var map = new google.maps.Map(document.getElementById('locationmap'), {
                     zoom: 4,
                     center: new google.maps.LatLng(46.8815115,9.1133242),
-                    styles : mapStyles
+                    styles : mapStyles,
+                    streetViewControl: false
                 });
-    
-                console.log('Map : ', map)
                 
-                // NgMap.getMap().then((map) => {
+                let markers = _.map($scope.places.concat($scope.leslist) , place=> {
                     
-                    // markers = _.map($scope.places , place=> {
-                    //     return new google.maps.Marker({
-                    //         position: new google.maps.LatLng(place.lat,place.long),
-                    //         title: 'test',
-                    //         icon:{ url:'/static/images/user_pin.png'}
-                    //         icon:{ url:'/static/images/user_pin.png', size: [100, 100], scaledSize:[20,20]}
-                    //     });
-                    // })
-                    //
-                
-                    let markers = _.map($scope.places.concat($scope.leslist) , place=> {
-                        
-                        return new google.maps.Marker({
-                            position: new google.maps.LatLng(place.lat,place.long),
-                            icon:{ url: place.is_less ? '/static/images/les_pin.png' :'/static/images/user_pin.png' , scaledSize: new google.maps.Size(35,35) }
-                        })
-                        
-                        
+                    return new google.maps.Marker({
+                        position: new google.maps.LatLng(place.lat,place.long),
+                        icon:{
+                            url: place.is_less? '/static/images/markers/les_pin.png' : '/static/images/markers/user_pin.png' ,
+                            // size: new google.maps.Size(30,35)
+                            // ,
+                            scaledSize: new google.maps.Size(35,35)
+                        }
                     })
+                    
+                    
+                })
                 
-                    let cluster = new MarkerClusterer(map, markers, { imagePath: '/static/images/markers/m'});
-                    
-                    console.log('cluster :' , cluster )
-                    
-                // });
-    
-                // $scope.createMarkerForCity = function (city) {
-                //
-                //     var marker = new google.maps.Marker({
-                //         position: new google.maps.LatLng(city.lat, city.long),
-                //         title: city.name,
-                //         icon:{ url:'/static/images/user_pin.png', scaledSize:[20,20]}
-                //     });
-                //
-                //     // google.maps.event.addListener(marker, 'click', function () {
-                //     //     $scope.selectedCity = city;
-                //     //     $scope.map.showInfoWindow('myInfoWindow', this);
-                //     // });
-                //     return marker;
-                // }
-    
+                let cluster = new MarkerClusterer(map, markers, { imagePath: '/static/images/markers/m'});
+                map.panTo(map.getCenter());
             })
             
             
@@ -153,10 +102,7 @@ let mapStyles = [
         "elementType": "all",
         "stylers": [
             {
-                "saturation": -100
-            },
-            {
-                "lightness": 65
+                "color": "#333"
             },
             {
                 "visibility": "on"
@@ -237,7 +183,7 @@ let mapStyles = [
         "elementType": "geometry",
         "stylers": [
             {
-                "hue": "#efefef"
+                "hue": "#bbb"
             },
             {
                 "lightness": 0
