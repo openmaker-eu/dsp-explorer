@@ -93,7 +93,11 @@ let bubble = (div_id, tags) => {
         d.scaleFontSize = scale;
     }
 
-    node.filter(function(d) { return !d.children; }).append("text")
+    node.filter(function(d) { return !d.children; })
+        // .append("a")
+        // .style("font-size", function(d) { return d.scaleFontSize + "px"; })
+        .attr('href', d=> '/search/members/'+d.data.name+'/')
+        .append("text")
         .attr("dy", "0.3em")
         .text(function(d) { return d.data.name })
         .each(getSize)

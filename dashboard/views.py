@@ -42,13 +42,14 @@ def dashboard(request):
         messages.error(request, 'Some error occures, please try again')
         other_themes = []
         
-    hot_tags = [t[0] for t in Profile.get_hot_tags(6)]
+    hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
 
     last_members = Profile.get_last_n_members(3)
     context = {
         'themes': other_themes,
         'last_members': last_members,
         'hot_tags': hot_tags,
+        'json_hot_tags': json.dumps(hot_tags),
         'random_theme_name': random_theme_name,
         'random_feeds': random_feeds,
         'top_influencers': top_influencers
@@ -232,7 +233,7 @@ def search_members(request, search_string=0):
     import urllib
     return render(request, 'dashboard/search_members.html', {
         'search_string': search_string ,
-        'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(6)])
+        'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)])
     })
 
 

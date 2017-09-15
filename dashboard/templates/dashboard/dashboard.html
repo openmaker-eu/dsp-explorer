@@ -126,18 +126,25 @@
                 {% endfor %}
             </div>
             <!-- Hot Tags Section -->
-            <div class="col-md-4 col-sm-12 tags-align margin-top-50">
-                <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
-                <h2 class="margin-top-25"><small><a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a></small></h2>
-                {% for tag in hot_tags %}
-                    <div class="pull-left">
-                        <h4><a href="{% url 'dashboard:search_members' tag %}#tags">
-                            <span class="text-black">#</span>{{ tag }}</a>
-                            <span>&nbsp;&nbsp;</span>
-                        </h4>
+            <div class="col-md-4 col-sm-12  margin-top-50">
 
-                    </div>
-                {% endfor %}
+                <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
+                <h2 class="margin-top-25"><small>
+                    <a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a>
+                </small></h2>
+
+                <!--{% for tag in hot_tags %}-->
+                    <!--<div class="pull-left">-->
+                        <!--<h4><a href="{% url 'dashboard:search_members' tag %}#tags">-->
+                            <!--<span class="text-black">#</span>{{ tag }}</a>-->
+                            <!--<span>&nbsp;&nbsp;</span>-->
+                        <!--</h4>-->
+
+                    <!--</div>-->
+                <!--{% endfor %}-->
+
+                <tag-bubbles tags="{{ json_hot_tags }}"></tag-bubbles>
+
             </div>
         </div>
     </div>

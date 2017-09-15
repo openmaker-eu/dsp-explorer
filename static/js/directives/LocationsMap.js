@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 require('js-marker-clusterer/src/markerclusterer')
 
 let template = `
-    <div style="position:relative; padding-bottom:40%;" >
+    <div style="position:relative; padding-bottom:50%;" >
         <div id="locationmap" style="position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;" ></div>
     </div>
 `
@@ -31,7 +31,7 @@ export default [function(){
                 $scope.places = _.map( results.data.places, e => JSON.parse(e) )
     
                 var map = new google.maps.Map(document.getElementById('locationmap'), {
-                    zoom: 4,
+                    zoom: 3,
                     center: new google.maps.LatLng(46.8815115,9.1133242),
                     styles : mapStyles,
                     streetViewControl: false
