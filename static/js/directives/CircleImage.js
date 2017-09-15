@@ -24,7 +24,6 @@ export default [function(){
         link : function($scope, element, attrs){
 
             $(element).css({display:'block'})
-            console.log('href', $scope.href)
             
             $scope.fitImageToCircle = (image)=> {
         
