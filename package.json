@@ -51,6 +51,7 @@
     "d3-tip": "^0.7.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
+    "js-marker-clusterer": "^1.0.0",
     "json-loader": "^0.5.7",
     "lodash": "^4.16.2",
     "material-design-icons": "^3.0.1",
