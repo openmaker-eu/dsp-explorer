@@ -2,12 +2,13 @@ window.addEventListener("load", function(){
     window.cookieconsent.initialise({
         "palette": {
             "popup": {
-                "background": "#e3e3e3"
+                "background": "#e3e3e3",
+                "text": "#fff"
             },
             "button": {
                 "background": "transparent",
-                "text": "#db4348",
-                "border": "#db4348"
+                "text": "#fff",
+                "border": "#fff"
             }
         },
         "position": "bottom-right",

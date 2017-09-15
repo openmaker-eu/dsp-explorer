@@ -33,10 +33,10 @@
             </div>
             <div class="col-md-12 text-center margin-top-25">
                 <div class="col-md-6">
-                    <a class="btn login-button col-md-6 col-md-offset-3" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-Application-Template.pdf">Application Template</a>
+                    <a class="btn login-button col-md-6 col-md-offset-3" href="http://openmaker.eu/wp-content/uploads/2017/09/PSS-Application-Template.pdf" download>Download Application Form</a>
                 </div>
                 <div class="col-md-6">
-                    <a class="btn login-button col-md-6 col-md-offset-3" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-ToR.pdf">Terms of Reference</a>
+                    <a class="btn login-button col-md-6 col-md-offset-3" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/09/PSS-ToR-FINAL-VERSION.pdf">Check Terms of Reference</a>
                 </div>
             </div>
         </div>
@@ -46,6 +46,15 @@
             </div>
         </div>
         <div class="row margin-top-20 margin-bottom-30">
+            <div class="col-xs-12 col-md-10 col-md-offset-1 margin-bottom-30">
+                <p>
+                    Fill in the application form in order to participate in our Pilot Support Scheme and you are done for now.<br>
+                    If you are preselected, we will request you to submit further documents (you can read the full list in the Terms of Reference).<br>
+                    At that point, you will have a couple of weeks to prepare, collect and submit all the documents, so we recommend you to familiarise with the documents as soon as possible.<br><br>
+
+                    Good luck for the submission!
+                </p>
+            </div>
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
                 <form class="form-group" action="{% url 'pss:application' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -60,52 +69,15 @@
                         {% endfor %}
 
                     </select>
-                    <small>
-                        Before submitting be sure to add all the required information regarding your submission are included into the <strong>zipfile.</strong><br>
-                        Take another look to the <a class="text-red" target="_blank" href="http://openmaker.eu/wp-content/uploads/2017/08/PSS-ToR.pdf">Terms of Reference</a>.<br>
-                        Here is a recap of those information:
-                        <ul>
-                            <li>
-                                Application
-                            </li>
-                            <li>
-                                Legal entity (leading partner)
-                            </li>
-                            <li>
-                                Legal existence (leading partner)
-                            </li>
-                            <li>
-                                SME checklist (leafing partner)
-                            </li>
-                            <li>
-                                Financial identification (leading partner)
-                            </li>
-                            <li>
-                                Additional financial information (leading partner)
-                            </li>
-                            <li>
-                                Other supporting documentation (leading partner)
-                            </li>
-                            <li>
-                                Declaration (leading partner)
-                            </li>
-                            <li>
-                                Legal entity (other partners)
-                            </li>
-                            <li>
-                                Legal existence (other partners)
-                            </li>
-                        </ul>
-                    </small>
                     <div class="input-group margin-top-30">
                         <label class="input-group-btn">
                             <span class="btn login-button">
-                                Browse&hellip; <input type="file" name="zip_location" style="display: none;" multiple required>
+                                Browse PDF&hellip; <input type="file" name="zip_location" style="display: none;" multiple required>
                             </span>
                         </label>
                         <input type="text" class="form-control" style="height: 33px;" readonly>
                     </div>
-                    <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Upload">
+                    <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Upload PDF">
                 </form>
                 <br>
             </div>
