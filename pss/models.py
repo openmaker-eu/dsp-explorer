@@ -37,6 +37,7 @@ class Application(models.Model):
         ordering = ('created_at', )
 
     def retrieve_les_label(self, code):
+
         for les in Application.les_choices:
             if code == les[0]: return les[1]
         return 'less found undefined'
