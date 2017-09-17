@@ -11,12 +11,12 @@ import logging, os
 @login_required
 def application(request):
     if request.method == 'POST':
-        allowed_extensions = ['.zip']
+        allowed_extensions = ['.pdf']
         try:
             project_name = request.POST['project_name'].strip().title()
             les_choice = int(request.POST.getlist('les_choice')[0])
 
-            # check zipfile
+            # check zipfile --> now is a pdf
             zip_location = request.FILES['zip_location']
             filename, file_extension = os.path.splitext(zip_location.name)
             if not (file_extension in allowed_extensions):
