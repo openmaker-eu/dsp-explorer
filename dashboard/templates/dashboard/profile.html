@@ -74,6 +74,7 @@
 
         birthdate ='{{ profile.birthdate | date:"Y-m-d" }}';
         city='{{ profile.city }}';
+        image_model = { src:'{{ profile.picture.url }}', files:{}};
 
     " ></span>
 
@@ -194,30 +195,47 @@
 
                     <!--Image-->
                     <div class="row margin-bottom-30">
+
                         <div class="col-md-12">
                             <label for="" style="width:100%; text-align: center;">Profile Image</label>
                         </div>
-                        <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
+                        <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3" >
                             <div class="profile-image pointer" id="profile-image-div" ng-click="profileImageUpload();">
-                                <!--<i class="fa fa-cloud-upload"  style="z-index:10000;"></i>-->
-                                <i class="material-icons md-48" style="z-index:10000; text-shadow: 0px 0px 1px #fff;">file_upload</i>
-                                <!--<img src="{{profile.picture.url}}" id="profile-image" style="width:100%; height:100%; display: block; position: absolute; "/>-->
-                                <circle-image src="'{{profile.picture.url}}'"></circle-image>
+                                <!--<i-->
+                                        <!--class="fa fa-cloud-upload"-->
+                                        <!--style="z-index:10000;"-->
+                                <!--&gt;<span style=" background:#fff; border-radius: 50%;"></span></i>-->
+
+                                    <span class="fa-stack fa-2x image_icon" style="z-index:10000;">
+                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                      <i class="fa fa-cloud-upload fa-stack-1x"></i>
+                                    </span>
+
+                                <!--<i-->
+                                   <!--class="material-icons md-48"-->
+                                   <!--style="z-index:10000; text-shadow: 0px 0px 3px #000;">file_upload</i>-->
+                                <circle-image src="image_model.src"></circle-image>
                             </div>
-                            <input id="profile-image-input" class="hidden" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img"/>
+
+                            <input
+                                    id="profile-image-input"
+                                    class="hidden"
+                                    input_file_model="image_model.src"
+                                    type="file"
+                                    name="profile_img"/>
                         </div>
                         <br>
                     </div>
 
                     <div class="row">
-
                         <div class="col-md-12">
                             <div class="well-red">ABOUT YOU</div>
                         </div>
 
                         <div class="col-md-6">
                             <label for="">First Name <span class="text-red">*</span></label>
-                            <input  value="{{profile.user.first_name}}"
+                            <input
+                                    value="{{profile.user.first_name}}"
                                     class="form-control" required type="text" name="first_name"  placeholder="First name *" ><br />
                         </div>
                         <div class="col-md-6">
@@ -228,7 +246,9 @@
 
                         <div class="col-md-6">
                             <label for="">Gender <span class="text-red">*</span></label>
-                            <select class="form-control" name="gender" required style="color:rgba(119, 119, 119, 0.81);">
+                            <select class="form-control"
+                                    name="gender" required
+                                    style="color:rgba(119, 119, 119, 0.81);">
 
                                 <option {% if profile.gender == 'male'   %}selected="selected"{% endif %} value="male" >Male</option>
                                 <option {% if profile.gender == 'female' %}selected="selected"{% endif %} value="female" >Female</option>
@@ -283,7 +303,12 @@
 
                         <div class="col-md-12">
                             <label for="">Occupation  <span class="text-red">*</span></label>
-                            <input type="text" value="{{ profile.occupation }}" class="form-control" placeholder="occupation" name="occupation" required>
+                            <input
+                                type="text"
+                                value="{{ profile.occupation }}"
+                                class="form-control"
+                                placeholder="occupation"
+                                name="occupation" required>
                             <br>
                         </div>
 
@@ -294,12 +319,13 @@
 
                         <div class="col-md-12">
 
-                            <ui-select multiple tagging
-                                       tagging-label=""
-                                       sortable="true"
-                                       spinner-enabled="true"
-                                       ng-model="tags.selected"
-                                       title="Choose a tag *" limit="3"
+                            <ui-select
+                                multiple tagging
+                                tagging-label=""
+                                sortable="true"
+                                spinner-enabled="true"
+                                ng-model="tags.selected"
+                                title="Choose a tag *" limit="3"
                             >
 
                                 <ui-select-match placeholder="Type a tag and press enter *">
@@ -400,8 +426,13 @@
                                     {$ $item $}
                                 </ui-select-match>
 
-                                <ui-select-choices repeat="source in source_of_inspiration.available  | filter:$select.search track by $index">
-                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}" ng-bind-html="source | highlight: $select.search"></div>
+                                <ui-select-choices
+                                        repeat="source in source_of_inspiration.available  | filter:$select.search track by $index"
+                                >
+                                    <div
+                                       ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}"
+                                       ng-bind-html="source | highlight: $select.search"
+                                    ></div>
                                 </ui-select-choices>
 
                             </ui-select><br/>
@@ -414,13 +445,23 @@
                         <div class="col-md-12">
                             <label for="">Types of innovation</label>
                             <p>Select one or more of the below Types of innovation categories.</p>
-                            <ui-select multiple class="form-control" ng-model="types_of_innovation.selected" title="Select yout Types of innovation">
+                            <ui-select
+                                    multiple
+                                    class="form-control"
+                                    ng-model="types_of_innovation.selected"
+                                    title="Select yout Types of innovation">
                                 <ui-select-match placeholder="Choose one or more Types of innovation">{$ $item $}</ui-select-match>
-                                <ui-select-choices repeat="innovationType in types_of_innovation.available | filter:$select.search track by $index">
+                                <ui-select-choices
+                                        repeat="innovationType in types_of_innovation.available | filter:$select.search track by $index"
+                                >
                                     <div class="btn" ng-bind-html="innovationType | highlight: $select.search"></div>
                                 </ui-select-choices>
                             </ui-select><br/>
-                            <input type="hidden" name="types_of_innovation" ng-value="types_of_innovation.selected" />
+                            <input
+                                    type="hidden"
+                                    name="types_of_innovation"
+                                    ng-value="types_of_innovation.selected"
+                            />
                         </div>
 
                     </div>

@@ -24,7 +24,6 @@ import logging
 import re
 import random
 
-
 @login_required()
 def dashboard(request):
     try:

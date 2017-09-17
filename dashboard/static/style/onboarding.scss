@@ -8,19 +8,21 @@
 	border-radius: 50%;
 	cursor: pointer;
 
-	i {
-		position:absolute; width: 100%;
+
+	.image_icon {
+		position:absolute;
+		width: 100%;
 		text-align: center;
 		top: 40%;
-		font-size: 30px;
+		//font-size: 30px;
 		color: #eeeeee;
 		z-index:1000;
 		display:none;
-	};
+	}
 	&:hover {
 		background: rgba(204, 204, 204, 0.0);
-		border: dashed 2px #db4348;
-		i {
+		border: dashed 3px #db4348;
+		.image_icon{
 			color: #db4348;
 			display:block;
 		}

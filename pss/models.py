@@ -58,7 +58,7 @@ class Application(models.Model):
             APPLIER_FIRST_NAME=applier_first_name,
             APPLIER_LAST_NAME=applier_last_name,
             APPLICATION_NAME=latest_project_name_uploaded_by_current_user,
-            LES=Application.retrieve_les_label(latest_les_uploaded_by_current_user)
+            LES=self.retrieve_les_label(latest_les_uploaded_by_current_user)
         ))
 
         self.profile.send_email('PSS Open Maker application done!', user_content_mail)

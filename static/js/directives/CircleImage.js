@@ -10,7 +10,6 @@ let template = `
     <style>
         .not-pointer , .not-pointer *{ cursor:default!important; }
     </style>
-    &nbsp;&nbsp;&nbsp;&nbsp;
 `
 
 export default [function(){
@@ -18,11 +17,10 @@ export default [function(){
     return {
         template:template,
         scope : {
-            src : '=',
-            href : '='
+            src : '='
         },
         link : function($scope, element, attrs){
-
+            
             $(element).css({display:'block'})
             
             $scope.fitImageToCircle = (image)=> {
@@ -41,6 +39,7 @@ export default [function(){
             
             let img = element.find('img');
             img.bind('load', n=>$scope.fitImageToCircle($(img)))
+            
         }
     }
     
