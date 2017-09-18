@@ -45,6 +45,7 @@
                             <td>{{ app.project_name }}</td>
                             <td>{{ app|hr_choices:'les' }}</td>
                             <td><a class="text-red" href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>
+                            {# <td><a class="text-red" href="{% url 'pss:application_pdf' app.id %}" target="_blank">DOWNLOAD</a></td> #}
                             <td>{{ app.created_at }}</td>
                         </tr>
                     {% endfor %}

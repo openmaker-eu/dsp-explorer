@@ -7,6 +7,7 @@ from .models import Application
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging, os
+from django.views.static import serve
 
 @login_required
 def application(request):
@@ -42,7 +43,6 @@ def application(request):
             else:
                 logging.info('ERROR - Please fill all the fields')
                 messages.error(request, 'Please fill all the fields')
-
             return HttpResponseRedirect(reverse('pss:application'))
 
         except (KeyError, IndexError):
@@ -63,3 +63,19 @@ def application(request):
 def application_result(request):
     context = {'applications': Application.objects.all()}
     return render(request, 'pss/application_result.html', context)
+
+
+@staff_member_required(login_url='dashboard:login')
+def application_pdf(request, application_id):
+
+    if not application_id:
+        return HttpResponse(open('pss/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
+
+    application = Application.objects.get(pk=application_id)
+
+    if request.user.is_superuser == 1 or Application.get(application_id)['profile_id'] == request.user.profile.id:
+        return HttpResponse(open('pss/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
+
+
+
+
