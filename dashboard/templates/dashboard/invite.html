@@ -3,14 +3,15 @@
     <div class="container">
         <div class="row margin-bottom-15">
             <div class="col-md-12">
-                <h1 class="margin-bottom-30">Invite<br><strong class="text-red"> new members</strong></h1>
+                <h1 class="margin-bottom-30">Invite<br><strong class="text-red"> New members</strong></h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <p class="col-xs-12 col-md-10 col-md-offset-1">
-                    Help us to achieve <strong>makers, innovators and thinkers</strong> in the current <strong>4th Industrial revolution!</strong><br /><br />
-                    If you know someone with great ideas, projects and visions around <strong>new forms of production and making</strong>, give us their contact and we will invite them to join our movement, participate in our events, and get in touch with a broader community of innovators.<br /><br />
+                    Help us to reach <strong>makers, innovators and thinkers</strong> and engage in the <strong>4th Industrial revolution!</strong><br/><br />
+                    If you know someone with great ideas, projects and visions around
+                    <strong>new forms of production and making</strong>, give us their contact and we will invite them to join our movement, participate in our events, and connect with the cutting-edge OpenMaker community.<br /><br />
                 </p>
 
 
@@ -26,7 +27,7 @@
         <div class="row margin-bottom-40">
             <div class="col-md-12">
                 <p class="col-xs-12 col-md-10 col-md-offset-1 margin-bottom-40">
-                    About the person you are inviting:
+                    To invite a new member, just fill in the fields below. You can invite as many as you want. We can’t wait to welcome them all!
                 </p>
 
                     <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
@@ -35,14 +36,6 @@
                         <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
                         <input class="form-control" required type="text" name="last_name" placeholder="Last name"><br />
                         <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
-                        </div>
-                        <div class="col-xs-12 col-md-10 col-md-offset-1 margin-top-20">
-                            <small>
-                                Be aware that <strong>OpenMaker</strong> manages personal contacts in a responsible way: contacts are used only to send an invitation e-mail to the nominated person, and our systems will ensure that multiple emails are avoided.<br />
-                                The contacts that you provide will not be exploited for commercial purposes, and will not be passed to third parties who may do so.<br /><br />
-                                If you wish to get more information about the <strong>OpenMaker</strong>’s chain of nomination, <strong><a href="mailto:info@openmaker.eu"><span class="text-red">contact us</span></a></strong>!
-                            </small>
-                            <div class="form-group margin-top-20" ng-init="privacy=false; tac=false;" style="padding: 1%;">
                             <span  class="pointer" style="cursor:pointer;">
                                 <label style="font-weight: 500!important;" >
                                     <span ng-click="tac=!tac;">
@@ -66,12 +59,18 @@
                                 </label>
                                 (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)
                             </span>
+                        </div>
+                        <div class="col-xs-12 col-md-10 col-md-offset-1 margin-top-20">
+                            <small>
+                                Be aware that <strong>OpenMaker</strong> manages personal contacts in a responsible way: contacts are used only to send an invitation e-mail to the nominated person, and our systems will ensure that multiple emails are avoided.<br />
+                                The contacts that you provide will not be exploited for commercial purposes, and will not be passed to third parties who may do so.<br /><br />
+                                If you wish to get more information about the <strong>OpenMaker</strong>’s chain of nomination, <strong><a href="mailto:info@openmaker.eu"><span class="text-red">contact us</span></a></strong>!
+                            </small>
+                            <div class="form-group margin-top-20" ng-init="privacy=false; tac=false;" style="padding: 1%;">
+
                             </div>
                         </div>
-
                         <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
-
-
                     </form>
                 </div>
             </div>
