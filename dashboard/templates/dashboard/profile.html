@@ -383,7 +383,7 @@
                         <div class="col-md-12">
                             <label for="">Sector</label>
                             <ui-select ng-model="sector.selected" title="Choose your sector">
-                                <ui-select-match placeholder="Choose your role *">{$ $select.selected $}</ui-select-match>
+                                <ui-select-match placeholder="Choose your sector *">{$ $select.selected $}</ui-select-match>
                                 <ui-select-choices repeat="sector in sector.available | filter:$select.search track by $index">
                                     <div class="btn">{$ sector $}</div>
                                 </ui-select-choices>
