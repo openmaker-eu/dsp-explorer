@@ -74,12 +74,12 @@
                                 <a href="{% url 'dashboard:search_members' %}">Community</a>
                             </li>
                             <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:invite' %}">Invite Member</a>
+                                <a href="{% url 'dashboard:invite' %}">Invite new members</a>
                             </li>
 
                             {% if not request.user.is_superuser %}
                                 <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >
-                                    <a href="{% url 'pss:application' %}">PSS Application</a>
+                                    <a href="{% url 'pss:application' %}">Apply</a>
                                 </li>
                             {% else %}
                                 {# TODO check permission super admin and isstaff #}
