@@ -22,8 +22,7 @@ export default [function(){
                 { lat:'53.4916393', long:'-2.3231298', city:'Salford' , is_less:true  },
                 { lat:'45.0544696', long:'7.6617633', city:'Torino' , is_less:true  },
                 { lat:'43.7799528', long:'11.2059486', city:'Firenze' , is_less:true  },
-                { lat:'53.472225', long:'-2.2935019', city:'Manchester' , is_less:true  },
-                { lat:'51.5285582', long:'-0.2416795', city:'Londra', is_less:true   }
+                { lat:'53.472225', long:'-2.2935019', city:'Manchester' , is_less:true  }
             ]
     
             $http.get('/api/v1.1/get_places').then( (results)=>{
