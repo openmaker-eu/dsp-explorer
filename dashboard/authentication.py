@@ -16,7 +16,7 @@ from utils.hasher import HashHelper
 from utils.generic import *
 import json
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
-    invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+    invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
 from itertools import ifilter
 import re
 
@@ -69,15 +69,25 @@ def recover_pwd(request):
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
             profile.save()
-            email_message = """
-DSPExplorer - Open Maker
-Hi {email}, to reset you password, click here:
 
-http://{baseurl}/reset_password/{token}
-            """.format(email=profile.user.email,
-                       baseurl=get_current_site(request),
-                       token=profile.reset_token)
-            profile.send_email('DSPExplorer - Reset Password', email_message)
+            # send e-mail
+            email_body = authentication_reset_password.format(
+                FIRST_NAME=profile.user.first_name,
+                LAST_NAME=profile.user.last_name,
+                BASE_URL=get_current_site(request),
+                TOKEN=profile.reset_token
+            )
+            email_content = "{}{}{}".format(
+                invitation_base_template_header,
+                email_body,
+                invitation_base_template_footer
+            )
+            EmailHelper.send_email(
+                message=email_content,
+                subject='DSPExplorer - Reset Password',
+                receiver_email=profile.user.email
+            )
+
             messages.success(request, 'You will receive an email with a link to reset your password!')
             return HttpResponseRedirect(reverse('dashboard:login'))
         except Profile.DoesNotExist:

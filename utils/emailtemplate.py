@@ -772,3 +772,11 @@ pss_admin_upload_confirmation = '''
     Login into the DSPExplorer with your Admin credential and check the results. 
 </p>
 '''
+
+authentication_reset_password = '''
+    <h1>Hi! {FIRST_NAME}&nbsp;{LAST_NAME}</h1>    
+    <p>You recently requested to reset your password for 'OM explorer' Website</p>
+    <p>To reset you password, click here:</p>
+    <p><a style="text-align:center;" href="http://{BASE_URL}/reset_password/{TOKEN}">RESET PASSWORD</a></p> 
+    <p>If you do not request a password reset, please ignore this email.</p>
+'''
