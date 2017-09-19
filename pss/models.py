@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.core.files.storage import FileSystemStorage
+from os.path import abspath, dirname
 from dashboard.models import Profile
 from django.utils import timezone
 from django.conf import settings
@@ -10,9 +12,8 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 
 def upload_to_and_rename(instance, filename):
     from datetime import datetime as dt
-    import os
     filename = dt.now().strftime("%d_%m_%y_%M_%S") + filename
-    return os.path.join('application', filename)
+    return filename
 
 
 class Application(models.Model):
@@ -27,7 +28,9 @@ class Application(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     les = models.IntegerField(default=0, choices=les_choices)
     project_name = models.TextField(_('Project Name'), max_length=500, null=False, blank=False)
-    zip_location = models.FileField(_('Zip Location'), upload_to=upload_to_and_rename)
+
+    zip_location = models.FileField(_('Zip Location'), upload_to=upload_to_and_rename, storage=FileSystemStorage(location=settings.UPLOAD_ROOT), max_length=500)
+
     created_at = models.DateTimeField(default=timezone.now, null=True, blank=True)
 
     def __str__(self):

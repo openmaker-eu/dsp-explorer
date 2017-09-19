@@ -65,16 +65,20 @@ def application_result(request):
     return render(request, 'pss/application_result.html', context)
 
 
-@staff_member_required(login_url='dashboard:login')
+@login_required
 def application_pdf(request, application_id):
 
     if not application_id:
-        return HttpResponse(open('pss/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
+        response = HttpResponse(open('pss/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format('PSS_application_template')
+        return response
 
     application = Application.objects.get(pk=application_id)
 
-    if request.user.is_superuser == 1 or Application.get(application_id)['profile_id'] == request.user.profile.id:
-        return HttpResponse(open('pss/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
+    if request.user.is_superuser == 1 or application.profile_id == request.user.profile.id:
+        response = HttpResponse(open('pss/application/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
+        return response
 
 
 
