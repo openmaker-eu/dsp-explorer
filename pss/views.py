@@ -7,6 +7,7 @@ from .models import Application
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging, os
+from os.path import abspath, dirname
 from django.views.static import serve
 
 @login_required
@@ -69,14 +70,14 @@ def application_result(request):
 def application_pdf(request, application_id):
 
     if not application_id:
-        response = HttpResponse(open('pss/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
+        response = HttpResponse(open(abspath(dirname(__file__))+'pss/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format('PSS_application_template')
         return response
 
     application = Application.objects.get(pk=application_id)
 
     if request.user.is_superuser == 1 or application.profile_id == request.user.profile.id:
-        response = HttpResponse(open('pss/application/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
+        response = HttpResponse(open(abspath(dirname(__file__))+'pss/application/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
         return response
 

@@ -139,7 +139,7 @@ EMAIL_ADMIN_2 = ''
 
 MEDIA_ROOT = ''
 MEDIA_URL = ''
-UPLOAD_ROOT = 'pss/application'
+UPLOAD_ROOT = 'SOME_REPO/pss/application'
 
 # EVENTBRITE
 
