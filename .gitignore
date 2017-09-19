@@ -33,6 +33,7 @@ node_modules/
 webpack-stats.json
 /static/bundles
 /static/fonts
-/pss/application/
+pss/application
+!pss/application/PSS_application_form.pdf
 npm-debug.*
 
