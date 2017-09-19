@@ -12,9 +12,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-50">
+            <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-15">
                 <p>
-                    You are about to join the <strong>OpenMaker</strong> community for accelerating the <span class="text-red">4th Industrial Revolution</span>! <br>
+                    You are about to join the <strong>OpenMaker</strong> community for accelerating the <strong>4th Industrial Revolution</strong>! <br>
                 </p>
                 <p>
                     By filling this onboarding form, you will join a cross-border movement of people eager to steer radical change in our society, making the most of the 4th Industrial Revolution to drive distribution, decentralisation and mass collaboration in the European manufacturing sector.
@@ -23,26 +23,16 @@
                     OpenMaker is an enabling environment that offers a unique ecosystem of inspiration, learning and collaboration opportunities and resources to grow your innovation capacity in this emerging world.<br>
                     Whether you are a maker, a manufacturer, a practitioner, a researcher or an enthusiast within the making domain, join us in this open and collaborative journey towards a better world for all!
                 </p>
-                <p>
-                    <strong class="text-red">OpenMaker</strong> is powered by <strong>Horizon2020</strong>.
-                </p>
             </div>
         </div>
         <div class="row margin-top-20 margin-bottom-30">
             <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+
                 <form class="form-group" action="{% url 'dashboard:onboarding' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <div class="row">
-                        <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
-                            <div class="profile-image" id="profile-image-div" ng-click="profileImageUpload();">
-                                <i class="fa fa-plus" style=""></i>
-                                <img src="#" id="profile-image" style="display: none;"/>
-                            </div><br />
-                            <p class="text-center"> Profile image</p>
-                        </div>
-                    </div>
                     <input id="profile-image-input" onchange="angular.element(this).scope().previewImage(this)" type="file" name="profile_img" style="display: none;"/>
+
                     <div class="row">
                         <div class="col-md-6">
                             <input class="form-control" required type="text" name="first_name" placeholder="First name *" ><br />
@@ -61,7 +51,7 @@
                         </div>
                         <div class="col-md-6">
                             <select class="form-control" name="gender" required style="color:rgba(119, 119, 119, 0.81);">
-                                <option selected="selected" disabled="disabled" >Gender (required)</option>
+                                <option selected="selected" disabled="disabled" >Gender *</option>
                                 <option value="male" >Male</option>
                                 <option value="female" >Female</option>
                                 <option value="other" >Does it matter?</option>
@@ -69,7 +59,6 @@
                         </div><br />
 
                         <div class="col-md-6">
-                            {#                            <input placeholder="Birthdate" format="yyyy-MM-dd" class="form-control" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" >#}
                             <p class="input-group" style="margin: 0;">
                                 <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
                                        uib-datepicker-popup="yyyy/MM/dd"
@@ -87,28 +76,61 @@
                             <br />
                         </div>
                         <div class="col-md-12">
-                            <input required class="form-control" vs-google-autocomplete="{ types:['(cities)'] }"
+                            <label for="" >City <span class="text-red">*</span></label>
+                            <input ng-init="place={};" required class="form-control"
+                                   vs-google-autocomplete="{ types:['(cities)'] }"
+
                                    ng-model="city"
-                                   type="text"
-                                   name="city"
-                                   id="city"
+                                   vs-latitude ="place.lat"
+                                   vs-longitude="place.long"
+                                   vs-street-number="place.street_number"
+                                   vs-street="place.street"
+                                   vs-city="place.city"
+                                   vs-state="place.state"
+                                   vs-country="place.country"
+                                   vs-country-short="place.country_short"
+                                   vs-post-code="place.post_code"
+
+                                   type="text" name="city" id="city"
                                    class="form-control"
                                    placeholder="Start typing the city name where you are based *"><br />
+
+                            <input type="hidden" value="{$ place $}" name="place">
+
                         </div>
                         <div class="col-md-12">
                             <input class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
                         </div>
                         <div class="col-md-12">
-                            Enter up to 3 keywords about you, your profession and/or your values.<br>This will help us in providing you a <strong>valuable experience</strong>!<br><br>
+                            Enter up to 3 <strong>keywords</strong> about you, your profession and/or your values.<br><br>
                         </div>
-                        <div class="col-md-12" ng-init="tags={}">
-                            <ui-select multiple tagging tagging-label="false" ng-class="{'form-control':true}" theme="bootstrap" ng-model="tags.sel"  title="Choose a tag *" limit="3">
-                                <ui-select-match placeholder="Type a tag and press enter *">{$ $item $}</ui-select-match>
-                                <ui-select-choices repeat="tag in tags.sel">
+                        <div class="col-md-12" ng-init="tags={ available: {{ tags }} }">
+
+                            <ui-select
+                                       multiple tagging
+                                       tagging-label="" tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
+                                       sortable="true"
+                                       spinner-enabled="true"
+                                       ng-class="{'form-control':true}"
+                                       ng-model="tags.selected"
+                                       title="Choose a tag *" limit="3"
+                            >
+
+                                <ui-select-match placeholder="Type a tag and press enter *">
+                                    {$ $item $}
+                                </ui-select-match>
+
+                                <ui-select-choices repeat="tag in tags.available | filter:$select.search track by $index">
+                                    <div ng-bind-html="tag | highlight: $select.search"></div>
                                 </ui-select-choices>
+
                             </ui-select><br/>
 
-                            <input type="hidden" name="tags" ng-value="tags.sel" required/>
+                            <input type="hidden" name="tags" ng-value="tags.selected" required/>
+
+                        </div>
+                        <div class="col-md-12">
+                             <strong>Twitter username.</strong><br>It will help us in providing you with <strong>valuable eperience</strong>!<br><br>
                         </div>
                         <div class="col-md-12">
                             <!-- ToDo tell them we will use it for following purposes -->

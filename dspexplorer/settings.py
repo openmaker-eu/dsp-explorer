@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
+    'pss.apps.PssConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

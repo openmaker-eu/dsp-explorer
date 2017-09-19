@@ -1,40 +1,546 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <ol class="breadcrumb">
-                    <li class="active">Profile</li>
-                </ol>
+<div class="container" ng-controller="onboardingController">
+
+    <!--Pass Django vars to Angular-->
+    <span ng-init="
+        role = {
+            selected : '{{ profile.role }}',
+            available : [
+                'Entrepreneur',
+                'Manager',
+                'Employee',
+                'Free-lance',
+                'Researcher',
+                'Policy-Maker',
+                'Student',
+                'Other'
+            ]
+        };
+        sector = {
+            selected : '{{ profile.sector }}',
+            available : [
+                'Food industries',
+                'Textiles and clothing industries',
+                'Wood and furniture industries',
+                'Paper and printing industries',
+                'Jewelry industries',
+                'Mining and mineral processing industries',
+                'Electrical and electronic industries',
+                'Metal Industries',
+                'Engineering industries',
+                'Chemicals and Drugs industries',
+                'Rubber and plastic industries',
+                'Public utilities',
+                'Constructions',
+                'Other manufacturing'
+            ]
+        };
+        size = {
+            selected : '{{ profile.size }}',
+            available : [
+                'A micro enterprise (<10 staff)',
+                'A small enterprise (<50 staff)',
+                'A medium enterprise (<250 staff)',
+                'A large enterprise (>250 staff)'
+            ]
+        };
+
+
+        socialLinks = {{ profile.socialLinks }} ;
+
+        is_edit = '{{ profile_action }}' === 'edit';
+
+        tags={
+            available: {% firstof tags 'False' %} || [],
+            selected : {% firstof profile.jsonTags '[]' %}
+        };
+
+        types_of_innovation = {
+            selected: {% firstof profile.types_of_innovation '[]' %},
+            available : [
+                'Product innovation',
+                'Process innovation',
+                'Technological innovation',
+                'Business model innovation',
+                'Social innovation'
+            ]
+        };
+
+        source_of_inspiration={
+            available: {% firstof source_of_inspiration '[]' %} || [] ,
+            selected : {% firstof profile.jsonSourceOfInspiration '[]' %} || []
+        };
+
+        birthdate ='{{ profile.birthdate | date:"Y-m-d" }}';
+        city='{{ profile.city }}';
+        image_model = { src:'{{ profile.picture.url }}', files:{}};
+
+    " ></span>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
+
+            <!--Title-->
+            <div class="">
+                <h1>
+                    <span>{$  is_edit ? 'Edit Profile' : '{{profile.user.first_name}} {{profile.user.last_name}}' $}</span>
+                    {% if is_my_profile %}
+                    <button class="btn btn-default pull-right" ng-click="is_edit=!is_edit" >
+                        {$  is_edit ? 'Return to profile' : 'Edit' $}
+                    </button>
+                    {% endif %}
+                </h1>
+                <br><br>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-md-offset-3 margin-top-50">
-                <div class="row">
-                    <div class="col-sm-6 col-md-4">
-                        {% if profile %}
-                        <img src="{{profile.picture.url}}" alt="" class="img-circle img-responsive" />
-                        {% else %}
-                        <img src="/static/images/user_icon.png" alt="" class="img-circle img-responsive" />
-                        {% endif %}
+
+            <!--Display profile data-->
+            <div ng-show="!is_edit">
+                <div class="row Aligner">
+
+                    <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
+                        <div class="col-md-8 col-md-offset-4">
+                            <circle-image src="'{{profile.picture.url}}'" ></circle-image>
+                        </div>
                     </div>
-                    <div class="col-sm-6 col-md-8">
-                        <h4>
-                            {{profile.user.first_name}} {{profile.user.last_name}}
-                        </h4>
-                        <small>
-                            <cite title="Location">San Francisco, USA <i class="glyphicon glyphicon-map-marker"></i></cite>
-                        </small>
-                        <p>
-                            <i class="glyphicon glyphicon-envelope"></i> {{profile.user.email}}
-                            <br />
-                            <i class="glyphicon glyphicon-globe"></i><a href="http://openmaker.eu">  http://openmaker.eu</a>
-                            <br />
-                            <i class="glyphicon glyphicon-gift"></i> ...</p>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div style="padding-left:5%;">
+                            <p><i class="fa fa-fw fa-briefcase"></i>&nbsp;&nbsp;{{ profile.occupation }}</p>
+                            <p><i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;{{profile.city}}</p>
+
+                            <p><i class="fa fa-fw fa-hashtag"></i>&nbsp;
+                                {% for tag in profile.tags.all %}
+                                <a href="{% url 'dashboard:search_members' tag.name %}"><i><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
+                                {% endfor %}
+                            </p>
+                            <p><i class="fa fa-fw fa-envelope"></i>&nbsp;&nbsp;{{profile.user.email}}</p>
+                            <p><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{{profile.gender}}</p>
+                            <p><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{{ profile.birthdate | date:'M d Y' }}</p>
+                            <!--<p><i class="fa fa-fw fa-twitter"></i>&nbsp;&nbsp;{{ profile.twitter_username }}</p>-->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        {% if profile.statement != 'None' %}
+                            <div class="well"><i> {{ profile.statement }}  </i></div>
+                        {% endif %}
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="well-red">SOCIAL LINKS</div>
+                        <p
+                            ng-repeat=" socialX in _.clone(socialLinks) "
+                            ng-if="socialX.link"
+                            tooltip-placement="top-left" uib-tooltip="{$ '&nbsp;'+ social.name + '&nbsp;' $}"
+                            tooltip-popup-delay="1000"
+                            ng-init="
+                                social = {
+                                    link:addHttpToSocialUrl(socialX.link) ,
+                                    name:socialX.name ,
+                                    display_name:  extractUserFromSocialUrl(socialX.link),
+                                    is_link:checkSocialUrl(socialX.link)
+                                }
+                            ">
+                            <a ng-if="social.is_link"
+                               href="{$ social.link $}"
+                               target="_blank" class="social-anchor"
+                            >
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"></span>&nbsp; {$ social.display_name $}
+                            </a>
+                            <span ng-if="!social.is_link" >
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}"
+                                    ></span>&nbsp; {$ social.display_name $}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="well-red">ABOUT MY WORK</div>
+                        <p><strong>Role : </strong>&nbsp;{{ profile.role }}</p>
+                        <p><strong>Organization :</strong>&nbsp;{{ profile.organization }}</p>
+                        <p><strong>Sector :</strong>&nbsp;{{ profile.sector }}</p>
+                        <p><strong>Size :</strong>&nbsp;{{ profile.size }}</p>
+
+                        <div class="well-red">AND MY PASSION</div>
+                        <p><strong>Source of inspiration :</strong>&nbsp;
+                            <span ng-repeat="source in _.clone(source_of_inspiration.selected)">
+                                {$ source $}{$ $last ? '&nbsp;' : ',&nbsp;' $}
+                            </span>
+                        </p>
+                        <p><strong>Types of innovation :</strong>&nbsp;
+                            <span ng-repeat="type in _.clone(types_of_innovation.selected)">
+                                {$ type $}{$ $last ? '&nbsp;' : ',&nbsp;' $}
+                            </span>
+                        </p>
+
+
+                    </div>
+
+                </div>
+
+
             </div>
+
+            <!--Edit profile data-->
+            {% if is_my_profile %}
+            <div ng-show="is_edit">
+                <form class="form-group" action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!--Image-->
+                    <div class="row margin-bottom-30">
+
+                        <div class="col-md-12">
+                            <label for="" style="width:100%; text-align: center;">Profile Image</label>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3" >
+                            <div class="profile-image pointer" id="profile-image-div" ng-click="profileImageUpload();">
+                                <!--<i-->
+                                        <!--class="fa fa-cloud-upload"-->
+                                        <!--style="z-index:10000;"-->
+                                <!--&gt;<span style=" background:#fff; border-radius: 50%;"></span></i>-->
+
+                                    <span class="fa-stack fa-2x image_icon" style="z-index:10000;">
+                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                      <i class="fa fa-cloud-upload fa-stack-1x"></i>
+                                    </span>
+
+                                <!--<i-->
+                                   <!--class="material-icons md-48"-->
+                                   <!--style="z-index:10000; text-shadow: 0px 0px 3px #000;">file_upload</i>-->
+                                <circle-image src="image_model.src"></circle-image>
+                            </div>
+
+                            <input
+                                    id="profile-image-input"
+                                    class="hidden"
+                                    input_file_model="image_model.src"
+                                    type="file"
+                                    name="profile_img"/>
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="well-red">ABOUT YOU</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="">First Name <span class="text-red">*</span></label>
+                            <input
+                                    value="{{profile.user.first_name}}"
+                                    class="form-control" required type="text" name="first_name"  placeholder="First name *" ><br />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">Last Name <span class="text-red">*</span></label>
+                            <input value="{{profile.user.last_name}}"
+                                    class="form-control" required type="text" name="last_name" placeholder="Last name *" ><br />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="">Gender <span class="text-red">*</span></label>
+                            <select class="form-control"
+                                    name="gender" required
+                                    style="color:rgba(119, 119, 119, 0.81);">
+
+                                <option {% if profile.gender == 'male'   %}selected="selected"{% endif %} value="male" >Male</option>
+                                <option {% if profile.gender == 'female' %}selected="selected"{% endif %} value="female" >Female</option>
+                                <option {% if profile.gender == 'other'  %}selected="selected"{% endif %} value="other" >Does it matter?</option>
+
+                            </select>
+                        </div><br />
+
+                        <div class="col-md-6">
+                            <label for="">Birthdate <span class="text-red">*</span></label>
+                            <p class="input-group" style="margin: 0;">
+                                <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
+                                       uib-datepicker-popup="yyyy/MM/dd"
+                                       ng-model="birthdate"
+                                       name = "birthdate"
+                                       is-open="datePopup.opened"
+                                       datepicker-options="dateOptions"
+                                       ng-required="true"
+                                       close-text="Close"
+                                       alt-input-formats="altInputFormats" required
+                                />
+                                <span class="input-group-btn">
+                            <button type="button" class="form-control btn btn-default" style="border-radius: 0 4px 4px 0;" ng-click="openDatePopUp()"><i class="glyphicon glyphicon-calendar"></i></button>
+                          </span>
+                            </p>
+                            <br />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="" >City <span class="text-red">*</span></label>
+                            <input ng-init="place={};" required class="form-control"
+                                   vs-google-autocomplete="{ types:['(cities)'] }"
+
+                                   ng-model="city"
+                                   vs-latitude ="place.lat"
+                                   vs-longitude="place.long"
+                                   vs-street-number="place.street_number"
+                                   vs-street="place.street"
+                                   vs-city="place.city"
+                                   vs-state="place.state"
+                                   vs-country="place.country"
+                                   vs-country-short="place.country_short"
+                                   vs-post-code="place.post_code"
+
+                                   type="text" name="city" id="city"
+                                   class="form-control"
+                                   placeholder="Start typing the city name where you are based *"><br />
+
+                            <input type="hidden" value="{$ place $}" name="place">
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Occupation  <span class="text-red">*</span></label>
+                            <input
+                                type="text"
+                                value="{{ profile.occupation }}"
+                                class="form-control"
+                                placeholder="occupation"
+                                name="occupation" required>
+                            <br>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Tags <span class="text-red">*</span></label>
+                            <p>Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br></p>
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <ui-select
+                                multiple tagging
+                                tagging-label=""
+                                sortable="true"
+                                spinner-enabled="true"
+                                ng-model="tags.selected"
+                                title="Choose a tag *" limit="3"
+                            >
+
+                                <ui-select-match placeholder="Type a tag and press enter *">
+                                    {$ $item $}
+                                </ui-select-match>
+
+                                <ui-select-choices  repeat="tag in tags.available | filter:$select.search track by $index">
+                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}"
+                                         ng-bind-html="tag | highlight: $select.search"></div>
+                                </ui-select-choices>
+
+                            </ui-select><br/>
+
+
+                            <input type="hidden" name="tags" ng-value="tags.selected" required/>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Statement</label>
+                            <textarea class="form-control" name="statement"
+                                      placeholder="Write something about you"
+                                      rows="6"
+                            >{% if profile.statement != None and profile.statement != 'None' %}{{ profile.statement }}{% endif %}</textarea>
+                            <br>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="well-red">ABOUT YOUR WORK</div>
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <label for="">Role</label>
+                            <ui-select ng-model="role.selected" title="Choose your role">
+                                <ui-select-match placeholder="Choose your role">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="role in role.available | filter:$select.search track by $index">
+                                    <div class="btn">{$ role $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="role" ng-value="role.selected"/>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Organization</label>
+                            <input class="form-control" type="text" name="organization" value="{{ profile.organization }}">
+                            <br/>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Sector</label>
+                            <ui-select ng-model="sector.selected" title="Choose your sector">
+                                <ui-select-match placeholder="Choose your sector *">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="sector in sector.available | filter:$select.search track by $index">
+                                    <div class="btn">{$ sector $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="sector" ng-value="sector.selected" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Size</label>
+                            <ui-select  ng-model="size.selected" title="Size">
+                                <ui-select-match placeholder="Size">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="size in size.available | filter:$select.search track by $index">
+                                    <div class="btn">{$ size $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="size" ng-value="size.selected" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="well-red">AND YOUR PASSION</div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <label for="">Source of inspiration</label>
+                            <p>Enter up to 3 Source of your inspiration. Write a word and press enter or select one from the list .</p>
+                            <!--tagging-label="&nbsp;&nbsp;&#x25C0;&nbsp;ADD NEW"-->
+                            <ui-select multiple tagging
+                                       tagging-label=""
+                                       tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
+                                       sortable="true"
+                                       spinner-enabled="true"
+                                       ng-model="source_of_inspiration.selected"
+                                       title="Choose a Source of inspiration or add a new one" limit="3"
+                            >
+                                <ui-select-match placeholder="Select your source of inspiration or add new one">
+                                    {$ $item $}
+                                </ui-select-match>
+
+                                <ui-select-choices
+                                        repeat="source in source_of_inspiration.available  | filter:$select.search track by $index"
+                                >
+                                    <div
+                                       ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}"
+                                       ng-bind-html="source | highlight: $select.search"
+                                    ></div>
+                                </ui-select-choices>
+
+                            </ui-select><br/>
+
+
+                            <input type="hidden" name="source_of_inspiration" ng-value="source_of_inspiration.selected" />
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="">Types of innovation</label>
+                            <p>Select one or more of the below Types of innovation categories.</p>
+                            <ui-select
+                                    multiple
+                                    class="form-control"
+                                    ng-model="types_of_innovation.selected"
+                                    title="Select yout Types of innovation">
+                                <ui-select-match placeholder="Choose one or more Types of innovation">{$ $item $}</ui-select-match>
+                                <ui-select-choices
+                                        repeat="innovationType in types_of_innovation.available | filter:$select.search track by $index"
+                                >
+                                    <div class="btn" ng-bind-html="innovationType | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input
+                                    type="hidden"
+                                    name="types_of_innovation"
+                                    ng-value="types_of_innovation.selected"
+                            />
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="well-red">SOCIAL</div>
+                        </div>
+
+                        <div class="col-md-12 social-links-form">
+
+                            <label for="">Social Links</label>
+
+                            <input type="hidden" name="socialLinks" value="{$ socialLinks $}">
+                            <div class="input-group"
+                                 ng-repeat="social in socialLinks track by $index"
+                            >
+
+                                <span class="input-group-addon" tooltip-placement="top" uib-tooltip="{$ social.name $}">
+                                    <span class="fa fa-fw fa-home fa-{$ social.name $}" ></span>
+                                </span>
+
+                                <input type="text" class="form-control"
+                                       ng-model="social.link"
+                                       name="{$ social.name $}"
+                                       placeholder="{$ social.name $} username or link to your profile page"
+                                >
+                                <span class="input-group-addon pointer"
+                                      ng-if="['facebook', 'twitter', 'google-plus'].indexOf(social.name) == -1"
+                                      ng-click="socialLinks.splice($index, 1)"
+                                >
+                                    <span class="fa fa-fw fa-remove text-red" ></span>
+                                </span>
+                            </div>
+
+
+                           <div class="row" ng-init="newSocial={name:'',link:''}">
+                               <div class="col-md-12 ">
+                                   <br>
+                                   <label for="">Add new social</label>
+
+                                   <div class="input-group">
+                                       <input class="form-control" style="width:40%;" placeholder="Social (E.G.: Twitter)" type="text"
+                                              ng-model="newSocial.name">
+                                       <input class="form-control" style="width:60%;" placeholder="Username or Link to your homepage" type="text"
+                                              ng-model="newSocial.link">
+                                       <span class="input-group-addon pointer"
+                                             ng-if="['facebook', 'twitter', 'google-plus'].indexOf(social.name) == -1"
+                                       >
+                                            <span class="fa fa-fw fa-plus"
+                                                  ng-click="
+                                                  socialLinks.push({ name: newSocial.name.toLocaleLowerCase(), link: newSocial.link });
+                                                  newSocial.name=''; newSocial.link='';"
+                                            ></span>
+                                        </span>
+
+                                    </div>
+
+                               </div>
+                           </div>
+
+                        </div>
+
+                        <div class="col-md-12 margin-top-20">
+                            <span class="text-red">*</span> required fields
+                        </div>
+
+                        <div class="col-md-12">
+                            <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Update">
+                        </div>
+                    </div>
+                </form>
+                <br>
+            </div>
+            {% endif %}
+
         </div>
     </div>
+</div>
 {% endblock %}

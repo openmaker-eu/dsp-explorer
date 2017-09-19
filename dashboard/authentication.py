@@ -5,21 +5,20 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 import datetime as dt
-from datetime import datetime
 from utils.mailer import EmailHelper
-from .models import Profile, User, Invitation
+from .models import Profile, User, Invitation, Tag
 from crmconnector import capsule
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-import os
 import pytz
 import logging
 from django.contrib.sites.shortcuts import get_current_site
 from datetime import datetime
 from utils.hasher import HashHelper
-
+from utils.generic import *
+import json
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+from itertools import ifilter
+import re
 
 
 def logout_page(request):
@@ -139,17 +138,23 @@ def onboarding(request):
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
         try:
-            email = request.POST['email']
+            email = request.POST['email'].lower()
             pasw = request.POST['password']
             pasw_confirm = request.POST['password_confirm']
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
+            first_name = request.POST['first_name'].title()
+            last_name = request.POST['last_name'].title()
             gender = request.POST['gender']
             birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
             birthdate_dt = pytz.utc.localize(birthdate_dt)
             city = request.POST['city']
             occupation = request.POST['occupation']
             tags = request.POST['tags']
+
+            place = request.POST.get('place', None) if request.POST.get('place', None) != '{}' else None
+
+            if tags == '' or tags == None or tags == 'undefined':
+                raise KeyError
+
             twitter_username = request.POST.get('twitter', '')
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
@@ -169,25 +174,7 @@ def onboarding(request):
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
         # Check image and get url
-        try:
-            imagefile = request.FILES['profile_img']
-            filename, file_extension = os.path.splitext(imagefile.name)
-
-            allowed_extensions = ['.jpg', '.jpeg', '.png']
-            if not (file_extension in allowed_extensions):
-                raise ValueError
-
-            imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
-            # imagepath = request.build_absolute_uri('/static/images/profile/{IMAGE}'.format(IMAGE=imagename))
-            #
-            # default_storage.save('static/images/profile/{IMAGE}'.format(IMAGE=imagename), ContentFile(file.read()))
-
-        except ValueError:
-            messages.error(request, 'Profile Image is not an image file')
-            return HttpResponseRedirect(reverse('dashboard:onboarding'))
-        except:
-            imagepath = request.build_absolute_uri('/static/images/user_icon.png')
-
+        imagefile = 'images/profile/default_user_icon.png'
 
         # Check if user exist
         try:
@@ -200,14 +187,27 @@ def onboarding(request):
         # profile create
         try:
             profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
-                                     city, occupation, tags, twitter_username)
+                                     city, occupation, twitter_username, place)
         except Exception as exc:
+            logging.error('[PROFILE_CREATION_ERROR] Error during local profile creation for user email: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
-        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+        # Add tags to profile
+        # @TODO : handle tag Creation exception
+        for tag in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "_", x.lower().capitalize()), tags.split(",")):
+            tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
+            profile.tags.add(tagInstance)
+        profile.save()
+
+        # Add twitter username to social links
+        social_links = json.loads(profile.socialLinks)
+        social_links[0]['link'] = twitter_username
+        profile.socialLinks = json.dumps(social_links)
+        profile.save()
 
         # send e-mail
+        confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
         subject = 'Onboarding... almost done!'
         content = "{}{}{}".format(invitation_base_template_header,
                                   onboarding_email_template.format(FIRST_NAME=first_name,
@@ -225,7 +225,7 @@ def onboarding(request):
         messages.success(request, 'Confirmation mail sent!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    return render(request, 'dashboard/onboarding.html', {})
+    return render(request, 'dashboard/onboarding.html', {'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))})
 
 
 def onboarding_confirmation(request, token):
@@ -236,17 +236,16 @@ def onboarding_confirmation(request, token):
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    #Check for user on Capsupe CRM
+    # Check for user on Capsule CRM
     user = capsule.CRMConnector.search_party_by_email(profile.user.email)
     if user:
         try:
-            update_user = capsule.CRMConnector.update_party(user['id'], {'party': {
+            capsule.CRMConnector.update_party(user['id'], {'party': {
                 'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
                 'type': 'person',
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture.url
             }
             })
         except:
@@ -262,7 +261,6 @@ def onboarding_confirmation(request, token):
                 'firstName': profile.user.first_name,
                 'lastName': profile.user.last_name,
                 'jobTitle': profile.occupation,
-                'pictureURL': profile.picture.url
             }
             })
         except:
@@ -270,10 +268,30 @@ def onboarding_confirmation(request, token):
             logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
             # TODO SEND ERROR EMAIL TO ADMIN
             return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
     profile.user.is_active = True
     profile.user.save()
     profile.update_reset_token()
-    messages.success(request, 'Your account is now active. Please login with your credentials!')
+    login(request, profile.user)
+    # Modal creation after first login
+    body = '' \
+           '<div class="row">' \
+           '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
+           '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
+           '<div class="col-md-6 text-center">' \
+           '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
+           '</div>' \
+           '<div class="col-md-6 text-center">' \
+           '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
+           '</div>' \
+           '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
+
+    modal_options = {
+        "title": "Welcome onboard {}!".format(profile.user.first_name),
+        "body": escape_html(body),
+        "footer": False
+    }
+    messages.info(request, json.dumps(modal_options), extra_tags='modal')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
@@ -342,3 +360,8 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
     except Invitation.DoesNotExist:
         messages.error(request, 'Invitation does not exist')
     return HttpResponseRedirect('http://openmaker.eu/confirmed/')
+
+
+def csrf_failure(request, reason=""):
+    messages.warning(request, 'Some error occurs!')
+    return HttpResponseRedirect(reverse('dashboard:login'))

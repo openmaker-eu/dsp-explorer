@@ -9,32 +9,72 @@ import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
 
+class Tag(models.Model):
+    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
+
+    @classmethod
+    def create(cls, name):
+        tag = Tag(name=name)
+        tag.save()
+        return tag
+
+class SourceOfInspiration(models.Model):
+    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
+
+    @classmethod
+    def create(cls, name):
+        source = SourceOfInspiration(name=name)
+        source.save()
+        return source
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
+
     # CRM Data
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
-    tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
+    # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
+
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
+    place = models.TextField(_('Place'), max_length=500, blank=True, null=True)
+
+    statement = models.TextField(_('Statement'), blank=True, null=True)
+
+    role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
+    organization = models.TextField(_('Organization'), max_length=200, null=True, blank=True, default='')
+    sector = models.TextField(_('Sector'), max_length=200, null=True, blank=True, default='')
+    types_of_innovation = models.TextField(_('Types of Innovation'), max_length=200, null=True, blank=True, default='')
+    size = models.TextField(_('Size'), max_length=200, null=True, blank=True, default='')
+
+    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+    source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
+
+    socialLinks = models.TextField(
+        _('Size'),
+        max_length=200,
+        null=True,
+        blank=True,
+        default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
+    )
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
     update_token_at = models.DateTimeField(default=None, null=True, blank=True)
     ask_reset_at = models.DateTimeField(default=dt.now, null=True, blank=True)
-    
+
     def __str__(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
-    
+
     class Meta:
         ordering = ('user',)
-    
+
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
-               birthdate=None, city=None, occupation=None, tags=None, twitter_username=None):
+               birthdate=None, city=None, occupation=None, twitter_username=None, place=None):
 
         try:
             user = User.objects.get(email=email)
@@ -47,7 +87,7 @@ class Profile(models.Model):
                                             )
             user.is_active = False
             user.save()
-        
+
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
@@ -57,15 +97,15 @@ class Profile(models.Model):
             profile.birthdate = birthdate
             profile.city = city
             profile.occupation = occupation
-            profile.tags = tags
             profile.twitter_username = twitter_username
+            profile.place=place
             profile.save()
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()
             profile.save()
             return profile
         raise EmailAlreadyUsed
-    
+
     def send_email(self, subject, message):
         """
         Send Async Email to the user
@@ -81,7 +121,7 @@ class Profile(models.Model):
                                            receiver_email=self.user.email
                                            ))
         thr.start()
-    
+
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
         """
@@ -97,7 +137,7 @@ class Profile(models.Model):
                                subject=subject,
                                receiver_name=receiver_name,
                                receiver_email=receiver_email)
-        
+
     @staticmethod
     def get_new_reset_token():
         """
@@ -111,7 +151,6 @@ class Profile(models.Model):
         Generate a new reset Token
         :return: String
         """
-        from datetime import datetime as dt
         import pytz
         self.reset_token = (uuid.uuid4())
         self.update_token_at = pytz.utc.localize(dt.now())
@@ -120,10 +159,19 @@ class Profile(models.Model):
     @classmethod
     def search_members(cls, search_string):
         from django.db.models import Q
-        profiles = cls.objects.filter(Q(user__email__contains=search_string) |
-                                      Q(user__first_name__contains=search_string) |
-                                      Q(user__last_name__contains=search_string))
-        return profiles
+        return cls.objects\
+            .filter(Q(user__email__contains=search_string) |
+                Q(user__first_name__contains=search_string) |
+                Q(user__last_name__contains=search_string) |
+                Q(tags__name__contains=search_string) |
+                Q(twitter_username__contains=search_string) |
+                Q(occupation__contains=search_string) |
+                Q(city__contains=search_string))\
+            .distinct()
+
+    @classmethod
+    def get_last_n_members(cls, n):
+        return cls.objects.order_by('-user__date_joined')[:n]
 
     @classmethod
     def get_by_email(cls, email):
@@ -133,8 +181,38 @@ class Profile(models.Model):
     def get_by_id(cls, profile_id):
         return cls.objects.get(id=profile_id)
 
+    @classmethod
+    def get_hot_tags(cls, tag_number=4):
+        from itertools import chain
+        from collections import Counter
+
+        # tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
+        # flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
+        # return Counter(flat_tags).most_common(int(tag_number))
+
+        tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(), Profile.objects.all())])
+        hot = Counter(tags).most_common(int(tag_number))
+        return hot
+
+    @classmethod
+    def get_sectors(cls):
+
+        from collections import Counter
+        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
+        sectors = Counter(flat_sectors).most_common(1000)
+        print('sectors')
+        print(sectors)
+        return sectors
+
+    @classmethod
+    def get_places(cls):
+        from collections import Counter
+        places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
+        print places
+        return places
 
 class Invitation(models.Model):
+
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
 
     sender_email = models.EmailField(_('Sender email address'), max_length=254)

@@ -7,7 +7,8 @@ var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 module.exports = {
 
     entry: {
-        dashboard: path.resolve(__dirname, 'dashboard/static/js')
+        dashboard: [ path.resolve(__dirname, 'dashboard/static/js') ],
+        pss: [ path.resolve(__dirname, 'pss/static/js') ]
         // enter a new entry point here
     },
     output: {
@@ -24,7 +25,19 @@ module.exports = {
             },
             {
                 test: /\.scss?$/,
-                loaders: ["style-loader", "css-loader", "sass-loader"]
+                use : [
+                    { loader: "style-loader" },
+                    { loader:  "css-loader" },
+                    { loader: "sass-loader"
+                        // ,
+                        // options: {
+                        //     sourceMap: true,
+                        //     data: '@import "base";',
+                        //     includePaths: [ path.resolve(__dirname, "./static/styles/") ]
+                        // }
+                    }
+                ]
+    
             },
             {
                 test: /\.js?$/, loader: 'babel-loader' ,
@@ -38,6 +51,7 @@ module.exports = {
                 loader: 'file-loader?limit=100000&name=../fonts/[hash].[ext]'
 
             }
+
         ]
     },
     plugins: [
@@ -47,5 +61,11 @@ module.exports = {
         }),
         new BundleTracker(),
         new CleanObsoleteChunks()
-    ]
+    ],
+    resolve : {
+        extensions : [ '.js', '.css', '.scss', '.html' ],
+        alias : {
+            'basescss':  path.resolve(__dirname, "./static/styles/base.scss")
+        }
+    }
 }

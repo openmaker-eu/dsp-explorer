@@ -10,7 +10,6 @@ def install():
     local('pip install -r requirements.txt')
     local('npm i')
 
-
 def install_static():
     local('python ./manage.py collectstatic')
 

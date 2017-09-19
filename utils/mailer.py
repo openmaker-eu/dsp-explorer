@@ -5,6 +5,8 @@ from email.header import Header
 from email.message import Message
 
 from django.conf import settings
+from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
+    invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
 
 class EmailHelper(object):
@@ -43,3 +45,25 @@ class EmailHelper(object):
             logging.info("Email sent to %s" % receiver_email)
         except smtplib.SMTPException as error:
             logging.error("Error: unable to send email to %s because:\n%s" % (receiver_email, error.message))
+
+    @staticmethod
+    def send_test_email(sendTo):
+        """
+        :info: example email sender for testing purpose
+        :param sendTo:
+        :return: void
+        """
+        content = "{}{}{}".format(invitation_base_template_header,
+                                  invitation_email_receiver.format(RECEIVER_FIRST_NAME='Name',
+                                                                   RECEIVER_LAST_NAME='Last',
+                                                                   SENDER_FIRST_NAME='Send name',
+                                                                   SENDER_LAST_NAME='Send last',
+                                                                   ONBOARDING_LINK='www.example.ix'),
+                                  invitation_base_template_footer)
+
+        EmailHelper.send_email(
+            message=content,
+            subject='Test email',
+            receiver_email=sendTo,
+            receiver_name='Tester'
+        )

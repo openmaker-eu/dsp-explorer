@@ -2,30 +2,77 @@
 {% block container %}
     <div class="container">
         <div class="row margin-bottom-15">
-            <div class="text-center col-md-6 col-md-offset-3"><h1>Invite People</h1></div>
-        </div>
-        <div class="row">
-            <p class="col-xs-12 col-md-10 col-md-offset-1">
-                Do you know someone interested in the future of industry and the acceleration of the <strong>4th Industrial Revolution</strong> in Europe?<br /><br />
-                Help us bring together <strong>makers</strong>, <strong>manufacturers</strong>, <strong>innovators</strong> and <strong>thought leaders</strong> in the manufacturing sector by nominating anyone you know with great ideas, projects and vision on new forms of production and making.<br /><br />
-                We will send them an invitation to join our wider community – we won’t email them more than once and we aren’t interested in exploiting contacts for commercial interests.<br /><br />
-                If you wish to find out more about OpenMaker’s chain of nomination, <a href="mailto:info@openmaker.eu" class="text-red"><strong>contact us</strong></a>!
-            </p>
-        </div>
-        <div class="row">
             <div class="col-md-12">
-                <hr>
+                <h1 class="margin-bottom-30">Invite<br><strong class="text-red"> New members</strong></h1>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
-                    {% csrf_token %}
-                    <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
-                    <input class="form-control" required type="text" name="first_name" placeholder="First name" required><br />
-                    <input class="form-control" required type="text" name="last_name" placeholder="Last name" required><br />
-                    <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
-                </form>
+            <div class="col-md-12">
+                <p class="col-xs-12 col-md-10 col-md-offset-1">
+                    Help us to reach <strong>makers, innovators and thinkers</strong> and engage in the <strong>4th Industrial revolution!</strong><br/><br />
+                    If you know someone with great ideas, projects and visions around
+                    <strong>new forms of production and making</strong>, give us their contact and we will invite them to join our movement, participate in our events, and connect with the cutting-edge OpenMaker community.<br /><br />
+                </p>
+
+
+            </div>
+        </div>
+        <div class="row margin-bottom-40 margin-top-20">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-bottom-40">
+            <div class="col-md-12">
+                <p class="col-xs-12 col-md-10 col-md-offset-1 margin-bottom-40">
+                    To invite a new member, just fill in the fields below. You can invite as many as you want. We can’t wait to welcome them all!
+                </p>
+
+                    <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
+                        <div class="col-md-8 col-md-offset-2">
+                        {% csrf_token %}
+                        <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
+                        <input class="form-control" required type="text" name="last_name" placeholder="Last name"><br />
+                        <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
+                            <span  class="pointer" style="cursor:pointer;">
+                                <label style="font-weight: 500!important;" >
+                                    <span ng-click="tac=!tac;">
+                                        <span ng-show="tac" class="glyphicon glyphicon-check text-red"></span>
+                                        <span ng-show="!tac" class="glyphicon glyphicon-unchecked text-red"></span>
+                                        <input type="checkbox" ng-model="tac" required="required" class="fake-check">
+                                        &nbsp;I allow for the use of my online publicly available data
+                                    </span>
+                                </label>
+                                (<a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+                            </span>
+                                <br>
+                                <span  class="pointer" style="cursor:pointer;">
+                                <label style="font-weight: 500!important;" >
+                                    <span ng-click="privacy=!privacy;" >
+                                        <span ng-show="privacy" class="glyphicon glyphicon-check text-red"></span>
+                                        <span ng-show="!privacy" class="glyphicon glyphicon-unchecked text-red"></span>
+                                        <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
+                                        &nbsp;I allow for the use of the data provided in this form
+                                    </span>
+                                </label>
+                                (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)
+                            </span>
+                        </div>
+                        <div class="col-xs-12 col-md-10 col-md-offset-1 margin-top-20">
+                            <small>
+                                Be aware that <strong>OpenMaker</strong> manages personal contacts in a responsible way: contacts are used only to send an invitation e-mail to the nominated person, and our systems will ensure that multiple emails are avoided.<br />
+                                The contacts that you provide will not be exploited for commercial purposes, and will not be passed to third parties who may do so.<br /><br />
+                                If you wish to get more information about the <strong>OpenMaker</strong>’s chain of nomination, <strong><a href="mailto:info@openmaker.eu"><span class="text-red">contact us</span></a></strong>!
+                            </small>
+                            <div class="form-group margin-top-20" ng-init="privacy=false; tac=false;" style="padding: 1%;">
+
+                            </div>
+                        </div>
+                        <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -1,43 +1,38 @@
-window.$ = window.jQuery = require('jquery')
-window.m = window.moment = require("../../../node_modules/moment/moment")
-
-require("bootstrap-sass")
-require("../style/index.scss")
-require('../../../node_modules/bootstrap-additions/dist/bootstrap-additions.min.css');
-
-import  * as  _  from 'lodash'
 import * as angular from 'angular';
+require('../../../node_modules/ngmap')
 
-require('angular-ui-bootstrap');
-require('angular-toastr');
-require('angular-sanitize');
-require('angular-animate');
-require('angular-strap');
-require("../../../node_modules/cookieconsent/build/cookieconsent.min");
-require("ui-select")
+// Import this app style
+require("../style/index.scss")
+// Require static angular componenets
+let baseImports = require("../../../static/js/index")
+// Angular form imports
+baseImports.angularForm()
+
+// Stuff
 require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 
-
-let app = angular.module('dashboard', ['ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete'])
+// Init Angular APP
+var app = angular.module('dashboard', [
+    'ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
+])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
-    }]);
+    }])
+    .config(['$qProvider', function ($qProvider) {$qProvider.errorOnUnhandledRejections(false);}]);
 
-app.config(['$qProvider', function ($qProvider) {
-    $qProvider.errorOnUnhandledRejections(false);
-}]);
-
-app.controller('baseController', require('../../../static/js/controllers/base.controller').default )
-require("../../../static/js/footer/header.footer.behaviour")
+// Require base angular componenets
+baseImports.angularBase(app)
+    .directives(app)
+    .dataVizDirectives(app)
 
 
-export { app };
-
+app.controller('landingController', require('./controllers/landing.controller').default )
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )
 app.controller('themesController', require('./controllers/themes.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
+app.directive('userStories', require('./directives/UserStories.directive').default )
 
-require("../../../static/js/cookie/cookie.policy.behaviour");
+

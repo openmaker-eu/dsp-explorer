@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>DSP Explorer</title>
+    <title>Open Maker Explorer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
 
     <!-- WEBPACK BUNDLES -->
     {% render_bundle 'commons' 'js' %}
@@ -12,8 +15,19 @@
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700" rel="stylesheet">
 
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-93159135-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments)};
+        gtag('js', new Date());
+
+        gtag('config', 'UA-93159135-5');
+    </script>
+
 </head>
-<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl"
+
+<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl" style=""
       ng-init="
           toastrMessage = [
                  {% for message in messages %}
@@ -26,51 +40,92 @@
                 {% endfor %}
           ];
       ">
+
+<div id="cover-filter"></div>
 <div id="top-div">
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand logo text-red" href="/">
-                    DSP<span>explorer</span>
-                </a>
-            </div>
+    {% with current_url=request.resolver_match.view_name  %}
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand logo text-red" href="/">
+                        <img src="/static/images/openmaker-logo.svg" class="img img-responsive pull-left" style="height:120%; margin-top:-2%;">
+                        <span class="pull-left text-red" style="font-weight: 900;">OM<span>explorer</span></span>
+                    </a>
+                </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    {% if not user.is_anonymous %}
-                        {#                        <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>#}
-                        <li><a href="{% url 'dashboard:search_members' %}">Search</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                               data-toggle="dropdown" role="button"
-                               aria-haspopup="true" aria-expanded="false">
-                                <span class="glyphicon glyphicon-user"></span>
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="{% url 'dashboard:invite' %}">Invite</a></li>
-                                <li><a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{% url 'dashboard:logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li><a href="{% url 'dashboard:onboarding' %}">Onboarding</a></li>
-                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if not user.is_anonymous %}
+                            <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:dashboard' %}">Home</a>
+                            </li>
+                            <li class="{% if current_url == 'dashboard:theme' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:theme' %}">Explore Feeds</a>
+                            </li>
+                            <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:search_members' %}">Community</a>
+                            </li>
+                            <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+                            </li>
 
-                    {% endif %}
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+                            {% if not request.user.is_superuser %}
+                                <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >
+                                    <a href="{% url 'pss:application' %}">Apply</a>
+                                </li>
+                            {% else %}
+                                {# TODO check permission super admin and isstaff #}
+                                <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{% url 'pss:application' %}">Submission</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'pss:application_result' %}">Results</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle"
+                                   data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false"  style="{% if current_url == 'dashboard:profile' %}color:#db4348;{% endif %}">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li>
+                                        <a href="{% url 'dashboard:logout' %}">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
+                                <a href="{% url 'dashboard:onboarding' %}">Onboard</a>
+                            </li>
+                            <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+
+                        {% endif %}
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+    {% endwith %}
 
     <!-- base container goes here -->
 
@@ -85,10 +140,24 @@
         </div>
     {% endif %}
 </div>
-
 {% if user.is_anonymous %}
 
-    <div class="container-fluid" id="footer">
+    <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+        <div class="row" style="background: #efefef;">
+            <div class="col-md-12 text-center margin-top-30 margin-bottom-30" >
+                <p class="text-white claim text-center">
+                <p class="claim text-center">
+                    <strong>HAVE A BRILLIANT IDEA?</strong><br>
+                </p>
+                <!--<p class="text-white margin-top-50 margin-bottom-50">-->
+                <p class="margin-top-20 margin-bottom-20">
+                    NOW OPEN: <strong>2017 PILOT SUPPORT SCHEME CALL FOR PROPOSAL</strong><br><strong>€20,000</strong> and the help you need to make your idea a reality.
+                </p>
+                <a class="btn custom-button margin-left-5" ng-click="openModal('#login_modal')">
+                    Learn more
+                </a>
+            </div>
+        </div>
         <div class="row back padding-bottom-20">
             <div class="container">
                 <div class="row margin-top-25">
@@ -108,7 +177,7 @@
                 <div class="row margin-top-20">
                     <div class="col-md-12 pull-right">
                         <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker </a><span class="text-red">&mdash;</span>
-{#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
+                        {#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
                         <a href="/terms" class="text-red">Terms & Conditions </a><span class="text-red">&mdash;</span>
                         <a href="/privacy" class="text-red">Privacy Policy</a>
                     </div>
