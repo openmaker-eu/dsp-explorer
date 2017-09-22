@@ -194,14 +194,11 @@ class Profile(models.Model):
         flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector',
                                                                                                        flat=True))
         sectors = Counter(flat_sectors).most_common(1000)
-        print('sectors')
-        print(sectors)
         return sectors
 
     @classmethod
     def get_places(cls):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
-        print places
         return places
 
 
