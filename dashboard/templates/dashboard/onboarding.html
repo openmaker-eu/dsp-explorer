@@ -102,7 +102,7 @@
                             <input class="form-control" required type="text" name="occupation" placeholder="Occupation *"><br />
                         </div>
                         <div class="col-md-12">
-                            Enter up to 3 <strong>keywords</strong> about you, your profession and/or your values.<br><br>
+                            Enter up to 5 <strong>keywords</strong> about you, your profession and/or your values.<br><br>
                         </div>
                         <div class="col-md-12" ng-init="tags={ available: {{ tags }} }">
 
@@ -113,7 +113,7 @@
                                        spinner-enabled="true"
                                        ng-class="{'form-control':true}"
                                        ng-model="tags.selected"
-                                       title="Choose a tag *" limit="3"
+                                       title="Choose a tag *" limit="5"
                             >
 
                                 <ui-select-match placeholder="Type a tag and press enter *">
