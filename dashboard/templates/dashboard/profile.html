@@ -9,31 +9,74 @@
             available : [
                 'Entrepreneur',
                 'Manager',
-                'Employee',
                 'Free-lance',
+                'Employee',
                 'Researcher',
                 'Policy-Maker',
-                'Student',
+                'Other'
+            ]
+        };
+        technical_expertise = {
+            selected: '{{ profile.technical_expertise }}',
+            available: [
+                'IoT',
+                'Digital fabrication - additive technologies',
+                'Digital fabrication - subtractive technologies',
+                'Digital fabrication - sensing and scanning technologies',
+                'Digital fabrication - Digitalization of analog and traditional technologies',
+                'Micro and Nano electronics',
+                'Nanotechnologies',
+                'Advanced Materials',
+                'Gathering and Analysis of large amounts of data (data analysis)',
+                'Cloud Computing',
+                'Crowd-sourcing (co-design, open source, micro-task, small contest)',
+                'RFID',
+                'Robotics/Advanced Automation',
+                'Artificial Intelligence',
+                'Web',
+                'UX design',
+                'Software development',
+                'Agile',
+                'Customer Development',
+                'Industrial design',
+                'CAD/3D modelling-printing',
+                'Computer vision',
                 'Other'
             ]
         };
         sector = {
             selected : '{{ profile.sector }}',
             available : [
-                'Food industries',
-                'Textiles and clothing industries',
-                'Wood and furniture industries',
-                'Paper and printing industries',
-                'Jewelry industries',
-                'Mining and mineral processing industries',
-                'Electrical and electronic industries',
-                'Metal Industries',
-                'Engineering industries',
-                'Chemicals and Drugs industries',
-                'Rubber and plastic industries',
-                'Public utilities',
-                'Constructions',
-                'Other manufacturing'
+                'Agriculture, forestry, fishing, mining',
+                'Manufacturing: Food, Environment and Agriculture industries',
+                'Manufacturing: Textiles and clothing industries',
+                'Manufacturing: Wood and furniture industries',
+                'Manufacturing: Paper and printing industries',
+                'Manufacturing: Jewelry industries',
+                'Manufacturing: Mining and mineral processing industries',
+                'Manufacturing: Electrical and electronic industries',
+                'Manufacturing: Metal Industries',
+                'Manufacturing: Engineering industries',
+                'Manufacturing: Chemicals and Pharmaceutical industries',
+                'Manufacturing: Rubber and plastic industries',
+                'Manufacturing: Public utilities',
+                'Manufacturing: Constructions',
+                'Manufacturing: Other..',
+                'Electricity, gas, air and water supply',
+                'Construction',
+                'Retail',
+                'Transportation and logistics',
+                'Accommodation and hospitality',
+                'ICT',
+                'Finance, bank and insurance',
+                'Real estate',
+                'Professional, scientific and technical activities',
+                'Public administration',
+                'Education and Training',
+                'Health and social work',
+                'Arts, entertainment and recreation',
+                'Sectoral Associations and Trade Unions',
+                'Other..'
             ]
         };
         size = {
@@ -166,6 +209,7 @@
                         <p><strong>Organization :</strong>&nbsp;{{ profile.organization }}</p>
                         <p><strong>Sector :</strong>&nbsp;{{ profile.sector }}</p>
                         <p><strong>Size :</strong>&nbsp;{{ profile.size }}</p>
+                        <p><strong>Technical Expertise :</strong>&nbsp;{{ profile.technical_expertise }}</p>
 
                         <div class="well-red">AND MY PASSION</div>
                         <p><strong>Source of inspiration :</strong>&nbsp;
@@ -314,7 +358,7 @@
 
                         <div class="col-md-12">
                             <label for="">Tags <span class="text-red">*</span></label>
-                            <p>Enter up to 3 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br></p>
+                            <p>Enter up to 5 keywords about you, your profession and/or your values. <br>This with your <strong>Twitter username</strong> will help us in providing you a <strong>valuable eperience</strong>!<br><br></p>
                         </div>
 
                         <div class="col-md-12">
@@ -325,7 +369,7 @@
                                 sortable="true"
                                 spinner-enabled="true"
                                 ng-model="tags.selected"
-                                title="Choose a tag *" limit="3"
+                                title="Choose a tag *" limit="5"
                             >
 
                                 <ui-select-match placeholder="Type a tag and press enter *">
@@ -333,7 +377,7 @@
                                 </ui-select-match>
 
                                 <ui-select-choices  repeat="tag in tags.available | filter:$select.search track by $index">
-                                    <div ng-class="{ 'disabled': $select.selected.length >= 3 , 'btn' :true}"
+                                    <div ng-class="{ 'disabled': $select.selected.length >= 5 , 'btn' :true}"
                                          ng-bind-html="tag | highlight: $select.search"></div>
                                 </ui-select-choices>
 
@@ -400,6 +444,16 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="size" ng-value="size.selected" />
+                        </div>
+                        <div class="col-md-12">
+                            <label for="">Technical Expertise</label>
+                            <ui-select ng-model="technical_expertise.selected" title="Technical Expertise">
+                                <ui-select-match placeholder="Technical Expertise">{$ $select.selected $}</ui-select-match>
+                                <ui-select-choices repeat="technical_expertise in technical_expertise.available | filter:$select.search track by $index">
+                                    <div class="btn">{$ technical_expertise $}</div>
+                                </ui-select-choices>
+                            </ui-select><br/>
+                            <input type="hidden" name="technical_expertise" ng-value="technical_expertise.selected" />
                         </div>
                     </div>
 

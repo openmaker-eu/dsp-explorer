@@ -5,7 +5,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
-                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</span></h1>
+                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</h1>
+                    <h2><small>We are <strong class="text-red">{{ n_registered_user }} </strong> members!</small></h2>
                 </div>
             </div>
         </div>
@@ -16,15 +17,9 @@
                 <div class="col-md-5" style="padding-right:3%;">
                     <!--Anchor for members on page load-->
                     <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
-                    <div class="col-md-12 margin-top-30">
-                        <div class="col-md-12">
-                            <br>
-                        </div>
-                    </div>
-
                     <div class="col-md-12">
                         <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
-                        <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded <span class="text-red">{$results.length$}</span></h3>
+                        <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded </h3>
                     </div>
                     <div class="col-md-12">
                         <form>
