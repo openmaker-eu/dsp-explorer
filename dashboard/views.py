@@ -4,8 +4,6 @@ from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.sites.shortcuts import get_current_site
-
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
@@ -17,12 +15,11 @@ from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
 import datetime as dt
 import json
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 import os
 import logging
 import re
 import random
+
 
 @login_required()
 def dashboard(request):
@@ -55,6 +52,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard/dashboard.html', context)
 
+
 @login_required()
 def theme(request, theme_name):
     try:
@@ -67,9 +65,6 @@ def theme(request, theme_name):
         random_theme = 'No themes'
 
     context = {'theme_name': theme_name or random_theme, 'themes': themes_list }
-
-    print('themes_list')
-    print(themes_list)
 
     return render(request, 'dashboard/theme.html', context)
 
@@ -229,10 +224,10 @@ def profile(request, profile_id=None, action=None):
 
 @login_required()
 def search_members(request, search_string=0):
-    import urllib
     return render(request, 'dashboard/search_members.html', {
-        'search_string': search_string ,
-        'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)])
+        'search_string': search_string,
+        'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),
+        'n_registered_user': Profile.objects.count()
     })
 
 
