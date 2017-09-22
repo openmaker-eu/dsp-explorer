@@ -99,6 +99,7 @@ def profile(request, profile_id=None, action=None):
             new_profile['organization'] = request.POST.get('organization', None)
             new_profile['sector'] = request.POST.get('sector', None)
             new_profile['size'] = request.POST.get('size', None)
+            new_profile['technical_expertise'] = request.POST.get('technical_expertise', None)
 
             if request.POST.get('place', None) != '{}': new_profile['place'] = request.POST.get('place', None)
 
@@ -203,8 +204,6 @@ def profile(request, profile_id=None, action=None):
 
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
-
-        crmUser = capsule.CRMConnector.search_party_by_email(user.email)
 
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))

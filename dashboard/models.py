@@ -10,7 +10,7 @@ from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 
 
 class Tag(models.Model):
-    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
+    name = models.TextField( _('Name'), max_length=200, null=False, blank=False)
 
     @classmethod
     def create(cls, name):
@@ -18,8 +18,9 @@ class Tag(models.Model):
         tag.save()
         return tag
 
+
 class SourceOfInspiration(models.Model):
-    name = models.TextField( _('Name'), max_length=200, null=False, blank=False )
+    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
 
     @classmethod
     def create(cls, name):
@@ -30,31 +31,28 @@ class SourceOfInspiration(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    # CRM Data
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
-    # tags = models.TextField(_('Tags'), max_length=500, null=True, blank=True)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
     place = models.TextField(_('Place'), max_length=500, blank=True, null=True)
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
-
     role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
     organization = models.TextField(_('Organization'), max_length=200, null=True, blank=True, default='')
     sector = models.TextField(_('Sector'), max_length=200, null=True, blank=True, default='')
     types_of_innovation = models.TextField(_('Types of Innovation'), max_length=200, null=True, blank=True, default='')
     size = models.TextField(_('Size'), max_length=200, null=True, blank=True, default='')
+    technical_expertise = models.TextField(_('Technical Expertise'), max_length=200, null=True, blank=True, default='')
 
     tags = models.ManyToManyField(Tag, related_name='profile_tags')
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
 
     socialLinks = models.TextField(
-        _('Size'),
+        _('Social Links'),
         max_length=200,
         null=True,
         blank=True,
@@ -98,7 +96,7 @@ class Profile(models.Model):
             profile.city = city
             profile.occupation = occupation
             profile.twitter_username = twitter_username
-            profile.place=place
+            profile.place = place
             profile.save()
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()
@@ -185,20 +183,16 @@ class Profile(models.Model):
     def get_hot_tags(cls, tag_number=4):
         from itertools import chain
         from collections import Counter
-
-        # tags = list(Profile.objects.values_list('tags', flat=True).filter(tags__isnull=False))
-        # flat_tags = [x for x in chain.from_iterable(map(lambda y: y.split(','), tags))]
-        # return Counter(flat_tags).most_common(int(tag_number))
-
-        tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(), Profile.objects.all())])
+        tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(),
+                                                                                 Profile.objects.all())])
         hot = Counter(tags).most_common(int(tag_number))
         return hot
 
     @classmethod
     def get_sectors(cls):
-
         from collections import Counter
-        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
+        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector',
+                                                                                                       flat=True))
         sectors = Counter(flat_sectors).most_common(1000)
         print('sectors')
         print(sectors)
@@ -206,10 +200,10 @@ class Profile(models.Model):
 
     @classmethod
     def get_places(cls):
-        from collections import Counter
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         print places
         return places
+
 
 class Invitation(models.Model):
 
