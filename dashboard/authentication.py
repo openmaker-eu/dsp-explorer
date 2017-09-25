@@ -300,7 +300,7 @@ def onboarding_confirmation(request, token):
            '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
 
     modal_options = {
-        "title": "Welcome onboard {0}!".format(profile.user.first_name.encode('utf-8')),
+        "title": "Welcome onboard %s!" % profile.user.first_name.encode('utf-8'),
         "body": escape_html(body),
         "footer": False
     }
