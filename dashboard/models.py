@@ -158,13 +158,13 @@ class Profile(models.Model):
     def search_members(cls, search_string):
         from django.db.models import Q
         return cls.objects\
-            .filter(Q(user__email__contains=search_string) |
-                Q(user__first_name__contains=search_string) |
-                Q(user__last_name__contains=search_string) |
-                Q(tags__name__contains=search_string) |
-                Q(twitter_username__contains=search_string) |
-                Q(occupation__contains=search_string) |
-                Q(city__contains=search_string))\
+            .filter(Q(user__email__icontains=search_string) |
+                Q(user__first_name__icontains=search_string) |
+                Q(user__last_name__icontains=search_string) |
+                Q(tags__name__icontains=search_string) |
+                Q(twitter_username__icontains=search_string) |
+                Q(occupation__icontains=search_string) |
+                Q(city__icontains=search_string))\
             .distinct()
 
     @classmethod
