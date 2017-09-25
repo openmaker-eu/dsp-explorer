@@ -216,12 +216,14 @@ def onboarding(request):
         profile.socialLinks = json.dumps(social_links)
         profile.save()
 
+
         # send e-mail
         confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+
         subject = 'Onboarding... almost done!'
-        content = "{}{}{}".format(invitation_base_template_header,
-                                  onboarding_email_template.format(FIRST_NAME=first_name,
-                                                                   LAST_NAME=last_name,
+        content = "{0}{1}{2}".format(invitation_base_template_header,
+                                  onboarding_email_template.format(FIRST_NAME=first_name.encode('utf-8'),
+                                                                   LAST_NAME=last_name.encode('utf-8'),
                                                                    CONFIRMATION_LINK=confirmation_link,
                                                                    ),
                                   invitation_base_template_footer)
