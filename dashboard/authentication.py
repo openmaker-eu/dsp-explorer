@@ -19,6 +19,7 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
 from itertools import ifilter
 import re
+from django.utils.encoding import force_unicode
 
 
 def logout_page(request):
@@ -300,7 +301,7 @@ def onboarding_confirmation(request, token):
            '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
 
     modal_options = {
-        "title": "Welcome onboard %s!" % profile.user.first_name.encode('utf-8'),
+        "title": "Welcome onboard %s!" % force_unicode(profile.user.first_name),
         "body": escape_html(body),
         "footer": False
     }
