@@ -269,10 +269,10 @@ def invite(request):
 
             subject = 'You are invited to join the OpenMaker community!'
             content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name,
-                                                                       RECEIVER_LAST_NAME=last_name,
-                                                                       SENDER_FIRST_NAME=request.user.first_name,
-                                                                       SENDER_LAST_NAME=request.user.last_name,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
+                                                                       RECEIVER_LAST_NAME=last_name.encode('utf-8'),
+                                                                       SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
+                                                                       SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
                                                                        ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 

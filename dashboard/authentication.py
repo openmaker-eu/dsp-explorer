@@ -38,7 +38,7 @@ def login_page(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                messages.info(request, 'Welcome %s' % user.first_name)
+                messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
                 return HttpResponseRedirect(reverse('dashboard:dashboard'))
             else:
                 messages.error(request, 'User Invalid')
@@ -72,8 +72,8 @@ def recover_pwd(request):
 
             # send e-mail
             email_body = authentication_reset_password.format(
-                FIRST_NAME=profile.user.first_name,
-                LAST_NAME=profile.user.last_name,
+                FIRST_NAME=profile.user.first_name.encode('utf-8'),
+                LAST_NAME=profile.user.last_name.encode('utf-8'),
                 BASE_URL=get_current_site(request),
                 TOKEN=profile.reset_token
             )
@@ -299,7 +299,7 @@ def onboarding_confirmation(request, token):
            '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
 
     modal_options = {
-        "title": "Welcome onboard {}!".format(profile.user.first_name),
+        "title": "Welcome onboard {}!".format(profile.user.first_name.encode('utf-8')),
         "body": escape_html(body),
         "footer": False
     }
@@ -354,10 +354,10 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
 
             subject = 'You are invited to join the OpenMaker community!'
             content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
-                                                                       RECEIVER_LAST_NAME=receiver_last_name,
-                                                                       SENDER_FIRST_NAME=sender_first_name,
-                                                                       SENDER_LAST_NAME=sender_last_name,
+                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name.encode('utf-8'),
+                                                                       RECEIVER_LAST_NAME=receiver_last_name.encode('utf-8'),
+                                                                       SENDER_FIRST_NAME=sender_first_name.encode('utf-8'),
+                                                                       SENDER_LAST_NAME=sender_last_name.encode('utf-8'),
                                                                        ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
                                       invitation_base_template_footer)
 
