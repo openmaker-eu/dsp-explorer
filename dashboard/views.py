@@ -23,6 +23,17 @@ import random
 
 @login_required()
 def dashboard(request):
+
+    from django.utils.encoding import force_unicode
+    profile = Profile.objects.filter(pk=22)[0]
+    print 'profile'
+    print profile.user
+
+    modal_options = {
+        "title": "Welcome onboard %s!" % profile.first_name.encode('utf-8'),
+        "footer": False
+    }
+
     try:
         import random
         themes = DSPConnector.get_themes()['themes']
@@ -52,7 +63,6 @@ def dashboard(request):
     }
     return render(request, 'dashboard/dashboard.html', context)
 
-
 @login_required()
 def theme(request, theme_name):
     try:
@@ -65,7 +75,6 @@ def theme(request, theme_name):
         random_theme = 'No themes'
 
     context = {'theme_name': theme_name or random_theme, 'themes': themes_list }
-
     return render(request, 'dashboard/theme.html', context)
 
 

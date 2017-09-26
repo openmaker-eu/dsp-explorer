@@ -79,6 +79,8 @@ def release(message):
     local('git push')
     local('git checkout master')
 
-def test():
-    local('python -Wall manage.py test')
+
+def test(filename=''):
+    local('python manage.py test %s ' % filename)
+
 

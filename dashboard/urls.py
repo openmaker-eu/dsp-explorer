@@ -41,6 +41,17 @@ urlpatterns = [
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
+    # API v1.2
+        # NEWS (Ex Feeds)
+        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/$', api.get_news, {'date_name': 'yesterday', 'cursor': -1}, name='api_get_news'),
+        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/(?P<date_name>.+)/$', api.get_news, {'cursor': -1}, name='api_get_news'),
+        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
+        # TOPICS (Ex Themes)
+        url(r'^api/v1.2/get_topics', api.get_topics, name='api_get_topics'),
+        # AUDIENCES (EX Influencers)
+        url(r'^api/v1.2/get_audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
+
+
     # API v1.1
     url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
     url(r'^api/v1.1/search/last_members/$', api.get_last_members, name='api_get_last_members'),
