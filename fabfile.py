@@ -78,3 +78,7 @@ def release(message):
     #local('git commit -am "%s"' % message)
     local('git push')
     local('git checkout master')
+
+def test():
+    local('python -Wall manage.py test')
+
