@@ -25,36 +25,54 @@
                         <h2><strong class="text-red">Hi</strong> {{request.user.first_name}},</h2>
                         <h2>Explore the community!</h2>
                         <div class="col-md-12 text-center">
-                        <span class="text-red">
-                            <h2 class="margin-bottom-25"><span class="text-black" style="font-weight: 300">Our topics:</span> <strong>{{ random_theme_name }}</strong></h2>
-                            <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{random_theme_name}}</h2>
-                            <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                        </button>
+                            <div class="col-md-12 text-center theme-name">
+                                <span class="text-red">
+                                    <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
 
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            {% for t in themes %}
-                                <li><a href="{% url 'dashboard:theme' t %}">{{t}}</a></li>
-                            {% endfor %}
-                        </ul>
-                        </span>
+                                    <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
+                                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        {% for t in topics %}
+                                            <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </span>
+                            </div>
+                            <!--<span class="text-red">-->
+                                <!--<h2 class="margin-bottom-25"><span class="text-black" style="font-weight: 300">Our topics:</span> <strong>{{ random_theme_name }}</strong></h2>-->
+                                <!--<button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">-->
+                                <!--<h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{random_theme_name}}</h2>-->
+                                <!--<span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>-->
+                            <!--</button>-->
+                            <!---->
+                            <!--<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">-->
+                                <!--{% for t in themes %}-->
+                                    <!--<li><a href="{% url 'dashboard:theme' t %}">{{t}}</a></li>-->
+                                <!--{% endfor %}-->
+                            <!--</ul>-->
+                            <!--</span>-->
                         </div>
 
                     </div>
+
                     <div class="margin-top-25">
-                        {% for feed in random_feeds|slice:":3" %}
+                        {% for news in hot_news|slice:":3" %}
                         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card margin-bottom-20">
-                                <a href="{{ feed.url }}" target="_blank">
+                                <a href="{{ news.url }}" target="_blank">
                                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" src="{{ feed.im }}" class="img-responsive"
-                                             alt="{{ feed.title }}">
+                                        <img style="min-width:100%;" src="{{ news.im }}" class="img-responsive"
+                                             alt="{{ news.title }}">
                                     </div>
                                     <div class="card-content text-center">
-                                        <h5>{{ feed.title|truncatechars:40 }}</h5>
+                                        <h5>{{ news.title|truncatechars:40 }}</h5>
                                     </div>
                                     <div class="card-action">
-                                        <p>{{ feed.description|truncatechars:50 }}</p>
+                                        <p>{{ news.description|truncatechars:50 }}</p>
                                     </div>
                                 </a>
                             </div>
@@ -72,26 +90,27 @@
                             </a>
                         </div>
                     </div>
-                    {% if top_influencers %}
-                    <div class="text-center">
-                        <div class="col-md-12">
-                            <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Influencers</strong></h2>
-                        </div>
-                        {% for influencer in top_influencers %}
-                        <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="pull-left" style="clear: both;">
-                                <a href="https://www.twitter.com/{{influencer.username}}" target="_blank">
-                                    <h5 class="pull-left" style="height: 2em;">
-                                        <img class="img-circle" src="{{influencer.img_url}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                                    <h5 class="pull-left" style="line-height: 2em;">
-                                        <p style="line-height: 40px;">{{influencer.username}}</p>
-                                    </h5>
-                                </a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
+
+                    <!--{% if top_influencers %}-->
+                    <!--<div class="text-center">-->
+                        <!--<div class="col-md-12">-->
+                            <!--<h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Influencers</strong></h2>-->
+                        <!--</div>-->
+                        <!--{% for influencer in top_influencers %}-->
+                        <!--<div class="col-md-3 col-sm-6 col-xs-12">-->
+                            <!--<div class="pull-left" style="clear: both;">-->
+                                <!--<a href="https://www.twitter.com/{{influencer.username}}" target="_blank">-->
+                                    <!--<h5 class="pull-left" style="height: 2em;">-->
+                                        <!--<img class="img-circle" src="{{influencer.img_url}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>-->
+                                    <!--<h5 class="pull-left" style="line-height: 2em;">-->
+                                        <!--<p style="line-height: 40px;">{{influencer.username}}</p>-->
+                                    <!--</h5>-->
+                                <!--</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--{% endfor %}-->
+                    <!--</div>-->
+                    <!--{% endif %}-->
                 </div>
             </div>
 

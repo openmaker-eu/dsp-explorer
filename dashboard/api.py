@@ -11,6 +11,8 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirm
 import json
 from datetime import date, timedelta
+import random
+
 
 def search_members(request, search_string):
     result = Profile.search_members(search_string)
@@ -182,7 +184,6 @@ def get_om_events(request):
 # API V.2
 ###########
 
-
 def get_topics(request):
     try:
         topics = DSPConnectorV12.get_topics()
@@ -194,6 +195,18 @@ def get_topics(request):
     }, status=200)
 
 
+def get_suggested_topic(request):
+    try:
+        topics = DSPConnectorV12.get_topics()['topics']
+        random_topic = topics[random.randint(0, len(topics) - 1)]
+    except DSPConnectorException:
+        random_topic = {}
+    return JsonResponse({
+        'status': 'ok',
+        'result': random_topic
+    }, status=200)
+
+
 def get_news(request, topic_ids, date_name='yesterday', cursor=-1):
     date_dict = {
         'yesterday': date.today() - timedelta(1),
@@ -202,9 +215,10 @@ def get_news(request, topic_ids, date_name='yesterday', cursor=-1):
     }
     try:
         since = date_dict[date_name].strftime('%d-%m-%Y')
-        news = DSPConnectorV12.search_news((topic_ids,), {'since': since, 'cursor': cursor})
+        news = DSPConnectorV12.search_news(topic_ids, {'since': since, 'cursor': cursor})
     except DSPConnectorException:
         news = {}
+
     return JsonResponse({
         'status': 'ok',
         'result': news

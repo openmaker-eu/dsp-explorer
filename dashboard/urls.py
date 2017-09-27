@@ -12,8 +12,8 @@ urlpatterns = [
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
 
     # Explore
-    url(r'^dashboard/theme/(?P<theme_name>.*)/$', views.theme, name='theme'),
-    url(r'^dashboard/theme/$', views.theme, {'theme_name': ''}, name='theme'),
+    url(r'^dashboard/theme/(?P<topic_id>.*)/$', views.theme, name='theme'),
+    url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
 
     # Profiles
@@ -42,14 +42,18 @@ urlpatterns = [
     url(r'^feedback/$', views.feedback, name='feedback'),
 
     # API v1.2
+
         # NEWS (Ex Feeds)
-        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/$', api.get_news, {'date_name': 'yesterday', 'cursor': -1}, name='api_get_news'),
-        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/(?P<date_name>.+)/$', api.get_news, {'cursor': -1}, name='api_get_news'),
-        url(r'^api/v1.2/get_news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
+        # url(r'^api/v1.2/news/(?P<topic_ids>.+)/$', api.get_news, {'date_name': 'yesterday', 'cursor': -1}, name='api_get_news'),
+        # url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/$', api.get_news, {'cursor': -1}, name='api_get_news'),
+        url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
+
         # TOPICS (Ex Themes)
-        url(r'^api/v1.2/get_topics', api.get_topics, name='api_get_topics'),
+        url(r'^api/v1.2/topics', api.get_topics, name='api_get_topics'),
+        url(r'^api/v1.2/suggested_topic', api.get_suggested_topic, name='api_get_suggested_topic'),
+
         # AUDIENCES (EX Influencers)
-        url(r'^api/v1.2/get_audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
+        url(r'^api/v1.2/audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
 
 
     # API v1.1

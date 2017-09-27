@@ -7,7 +7,7 @@ from django.contrib import messages
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
-from dspconnector.connector import DSPConnector, DSPConnectorException
+from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12
 from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
@@ -23,58 +23,68 @@ import random
 
 @login_required()
 def dashboard(request):
-
-    from django.utils.encoding import force_unicode
-    profile = Profile.objects.filter(pk=22)[0]
-    print 'profile'
-    print profile.user
-
-    modal_options = {
-        "title": "Welcome onboard %s!" % profile.first_name.encode('utf-8'),
-        "footer": False
-    }
+    # try:
+    #     import random
+    #     themes = DSPConnector.get_themes()['themes']
+    #     random_theme = themes[random.randint(0, len(themes) - 1)]
+    #     random_theme_name = random_theme['name']
+    #     random_feeds = DSPConnector.get_feeds(random_theme_name)['feeds'][:4]
+    #     top_influencers = DSPConnector.get_influencers(random_theme_name)['influencers'][:4]
+    #     other_themes = [t.get('name', '') for t in themes if t.get('name', '') != random_theme_name]
+    # except DSPConnectorException:
+    #     random_theme_name = 'Not Provided'
+    #     random_feeds = []
+    #     top_influencers = []
+    #     messages.error(request, 'Some error occures, please try again')
+    #     other_themes = []
 
     try:
-        import random
-        themes = DSPConnector.get_themes()['themes']
-        random_theme = themes[random.randint(0, len(themes) - 1)]
-        random_theme_name = random_theme['name']
-        random_feeds = DSPConnector.get_feeds(random_theme_name)['feeds'][:4]
-        top_influencers = DSPConnector.get_influencers(random_theme_name)['influencers'][:4]
-        other_themes = [t.get('name', '') for t in themes if t.get('name', '') != random_theme_name]
-    except DSPConnectorException:
-        random_theme_name = 'Not Provided'
-        random_feeds = []
-        top_influencers = []
-        messages.error(request, 'Some error occures, please try again')
-        other_themes = []
-        
-    hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
+        topics_list = DSPConnectorV12.get_topics()['topics']
+        selected_topic = random.choice(topics_list)
+        hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
+        top_influencers = DSPConnectorV12.get_audiences(selected_topic['topic_id'])['audiences'][:4]
 
+    except DSPConnectorException as e:
+        messages.error(request, e.message)
+        topics_list = {}
+        selected_topic = 'No themes'
+        context = {'selected_topic': selected_topic, 'topics': topics_list}
+        return render(request, 'dashboard/theme.html', context)
+
+    hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
+
     context = {
-        'themes': other_themes,
+        'selected_topic': selected_topic,
+        'topics': topics_list,
         'last_members': last_members,
         'hot_tags': hot_tags,
         'json_hot_tags': json.dumps(hot_tags),
-        'random_theme_name': random_theme_name,
-        'random_feeds': random_feeds,
+        'hot_news': hot_news,
         'top_influencers': top_influencers
     }
     return render(request, 'dashboard/dashboard.html', context)
 
-@login_required()
-def theme(request, theme_name):
-    try:
-        themes = DSPConnector.get_themes()
-        themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
-        random_theme = themes_list[random.randint(0, len(themes_list)-1)]
-    except DSPConnectorException as e:
-        messages.error(request, e.message)
-        themes_list = {}
-        random_theme = 'No themes'
 
-    context = {'theme_name': theme_name or random_theme, 'themes': themes_list }
+@login_required()
+def theme(request, topic_id):
+    # try:
+    #     themes = DSPConnector.get_themes()
+    #     themes_list = [t.get('name', '') for t in themes.get('themes', []) if t.get('name', '') != theme_name]
+    #     random_theme = themes_list[random.randint(0, len(themes_list)-1)]
+    # except DSPConnectorException as e:
+    #     messages.error(request, e.message)
+    #     themes_list = {}
+    #     random_theme = 'No themes'
+
+    try:
+        topics_list = DSPConnectorV12.get_topics()['topics']
+        selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else random.choice(topics_list)
+    except DSPConnectorException as e:
+         messages.error(request, e.message)
+         topics_list = {}
+         selected_topic = 'No themes'
+    context = {'selected_topic': selected_topic, 'topics': topics_list}
     return render(request, 'dashboard/theme.html', context)
 
 

@@ -1,5 +1,7 @@
 import requests
 from django.conf import settings
+from datetime import date, timedelta
+
 
 class DSPConnectorException(Exception):
 
@@ -21,25 +23,32 @@ class DSPConnectorV12(object):
 
     @staticmethod
     def get_news(topic_ids=list()):
-            return DSPConnectorV12._get(DSPConnectorV12.generate_url(
+        ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, dict) else topic_ids
+        return DSPConnectorV12._get(DSPConnectorV12.generate_url(
                 endpoint='/get_news',
-                parameter='?topic_ids={}'.format(','.join(map(str, topic_ids)))
+                parameter='?topic_ids={}'.format(ids)
             ))
 
     @staticmethod
-    def search_news(topic_ids='', params={}):
+    def search_news(topic_ids='', params=None):
+        # Default value for params
+        params = params or {
+            'since': (date.today()-timedelta(1)).strftime('%d-%m-%Y'),
+            'cursor': -1
+        }
 
         # topic_ids can be: STRING of comma separated ids or LIST of integers
-        ids = topic_ids if isinstance(topic_ids, basestring) else ','.join(map(str, topic_ids))
-
+        ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, dict) else topic_ids
         parameters = '?topic_ids={}'.format(ids)
+
         for key, value in params.iteritems():
             parameters += "&{key}={value}".format(key=key, value=value)
 
-        return DSPConnectorV12._get(DSPConnectorV12.generate_url(
-            endpoint='/get_news',
-            parameter=parameters
-        ))
+        url = DSPConnectorV12.generate_url(
+            endpoint='/search_news',
+            parameter=parameters)
+        return DSPConnectorV12._get(url)
+
 
     @staticmethod
     def get_audiences(topic_id):
