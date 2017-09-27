@@ -78,26 +78,26 @@
                         </div>
                     </div>
 
-                    <!--{% if top_influencers %}-->
-                    <!--<div class="text-center">-->
-                        <!--<div class="col-md-12">-->
-                            <!--<h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Influencers</strong></h2>-->
-                        <!--</div>-->
-                        <!--{% for influencer in top_influencers %}-->
-                        <!--<div class="col-md-3 col-sm-6 col-xs-12">-->
-                            <!--<div class="pull-left" style="clear: both;">-->
-                                <!--<a href="https://www.twitter.com/{{influencer.username}}" target="_blank">-->
-                                    <!--<h5 class="pull-left" style="height: 2em;">-->
-                                        <!--<img class="img-circle" src="{{influencer.img_url}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>-->
-                                    <!--<h5 class="pull-left" style="line-height: 2em;">-->
-                                        <!--<p style="line-height: 40px;">{{influencer.username}}</p>-->
-                                    <!--</h5>-->
-                                <!--</a>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--{% endfor %}-->
-                    <!--</div>-->
-                    <!--{% endif %}-->
+                    {% if top_influencers %}
+                    <div class="text-center">
+                        <div class="col-md-12">
+                            <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Influencers</strong></h2>
+                        </div>
+                        {% for influencer in top_influencers %}
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            <div class="pull-left" style="clear: both;">
+                                <a href="https://www.twitter.com/{{influencer.screen_name}}" target="_blank">
+                                    <h5 class="pull-left" style="height: 2em;">
+                                        <img class="img-circle" src="{{influencer.profile_image_url}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                    <h5 class="pull-left" style="line-height: 2em;">
+                                        <p style="line-height: 40px;">{{influencer.name}}</p>
+                                    </h5>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
