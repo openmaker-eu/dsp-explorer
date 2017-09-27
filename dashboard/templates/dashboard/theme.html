@@ -76,16 +76,28 @@
         <div class="col-md-8 col-md-offset-2">
 
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('yesterday')" type="button" ng-class="filter == 'yesterday' ? 'btn login-button-active':'btn login-button'">Yesterday
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'yesterday'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('yesterday')"
+                        ng-class="FeedModel.filter == 'yesterday' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Yesterday
+                <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'yesterday'"></span></button>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('week')" type="button" ng-class="filter == 'week' ? 'btn login-button-active':'btn login-button'">Week
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'week'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('week')"
+                        ng-class="FeedModel.filter == 'week' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Week
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'week'"></span></button>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('month')" type="button" ng-class="filter == 'month' ? 'btn login-button-active':'btn login-button'">Month
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'month'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('month')"
+                        ng-class="FeedModel.filter == 'month' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Month
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'month'"></span></button>
             </div>
 
         </div>
