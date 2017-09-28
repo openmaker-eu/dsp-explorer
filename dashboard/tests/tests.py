@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.test import TestCase, Client
-from models import Profile
+from dashboard.models import Profile
 import json
 
 class AuthTestCase(TestCase):
@@ -29,7 +29,7 @@ class AuthTestCase(TestCase):
     def test_api_v12_topics(self):
         print '[test_api_v12_topics] test url'
 
-        response = self.client .get('/api/v1.2/get_topics')
+        response = self.client .get('/api/v1.2/topics')
         results = self.get_results(response)
 
         self.assertIsNot(
@@ -41,11 +41,11 @@ class AuthTestCase(TestCase):
     def test_api_v12_audiences(self):
         print '[test_api_v12_audiences]'
         try:
-            topics = self.get_results(self.client.get('/api/v1.2/get_topics'))
+            topics = self.get_results(self.client.get('/api/v1.2/topics'))
         except:
             raise self.failureException('No topics found')
 
-        response = self.client.get('/api/v1.2/get_audiences/{topic_id}/'.format(topic_id=topics['topics'][0]['topic_id']))
+        response = self.client.get('/api/v1.2/audiences/{topic_id}/'.format(topic_id=topics['topics'][0]['topic_id']))
         results = self.get_results(response)
 
         self.assertIsNot(

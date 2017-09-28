@@ -25,9 +25,9 @@ class DSPConnectorV12(object):
     def get_news(topic_ids=list()):
         ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, dict) else topic_ids
         return DSPConnectorV12._get(DSPConnectorV12.generate_url(
-                endpoint='/get_news',
-                parameter='?topic_ids={}'.format(ids)
-            ))
+            endpoint='/get_news',
+            parameter='?topic_ids={}'.format(ids)
+        ))
 
     @staticmethod
     def search_news(topic_ids='', params=None):
@@ -38,7 +38,7 @@ class DSPConnectorV12(object):
         }
 
         # topic_ids can be: STRING of comma separated ids or LIST of integers
-        ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, dict) else topic_ids
+        ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, list) else topic_ids
         parameters = '?topic_ids={}'.format(ids)
 
         for key, value in params.iteritems():
