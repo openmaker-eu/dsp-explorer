@@ -44,8 +44,8 @@ urlpatterns = [
     # API v1.2
 
         # NEWS (Ex Feeds)
-        # url(r'^api/v1.2/news/(?P<topic_ids>.+)/$', api.get_news, {'date_name': 'yesterday', 'cursor': -1}, name='api_get_news'),
-        # url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/$', api.get_news, {'cursor': -1}, name='api_get_news'),
+        url(r'^api/v1.2/news/(?P<topic_ids>.+)/$', api.get_news, {'date_name': 'yesterday', 'cursor': -1}, name='api_get_news'),
+        url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/$', api.get_news, {'cursor': -1}, name='api_get_news'),
         url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
 
         # TOPICS (Ex Themes)

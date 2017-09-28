@@ -108,7 +108,7 @@ class AuthTestCase(TestCase):
 
     def test_news_search_only_one_parameter(self):
         print '\n[DSP-CONNECTOR TEST] Test for NEWS API FILTERED: providing only topic_id'
-        results = self.connector.search_news((self.get_first_topic_id(),))
+        results = self.connector.search_news(self.get_first_topic_id())
         self.assertIsNot(
             len(results) > 0 and results['news'],
             False,
