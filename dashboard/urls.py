@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
 
     # Explore
-    url(r'^dashboard/theme/(?P<topic_id>.*)/$', views.theme, name='theme'),
+    url(r'^dashboard/theme/(?P<topic_id>[0-9]+)/$', views.theme, name='theme'),
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
 
