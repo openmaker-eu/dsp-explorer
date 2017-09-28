@@ -25,8 +25,8 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             return this
             
         },
-        
-        get : function(theme=this.theme, filter=this.filter, cursor=this.next_cursor){
+    
+        reset : function(theme=this.theme, filter=this.filter, cursor=-1){
             this.data = []
             this.current_cursor = null
             this.next_cursor = -1
@@ -75,7 +75,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         if($scope.FeedModel.progress==false){
             console.log('SET filter inside');
             $scope.FeedModel.filter = filter;
-            $scope.FeedModel.get($scope.theme, filter, $scope.cursor)
+            $scope.FeedModel.reset($scope.theme)
         }
     }
 

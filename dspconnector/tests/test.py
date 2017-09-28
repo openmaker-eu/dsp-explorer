@@ -115,9 +115,9 @@ class AuthTestCase(TestCase):
             '[DSP-CONNECTOR ERROR] NEWS api doesn\'t work providing only topic_id as parameter'
         )
 
-    # #########
+    #########
     # HELPERS
-    # #########
+    #########
     def get_first_topic_id(self):
         return self.connector.get_topics()['topics'][0]['topic_id'] or 1
 
