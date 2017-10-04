@@ -122,8 +122,8 @@
                                 <h5 ng-if="!feed.title" >No Title provided </h5>
                             </div>
                             <div class="card-action">
-                                <p ng-if="feed.description">{$ feed.description | limitTo: 50 $} {$ feed.description.length > 50 ? '...' : '' $}</p>
-                                <p ng-if="!feed.description">No Description provided </p>
+                                <p ng-if="feed.summary">{$ feed.summary | limitTo: 50 $} {$ feed.summary.length > 50 ? '...' : '' $}</p>
+                                <p ng-if="!feed.summary">No Description provided </p>
                             </div>
                         </a>
                     </div>
