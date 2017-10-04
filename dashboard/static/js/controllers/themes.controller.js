@@ -2,128 +2,84 @@
  * Created by andreafspeziale on 24/05/17.
  */
 export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibModal,$http,$aside) {
-
-    $scope.filter = 'yesterday'
-    $scope.cursor = -1
     
-    $scope.FeedModel = (()=>{
-    
-        let get_feed = (theme , filter , cursor = -1 ) => $http.get('/api/v1.1/get_feeds/' + theme + '/' + filter + '/' + cursor)
+    $scope.FeedModel = {
+        theme : null,
+        filter : 'yesterday' ,
+        current_cursor : null,
+        next_cursor : -1,
+        progress : false,
+        top:  $(window).scrollTop(),
+        data : [],
         
-        let model = {
+        next : function( theme = this.theme , filter = this.filter , cursor = this.next_cursor){
+            if(
+                this.progress === true
+                || this.next_cursor == 0
+                || this.current_cursor == this.next_cursor
+            ) return
             
-            theme : null,
-            filter : 'yesterday' ,
-            current_cursor : null,
-            next_cursor : -1,
-            progress : false,
-            top:  $(window).scrollTop(),
+            this.progress = true;
+            this.current_cursor = this.next_cursor
+            this.get_news( theme, filter, cursor )
+            return this
             
-            data : [],
-            
-            next : ( theme = model.theme , filter = model.filter , cursor = model.next_cursor) => {
-                
-                if(
-                    model.progress === true
-                    || model.next_cursor == 0
-                    || model.current_cursor == model.next_cursor
-                ) return
-                
-                model.progress = true;
-                model.current_cursor = model.next_cursor
-                
-                return get_feed( theme, filter, cursor )
-                    .then(
-                        (response) => {
-                            model.data = model.data.concat( response.data.result.feeds )
-                            model.next_cursor = parseInt( response.data.result.next_cursor )
-                            model.progress = false;
-                        },
-                        model.error
-                    )
-            
-            },
-            
-            get : ( theme = model.theme , filter = model.filter , cursor = model.next_cursor) => {
-
-                model.data = []
-                model.current_cursor = null
-                model.next_cursor = -1
-                
-                return model.next(theme, filter, cursor)
-                
-            }
-            
+        },
+    
+        reset : function(theme=this.theme, filter=this.filter, cursor=-1){
+            this.data = []
+            this.current_cursor = null
+            this.next_cursor = -1
+            this.next(theme, filter, cursor)
+            return this
+        },
+        
+        get_news : function(theme=this.theme , filter=this.filter , cursor = this.next_cursor){
+            console.log('get news');
+            this.progress = true;
+            $http.get('/api/v1.2/news/' + theme + '/' + filter + '/' + cursor + '/')
+                .then(
+                    (response) => {
+                        console.log('get news response');
+                        this.data = this.data.concat(response.data.result.news)
+                        this.next_cursor = parseInt(response.data.result.next_cursor)
+                        this.progress = false;
+                    },
+                    (err)=>{ console.log('ERROR:', err); this.progress = false; }
+                )
+            return this
+        },
+        get_audiences : function (theme) {
+            $http.get('/api/v1.2/audiences/' + theme)
+                .then(function (response) {
+                    $scope.influencers = response.data.result.audiences;
+                },function (err) {
+                    // ToDo show API errors with a common error message using toastr?
+                })
         }
-        
-        return model
-        
-    }) ()
+    }
     
-    // $(window).scroll(function() {
-    //     console.log( $(window).scrollTop() );
-    //     console.log('top', $('.infinite-container').offset() )
-    //
-    // });
+    let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
+        console.log('default topic');
+        // if(newValue === oldValue) return
+        $scope.FeedModel.theme = newValue
+        $scope.FeedModel
+            .get_news(newValue, $scope.filter, $scope.cursor)
+            .get_audiences(newValue)
+        unbind_topic_id()
+    })
     
-    
-    // ToDo make yesterday filter active as default [css] and change active class when other filters are selected
+    // Set filter for time
     $scope.setFilter = function (filter) {
-        $scope.filter = filter;
-        $scope.FeedModel.filter = filter;
+        console.log('Set filter');
+        if($scope.FeedModel.progress==false){
+            console.log('SET filter inside');
+            $scope.FeedModel.filter = filter;
+            $scope.FeedModel.reset($scope.theme)
+        }
     }
-    
-
-    // get feed by theme filter cursor
-    // ToDo move API call to explorer factory
-    let getFeed = function (theme, filter, cursor) {
-        $http.get('/api/v1.1/get_feeds/' + theme + '/' + filter + '/' + cursor)
-            .then(function (response) {
-                $scope.feeds = response.data.result.feeds
-                $scope.cursor = response.data.result.next_cursor;
-            },function (err) {
-                // ToDo show API errors with a common error message using toastr?
-                console.log(err)
-            })
-    }
-
-    // get influencers by theme
-    let getInfluencers = function (theme) {
-        $http.get('/api/v1.1/get_influencers/' + theme)
-            .then(function (response) {
-                $scope.influencers = response.data.result.influencers;
-            },function (err) {
-                // ToDo show API errors with a common error message using toastr?
-                console.log(err)
-            })
-    }
-
-    // fired when django theme var in loaded in angular
-    $scope.$watch('dj', function (newValue, oldValue) {
-        $scope.theme = newValue.theme
-        
-        // $scope.theme = newValue.theme
-        $scope.FeedModel.theme = newValue.theme
-        
-        // get feeds
-        // getFeed($scope.theme, $scope.filter, $scope.cursor)
-        $scope.FeedModel.next();
-        
-        // get influencers
-        getInfluencers($scope.theme)
-        
-    })
-
-    // fired when time filter is changed
-    $scope.$watch('filter', function (newValue, oldValue) {
-        // get feeds with new filter
-        if(newValue != oldValue) $scope.FeedModel.get($scope.theme, newValue, $scope.cursor)
-    
-        // getFeed($scope.theme, newValue, $scope.cursor)
-    })
 
     // open aside with influencers
-    // ToDo template style
     $scope.openAside = () => {
         $scope.aside = $aside({
             scope:$scope,

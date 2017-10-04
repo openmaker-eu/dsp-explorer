@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.shortcuts import render
 from django.http import *
 from django.contrib.auth import authenticate, login, logout
@@ -19,6 +20,7 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
 from itertools import ifilter
 import re
+from django.utils.encoding import force_unicode
 
 
 def logout_page(request):
@@ -38,7 +40,7 @@ def login_page(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                messages.info(request, 'Welcome %s' % user.first_name)
+                messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
                 return HttpResponseRedirect(reverse('dashboard:dashboard'))
             else:
                 messages.error(request, 'User Invalid')
@@ -72,12 +74,12 @@ def recover_pwd(request):
 
             # send e-mail
             email_body = authentication_reset_password.format(
-                FIRST_NAME=profile.user.first_name,
-                LAST_NAME=profile.user.last_name,
+                FIRST_NAME=profile.user.first_name.encode('utf-8'),
+                LAST_NAME=profile.user.last_name.encode('utf-8'),
                 BASE_URL=get_current_site(request),
                 TOKEN=profile.reset_token
             )
-            email_content = "{}{}{}".format(
+            email_content = "{0}{1}{2}".format(
                 invitation_base_template_header,
                 email_body,
                 invitation_base_template_footer
@@ -218,13 +220,16 @@ def onboarding(request):
 
         # send e-mail
         confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+
         subject = 'Onboarding... almost done!'
-        content = "{}{}{}".format(invitation_base_template_header,
-                                  onboarding_email_template.format(FIRST_NAME=first_name,
-                                                                   LAST_NAME=last_name,
-                                                                   CONFIRMATION_LINK=confirmation_link,
-                                                                   ),
-                                  invitation_base_template_footer)
+        content = "{0}{1}{2}".format(
+            invitation_base_template_header,
+            onboarding_email_template.format(
+                FIRST_NAME=first_name.encode('utf-8'),
+                LAST_NAME=last_name.encode('utf-8'),
+                CONFIRMATION_LINK=confirmation_link,
+            ),
+            invitation_base_template_footer)
 
         EmailHelper.send_email(
             message=content,
@@ -297,7 +302,7 @@ def onboarding_confirmation(request, token):
            '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
 
     modal_options = {
-        "title": "Welcome onboard {}!".format(profile.user.first_name),
+        "title": "Welcome onboard %s!" % force_unicode(profile.user.first_name),
         "body": escape_html(body),
         "footer": False
     }
@@ -305,8 +310,15 @@ def onboarding_confirmation(request, token):
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
-def om_confirmation(request, sender_first_name, sender_last_name, sender_email, receiver_first_name,
-                    receiver_last_name, receiver_email):
+def om_confirmation(
+        request,
+        sender_first_name,
+        sender_last_name,
+        sender_email,
+        receiver_first_name,
+        receiver_last_name,
+        receiver_email
+):
 
     # sender
     sender_first_name = sender_first_name.decode('base64')
@@ -326,8 +338,10 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
         pass
 
     try:
-        invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(sender_email),
-                                            receiver_email=HashHelper.md5_hash(receiver_email))
+        invitation = Invitation.objects.get(
+            sender_email=HashHelper.md5_hash(sender_email),
+            receiver_email=HashHelper.md5_hash(receiver_email)
+        )
 
         if invitation.sender_verified:
             messages.error(request, 'Invitation already sent!')
@@ -338,10 +352,13 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             # sending invitation mail
 
             subject = 'OpenMaker Nomination done!'
-            content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_confirmed.format(ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
-                                      invitation_base_template_footer)
-
+            content = "{0}{1}{2}".format(
+                invitation_base_template_header,
+                invitation_email_confirmed.format(
+                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
+                ),
+                invitation_base_template_footer
+            )
 
             EmailHelper.send_email(
                 message=content,
@@ -351,13 +368,16 @@ def om_confirmation(request, sender_first_name, sender_last_name, sender_email, 
             )
 
             subject = 'You are invited to join the OpenMaker community!'
-            content = "{}{}{}".format(invitation_base_template_header,
-                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=receiver_first_name,
-                                                                       RECEIVER_LAST_NAME=receiver_last_name,
-                                                                       SENDER_FIRST_NAME=sender_first_name,
-                                                                       SENDER_LAST_NAME=sender_last_name,
-                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
-                                      invitation_base_template_footer)
+            content = "{0}{1}{2}".format(
+                invitation_base_template_header,
+                invitation_email_receiver.format(
+                    RECEIVER_FIRST_NAME=receiver_first_name.encode('utf-8'),
+                    RECEIVER_LAST_NAME=receiver_last_name.encode('utf-8'),
+                    SENDER_FIRST_NAME=sender_first_name.encode('utf-8'),
+                    SENDER_LAST_NAME=sender_last_name.encode('utf-8'),
+                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                invitation_base_template_footer
+            )
 
             EmailHelper.send_email(
                 message=content,

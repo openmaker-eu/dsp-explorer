@@ -80,3 +80,9 @@ def release(message):
     #local('git commit -am "%s"' % message)
     local('git push')
     local('git checkout master')
+
+
+def test(filename=''):
+    local('python manage.py test %s ' % filename)
+
+

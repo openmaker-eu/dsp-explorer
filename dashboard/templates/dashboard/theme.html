@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block container %}
 
-<div class="container" ng-controller="themesController" ng-init="dj={theme:'{{ theme_name }}'}">
+<div class="container" ng-controller="themesController">
+    <span ng-init="
+        topic_id='{{ selected_topic.topic_id }}';
+    " ></span>
+
     <div class="row">
         <div class="col-md-12 influencers-breadcrumb" ng-class="{ 'no-influencers': influencers.length < 1 }">
 
             <div class="col-md-8 col-sm-7 col-xs-12 breadcrumb-wrapper">
                 <ol class="breadcrumb">
                     <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-                    <li class="active">{{theme_name}}</li>
+                    <li class="active">{{selected_topic.topic_name}}</li>
                 </ol>
             </div>
             <div class="col-md-4 col-sm-5 col-xs-12 open-influencers-wrapper" ng-click="openAside()">
@@ -16,10 +20,8 @@
                     <span class="pull-left" style="white-space: nowrap;">View Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <img
                             ng-repeat="data in influencers | limitTo:2 track by $index"
-                            class="img-circle pull-left" ng-src="{$ data.img_url $}"
+                            class="img-circle pull-left" ng-src="{$ data.profile_image_url $}"
                     >
-                    <!--<span class="pull-left" style="white-space: nowrap;">&nbsp;&nbsp;<i class="glyphicon glyphicon-chevron-right"></i></span>-->
-
                 </div>
 
             </div>
@@ -54,16 +56,16 @@
     <div class="row margin-bottom-50">
         <div class="col-md-12 text-center theme-name">
                 <span class="text-red">
-                    <h2><span class="text-black">Topic:</span> {{theme_name}}</h2>
+                    <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
 
                     <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{theme_name}}</h2>
+                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
                         <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                     </button>
 
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        {% for t in themes %}
-                            <li><a href="{% url 'dashboard:theme' t %}">{{t}}</a></li>
+                        {% for t in topics %}
+                            <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
                         {% endfor %}
                     </ul>
 
@@ -74,16 +76,28 @@
         <div class="col-md-8 col-md-offset-2">
 
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('yesterday')" type="button" ng-class="filter == 'yesterday' ? 'btn login-button-active':'btn login-button'">Yesterday
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'yesterday'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('yesterday')"
+                        ng-class="FeedModel.filter == 'yesterday' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Yesterday
+                <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'yesterday'"></span></button>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('week')" type="button" ng-class="filter == 'week' ? 'btn login-button-active':'btn login-button'">Week
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'week'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('week')"
+                        ng-class="FeedModel.filter == 'week' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Week
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'week'"></span></button>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" ng-click="setFilter('month')" type="button" ng-class="filter == 'month' ? 'btn login-button-active':'btn login-button'">Month
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="filter == 'month'"></span></button>
+                <button style="min-width:100%;" type="button"
+                        ng-click="setFilter('month')"
+                        ng-class="FeedModel.filter == 'month' ? 'btn login-button-active':'btn login-button'"
+                >
+                    Month
+                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'month'"></span></button>
             </div>
 
         </div>

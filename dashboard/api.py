@@ -5,11 +5,14 @@ from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer
-from dspconnector.connector import DSPConnector, DSPConnectorException
+from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12
 from utils.api import *
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirm
 import json
+from datetime import date, timedelta
+import random
+
 
 def search_members(request, search_string):
     result = Profile.search_members(search_string)
@@ -176,3 +179,58 @@ def get_om_events(request):
             'results': {}},
             status=500)
 
+
+###########
+# API V.2
+###########
+
+def get_topics(request):
+    try:
+        topics = DSPConnectorV12.get_topics()
+    except DSPConnectorException:
+        topics = {}
+    return JsonResponse({
+        'status': 'ok',
+        'result': topics
+    }, status=200)
+
+
+def get_suggested_topic(request):
+    try:
+        topics = DSPConnectorV12.get_topics()['topics']
+        random_topic = topics[random.randint(0, len(topics) - 1)]
+    except DSPConnectorException:
+        random_topic = {}
+    return JsonResponse({
+        'status': 'ok',
+        'result': random_topic
+    }, status=200)
+
+
+def get_news(request, topic_ids, date_name='yesterday', cursor=-1):
+    date_dict = {
+        'yesterday': date.today() - timedelta(1),
+        'week': date.today() - timedelta(7),
+        'month': date.today() - timedelta(30)
+    }
+    try:
+        since = date_dict[date_name].strftime('%d-%m-%Y')
+        news = DSPConnectorV12.search_news(topic_ids, {'since': since, 'cursor': cursor})
+    except DSPConnectorException:
+        news = {}
+
+    return JsonResponse({
+        'status': 'ok',
+        'result': news
+    }, status=200)
+
+
+def get_audiences(request, topic_id):
+    try:
+        audiences = DSPConnectorV12.get_audiences(topic_id)
+    except DSPConnectorException:
+        audiences = {}
+    return JsonResponse({
+        'status': 'ok',
+        'result': audiences
+    }, status=200)
