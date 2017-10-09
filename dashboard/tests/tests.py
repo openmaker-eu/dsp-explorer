@@ -10,7 +10,7 @@ class AuthTestCase(TestCase):
     def test_profile_is_unicode_safe(self):
         print '[UTF-8 ENCODING TEST]'
         Profile.create(
-            email='testcase@top-ix.org',
+            email='massimo.santoli@top-ix.org',
             first_name='Résiérr',
             last_name='Test',
             picture='',

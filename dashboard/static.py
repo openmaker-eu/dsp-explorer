@@ -11,3 +11,7 @@ def support(request):
 
 def terms_conditions(request):
     return render(request, 'dashboard/terms_conditions.html', {})
+
+
+def express_acceptance(request):
+    return render(request, 'dashboard/express_acceptance.html', {})

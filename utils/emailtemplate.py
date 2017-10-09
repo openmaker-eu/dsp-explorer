@@ -620,6 +620,7 @@ invitation_base_template_header = '''
 invitation_base_template_footer = '''
                                             </td>
                                         </tr>
+                                    
                                         </tbody></table>
                                     <!--[if mso]>
                                     </td>
@@ -661,17 +662,21 @@ invitation_base_template_footer = '''
                             <tr>
                                 <td valign="top" style="padding:9px" class="mcnImageBlockInner">
                                     <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width:100%;">
-                                        <tbody><tr>
+                                        <tbody>
+                                        <tr>
+                                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 9px; text-align:center; margin:auto;">
+                                                <p style="width:564px; color:#999; margin:auto; text-align:justify;">
+                                                You have registered to the Top-ix Consortium service, based in Turin, Via Maria Vittoria n.38, 10123, VAT and registration number
+                                                    to the Turin Business Register number 08445410015
+                                                    We will deal with your information in accordance with the following 
+                                                    <a href="http://explorer.openmaker.eu/privacy/">privacy policy<a>
+                                                </p>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
-
-
                                                 <img align="center" alt="" src="http://openmaker.eu/wp-content/uploads/2017/07/footer-OpenMaker-01.png" width="564" style="max-width:1024px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
-
-
-
-
-
-
                                             </td>
                                         </tr>
                                         </tbody></table>

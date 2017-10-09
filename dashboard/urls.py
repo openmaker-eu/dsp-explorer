@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^privacy/$', static.privacy, name='privacy'),
     url(r'^support/$', static.support, name='support'),
     url(r'terms/$', static.terms_conditions, name='terms_conditions'),
+    url(r'express_acceptance/$', static.express_acceptance, name='express_acceptance'),
 
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
