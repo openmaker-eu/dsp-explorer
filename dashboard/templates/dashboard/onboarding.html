@@ -154,10 +154,10 @@
                                         <span ng-show="tac" class="glyphicon glyphicon-check text-red"></span>
                                         <span ng-show="!tac" class="glyphicon glyphicon-unchecked text-red"></span>
                                         <input type="checkbox" ng-model="tac" required="required" class="fake-check">
-                                        &nbsp;I allow for the use of my online publicly available data
+                                        &nbsp;You agree to the conditions
                                     </span>
                                 </label>
-                                (<a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+                                (<a class="text-red" target="_blank" href="{% url 'dashboard:express_acceptance' %}">Express Acceptance</a>)
                             </span>
                                 <br>
                                 <span  class="pointer" style="cursor:pointer;">
@@ -166,15 +166,34 @@
                                         <span ng-show="privacy" class="glyphicon glyphicon-check text-red"></span>
                                         <span ng-show="!privacy" class="glyphicon glyphicon-unchecked text-red"></span>
                                         <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
-                                        &nbsp;I allow for the use of the data provided in the onboarding form
+                                        &nbsp;
+                                        You agree to use your data to allow us to map the community of makers and encourage the meeting between
+                                        representatives of the makers' community and the manufacturing industry
+                                        By registering you agree to the following conditions
+                                    </span>
+                                    (<a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+                                    <span ng-click="privacy=!privacy;" >
+                                        , You consent to the use of your data in accordance with the privacy policy
+                                    </span>
+                                        (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy policy</a>)
+                                    <span ng-click="privacy=!privacy;" >
+                                        you ask to use our service.
+                                        You will receive an email to confirm your registration.
                                     </span>
                                 </label>
-                                (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)
+                                <!--(<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)-->
                             </span>
                             </div>
                         </div>
 
                         <div class="col-md-12">
+                           <span>
+                                The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
+                                <a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">terms and the conditions</a>
+                            </span>
+
+                        </div>
+                        <div class="col-md-12 margin-top-40">
                             <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="SignUp">
                         </div>
                     </div>
