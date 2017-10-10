@@ -770,13 +770,33 @@ pss_upload_confirmation = '''
 </ul>
 '''
 
-pss_admin_upload_confirmation = '''
+pss_admin_upload_confirmation_old = '''
 <h1>Dear Admin,</h1>
 <p>an application has been submitted to the <strong>Pilot Support Scheme!</strong></p>
 <p>Here you can find a recap about it:</p>
 <ul>
 <li>
     Sent from: {APPLIER_FIRST_NAME} {APPLIER_LAST_NAME} 
+</li>
+<li>
+    Title: {APPLICATION_NAME} 
+</li>
+<li>
+    LES: {LES} 
+</li>
+</ul>
+<p>
+    Login into the DSPExplorer with your Admin credential and check the results. 
+</p>
+'''
+
+pss_admin_upload_confirmation = '''
+<h1>Dear Admin,</h1>
+<p>an application has been submitted to the <strong>Pilot Support Scheme!</strong></p>
+<p>Here you can find a recap about it:</p>
+<ul>
+<li>
+    Sent from: {EMAIL} 
 </li>
 <li>
     Title: {APPLICATION_NAME} 
