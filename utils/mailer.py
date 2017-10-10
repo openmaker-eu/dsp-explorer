@@ -8,6 +8,8 @@ from django.conf import settings
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
 
+from django.template import loader, Context
+
 
 class EmailHelper(object):
     """
@@ -67,3 +69,13 @@ class EmailHelper(object):
             receiver_email=sendTo,
             receiver_name='Tester'
         )
+
+    @staticmethod
+    def render_email(template_name, vars={}):
+        #
+        # t = loader.get_template('my_template.html')
+        # c = Context({'object_list': SomeModel.objects.all() })
+        # rendered = t.render(c)
+        #
+        # return render
+        pass
