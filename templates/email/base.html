@@ -614,13 +614,10 @@ invitation_base_template_header = '''
                                            style="max-width:564px; margin:auto;" class="mcnTextContentContainer">
                                         <tbody><tr>
                                             <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:18px; padding-left:18px;">
-                                                         
-'''
-
-invitation_base_template_footer = '''
+                                                {{ BODY }}
                                             </td>
                                         </tr>
-                                    
+
                                         </tbody></table>
                                     <!--[if mso]>
                                     </td>
@@ -666,12 +663,12 @@ invitation_base_template_footer = '''
                                         <tr>
                                             <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 9px; text-align:center; margin:auto;">
                                                 <p style="width:564px; color:#999; margin:auto; text-align:justify;">
-                                                You have registered to the Top-ix Consortium service, based in Turin, Via Maria Vittoria n.38, 10123, VAT and registration number
+                                                    You have registered to the Top-ix Consortium service, based in Turin, Via Maria Vittoria n.38, 10123, VAT and registration number
                                                     to the Turin Business Register number 08445410015
-                                                    We will deal with your information in accordance with the following 
+                                                    We will deal with your information in accordance with the following
                                                     <a href="http://explorer.openmaker.eu/privacy/">privacy policy<a>
                                                 </p>
-                                                
+
                                             </td>
                                         </tr>
                                         <tr>
@@ -698,102 +695,3 @@ invitation_base_template_footer = '''
 </center>
 </body>
 </html>
-'''
-
-invitation_email_confirm = '''
-<h1>Hi {SENDER_NAME},</h1>
-
-<p>thank you for helping to grow the <strong>OpenMaker</strong> community!</p>
-
-<p>Please click <a href="{CONFIRMATION_LINK}">here</a> to verify your e-mail and confirm your nomination.</p>
-
-<p>If you have received this e-mail by mistake, please ignore it.<br>
-For more information, check the <a href="http://openmaker.eu/" target="_blank">website</a> or contact us at: <a href="mailto:info@openmaker.eu">info@openmaker.eu</a></p>
-'''
-
-invitation_email_confirmed = '''
-<h1>Nomination Confirmed!</h1>
-<p>The nominated person is about to receive an invitation to join the <strong>OpenMaker</strong> community!</p>
-<p>Want to join as well? Click here to <a href="{ONBOARDING_LINK}" target="_blank">Onboard</a> and discover how you can contribute to accelerating the <strong>4th Industrial Revolution</strong>!</p>
-                                  
-<p>
-If you want to nominate another person, do it <a href="http://openmaker.eu/nominate" target="_blank">here</a>!</p>
-'''
-
-invitation_email_receiver = '''
-<h1>Hi {RECEIVER_FIRST_NAME} {RECEIVER_LAST_NAME},</h1>
-<p>you have been nominated by <strong>{SENDER_FIRST_NAME} {SENDER_LAST_NAME}</strong> as an influencer in the current 4th Industrial Revolution.<p>
- 
-<p>We are building a community of people eager to drive radical change in our society, making the most of talent, knowledge and capacity to reshape production according to principles of democracy, inclusivity and sustainability.</p>
-
-<p>We believe in innovation centered on people, and in technology as an enabler of empowered creativity and action for individuals.</p>
- 
-We are confident in the ability of open collaboration to tackle complex societal challenges, and we push for a systemic revolution in manufacturing which is locally focused but globally connected, micro yet massive.</p>  
-
-<p>We invite you to take part to this cross-border movement. Join us and make your contribution to preserve and grow the common good.</p>
-
-<p>
-<strong>Join</strong> our community <a href="{ONBOARDING_LINK}" target="_blank">here</a>.<br> 
-<strong>Nominate</strong> someone else here <a href="http://openmaker.eu/nominate" target="_blank">here</a>.
-'''
-
-onboarding_email_template = '''
-<h1>Hi {FIRST_NAME} {LAST_NAME},</h1>
-
-<p>thank you for your interest for the <strong>OpenMaker</strong> community!</p>
-<p>Please click <a href="{CONFIRMATION_LINK}">here</a> to verify your e-mail and confirm your registration.</p>
-
-<p>If you are curious about the <strong>OpenMaker</strong> initiative, check out our <a href="http://openmaker.eu/" target="_blank">website</a> and subscribe to our Newsletter to receive the latest updates from the community!</p>
-'''
-
-pss_upload_confirmation_old = '''
-<h1>Hi {FIRST_NAME} {LAST_NAME},</h1>
-<p>thank you for your application!<br> Your submission has been successfully submitted to the <strong>OpenMaker Call for Ideas!</strong></p>
-<p>For any additional information or request, please contact:</p>
-<ul>
-<li>Spain: <a href="mailto:jorge.garcia@tecnalia.com">Garcia Valbuena, Jorge</a></li>
-<li>Italy: <a href="mailto:dario.marmo@agenzialama.eu">Marmo, Dario</a></li>
-<li>Slovakia: <a href="mailto:lubomir.billy@centire.com">Billy, Lubomir</a></li>
-<li>UK: <a href="mailto:erika.rushton@gmail.com">Rushton, Erika</a></li>
-</ul>
-'''
-
-pss_upload_confirmation = '''
-<h1>Dear Applicant,</h1>
-<p>thank you for your application!<br> Your submission has been successfully submitted to the <strong>OpenMaker Call for Ideas!</strong></p>
-<p>For any additional information or request, please contact:</p>
-<ul>
-<li>Spain: <a href="mailto:jorge.garcia@tecnalia.com">Garcia Valbuena, Jorge</a></li>
-<li>Italy: <a href="mailto:dario.marmo@agenzialama.eu">Marmo, Dario</a></li>
-<li>Slovakia: <a href="mailto:lubomir.billy@centire.com">Billy, Lubomir</a></li>
-<li>UK: <a href="mailto:erika.rushton@gmail.com">Rushton, Erika</a></li>
-</ul>
-'''
-
-pss_admin_upload_confirmation = '''
-<h1>Dear Admin,</h1>
-<p>an application has been submitted to the <strong>Pilot Support Scheme!</strong></p>
-<p>Here you can find a recap about it:</p>
-<ul>
-<li>
-    Sent from: {APPLIER_FIRST_NAME} {APPLIER_LAST_NAME} 
-</li>
-<li>
-    Title: {APPLICATION_NAME} 
-</li>
-<li>
-    LES: {LES} 
-</li>
-</ul>
-<p>
-    Login into the DSPExplorer with your Admin credential and check the results. 
-</p>
-'''
-
-authentication_reset_password = '''
-    <h1>Hi! {FIRST_NAME}&nbsp;{LAST_NAME}</h1>    
-    <p>You recently requested to reset your password for 'OM explorer' Website</p>
-    <p>To reset you password, click here:</p>
-    <p><a style="text-align:center;" href="http://{BASE_URL}/reset_password/{TOKEN}">RESET PASSWORD</a></p> 
-    <p>If you do not request a password reset, please ignore this email.</p>
-'''
