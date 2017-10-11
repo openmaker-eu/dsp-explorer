@@ -79,7 +79,7 @@ class Application(models.Model):
             )
         ))
 
-        self.profile.send_email('PSS Open Maker application done!', user_content_mail)
+        self.profile._send_email('PSS Open Maker application done!', user_content_mail)
         self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_1)
         self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_2)
 
