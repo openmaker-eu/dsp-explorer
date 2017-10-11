@@ -80,22 +80,25 @@ class EmailHelper(object):
         base_template_path = os.path.abspath('templates/email/base.html')
         body_template_path = os.path.abspath('templates/email/'+template_name+'.html')
 
-        base_template = open(base_template_path, 'r').read().replace('\n', '')
-        body_template = open(body_template_path, 'r').read().replace('\n', '')
+        base_template = open(base_template_path).read()\
+            .replace('{', '{{')\
+            .replace('}', '}}')\
+            .replace('***BODY***', '{0}')
+        body_template = open(body_template_path).read().replace('\n', '')
 
         email_template = Template(
-            Template(base_template).render(Context({'BODY': body_template}))
+            base_template.format(body_template)
         )
         return email_template.render(Context(vars))
 
     @staticmethod
     def email(template_name, receiver_email, title, vars={}):
-        # try:
+        try:
             EmailHelper.send_email(
                 subject=title,
-                message=EmailHelper.render_email(template_name, vars),
+                message=EmailHelper.render_email(template_name, vars).encode('utf-8'),
                 receiver_email=receiver_email
             )
-        #     return True
-        # except Exception as exc:
-        #     return exc
+            return True
+        except Exception as exc:
+            return exc

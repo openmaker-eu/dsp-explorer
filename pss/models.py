@@ -22,7 +22,6 @@ def upload_to_and_rename(instance, filename):
     filename = les[1][0:3]+'_'+dt.now().strftime("%d_%m_%y_%M_%S") + filename
     return filename
 
-
 class Application(models.Model):
 
     les_choices = (
