@@ -20,7 +20,7 @@ export default [function(){
                 { lat:'52.4774169', long:'-1.9336706', city:'Birmingham' , is_less:true  },
                 { lat:'53.4121569', long:'-2.9860978', city:'Liverpool' , is_less:true  },
                 { lat:'53.4916393', long:'-2.3231298', city:'Salford' , is_less:true  },
-                { lat:'45.0544696', long:'7.6617633', city:'Torino' , is_less:true  },
+                { lat:'45.0652419', long:'7.6895369', city:'Torino' , is_less:true  },
                 { lat:'43.7799528', long:'11.2059486', city:'Firenze' , is_less:true  },
                 { lat:'53.472225', long:'-2.2935019', city:'Manchester' , is_less:true  }
             ]

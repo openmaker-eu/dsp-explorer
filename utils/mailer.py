@@ -1,3 +1,4 @@
+# coding=utf-8
 import logging
 import smtplib
 import time
@@ -7,8 +8,11 @@ from email.message import Message
 from django.conf import settings
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template
+import os
 
-from django.template import loader, Context
+from django.template import loader, Context, Template
+from django.template.loader import render_to_string
+
 
 
 class EmailHelper(object):
@@ -72,10 +76,26 @@ class EmailHelper(object):
 
     @staticmethod
     def render_email(template_name, vars={}):
-        #
-        # t = loader.get_template('my_template.html')
-        # c = Context({'object_list': SomeModel.objects.all() })
-        # rendered = t.render(c)
-        #
-        # return render
-        pass
+
+        base_template_path = os.path.abspath('templates/email/base.html')
+        body_template_path = os.path.abspath('templates/email/'+template_name+'.html')
+
+        base_template = open(base_template_path, 'r').read().replace('\n', '')
+        body_template = open(body_template_path, 'r').read().replace('\n', '')
+
+        email_template = Template(
+            Template(base_template).render(Context({'BODY': body_template}))
+        )
+        return email_template.render(Context(vars))
+
+    @staticmethod
+    def email(template_name, receiver_email, title, vars={}):
+        # try:
+            EmailHelper.send_email(
+                subject=title,
+                message=EmailHelper.render_email(template_name, vars),
+                receiver_email=receiver_email
+            )
+        #     return True
+        # except Exception as exc:
+        #     return exc

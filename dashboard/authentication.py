@@ -45,7 +45,7 @@ def login_page(request):
             else:
                 messages.error(request, 'User Invalid')
         else:
-            messages.error(request, 'User not found')
+            messages.error(request, 'Username or password are wrong!')
     return render(request, 'dashboard/login.html', {})
 
 

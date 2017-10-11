@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.encoding import force_unicode
 from django.utils import timezone
 from datetime import datetime as dt
 from utils.hasher import HashHelper
@@ -119,6 +120,12 @@ class Profile(models.Model):
                                            receiver_email=self.user.email
                                            ))
         thr.start()
+
+    def get_name(self):
+        import unicodedata
+        return unicodedata.normalize('NFKD',self.user.first_name).encode('ascii','ignore')
+    def get_lastname(self):
+        return "%s" % self.user.last_name
 
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
