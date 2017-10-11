@@ -255,7 +255,6 @@ def invite(request):
         
         # email not present, filling invitation model
         try:
-    
             Invitation.create(user=request.user,
                               sender_email=request.user.email,
                               sender_first_name=request.user.first_name,
