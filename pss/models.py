@@ -8,6 +8,7 @@ from os.path import abspath, dirname
 from dashboard.models import Profile
 from django.utils import timezone
 from django.conf import settings
+from utils.mailer import EmailHelper
 from utils.emailtemplate import \
     invitation_base_template_header, \
     invitation_base_template_footer, \
@@ -54,38 +55,34 @@ class Application(models.Model):
     def send_email(self):
 
         p_user = Profile.objects.get(user__id=self.profile.user_id)
-        applier_first_name = p_user.get_name()
-        applier_last_name = p_user.get_lastname()
+        applier_first_name = p_user.user.first_name
+        applier_last_name = p_user.user.last_name
         latest_project_name_uploaded_by_current_user = Application.objects.filter(profile_id=self.profile.id).order_by('-id')[0].project_name
         latest_les_uploaded_by_current_user = Application.objects.filter(profile_id=self.profile.id).order_by('-id')[0].les
 
-        user_content_mail = "{}{}{}".format(invitation_base_template_header,
-                                       pss_upload_confirmation_old.format(
-                                           FIRST_NAME=applier_first_name,
-                                           LAST_NAME=applier_last_name),
-                                       invitation_base_template_footer)
+        EmailHelper.email(
+            template_name='pss_upload_confirmation',
+            title='DSPExplorer - Open Maker - Application done!',
+            vars={
+                'FIRST_NAME': applier_first_name,
+                'LAST_NAME': applier_last_name
+            },
+            receiver_email=p_user.user.email
+        )
 
-        admin_content_mail = "{}".format(pss_admin_upload_confirmation_old.format(
-            APPLIER_FIRST_NAME=applier_first_name,
-            APPLIER_LAST_NAME=applier_last_name,
-            APPLICATION_NAME=latest_project_name_uploaded_by_current_user,
-            LES=self.retrieve_les_label(latest_les_uploaded_by_current_user)
-        ))
+        admins = (settings.EMAIL_ADMIN_1, settings.EMAIL_ADMIN_2)
 
-
-        # user_content_mail = "{}{}{}".format(invitation_base_template_header,
-        #                                     pss_upload_confirmation,
-        #                                     invitation_base_template_footer)
-        #
-        # admin_content_mail = "{}".format(
-        #     pss_admin_upload_confirmation.format(
-        #         EMAIL=user.email,
-        #         APPLICATION_NAME=latest_project_name_uploaded_by_current_user,
-        #         LES=self.retrieve_les_label(latest_les_uploaded_by_current_user
-        #     )
-        # ))
-
-        self.profile.send_email('PSS Open Maker application done!', user_content_mail)
-        self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_1)
-        self.profile._send_email('New PSS application', admin_content_mail, 'Admin', settings.EMAIL_ADMIN_2)
+        for admin in admins:
+            print admin
+            EmailHelper.email(
+                template_name='pss_admin_upload_confirmation',
+                title='New PSS application',
+                vars={
+                    'APPLIER_FIRST_NAME': applier_first_name,
+                    'APPLIER_LAST_NAME': applier_last_name,
+                    'APPLICATION_NAME': latest_project_name_uploaded_by_current_user,
+                    'LES': self.retrieve_les_label(latest_les_uploaded_by_current_user)
+                },
+                receiver_email=admin
+            )
 

@@ -33,6 +33,7 @@ class EmailHelper(object):
     def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
+        print "send_email"
         receivers = [receiver_email]
         formatted_message = Message()
         formatted_message['Content-Type'] = 'text/html'
@@ -76,7 +77,7 @@ class EmailHelper(object):
 
     @staticmethod
     def render_email(template_name, vars={}):
-
+        print "render_email"
         base_template_path = os.path.abspath('templates/email/base.html')
         body_template_path = os.path.abspath('templates/email/'+template_name+'.html')
 
@@ -89,10 +90,12 @@ class EmailHelper(object):
         email_template = Template(
             base_template.format(body_template)
         )
+
         return email_template.render(Context(vars))
 
     @staticmethod
     def email(template_name, receiver_email, title, vars={}):
+        print "email"
         try:
             EmailHelper.send_email(
                 subject=title,
@@ -101,4 +104,5 @@ class EmailHelper(object):
             )
             return True
         except Exception as exc:
+            print exc
             return exc

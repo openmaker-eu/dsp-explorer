@@ -121,11 +121,11 @@ class Profile(models.Model):
                                            ))
         thr.start()
 
-    def get_name(self):
-        import unicodedata
-        return unicodedata.normalize('NFKD',self.user.first_name).encode('ascii','ignore')
-    def get_lastname(self):
-        return "%s" % self.user.last_name
+    # def get_name(self):
+    #     import unicodedata
+    #     return unicodedata.normalize('NFKD',self.user.first_name).encode('ascii','ignore')
+    # def get_lastname(self):
+    #     return "%s" % self.user.last_name
 
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
