@@ -77,9 +77,8 @@ class EmailHelper(object):
 
     @staticmethod
     def render_email(template_name, vars={}):
-        print "render_email"
-        base_template_path = os.path.abspath('templates/email/base.html')
-        body_template_path = os.path.abspath('templates/email/'+template_name+'.html')
+        base_template_path = os.path.join(settings.BASE_DIR, 'templates/email/base.html')
+        body_template_path = os.path.join(settings.BASE_DIR, 'templates/email/'+template_name+'.html')
 
         base_template = open(base_template_path).read()\
             .replace('{', '{{')\
@@ -95,7 +94,6 @@ class EmailHelper(object):
 
     @staticmethod
     def email(template_name, receiver_email, title, vars={}):
-        print "email"
         try:
             EmailHelper.send_email(
                 subject=title,
