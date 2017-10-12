@@ -70,10 +70,9 @@ class Application(models.Model):
             receiver_email=p_user.user.email
         )
 
-        admins = (settings.EMAIL_ADMIN_1, settings.EMAIL_ADMIN_2)
+        admins = settings.EMAIL_ADMIN_LIST
 
         for admin in admins:
-            print admin
             EmailHelper.email(
                 template_name='pss_admin_upload_confirmation',
                 title='New PSS application',
