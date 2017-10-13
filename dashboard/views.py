@@ -110,7 +110,6 @@ def profile(request, profile_id=None, action=None):
             tags = request.POST['tags']
             if tags == '' or tags == None or tags == 'undefined':
                 raise KeyError
-
         
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
@@ -168,8 +167,7 @@ def profile(request, profile_id=None, action=None):
         
         # Update tags
         user.profile.tags.clear()
-        # for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
-        for tagName in map(lambda x: x.lower().capitalize(), tags.split(",")):
+        for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
         
         # Update sourceofinnovation
