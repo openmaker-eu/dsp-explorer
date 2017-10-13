@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytz
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -167,7 +168,7 @@ def profile(request, profile_id=None, action=None):
         
         # Update tags
         user.profile.tags.clear()
-        for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
+        for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
         
         # Update sourceofinnovation

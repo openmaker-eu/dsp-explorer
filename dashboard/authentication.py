@@ -206,7 +206,7 @@ def onboarding(request):
 
         # Add tags to profile
         # @TODO : handle tag Creation exception
-        for tag in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
+        for tag in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
             tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
             profile.tags.add(tagInstance)
         profile.save()
