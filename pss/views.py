@@ -6,9 +6,9 @@ from django.urls import reverse
 from .models import Application
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
-import logging, os
-from os.path import abspath, dirname
-from django.views.static import serve
+import logging
+from os.path import abspath, dirname, splitext
+
 
 @login_required
 def application(request):
@@ -17,20 +17,20 @@ def application(request):
         try:
             project_name = request.POST['project_name'].strip().title()
             les_choice = int(request.POST.getlist('les_choice')[0])
-
+            
             # check zipfile --> now is a pdf
             zip_location = request.FILES['zip_location']
-            filename, file_extension = os.path.splitext(zip_location.name)
+            filename, file_extension = splitext(zip_location.name)
             if not (file_extension in allowed_extensions):
                 raise ValueError('notvalid')
-
+            
             if not project_name or not zip_location:
                 raise KeyError
-
+            
             # limit to 1MB
             if zip_location.size > 10485760:
                 raise ValueError('sizelimit')
-
+        
         except ValueError as exc:
             if str(exc) == 'sizelimit':
                 logging.info('ERROR - File size uploaded is larger than 10Mb')
@@ -45,7 +45,7 @@ def application(request):
                 logging.info('ERROR - Please fill all the fields')
                 messages.error(request, 'Please fill all the fields')
             return HttpResponseRedirect(reverse('pss:application'))
-
+        
         except (KeyError, IndexError):
             logging.info('ERROR - Please fill all the fields')
             messages.error(request, 'Please fill all the fields')
@@ -68,19 +68,21 @@ def application_result(request):
 
 @login_required
 def application_pdf(request, application_id):
-
+    
     if not application_id:
-        response = HttpResponse(open(abspath(dirname(__file__))+'/application/PSS_application_form.pdf', 'r').read(), content_type='application/pdf')
+        response = HttpResponse(open(abspath(dirname(__file__))+'/application/PSS_application_form.pdf', 'r').read(),
+                                content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format('PSS_application_template')
         return response
-
-    application = Application.objects.get(pk=application_id)
-
-    if request.user.is_superuser == 1 or application.profile_id == request.user.profile.id:
-        response = HttpResponse(open(abspath(dirname(__file__))+'/application/%s' % application.zip_location, 'r').read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
-        return response
-
-
-
-
+    
+    response = HttpResponseRedirect('/')
+    try:
+        application = Application.objects.get(pk=application_id)
+        if request.user.is_superuser or application.profile_id == request.user.profile.id:
+            response = HttpResponse(
+                open(abspath(dirname(__file__)) + '/application/%s' % application.zip_location, 'r').read(),
+                content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
+    except Application.DoesNotExist:
+        pass
+    return response

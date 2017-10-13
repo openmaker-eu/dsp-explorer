@@ -4,24 +4,18 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.core.files.storage import FileSystemStorage
-from os.path import abspath, dirname
 from dashboard.models import Profile
 from django.utils import timezone
 from django.conf import settings
 from utils.mailer import EmailHelper
-from utils.emailtemplate import \
-    invitation_base_template_header, \
-    invitation_base_template_footer, \
-    pss_upload_confirmation, \
-    pss_admin_upload_confirmation, \
-    pss_admin_upload_confirmation_old, \
-    pss_upload_confirmation_old
+
 
 def upload_to_and_rename(instance, filename):
     les = filter(lambda x: x[0] == instance.les, instance.les_choices)[0]
     from datetime import datetime as dt
     filename = les[1][0:3]+'_'+dt.now().strftime("%d_%m_%y_%M_%S") + filename
     return filename
+
 
 class Application(models.Model):
 
@@ -47,7 +41,6 @@ class Application(models.Model):
         ordering = ('created_at', )
 
     def retrieve_les_label(self, code):
-
         for les in Application.les_choices:
             if code == les[0]: return les[1]
         return 'less found undefined'
@@ -84,4 +77,3 @@ class Application(models.Model):
                 },
                 receiver_email=admin
             )
-

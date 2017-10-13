@@ -34,10 +34,9 @@ def dashboard(request):
         selected_topic = 'No themes'
         context = {'selected_topic': selected_topic, 'topics': topics_list}
         return render(request, 'dashboard/theme.html', context)
-
+    
     hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
-
     context = {
         'selected_topic': selected_topic,
         'topics': topics_list,
@@ -76,9 +75,9 @@ def profile(request, profile_id=None, action=None):
             user_profile = Profile.get_by_email(request.user.email)
     except Profile.DoesNotExist:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
+    
     if request.method == 'POST':
-
+        
         new_profile = {}
         new_user = {}
         try:
@@ -90,7 +89,7 @@ def profile(request, profile_id=None, action=None):
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
             new_profile['statement'] = request.POST['statement']
-
+            
             new_profile['role'] = request.POST.get('role', None)
             new_profile['occupation'] = request.POST.get('occupation', None)
             new_profile['role'] = request.POST.get('role', '')
@@ -98,20 +97,20 @@ def profile(request, profile_id=None, action=None):
             new_profile['sector'] = request.POST.get('sector', None)
             new_profile['size'] = request.POST.get('size', None)
             new_profile['technical_expertise'] = request.POST.get('technical_expertise', None)
-
+            
             if request.POST.get('place', None) != '{}': new_profile['place'] = request.POST.get('place', None)
-
+            
             # Multiple choice fields
             new_profile['types_of_innovation'] = request.POST.get('types_of_innovation', None)
             new_profile['socialLinks'] = request.POST.get('socialLinks', None)
-
+            
             # Many to many fields
             source_of_inspiration = request.POST.get('source_of_inspiration', None)
-
+            
             tags = request.POST['tags']
             if tags == '' or tags == None or tags == 'undefined':
                 raise KeyError
-
+        
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
@@ -119,34 +118,34 @@ def profile(request, profile_id=None, action=None):
             print(KeyError)
             messages.error(request, 'Please fill the required fields!')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
-
+        
         # check birthdate
         if new_profile['birthdate'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate'].timetuple()[1:-2])):
             messages.error(request, 'You must be older than thirteen')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
-
+        
         # Update image
         try:
             imagefile = request.FILES['profile_img']
             filename, file_extension = os.path.splitext(imagefile.name)
-
+            
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
                 raise ValueError('nonvalid')
-
+            
             # limit to 1MB
             if imagefile.size > 1048576:
                 raise ValueError('sizelimit')
-
+            
             imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
-
+        
         except ValueError as exc:
             if str(exc) == 'sizelimit':
                 messages.error(request, 'Image size must be less than 1MB')
             if str(exc) == 'nonvalid':
                 messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:profile'))
-
+        
         except KeyError as exc:
             imagefile = request.user.profile.picture
         except Exception as exc:
@@ -156,21 +155,21 @@ def profile(request, profile_id=None, action=None):
             ))
             return HttpResponseRedirect(reverse('dashboard:profile'))
         new_profile['picture'] = imagefile
-
+        
         user = User.objects.filter(email=request.user.email).first()
-
+        
         # Update user fields
         user.__dict__.update(new_user)
         user.save()
         # Update profile fields
         user.profile.__dict__.update(new_profile)
         user.profile.save()
-
+        
         # Update tags
         user.profile.tags.clear()
         for tagName in map(lambda x: re.sub(r'[^a-zA-Z0-9]', "", x.lower().capitalize()), tags.split(",")):
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
-
+        
         # Update sourceofinnovation
         user.profile.source_of_inspiration.through.objects.all().delete()
         if source_of_inspiration:
@@ -179,17 +178,17 @@ def profile(request, profile_id=None, action=None):
                     SourceOfInspiration.objects.filter(name=tagName).first() or
                     SourceOfInspiration.create(name=tagName)
                 )
-
+        
         # Check for user on Capsule CRM
         crmUser = capsule.CRMConnector.search_party_by_email(user.email)
         if crmUser:
             try:
                 capsule.CRMConnector.update_party(crmUser['id'], {'party': {
-                        'firstName': user.first_name,
-                        'lastName': user.last_name,
-                        'jobTitle': user.profile.occupation,
-                        'pictureURL': request.build_absolute_uri(user.profile.picture.url)
-                    }
+                    'firstName': user.first_name,
+                    'lastName': user.last_name,
+                    'jobTitle': user.profile.occupation,
+                    'pictureURL': request.build_absolute_uri(user.profile.picture.url)
+                }
                 })
             except:
                 messages.error(request, 'Some error occures, please try again!')
@@ -199,15 +198,15 @@ def profile(request, profile_id=None, action=None):
         else:
             print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
             logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
-
+        
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
-
+    
     user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
-
+    
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
-
+    
     context = {
         'profile': user_profile,
         'profile_action': action,
@@ -215,7 +214,7 @@ def profile(request, profile_id=None, action=None):
         'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())),
         'source_of_inspiration': json.dumps(map(lambda x: x.name, SourceOfInspiration.objects.all()))
     }
-
+    
     return render(request, 'dashboard/profile.html', context)
 
 
@@ -263,16 +262,16 @@ def invite(request):
                               receiver_last_name=last_name,
                               receiver_email=address,
                               )
-
+            
             subject = 'You are invited to join the OpenMaker community!'
             content = "{0}{1}{2}".format(invitation_base_template_header,
-                                      invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
-                                                                       RECEIVER_LAST_NAME=last_name.encode('utf-8'),
-                                                                       SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
-                                                                       SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
-                                                                       ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
-                                      invitation_base_template_footer)
-
+                                         invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
+                                                                          RECEIVER_LAST_NAME=last_name.encode('utf-8'),
+                                                                          SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
+                                                                          SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
+                                                                          ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+                                         invitation_base_template_footer)
+            
             EmailHelper.send_email(
                 message=content,
                 subject=subject,

@@ -1,10 +1,11 @@
-from django.db import models
 from rest_framework import serializers
+
 
 class TopicsSerializer(serializers.Serializer):
     topic_name = serializers.CharField(max_length=50),
     description = serializers.CharField()
     topic_id = serializers.IntegerField()
+
 
 class AudiencesSerializer(serializers.Serializer):
     lang = serializers.CharField()
@@ -14,6 +15,7 @@ class AudiencesSerializer(serializers.Serializer):
     screen_name = serializers.CharField()
     location = serializers.CharField(allow_null=True, allow_blank=True)
     name = serializers.CharField()
+
 
 class NewsSerializer(serializers.Serializer):
     domain = serializers.CharField()

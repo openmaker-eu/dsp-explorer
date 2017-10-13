@@ -392,6 +392,6 @@ def om_confirmation(
     return HttpResponseRedirect('http://openmaker.eu/confirmed/')
 
 
-def csrf_failure(request, reason=""):
+def csrf_failure(request, reason=''):
     messages.warning(request, 'Some error occurs!')
     return HttpResponseRedirect(reverse('dashboard:login'))

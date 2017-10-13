@@ -9,10 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'first_name', 'last_name')
 
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('name',)
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)

@@ -15,6 +15,7 @@ class DSPConnectorException(Exception):
             self.message = "Connection error, please try again later."
             self.response = None
 
+
 class DSPConnectorV12(object):
 
     @staticmethod
@@ -48,7 +49,6 @@ class DSPConnectorV12(object):
             endpoint='/search_news',
             parameter=parameters)
         return DSPConnectorV12._get(url)
-
 
     @staticmethod
     def get_audiences(topic_id):
@@ -87,6 +87,7 @@ class DSPConnector(object):
         return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_FEEDS,
                                                            parameter='?themename={}&date={}&cursor={}'.format(
                                                                theme_name, date, cursor)))
+    
     @staticmethod
     def get_influencers(theme_name):
         return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_INFLUENCERS,

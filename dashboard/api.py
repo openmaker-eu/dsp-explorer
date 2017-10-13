@@ -66,10 +66,13 @@ def get_sector(request):
     return JsonResponse({'status': 'ok',
                          'sectors': [
                              {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]}, status=200)
+
+
 def get_places(request):
 
     return JsonResponse({'status': 'ok',
                          'places': Profile.get_places()}, status=200)
+
 
 def get_user_stats(request):
     n_profiles = len(Profile.objects.all())
@@ -160,6 +163,7 @@ def post_om_invitation(request):
         receiver_name=''
     )
     return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+
 
 def get_om_events(request):
     from django.conf import settings
