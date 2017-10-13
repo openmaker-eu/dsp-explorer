@@ -65,7 +65,7 @@ class Profile(models.Model):
     ask_reset_at = models.DateTimeField(default=dt.now, null=True, blank=True)
 
     def __str__(self):
-        return "%s %s" % (self.user.first_name, self.user.last_name)
+        return "%s %s" % (self.get_name(), self.get_last_name())
 
     class Meta:
         ordering = ('user',)
@@ -120,11 +120,13 @@ class Profile(models.Model):
                                            ))
         thr.start()
 
-    # def get_name(self):
-    #     import unicodedata
-    #     return unicodedata.normalize('NFKD',self.user.first_name).encode('ascii','ignore')
-    # def get_lastname(self):
-    #     return "%s" % self.user.last_name
+    def get_name(self):
+        import unicodedata
+        return unicodedata.normalize('NFKD', self.user.first_name).encode('ascii', 'ignore')
+    
+    def get_lastname(self):
+        import unicodedata
+        return unicodedata.normalize('NFKD', self.user.last_name).encode('ascii', 'ignore')
 
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
