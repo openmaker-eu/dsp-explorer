@@ -13,7 +13,7 @@ from utils.mailer import EmailHelper
 def upload_to_and_rename(instance, filename):
     les = filter(lambda x: x[0] == instance.les, instance.les_choices)[0]
     from datetime import datetime as dt
-    filename = les[1][0:3]+'_'+dt.now().strftime("%d_%m_%y_%M_%S") + filename
+    filename = les[1][0:3] + '_' + dt.now().strftime("%d_%m_%y_%M_%S") + filename
     return filename
 
 

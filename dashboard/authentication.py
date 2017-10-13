@@ -18,7 +18,6 @@ from utils.generic import *
 import json
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
-from itertools import ifilter
 import re
 from django.utils.encoding import force_unicode
 
