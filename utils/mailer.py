@@ -33,7 +33,6 @@ class EmailHelper(object):
     def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
-        print "send_email"
         receivers = [receiver_email]
         formatted_message = Message()
         formatted_message['Content-Type'] = 'text/html'

@@ -62,8 +62,8 @@ def application(request):
 
         body = '' \
                '<div class="row">' \
-               '<div class="col-md-6 text-center">' \
-               '<p>Thanks for your submission!</a>' \
+               '<div class="col-md-12">' \
+               '<p style="margin: 0;padding-top: 30px;padding-bottom: 30px;">Congratulation! <br>Your PSS submission has been received.<br><br>Please for any kind of information about the submission write us at <a href=" mailto:info@openmaker.eu" =""=""><strong>info@openmaker.eu</strong></a></p>' \
                '</div>' \
                '</div>'
 
