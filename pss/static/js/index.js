@@ -9,7 +9,7 @@ require("./upload.behaviour")
 baseImports.angularForm()
 
 // Init Angular APP
-var app = angular.module('pss', ['ui.bootstrap','toastr'])
+var app = angular.module('pss', ['ui.bootstrap','toastr', 'ngSanitize'])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');

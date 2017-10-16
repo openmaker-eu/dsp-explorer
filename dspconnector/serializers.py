@@ -9,7 +9,7 @@ class TopicsSerializer(serializers.Serializer):
 
 class AudiencesSerializer(serializers.Serializer):
     lang = serializers.CharField()
-    description = serializers.CharField(allow_null=True, allow_blank=True)
+    # description = serializers.CharField(allow_null=True, allow_blank=True)
     time_zone = serializers.CharField(allow_null=True, allow_blank=True)
     profile_image_url = serializers.CharField()
     screen_name = serializers.CharField()
@@ -19,12 +19,16 @@ class AudiencesSerializer(serializers.Serializer):
 
 class NewsSerializer(serializers.Serializer):
     domain = serializers.CharField()
-    description = serializers.CharField()
+    # description = serializers.CharField()
     title = serializers.CharField()
     url = serializers.CharField()
     popularity = serializers.CharField()
     link_id = serializers.IntegerField()
     source = serializers.CharField()
-    published_at = serializers.CharField(allow_null=True, allow_blank=True)
+    published_at = serializers.CharField(allow_null=True)
     im = serializers.CharField()
     keywords = serializers.ListField()
+    bookmark = serializers.BooleanField(required=False)
+    bookmark_date = serializers.DateField(required=False, allow_null=True)
+    summary = serializers.CharField()
+    full_text = serializers.CharField()

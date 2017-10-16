@@ -8,6 +8,8 @@ from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging
 from os.path import abspath, dirname, splitext
+import json
+from utils.generic import *
 
 
 @login_required
@@ -55,8 +57,24 @@ def application(request):
                           zip_location=zip_location,
                           profile=Profile.objects.get(user=request.user))
         app.save()
-        messages.success(request, 'Thanks for your submission!')
+
+        # messages.success(request, 'Thanks for your submission!')
+
+        body = '' \
+               '<div class="row">' \
+               '<div class="col-md-6 text-center">' \
+               '<p>Thanks for your submission!</a>' \
+               '</div>' \
+               '</div>'
+
+        modal_options = {
+            "title": "Submission done!",
+            "body": escape_html(body),
+            "footer": 'true'
+        }
+        messages.info(request, json.dumps(modal_options), extra_tags='modal')
         app.send_email()
+
     return render(request, 'pss/application.html', {'les_choices': Application.les_choices})
 
 

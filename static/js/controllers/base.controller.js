@@ -35,8 +35,14 @@ export default
                     modal_options.body = modal_options.body.replace(/ESCAPE/g, '"');
                     modal_options.title
                         && modal_options.body
-                        && MessageModal.openModal(modal_options.title || null, modal_options.body || null, null, null, null)
-
+                        && MessageModal.openModal(
+                            modal_options.title || null,
+                            modal_options.body || null,
+                            null,
+                            null,
+                            null,
+                            modal_options.footer
+                        )
                 }
                 catch(e){console.log('[ERROR] : modal message object is not valid');}
                 return

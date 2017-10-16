@@ -4,7 +4,8 @@ from dspconnector.connector import DSPConnector, DSPConnectorV12
 from dspconnector.serializers import TopicsSerializer, AudiencesSerializer, NewsSerializer
 import json
 
-class AuthTestCase(TestCase):
+
+class ConnectorTestCase(TestCase):
     def setUp(self):
         self.connector = DSPConnectorV12
 
