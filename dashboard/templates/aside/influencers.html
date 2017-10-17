@@ -14,7 +14,7 @@
 
             <div class="aside-body" style="padding:20px;">
                 <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
-                    <a href="https://www.twitter.com/{$ data['username'] $}" target="_blank">
+                    <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
                         <h5 class="pull-left" style="height: 2em;">
                             <img class="img-circle" ng-src="{$ data.profile_image_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                         <h5 class="pull-left" style="line-height: 2em;">
