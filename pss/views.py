@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import *
@@ -101,7 +102,8 @@ def application_pdf(request, application_id):
             response = HttpResponse(
                 open(abspath(dirname(__file__)) + '/application/%s' % application.zip_location, 'r').read(),
                 content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
+            response['Content-Disposition'] = \
+                'attachment; filename="{0}.pdf"'.format(application.project_name.encode('utf-8'))
     except Application.DoesNotExist:
         pass
     return response
