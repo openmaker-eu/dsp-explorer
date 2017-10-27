@@ -5,6 +5,7 @@ from django.http import *
 from django.contrib import messages
 from django.urls import reverse
 from .models import Application
+from itertools import groupby
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging
@@ -79,10 +80,23 @@ def application(request):
     #
     # return render(request, 'pss/application.html', {'les_choices': Application.les_choices})
 
-
 @staff_member_required(login_url='dashboard:login')
 def application_result(request):
-    context = {'applications': Application.objects.all()}
+
+    sortedapps = Application.objects.all()\
+        .order_by('les', 'profile__user__email', 'created_at')\
+        # .distinct('profile__user__email')
+
+    applications = map(
+        lambda x: (
+            Application.retrieve_les_label(x[0]),
+            map(lambda y: list(x[1])[-1], groupby(sortedapps, lambda app: app.profile.user.email))
+        ),
+        groupby(sortedapps, lambda x: x.les)
+    )
+    context = {
+        'applications': applications
+    }
     return render(request, 'pss/application_result.html', context)
 
 
