@@ -1,0 +1,91 @@
+.profile-image {
+
+	overflow: hidden;
+	border: 2px dashed #eeeeee;
+	width: 100%;
+	position: relative;
+	//padding-bottom: 100%;
+	border-radius: 50%;
+	cursor: pointer;
+
+
+	.image_icon {
+		position:absolute;
+		width: 100%;
+		text-align: center;
+		top: 40%;
+		//font-size: 30px;
+		color: #eeeeee;
+		z-index:1000;
+		display:none;
+	}
+	&:hover {
+		background: rgba(204, 204, 204, 0.0);
+		border: dashed 3px #db4348;
+		.image_icon{
+			color: #db4348;
+			display:block;
+		}
+	}
+}
+
+.profile-image-static {
+	overflow: hidden;
+	width: 100%;
+	position: relative;
+	padding-bottom: 100%;
+	border-radius: 50%;
+}
+
+.ui-select-bootstrap  {
+
+	* { box-shadow: none!important; outline:0 !important;}
+
+	& > .ui-select-choices{
+		left:0;
+		text-align: left;
+	}
+
+	input {width:100%!important;}
+
+	.ui-select-highlight { color :$red; }
+
+	.ui-select-choices {
+		.btn { width:100%; text-align: left;}
+	}
+
+	.ui-select-choices-row {
+		&.active .ui-select-choices-row-inner {
+			background-color: $red!important; color : #fff!important;
+			.ui-select-highlight { color: $dsp-grey; }
+		}
+
+	}
+
+	.ui-select-match-item {
+		&.btn-primary { background: $red; border:$red;}
+	}
+
+}
+
+.social-links-form{
+	.input-group {margin-bottom: 1%;}
+	.input-group-addon { background-color: #fff!important ;}
+	input { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+
+}
+
+.well-red {
+	@extend .well;
+	color: $red;
+	border-color: $red;
+	background: #fff;
+}
+
+.social-anchor {
+	&:hover, &:hover * { color: $dsp-red; font-weight: 900; }
+
+}
+
+
+/*rgba(204, 204, 204, 0.5)*/

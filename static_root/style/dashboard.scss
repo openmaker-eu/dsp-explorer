@@ -1,0 +1,239 @@
+/*
+IMAGES
+
+*/
+
+.feed_img {
+    width: 150px;
+    height: 150px;
+}
+
+.cover-img {
+    width:100%;
+}
+.sub-img {
+    height: 300px;
+}
+.icon-img {
+    height: 100px;
+}
+
+.color-row {
+    background-color: #333333;
+}
+
+/*
+
+BUTTONS
+
+*/
+
+.invite-button, .invite-button:focus {
+    font-size: 20px;
+    padding: 15px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+    text-decoration: none;
+}
+
+.invite-button:hover{
+    font-size: 20px;
+    padding: 15px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 300;
+    text-decoration: none;
+
+}
+
+.logo-button{
+    float:left;
+    margin-top: 22px;
+    margin-left:-20px;
+    color: #db4348;
+    background: transparent;
+    border: solid 1px;
+    height: 24px;
+    width: 26px;
+    padding: 2px;
+}
+
+.logo-button:hover{
+    background: #db4348;
+    color: #fff;
+    border: solid 1px #fff;
+}
+
+.feed-button{
+    font-size: 16px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    width: 33%;
+    float: left;
+}
+
+.feed-button:hover{
+    background: #db4348;
+    color: #fff;
+    border: solid 1px #fff;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
+}
+
+.members-button{
+    font-size: 14px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    width: 30%;
+    float: left;
+    margin-top: 8px;
+}
+
+.members-button:hover{
+    background: #db4348;
+    color: #fff;
+    border: solid 1px #fff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
+}
+.active-btn{
+    background: #db4348;
+    color: #fff;
+    border: solid 1px #fff;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
+}
+
+
+.custom-button, .custom-button:focus {
+    font-size: 20px;
+    padding: 15px;
+    background: transparent;
+    color: #db4348;
+    border: solid 1px;
+    font-weight: 600;
+}
+
+.custom-button:hover {
+    background: #db4348;
+    color: #fff;
+    border: solid 1px #fff;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 5px rgba(0,0,0,.075);
+}
+
+.claim {
+    font-weight: 400;
+    font-size: 24px;
+}
+
+.sub-title {
+    font-weight: 100;
+    font-size: 20px;
+}
+
+.sub-title a{
+    color: #fff;
+}
+
+.box {
+    min-height: 150px;
+    border: 1px solid darkgrey;
+    position: relative;
+}
+
+.box p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.box:hover {
+    background: #db4348;
+    -webkit-box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+    -moz-box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+    box-shadow: 2px 2px 19px 3px rgba(0,0,0,0.08);
+}
+
+.box:hover p {
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/*
+
+    FOOTER
+
+*/
+.back{
+    background-color: #333;
+}
+
+.icon-eu{
+    width:80px;
+    height:40px;
+    background-color: blue;
+    margin-top:30px;
+    /*margin-left:30px;*/
+    margin-bottom:30px;
+}
+
+.fake-check {position: absolute; z-index:-1000; opacity:0;}
+
+
+input:focus {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(204, 204, 204, 0.6) !important;
+    border-color:$grey!important;
+}
+
+
+/*
+
+    MARGIN LIST:
+
+*/
+
+.no-scroll { overflow-y: hidden; }
+
+.btn:focus, a:focus{ outline-color: rgba(255,255,255,0)!important; outline-width: 0!important;}
+
+.carousel-inner .item {
+    display: block;
+    height: 0;
+    opacity: 0;
+}
+.carousel-inner .item.active {
+    height: auto;
+    opacity: 1;
+    transition: opacity .5s ease-in;
+}
+
+.glyphicon-chevron-left:before, .glyphicon-chevron-right:before {
+    color: #db4348;
+}
+
+.carousel-control .icon-next, .carousel-control .glyphicon-chevron-right {    right: 0;
+    margin-right: -10px;}
+.carousel-control .icon-prev, .carousel-control .glyphicon-chevron-left {left: 0%;
+    margin-left: -10px}
+
+.tags-align {
+    text-align: right;
+    @media (max-width: 992px) {
+        text-align: left;
+        margin-top: 50px;
+  }
+}
+
+a {
+    text-decoration: none!important;
+    &:hover{color: $dsp-red;}
+}
