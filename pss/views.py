@@ -84,21 +84,37 @@ def application(request):
 def application_result(request):
 
     sortedapps = Application.objects.all()\
-        .order_by('les', 'profile__user__email', 'created_at')\
-        # .distinct('profile__user__email')
+        .order_by('les', 'profile__user__email', 'created_at')
+
+    # map(
+    #     lambda y: list(y[1])[-1],
+    #     groupby(sortedapps, lambda app: app.profile.user.email)
+    # )
+
+    grouped_by_les = groupby(sortedapps, lambda group: group.les)
+
+
 
     applications = map(
-        lambda x: (
-            Application.retrieve_les_label(x[0]),
-            map(lambda y: list(x[1])[-1], groupby(sortedapps, lambda app: app.profile.user.email))
-        ),
-        groupby(sortedapps, lambda x: x.les)
+        lambda grouped: (Application.retrieve_les_label(grouped[0]), remove_duplicate_applications(grouped[1]))
+        ,
+        grouped_by_les
     )
+
+    print applications
+
     context = {
         'applications': applications
     }
     return render(request, 'pss/application_result.html', context)
 
+
+def remove_duplicate_applications(apps):
+    grouped_by_email = groupby(apps, lambda app: app.profile.user.email)
+    return map(
+        lambda y: list(y[1])[-1],
+        grouped_by_email
+    )
 
 @login_required
 def application_pdf(request, application_id):
