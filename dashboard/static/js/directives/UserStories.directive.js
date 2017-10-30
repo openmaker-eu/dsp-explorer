@@ -3,7 +3,8 @@ import * as _ from 'lodash'
 let template = `
     <div class="row">
         <div class="col-md-12">
-            <h2><strong class="text-red">Stories</strong> <small>from <a href="http://openmaker.eu/" target="_blank">openmaker.eu</a></small></h2>
+            <!--<h2><strong class="text-red">Stories</strong> <small>from <a href="http://openmaker.eu/" target="_blank">openmaker.eu</a></small></h2>-->
+            <h2>Explore the <strong class="text-red">Community</strong></h2>
         </div>
         
         <div class="col-md-3" ng-repeat="story in stories | limitTo:3">
