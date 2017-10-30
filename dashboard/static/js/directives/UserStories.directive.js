@@ -17,7 +17,7 @@ let template = `
                         <h5 ng-bind-html="story.title.rendered" ></h5>
                     </div>
                     <div class="card-action">
-                        <p ng-bind-html="(story.excerpt.rendered | limitTo: 80) + '...'"></p>
+                        <p ng-bind-html="(story.excerpt.rendered | limitTo: 100) + '...'"></p>
                     </div>
                 </a>
             </div>
