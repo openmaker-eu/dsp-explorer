@@ -12,12 +12,12 @@ let template = `
                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                         <img ng-if="story.image" style="min-width:100%;" ng-src="{$ story.image $}" class="img-responsive" alt="Story image">
                     </div>
-                    <div class="card-content text-center">
+                    <div class="card-content">
                         <!--<h5>{{ feed.title|truncatechars:40 }}</h5>-->
                         <h5 ng-bind-html="story.title.rendered" ></h5>
                     </div>
                     <div class="card-action">
-                        <p ng-bind-html="story.excerpt.rendered"></p>
+                        <p ng-bind-html="(story.excerpt.rendered | limitTo: 80) + '...'"></p>
                     </div>
                 </a>
             </div>
