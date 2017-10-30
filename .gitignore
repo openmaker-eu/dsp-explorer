@@ -11,6 +11,7 @@ static_root/
 
 # Environment
 env
+backup
 
 # MAC stuff
 .DS_Store
