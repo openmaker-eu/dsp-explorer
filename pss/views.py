@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import *
 from django.contrib import messages
 from django.urls import reverse
 from .models import Application
+from itertools import groupby
 from dashboard.models import Profile
 from django.contrib.admin.views.decorators import staff_member_required
 import logging
@@ -78,12 +80,41 @@ def application(request):
     #
     # return render(request, 'pss/application.html', {'les_choices': Application.les_choices})
 
-
 @staff_member_required(login_url='dashboard:login')
 def application_result(request):
-    context = {'applications': Application.objects.all()}
+
+    sortedapps = Application.objects.all()\
+        .order_by('les', 'profile__user__email', 'created_at')
+
+    # map(
+    #     lambda y: list(y[1])[-1],
+    #     groupby(sortedapps, lambda app: app.profile.user.email)
+    # )
+
+    grouped_by_les = groupby(sortedapps, lambda group: group.les)
+
+
+
+    applications = map(
+        lambda grouped: (Application.retrieve_les_label(grouped[0]), remove_duplicate_applications(grouped[1]))
+        ,
+        grouped_by_les
+    )
+
+    print applications
+
+    context = {
+        'applications': applications
+    }
     return render(request, 'pss/application_result.html', context)
 
+
+def remove_duplicate_applications(apps):
+    grouped_by_email = groupby(apps, lambda app: app.profile.user.email)
+    return map(
+        lambda y: list(y[1])[-1],
+        grouped_by_email
+    )
 
 @login_required
 def application_pdf(request, application_id):
@@ -101,7 +132,8 @@ def application_pdf(request, application_id):
             response = HttpResponse(
                 open(abspath(dirname(__file__)) + '/application/%s' % application.zip_location, 'r').read(),
                 content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(application.project_name)
+            response['Content-Disposition'] = \
+                'attachment; filename="{0}.pdf"'.format(application.project_name.encode('utf-8'))
     except Application.DoesNotExist:
         pass
     return response

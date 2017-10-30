@@ -45,6 +45,12 @@ class Application(models.Model):
             if code == les[0]: return les[1]
         return 'less found undefined'
 
+    @staticmethod
+    def retrieve_les_label(code):
+        for les in Application.les_choices:
+            if code == les[0]: return les[1]
+        return 'less found undefined'
+
     def send_email(self):
 
         p_user = Profile.objects.get(user__id=self.profile.user_id)
