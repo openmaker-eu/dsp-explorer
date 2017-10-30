@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'dspconnector.apps.DspconnectorConfig',
     'pss.apps.PssConfig',
+    'chatbot.apps.ChatbotConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
