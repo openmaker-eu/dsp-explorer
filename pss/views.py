@@ -93,8 +93,6 @@ def application_result(request):
 
     grouped_by_les = groupby(sortedapps, lambda group: group.les)
 
-
-
     applications = map(
         lambda grouped: (Application.retrieve_les_label(grouped[0]), remove_duplicate_applications(grouped[1]))
         ,

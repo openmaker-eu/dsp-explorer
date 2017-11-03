@@ -27,7 +27,6 @@ def logout_page(request):
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
 
-
 def login_page(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
