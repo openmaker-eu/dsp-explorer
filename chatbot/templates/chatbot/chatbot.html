@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container" ng-controller="chatbotController">
-        <style>
-
-
-        </style>
         <div class="row">
             <div class="col-md-4">
                 <form  ng-submit="message()">
@@ -13,7 +9,7 @@
                         <input ng-model="user_message" class="form-control" placeholder="Enter here your message">
                     </div>
                     <input type="submit"  class="btn login-button" value="submit">
-                    <p class="margin-top-10"><small>For this sample we are using <strong>RASA.AI</strong> framework.<br> Check <strong><a href="https://rasa.ai">HERE</a></strong>the documentation</small></p>
+                    <p class="margin-top-10"><small>For this sample we are using <strong>RASA.AI</strong> framework.<br> Check <strong><a href="https://rasa.ai">HERE</a></strong> for the documentation</small></p>
                 </form>
             </div>
             <div class="col-md-4" ng-show="message_history.length>0">
@@ -29,7 +25,7 @@
                 <!--<pretty-json ng-repeat="item in message_history track by $index" ng-if="$last" json="item.nlu"></pretty-json>-->
                 <!--<pretty-json json="json_message"></pretty-json>-->
                 <!--<pretty-json json="json_message"></pretty-json>-->
-                <span >{$ message_history[0].nlu $}</span>
+                <pre><code ng-bind="message_history_nlu"></code></pre>
 
             </div>
 

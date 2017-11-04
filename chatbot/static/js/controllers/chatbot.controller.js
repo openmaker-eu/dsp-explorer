@@ -1,12 +1,11 @@
 export default [ '$scope','$http', function ($scope,$http) {
-    
+
     $scope.user_message = ''
-    $scope.json_message = {"name":"massimo"}
-    
+
     $scope.message_history = []
-    
+
     $scope.message = () => {
-        
+
         console.log($scope.user_message);
 
         $http({
@@ -19,8 +18,7 @@ export default [ '$scope','$http', function ($scope,$http) {
         }).then(
             res=>{
                 $scope.message_history.unshift(res.data)
-                // $scope.json_message = res.data.nlu
-                console.log($scope.message_history);
+                $scope.message_history_nlu = JSON.stringify($scope.message_history[0].nlu, undefined, 2);
             }
         )
         
