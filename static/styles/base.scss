@@ -156,8 +156,10 @@ $whitespacers : 'margin' , 'padding';
 }
 
 $red : rgb( 219 , 67 ,72 );
+$white : #ffff;
 $dark-red : rgb(181, 15, 22);
 $grey : #aaa;
+$light-grey : #eeeeee;
 $red-75 : rgba( 219 , 67 ,72, 0.075 );
 $grey-75: rgba(204, 204, 204, 0.075);
 
@@ -166,10 +168,17 @@ body {
 }
 
 .text-grey { color: $grey!important;}
+.text-light-grey { color: $light-grey!important;}
 .text-red { color: $red!important;}
+.text-white { color: $white!important;}
 
 .bg-grey    {   background-color: $grey!important;}
+.bg-light-grey    {   background-color: $light-grey!important;}
 .bg-red     {   background-color: $red!important;}
+
+.border-grey    {   border-color: $grey!important;}
+.border-light-grey   {   border-color: $light-grey!important;}
+.border-red     {   border-color: $red!important;}
 
 html, body {
 	height: 100%;

@@ -1,34 +1,59 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container" ng-controller="chatbotController">
-        <div class="row">
-            <div class="col-md-4">
+<style>
+    .message{ width:100%; max-width:100%; float:left;}
+    .message-button {padding:5px 15px; max-width:96%; border-radius: 5px; margin:1%; }
+    .message .bot { float: left }
+    .message .user { float: right }
+    .message-body { float: left; clear: both; font-size:1rem; }
+    .message-header { font-style: italic; font-size:0.7rem;  float: right; clear: both;}
+</style>
+<div class="container" ng-controller="chatbotController">
+    <div class="row">
+
+        <div class="col-md-5">
+            <div class="col-md-12">
                 <form  ng-submit="message()">
                     <h3>Your Message</h3>
+                    <span><small>For this sample we are using <strong>RASA.AI</strong> framework.<br> Check <strong><a href="https://rasa.ai">HERE</a></strong> for the documentation</small></span>
+                    <br>
+                    <br>
                     <div class="form-group">
                         <input ng-model="user_message" class="form-control" placeholder="Enter here your message">
                     </div>
-                    <input type="submit"  class="btn login-button" value="submit">
-                    <p class="margin-top-10"><small>For this sample we are using <strong>RASA.AI</strong> framework.<br> Check <strong><a href="https://rasa.ai">HERE</a></strong> for the documentation</small></p>
+
+                    <input type="submit"  class="btn login-button pull-left" value="submit">
+
                 </form>
             </div>
-            <div class="col-md-4" ng-show="message_history.length>0">
+
+            <div class="col-md-12" ng-show="message_history.length>0">
+                <hr>
                 <h3>OM BOT</h3>
                 <span ng-repeat="item in message_history track by $index">
-                        <pre >{$ item.message $}</pre>
-
+                <span class="message">
+                    <btn
+                            class="message-button {$ item.source $}"
+                            ng-class="
+                             {
+                                'bg-red border-red text-white':item.source=='user',
+                                'bg-light-grey border-light-grey':item.source=='bot',
+                             }
+                             "
+                    >
+                        <span class="message-body">{$ item.message $}</span>
+                        <span class="message-header">{$ item.date | date: 'HH:mm:ss' $}</i></span><br>
+                    </btn>
                 </span>
+            </span>
             </div>
-            <div class="col-md-4" ng-show="message_history.length>0">
-                <h3>NLU</h3>
-                <!--<pre ng-repeat="item in message_history track by $index" ng-if="$last">{$ item.nlu $}</pre>-->
-                <!--<pretty-json ng-repeat="item in message_history track by $index" ng-if="$last" json="item.nlu"></pretty-json>-->
-                <!--<pretty-json json="json_message"></pretty-json>-->
-                <!--<pretty-json json="json_message"></pretty-json>-->
-                <pre><code ng-bind="message_history_nlu"></code></pre>
-
-            </div>
-
         </div>
+
+        <div class="col-md-7" ng-show="message_history.length>0">
+            <h3>NLU</h3>
+            <pre style="padding:5%;"><code ng-bind="nlu_last_response"></code></pre>
+        </div>
+
     </div>
+</div>
 {% endblock %}
