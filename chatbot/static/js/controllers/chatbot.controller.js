@@ -1,11 +1,18 @@
 export default [ '$scope','$http', function ($scope,$http) {
 
     $scope.user_message = ''
-
     $scope.message_history = []
 
     $scope.message = () => {
-
+        
+        let user_message = {
+            source:'user',
+            date: Date.now(),
+            message: $scope.user_message
+        }
+        
+        $scope.message_history.unshift(user_message)
+        
         $http({
             url: '/chatbot/v1.1/message/',
             method: "POST",
@@ -15,9 +22,16 @@ export default [ '$scope','$http', function ($scope,$http) {
             }
         }).then(
             res=>{
-                $scope.message_history.unshift(res.data)
+                let bot_message = {
+                    source : 'bot',
+                    date: Date.now(),
+                    message: res.data.message
+                }
+                
+                $scope.message_history.unshift(bot_message)
                 // $scope.json_message = res.data.nlu
-                $scope.message_history_nlu = JSON.stringify($scope.message_history[0].nlu, undefined, 2);
+                $scope.nlu_last_response = JSON.stringify(res.data, undefined, 2);
+                $scope.user_message = ''
             }
         )
         
