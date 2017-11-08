@@ -14,7 +14,7 @@
 {#                    SUBMIT YOUR APPLICATION#}
 {#                </a>#}
                 <p class="claim text-center">
-                    <strong>THE CALL IS CLOSED! STAY TUNED</strong><br>
+                    <strong class="text-red">THE CALL IS CLOSED! STAY TUNED</strong><br>
                 </p>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 <div class="col-md-12">
                     <div class="col-md-12 theme-name">
                         <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}</h2>
-                        <h2>Explore the community!</h2>
+                        <h2>Discover the Movement!</h2>
                         <div class="col-md-12 text-center margin-bottom-25">
                             <div class="col-md-12 text-center theme-name">
                                 <span class="text-red">
@@ -58,11 +58,11 @@
                                         <img style="min-width:100%;" src="{{ news.im }}" class="img-responsive"
                                              alt="{{ news.title }}">
                                     </div>
-                                    <div class="card-content text-center">
+                                    <div class="card-content">
                                         <h5>{{ news.title|truncatechars:40 }}</h5>
                                     </div>
                                     <div class="card-action">
-                                        <p>{{ news.summary|truncatechars:50 }}</p>
+                                        <p>{{ news.summary|truncatechars:100 }}</p>
                                     </div>
                                 </a>
                             </div>

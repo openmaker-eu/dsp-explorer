@@ -117,12 +117,12 @@
                                 <img style="min-width:100%;" ng-if="feed.im" src="{$ feed.im $}" class="img-responsive" alt="{$feed.title$}">
                                 <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
                             </div>
-                            <div class="card-content text-center">
+                            <div class="card-content">
                                 <h5 ng-if="feed.title">{$ feed.title | limitTo: 40 $} {$ feed.title.length > 50 ? '...' : '' $}</h5>
                                 <h5 ng-if="!feed.title" >No Title provided </h5>
                             </div>
                             <div class="card-action">
-                                <p ng-if="feed.summary">{$ feed.summary | limitTo: 50 $} {$ feed.summary.length > 50 ? '...' : '' $}</p>
+                                <p ng-if="feed.summary">{$ feed.summary | limitTo: 100 $} {$ feed.summary.length > 100 ? '...' : '' $}</p>
                                 <p ng-if="!feed.summary">No Description provided </p>
                             </div>
                         </a>
