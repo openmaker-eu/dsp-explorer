@@ -58,6 +58,14 @@ class DSPConnectorV12(object):
         )
 
     @staticmethod
+    # TODO get_events use also date param but we need more specification from watchtowe documentation
+    def get_events(topic_id):
+        return DSPConnectorV12._get(DSPConnectorV12.generate_url(
+            endpoint='/get_events',
+            parameter='?topic_id={}'.format(topic_id))
+        )
+
+    @staticmethod
     def generate_url(endpoint, parameter=None):
         return settings.DSP_BASE_URL + '/api/v1.2' + endpoint + parameter if parameter else settings.DSP_BASE_URL + '/api/v1.2' + endpoint
 

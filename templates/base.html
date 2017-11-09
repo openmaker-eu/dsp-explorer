@@ -76,9 +76,6 @@
                             <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:invite' %}">Invite new members</a>
                             </li>
-                            <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
-                                <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
-                            </li>
 
                             {% if not request.user.is_superuser %}
                                 {#                                <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >#}
@@ -96,6 +93,9 @@
                                         {#                                            <a href="{% url 'pss:application' %}">Submission</a>#}
                                         {#                                        </li>#}
                                     </ul>
+                                </li>
+                                <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
+                                    <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
                                 </li>
                             {% endif %}
 

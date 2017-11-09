@@ -29,6 +29,12 @@ def dashboard(request):
         selected_topic = random.choice(topics_list)
         hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
         top_influencers = DSPConnectorV12.get_audiences(selected_topic['topic_id'])['audiences'][:4]
+        # TODO add events
+        events_by_topic = DSPConnectorV12.get_events(selected_topic['topic_id'])['events'][:4]
+
+        print selected_topic
+        print '*****'
+        print events_by_topic
     except DSPConnectorException as e:
         messages.error(request, e.message)
         topics_list = {}
@@ -45,7 +51,8 @@ def dashboard(request):
         'hot_tags': hot_tags,
         'json_hot_tags': json.dumps(hot_tags),
         'hot_news': hot_news,
-        'top_influencers': top_influencers
+        'top_influencers': top_influencers,
+        'events': events_by_topic
     }
     return render(request, 'dashboard/dashboard.html', context)
 
