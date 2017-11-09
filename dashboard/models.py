@@ -126,8 +126,8 @@ class Profile(models.Model):
     def get_name(self):
         import unicodedata
         return unicodedata.normalize('NFKD', self.user.first_name).encode('ascii', 'ignore')
-    
-    def get_lastname(self):
+
+    def get_last_name(self):
         import unicodedata
         return unicodedata.normalize('NFKD', self.user.last_name).encode('ascii', 'ignore')
 

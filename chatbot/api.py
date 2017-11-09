@@ -4,8 +4,8 @@ import requests, json
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12
 
 
-# rasa_url = 'http://localhost:5000'
-rasa_url = 'http://194.116.76.49:5000'
+rasa_url = 'http://localhost:5000'
+# rasa_url = 'http://194.116.76.49:5000'
 
 @csrf_exempt
 def message_to_rasa_nlu(request):

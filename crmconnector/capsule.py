@@ -7,6 +7,7 @@ class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
+        # print response.content
         if response and response.status_code < 205:
             return response.json()
         raise Exception(response)

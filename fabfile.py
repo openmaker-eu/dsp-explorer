@@ -11,6 +11,11 @@ def install():
     local('pip install -r requirements.txt')
     local('npm i')
 
+
+def pip_save(package):
+    local('pip install %s && pip freeze > requirements.txt' % package)
+
+
 def install_static():
     local('python ./manage.py collectstatic')
 
