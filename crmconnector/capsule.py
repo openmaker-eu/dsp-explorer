@@ -7,9 +7,11 @@ class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-        # print response.content
+
         if response and response.status_code < 205:
             return response.json()
+        else:
+            print '[DSP-CONNECTOR ERROR] : %s' % response.content
         raise Exception(response)
     
     @staticmethod

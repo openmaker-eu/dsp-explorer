@@ -200,10 +200,22 @@ def profile(request, profile_id=None, action=None):
                 })
             except:
                 messages.error(request, 'Some error occures, please try again!')
-                logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
-                # TODO SEND ERROR EMAIL TO ADMIN
+                logging.error('[VALIDATION_ERROR] Error during CRM Update for user: %s' % crmUser.id)
                 return HttpResponseRedirect(reverse('dashboard:profile'))
         else:
+            try:
+                capsule.CRMConnector.add_party({'party': {
+                    'emailAddresses': [{'address': user.email}],
+                    'firstName': user.first_name,
+                    'lastName': user.last_name,
+                    'jobTitle': user.profile.occupation,
+                    'pictureURL': request.build_absolute_uri(user.profile.picture.url)
+                }
+                })
+            except:
+                messages.error(request, 'Some error occures, please try again!')
+                logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
+                return HttpResponseRedirect(reverse('dashboard:profile'))
             print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
             logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
         
