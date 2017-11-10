@@ -32,6 +32,7 @@ app.controller('landingController', require('./controllers/landing.controller').
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )
 app.controller('themesController', require('./controllers/themes.controller').default )
+app.controller('eventsController', require('./controllers/events.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
 
