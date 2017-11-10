@@ -36,7 +36,9 @@ class CrmTestCase(TestCase):
 
         # Extra fields
         cls.user.profile.types_of_innovation = 'Product innovation,Technological innovation,Business model innovation'
-        cls.user.profile.organization = 'tester org',
+        cls.user.profile.organization = 'testerorg'
+        cls.user.profile.statement = 'Hi im a test user generated from unit test suite'
+
         ## SOP
         cls.user.profile.source_of_inspiration.add(SourceOfInspiration.create('Apple'))
         cls.user.profile.source_of_inspiration.add(SourceOfInspiration.create('Microsoft'))
@@ -45,6 +47,7 @@ class CrmTestCase(TestCase):
         cls.user.profile.tags.add(Tag.create('Innovation'))
         cls.user.profile.tags.add(Tag.create('Social'))
         cls.user.profile.tags.add(Tag.create('Design'))
+
 
         cls.user.profile.save()
 

@@ -55,7 +55,7 @@ class Party(object):
 
         print ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all()))
         return {
-
+            # @TODO : utf8 problem on all text fields
             '444006': user.profile.city,
             '411964': user.profile.sector,
             '411952': user.profile.size,
@@ -63,13 +63,14 @@ class Party(object):
             '444008': user.profile.occupation,
             '444007': user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
+            '444016': user.profile.statement,
             # Types of innovation
             '411984': 'Product innovation' in user.profile.types_of_innovation,
             '411985': 'Process innovation' in user.profile.types_of_innovation,
             '411987': 'Technological innovation' in user.profile.types_of_innovation,
             '411988': 'Business model innovation' in user.profile.types_of_innovation,
             '411989': 'Social innovation' in user.profile.types_of_innovation,
-            #@TODO: make methods in model that saves and retrieve this
+            # @TODO: make methods in model that saves and retrieve this
             '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None,
 
             # @TODO: these fields does not work

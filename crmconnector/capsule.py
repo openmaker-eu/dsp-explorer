@@ -68,7 +68,7 @@ class CRMConnector(object):
         :param email: Email to search
         :return: API Response
         """
-        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}'.format(email)
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
         resp = CRMConnector._perform_get(search_url)
         try:
             party = resp.json().get('parties', [])
