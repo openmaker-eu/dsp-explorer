@@ -229,6 +229,18 @@ def get_news(request, topic_ids, date_name='yesterday', cursor=-1):
     }, status=200)
 
 
+def get_events(request, topic_ids, cursor=-1):
+    try:
+        events = DSPConnectorV12.get_events(topic_ids, cursor)
+    except DSPConnectorException:
+        events = {}
+
+    return JsonResponse({
+        'status': 'ok',
+        'result': events
+    }, status=200)
+
+
 def get_audiences(request, topic_id):
     try:
         audiences = DSPConnectorV12.get_audiences(topic_id)

@@ -10,10 +10,13 @@ urlpatterns = [
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
-    
+
     # Explore
     url(r'^dashboard/theme/(?P<topic_id>[0-9]+)/$', views.theme, name='theme'),
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
+    url(r'^dashboard/events/(?P<topic_id>[0-9]+)/$', views.events, name='events'),
+    url(r'^dashboard/events/$', views.events, {'topic_id': None}, name='events'),
+    # Dashboard
     url(r'^dashboard', views.dashboard, name='dashboard'),
     
     # Profiles
@@ -45,6 +48,8 @@ urlpatterns = [
     # API v1.2
     # NEWS (Ex Feeds)
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
+    # EVENTS
+    url(r'^api/v1.2/events/(?P<topic_ids>.+)/(?P<cursor>.+)/$', api.get_events, name='api_get_events'),
     
     # TOPICS (Ex Themes)
     url(r'^api/v1.2/topics', api.get_topics, name='api_get_topics'),

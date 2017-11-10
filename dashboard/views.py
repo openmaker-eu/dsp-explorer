@@ -29,12 +29,7 @@ def dashboard(request):
         selected_topic = random.choice(topics_list)
         hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
         top_influencers = DSPConnectorV12.get_audiences(selected_topic['topic_id'])['audiences'][:4]
-        # TODO add events
         events_by_topic = DSPConnectorV12.get_events(selected_topic['topic_id'])['events'][:4]
-
-        print selected_topic
-        print '*****'
-        print events_by_topic
     except DSPConnectorException as e:
         messages.error(request, e.message)
         topics_list = {}
@@ -44,6 +39,7 @@ def dashboard(request):
     
     hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
+
     context = {
         'selected_topic': selected_topic,
         'topics': topics_list,
@@ -59,7 +55,6 @@ def dashboard(request):
 
 @login_required()
 def theme(request, topic_id):
-    print topic_id
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
@@ -72,6 +67,22 @@ def theme(request, topic_id):
         return HttpResponseRedirect(reverse('dashboard:theme'))
     context = {'selected_topic': selected_topic, 'topics': topics_list}
     return render(request, 'dashboard/theme.html', context)
+
+
+@login_required()
+def events(request, topic_id):
+    try:
+        topics_list = DSPConnectorV12.get_topics()['topics']
+        selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
+            random.choice(topics_list)
+    except DSPConnectorException as e:
+        messages.error(request, e.message)
+        topics_list = {}
+        selected_topic = 'No themes'
+    except IndexError:
+        return HttpResponseRedirect(reverse('dashboard:events'))
+    context = {'selected_topic': selected_topic, 'topics': topics_list}
+    return render(request, 'dashboard/events.html', context)
 
 
 @login_required()
