@@ -15,15 +15,11 @@
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700" rel="stylesheet" charset=utf-8">
 
-    <!-- Global Site Tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-93159135-5" charset=utf-8"></script>
-    <script charset=utf-8">
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments)};
-        gtag('js', new Date());
+    {% if settings.ENV == 'production' %}
+        {% include "./analytics/analytics.html" %}
+    {% else %}
+    {% endif %}
 
-        gtag('config', 'UA-93159135-5');
-    </script>
 
 </head>
 
@@ -147,35 +143,12 @@
     {% endif %}
 </div>
 {% if user.is_anonymous %}
-
     <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
-{#        <div class="row" style="background: #333; color:#fff;">#}
-{#            <div class="col-md-12 text-center margin-top-30 margin-bottom-30" >#}
-{#                <p class="text-white claim text-center">#}
-{#                <p class="claim text-center">#}
-{#                    <strong>HAVE A BRILLIANT IDEA?</strong><br>#}
-{#                </p>#}
-{#                <!--<p class="text-white margin-top-50 margin-bottom-50">-->#}
-{#                <p class="margin-top-20 margin-bottom-20">#}
-{#                    <strong>2017 PILOT SUPPORT SCHEME CALL FOR PROPOSAL</strong><br><strong>€20,000</strong> and the help you need to make your idea a reality.#}
-{#                </p>#}
-                {#                <a class="btn custom-button margin-left-5" ng-click="openModal('#login_modal')">#}
-                {#                    Learn more#}
-                {#                </a>#}
-{#                <p class="claim text-center">#}
-{#                    <strong class="text-red">THE CALL IS CLOSED! STAY TUNED</strong><br>#}
-{#                </p>#}
-{#            </div>#}
-{#        </div>#}
         <div class="row" style="background: #efefef;">
             <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
                 <p class="claim text-center">
                     <strong>READ MORE ABOUT IT ON <span class="text-red">OPENMAKER</span> WEBSITE</strong><br>
                 </p>
-                <!--<p class="text-white margin-top-50 margin-bottom-50">-->
-{#                <p class="margin-top-20 margin-bottom-20">#}
-{#                    <strong>2017 PILOT SUPPORT SCHEME CALL FOR PROPOSAL</strong><br><strong>€20,0000</strong> and the help you need to make your idea a reality.#}
-{#                </p>#}
                 <a class="btn custom-button margin-left-5" href="http://openmaker.eu/">
                     READ MORE
                 </a>
