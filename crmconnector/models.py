@@ -20,16 +20,22 @@ class Party(object):
 
     def __from_user(self, user):
 
-        # Standard Fields
+        # Standard Mandatory Fields
         self.fields = []
         self.type = 'person'
         self.firstName = user.first_name
         self.lastName = user.last_name
         self.emailAddresses = [{'address': user.email}]
         self.jobTitle = user.profile.occupation
+
+        self.__social_links = json.loads(user.profile.socialLinks)
+        # print self.__social_links
+
+        # Standard Optional Fields
         if len(user.profile.tags.all()) > 0:
             self.tags = map(lambda x: {'name': x.name}, user.profile.tags.all())
-        self.organisation = {'name': user.profile.organization}
+        if user.profile.organization:
+            self.organisation = {'name': user.profile.organization}
 
         # Custom Fields
         for custom_id, local_value in self.get_custom_field(user).iteritems():
@@ -51,9 +57,7 @@ class Party(object):
 
     def get_custom_field(self, user):
 
-
-
-        return {
+        custom_fields = {
             # @TODO : utf8 problem on all text fields
             '444006': user.profile.city,
             '411964': user.profile.sector,
@@ -64,12 +68,20 @@ class Party(object):
             '444007': user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
             '444016': user.profile.statement,
+
             # Types of innovation
             '411984': 'Product innovation' in user.profile.types_of_innovation,
             '411985': 'Process innovation' in user.profile.types_of_innovation,
             '411987': 'Technological innovation' in user.profile.types_of_innovation,
             '411988': 'Business model innovation' in user.profile.types_of_innovation,
             '411989': 'Social innovation' in user.profile.types_of_innovation,
+
+            # Social links
+            # '412041': self.__social_links['twitter'],
+            '412041': filter(lambda social: social['name'] == 'twitter', self.__social_links)[0]['link'],
+            '412042': filter(lambda social: social['name'] == 'google-plus', self.__social_links)[0]['link'],
+            '412043': filter(lambda social: social['name'] == 'facebook', self.__social_links)[0]['link'],
+
             # @TODO: make methods in model that saves and retrieve this
             '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None,
 
@@ -77,15 +89,15 @@ class Party(object):
 
         }
 
+        return dict((k, v) for k, v in custom_fields.iteritems() if v)
+
+
     def all(self):
         return CRMConnector.get_all_parties()
 
     def update(self):
-
-        data_to_update = self.__dict__
-        if data_to_update['emailAddresses'] and len(data_to_update['emailAddresses']) > 0:
-            data_to_update['emailAddresses'] = data_to_update['emailAddresses'] if not data_to_update['emailAddresses'][0]['address'] in self.__capsule_emails else []
-        CRMConnector.update_party(self.__capsule_id, {'party': data_to_update})
+        self.emailAddresses[0]['address'] in self.__capsule_emails and self.emailAddresses.pop(0)
+        CRMConnector.update_party(self.__capsule_id, {'party': self.__dict__})
 
     def create(self):
         CRMConnector.add_party({'party': self.__dict__})

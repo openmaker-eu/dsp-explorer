@@ -50,6 +50,12 @@ class CrmTestCase(TestCase):
         cls.user.profile.technical_expertise = 'Digital fabrication - Digitalization of analog and traditional technologies'
         cls.user.profile.size = 'A small enterprise (<50 staff, ≲10 MLN of turnover, ≲10MLN total balance sheet)'
 
+        cls.user.profile.socialLinks = json.dumps([
+            {"link": "test_om_tw", "name": "twitter"},
+            {"link": "www.google.it", "name": "google-plus"},
+            {"link": "", "name": "facebook"}
+        ])
+
         cls.user.profile.save()
 
         # Create Party
