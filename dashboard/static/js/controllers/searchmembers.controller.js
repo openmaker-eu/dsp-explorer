@@ -22,6 +22,8 @@ export default ['$scope','$http','$sce', function ($scope, $http, $sce) {
     };
     
     $scope.search = (searchString) => {
+
+        console.log('SEARRRRCH');
         
         $scope.search_filter = searchString || $scope.search_filter;
         

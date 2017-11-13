@@ -26,6 +26,7 @@ let template = `
     </style>
 `
 
+// TODO want to pass to the directive the Angular search function instead of reloading the page
 export default [function(){
     
     return {
@@ -77,14 +78,17 @@ let bubble = (div_id, tags) => {
             .append("g")
             .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .append('a')
+            .attr('xlink:href', d=> '/search/members/'+d.data.name+'/')
         
         node.append("title")
             .text(function(d) { return d.data.name + "\n" + format(d.value); })
-        
-        node.append("circle")
+
+        node
+            .append("circle")
             .attr("r", function(d) { return d.r; } )
             .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
-            // .attr("fill", (d,i)=> colorScale(i))
+            //.attr("fill", (d,i)=> colorScale(i))
     
     function getSize(d, i ,a) {
         let bbox = this.getBBox(),
@@ -94,9 +98,9 @@ let bubble = (div_id, tags) => {
     }
 
     node.filter(function(d) { return !d.children; })
-        // .append("a")
-        // .style("font-size", function(d) { return d.scaleFontSize + "px"; })
-        .attr('href', d=> '/search/members/'+d.data.name+'/')
+        //.append("a")
+        //.style("font-size", function(d) { return d.scaleFontSize + "px"; })
+        //.attr('href', d=> '/search/members/'+d.data.name+'/')
         .append("text")
         .attr("dy", "0.3em")
         .text(function(d) { return d.data.name })
