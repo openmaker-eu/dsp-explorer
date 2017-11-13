@@ -10,6 +10,7 @@ from capsule import CRMConnector
 class Party(object):
 
     __capsule_id = None
+    __capsule_emails = None
 
     def __init__(self, user):
         self.__from_user(user)
@@ -28,6 +29,7 @@ class Party(object):
         self.jobTitle = user.profile.occupation
         if len(user.profile.tags.all()) > 0:
             self.tags = map(lambda x: {'name': x.name}, user.profile.tags.all())
+        self.organisation = {'name': user.profile.organization}
 
         # Custom Fields
         for custom_id, local_value in self.get_custom_field(user).iteritems():
@@ -38,28 +40,26 @@ class Party(object):
                 })
 
         # @TODO : Field that doesnt works
-        # self.organisation = user.profile.organization
-
         # Picture cannot be edited according to CapsuleCRM Api
         # self.pictureUrl = ''
 
         # @TODO: Fields/Custom-Fields seems to dont have exact corrispondence on CapsuleCRM
         # self.twitter_username = user.profile.twitter_username
         # self.socialLinks = ''
-        # self.role = ''
-        # self.statement = ''
 
         return self
 
     def get_custom_field(self, user):
 
-        print ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all()))
+
+
         return {
             # @TODO : utf8 problem on all text fields
             '444006': user.profile.city,
             '411964': user.profile.sector,
             '411952': user.profile.size,
-            '412035': user.profile.technical_expertise,
+            '444014': user.profile.technical_expertise,
+            '412036': user.profile.technical_expertise,
             '444008': user.profile.occupation,
             '444007': user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
@@ -77,14 +77,25 @@ class Party(object):
 
         }
 
+    def all(self):
+        return CRMConnector.get_all_parties()
+
     def update(self):
-        CRMConnector.update_party(self.__capsule_id, {'party': self.__dict__})
+
+        data_to_update = self.__dict__
+        if data_to_update['emailAddresses'] and len(data_to_update['emailAddresses']) > 0:
+            data_to_update['emailAddresses'] = data_to_update['emailAddresses'] if not data_to_update['emailAddresses'][0]['address'] in self.__capsule_emails else []
+        CRMConnector.update_party(self.__capsule_id, {'party': data_to_update})
 
     def create(self):
         CRMConnector.add_party({'party': self.__dict__})
 
     def get(self):
-        return CRMConnector.search_party_by_email(self.emailAddresses[0]['address'])
+        remote_party = CRMConnector.search_party_by_email(self.emailAddresses[0]['address'])
+        if remote_party:
+            self.__capsule_id = remote_party['id']
+            self.__capsule_emails = remote_party['emailAddresses'] if len(remote_party['emailAddresses']) > 0 else None
+        return remote_party
 
     def delete(self):
         if not self.__capsule_id:
@@ -105,6 +116,7 @@ class Party(object):
         remote_party = self.get()
         if remote_party and remote_party['id']:
             self.__capsule_id = remote_party['id']
+            self.__capsule_emails = map(lambda x: x['address'], remote_party['emailAddresses']) if len(remote_party['emailAddresses']) > 0 else None
             return self.update()
         return self.create()
 

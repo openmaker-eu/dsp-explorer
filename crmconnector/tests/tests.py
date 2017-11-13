@@ -24,8 +24,7 @@ class CrmTestCase(TestCase):
             'password': 'asdasd',
             'gender': 'Male',
             'birthdate': '1980-01-12',
-            # 'city': 'Torreón',
-            'city': 'Torreon',
+            'city': 'Torreón',
             'occupation': 'tester',
             'twitter_username': '',
             'place': '{"city":"Torreón","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
@@ -48,6 +47,8 @@ class CrmTestCase(TestCase):
         cls.user.profile.tags.add(Tag.create('Social'))
         cls.user.profile.tags.add(Tag.create('Design'))
 
+        cls.user.profile.technical_expertise = 'Digital fabrication - Digitalization of analog and traditional technologies'
+        cls.user.profile.size = 'A small enterprise (<50 staff, ≲10 MLN of turnover, ≲10MLN total balance sheet)'
 
         cls.user.profile.save()
 
@@ -60,7 +61,7 @@ class CrmTestCase(TestCase):
 
     def testConnection(self):
         print(Colorizer.LightPurple('[ CRM Test : Connection test ]'))
-        response = CRMConnector.get_all_parties()
+        response = self.party.all()
         self.assertEqual(response.status_code, 200, '[CRM-CONNECTOR ERROR] Response error :\n %s ' % response)
 
     def testFind(self):
@@ -71,5 +72,5 @@ class CrmTestCase(TestCase):
 
     def testInsertion(self):
         print(Colorizer.LightPurple('[ CRM Test : Insertion test ]'))
-        results = CrmTestCase.party.create_or_update()
+        results = self.party.create_or_update()
         self.assertTrue(True, '[CRM-CONNECTOR ERROR] Response is not a valid Party object :\n %s ')

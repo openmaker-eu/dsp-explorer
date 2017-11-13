@@ -77,6 +77,21 @@ class CRMConnector(object):
             return None
 
     @staticmethod
+    def search_party(field_name, field_value):
+        """
+        Perform an API Search
+        :param email: Email to search
+        :return: API Response
+        """
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
+        resp = CRMConnector._perform_get(search_url)
+        try:
+            party = resp.json().get('parties', [])
+            return party[0]
+        except IndexError:
+            return None
+
+    @staticmethod
     def get_all_parties(paginated=False):
         pagination = '?page=1&perPage=10' if paginated else ''
         return CRMConnector._perform_get(settings.CAPSULE_BASE_URL_PARTIES + '/' + pagination)
