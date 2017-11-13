@@ -7,9 +7,11 @@ class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-        # print response.content
+
         if response and response.status_code < 205:
             return response.json()
+        else:
+            print '[DSP-CONNECTOR ERROR] : %s' % response.content
         raise Exception(response)
     
     @staticmethod
@@ -66,7 +68,22 @@ class CRMConnector(object):
         :param email: Email to search
         :return: API Response
         """
-        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}'.format(email)
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
+        resp = CRMConnector._perform_get(search_url)
+        try:
+            party = resp.json().get('parties', [])
+            return party[0]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def search_party(field_name, field_value):
+        """
+        Perform an API Search
+        :param email: Email to search
+        :return: API Response
+        """
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
         resp = CRMConnector._perform_get(search_url)
         try:
             party = resp.json().get('parties', [])
