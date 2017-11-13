@@ -14,7 +14,7 @@ First of all you need to have:
 To ensure a stable and indipendent environment, use **virtualenv** (execute this command inside the root folder):
 
     pip install virtualenv
-    virtualenv env
+    virtualenv -p /usr/bin/python2.7 env
     source env/bin/activate
 
 To enable faster development and configuration we're using **fabric**:
