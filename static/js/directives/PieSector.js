@@ -13,18 +13,21 @@ export default [function(){
     
     return {
         template:template,
-        controller : ['$scope','$http', '$element', function($scope, $http, $element){
+        controller : ['$scope','$http', '$element', 'UserSearchFactory', function($scope, $http, $element, UserSearchFactory){
+            $scope.pie = pie.bind($scope)
+            $scope.filter = UserSearchFactory.search;
             $http.get('/api/v1.1/get_sectors').then( (results)=>{
                 results = _.get( results, 'data.sectors' )
-                results.length === 0 ? $('.sector-bar-container').hide() : pie('#pie_container', results )
+                results.length === 0 ? $('.sector-bar-container').hide() : $scope.pie('#pie_container', results )
             })
         }]
     }
     
 }]
 
-let pie = (div_id, sectors) => {
+let pie = function(div_id, sectors){
     
+    console.log('SEctoris : ', sectors);
     
     var container =  $(div_id)
     var parent = container.parent()
@@ -86,6 +89,7 @@ let pie = (div_id, sectors) => {
         .attr("fill", "#222")
         .attr("style", 'font-weight:900;')
         .style("text-anchor", d=>d.is_small ? 'start' : 'middle')
+        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
         .text(function(d, i){ return d.name+' ('+ d.size +')'});
     
 }

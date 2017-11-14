@@ -250,7 +250,7 @@ def profile(request, profile_id=None, action=None):
 
 
 @login_required()
-def search_members(request, search_string=0):
+def search_members(request, search_string=''):
     return render(request, 'dashboard/search_members.html', {
         'search_string': search_string,
         'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),

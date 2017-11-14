@@ -28,6 +28,7 @@ baseImports.angularBase(app)
     .dataVizDirectives(app)
 
 
+app.factory('UserSearchFactory', require('./factories/UserSearchFactory').default )
 app.controller('landingController', require('./controllers/landing.controller').default )
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )

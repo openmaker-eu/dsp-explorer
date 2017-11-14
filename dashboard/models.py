@@ -166,15 +166,26 @@ class Profile(models.Model):
         self.save()
 
     @classmethod
-    def search_members(cls, search_string):
+    def search_members(cls, search_string, restrict_to=None):
         from django.db.models import Q
+        if restrict_to == 'tags':
+            return cls.objects \
+                .filter(Q(tags__name__icontains=search_string)) \
+                .distinct()
+        if restrict_to == 'sectors':
+            return cls.objects \
+                .filter(Q(sector__icontains=search_string)) \
+                .distinct()
+
         return cls.objects\
-            .filter(Q(user__email__icontains=search_string) |
+            .filter(
+                Q(user__email__icontains=search_string) |
                 Q(user__first_name__icontains=search_string) |
                 Q(user__last_name__icontains=search_string) |
                 Q(tags__name__icontains=search_string) |
                 Q(twitter_username__icontains=search_string) |
                 Q(occupation__icontains=search_string) |
+                Q(sector__icontains=search_string) |
                 Q(city__icontains=search_string))\
             .distinct()
 

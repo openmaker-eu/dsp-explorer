@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container" ng-controller="searchController" ng-init="get_last_members('{{search_string}}')">
+    <div class="container" ng-controller="searchController" ng-init="search('{{search_string}}')">
 
         <div class="row">
             <div class="col-md-12">
@@ -18,16 +18,16 @@
                     <!--Anchor for members on page load-->
                     <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                     <div class="col-md-12">
-                        <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
+                        <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_factory.search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
                         <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded </h3>
                     </div>
                     <div class="col-md-12">
                         <form>
                             <div class="has-feedback has-feedback-left" style="width:100%">
                                 <input class="form-control"
-                                       ng-change="search_filter.length < 3 ? search() : searchDebounced()"
+                                       ng-change="search_factory.search_filter.length < 3 ? search() : searchDebounced()"
                                        ng-model-options="{allowInvalid: true}"
-                                       ng-model="search_filter" id="filter" type="text" class="form-control"
+                                       ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
                                        placeholder="Search members for name, city, tagwords and more" value=""
                                 >
                                 <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
@@ -45,19 +45,19 @@
 
                             <div class="col-md-8 col-xs-8">
                                 <a href="/profile/{$data['id']$}">
-                                    <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
+                                    <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_factory.search_filter)"></span></strong>
                                 </a>
-                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
+                                <br><span ng-bind-html="highlight((data.city), search_factory.search_filter)"></span>
+                                <br><span ng-bind-html="highlight((data.occupation), search_factory.search_filter)"></span>
                                 <br>
 
                                 <i
                                         ng-repeat="tag in data.tags"
-                                        ng-class="{ 'text-red' : search_filter == tag.name }"
-                                        ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
+                                        ng-class="{ 'text-red' : search_factory.search_filter == tag.name }"
+                                        ng-click="search_factory.search_filter = search_factory.search_filter == tag.name ? '' : tag.name; search()"
                                         class="pointer"
                                 >
-                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
+                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
                                 </i>
 
                             </div>

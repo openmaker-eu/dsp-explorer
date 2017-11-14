@@ -15,7 +15,8 @@ import random
 
 
 def search_members(request, search_string):
-    result = Profile.search_members(search_string)
+
+    result = Profile.search_members(search_string, request.GET.get('restrict_to', None))
     serializer = ProfileSerializer(instance=result, many=True)
     return JsonResponse({'status': 'ok',
                          'search_string': search_string,
@@ -63,9 +64,11 @@ def get_hot_tags(request, tag_number=4):
 
 
 def get_sector(request):
-    return JsonResponse({'status': 'ok',
-                         'sectors': [
-                             {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]}, status=200)
+    return JsonResponse(
+        {'status': 'ok',
+         'sectors': [
+             {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]
+         }, status=200)
 
 
 def get_places(request):
