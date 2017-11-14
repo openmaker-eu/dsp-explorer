@@ -73,6 +73,8 @@ let pie = function(div_id, sectors){
         .attr("x", 0)
         .attr("width", function (d) { return x(d.size); })
         .attr("fill",  (d, i) => colorScale(d.size) )
+        .attr("class", "pointer")
+        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
     
     
     bars.append('text')
@@ -89,7 +91,6 @@ let pie = function(div_id, sectors){
         .attr("fill", "#222")
         .attr("style", 'font-weight:900;')
         .style("text-anchor", d=>d.is_small ? 'start' : 'middle')
-        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
         .text(function(d, i){ return d.name+' ('+ d.size +')'});
     
 }

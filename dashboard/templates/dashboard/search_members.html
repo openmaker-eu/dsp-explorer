@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container" ng-controller="searchController" ng-init="search('{{search_string}}')">
+    <div class="container-fluid" ng-controller="searchController" ng-init="search('{{search_string}}')">
 
         <div class="row">
             <div class="col-md-12">
@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="col-md-5" style="padding-right:3%; ">
+                <div class="col-md-7" style="padding-right:3%; ">
                     <!--Anchor for members on page load-->
                     <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                     <div class="col-md-12">
@@ -29,15 +29,22 @@
                                        ng-model-options="{allowInvalid: true}"
                                        ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
                                        placeholder="Search members for name, city, tagwords and more" value=""
+
                                 >
-                                <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                                <i ng-if="search_factory.search_filter==''" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                                <i
+                                        ng-if="search_factory.search_filter!=''"
+                                        ng-click="search()"
+                                        class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
+                                        style="pointer-events:initial;"
+                                ></i>
                             </div>
                         </form>
                         <br>
                         <br>
                         <br>
                     </div>
-                    <div class="col-md-12" style="margin-bottom: 3%;" ng-repeat="data in results">
+                    <div class="col-md-6" style="margin-bottom: 3%;" ng-repeat="data in results">
                         <div class="row">
                             <div class="col-md-4 col-xs-4">
                                 <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
@@ -52,10 +59,10 @@
                                 <br>
 
                                 <i
-                                        ng-repeat="tag in data.tags"
-                                        ng-class="{ 'text-red' : search_factory.search_filter == tag.name }"
-                                        ng-click="search_factory.search_filter = search_factory.search_filter == tag.name ? '' : tag.name; search()"
-                                        class="pointer"
+                                    ng-repeat="tag in data.tags"
+                                    ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
+                                    ng-click="search(tag.name)"
+                                    class="pointer"
                                 >
                                     <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
                                 </i>
@@ -68,7 +75,7 @@
                 <!--Anchor for tag on page load-->
 
 
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <div class="row">
 
                         <div class="col-md-12 margin-top-30">

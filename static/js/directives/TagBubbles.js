@@ -35,12 +35,14 @@ export default [function(){
             tags: '='
         },
         controller : ['$scope','$http', 'UserSearchFactory', function($scope, $http, UserSearchFactory){
+            
             $scope.bubble = bubble.bind($scope)
             $scope.filter = UserSearchFactory.search;
             
             $http.get('/api/v1.1/get_hot_tags/20/').then((results)=>{
                 $scope.bubble('#bubble_container', _.get( results, 'data.tags' ))
             })
+            
         }]
     }
     
@@ -81,8 +83,8 @@ let bubble = function(div_id, tags){
             .append("g")
             .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .attr("class", "pointer")
             .on('click', (d,i)=>{  this.filter(d.data.name, 'tags') });
-            // .append('a')
             // .attr('xlink:href', d=> '/search/members/'+d.data.name+'/')
         
         node.append("title")
