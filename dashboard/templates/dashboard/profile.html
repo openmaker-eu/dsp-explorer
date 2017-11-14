@@ -178,16 +178,16 @@
                     <div class="col-md-6">
                         <div class="well-red">SOCIAL LINKS</div>
                         <p
-                            ng-repeat=" socialX in _.clone(socialLinks) "
+                            ng-repeat="socialX in _.clone(socialLinks) "
                             ng-if="socialX.link"
                             tooltip-placement="top-left" uib-tooltip="{$ '&nbsp;'+ social.name + '&nbsp;' $}"
                             tooltip-popup-delay="1000"
                             ng-init="
                                 social = {
-                                    link:addHttpToSocialUrl(socialX.link) ,
+                                    link:addHttpToSocialUrl(socialX) ,
                                     name:socialX.name ,
-                                    display_name:  extractUserFromSocialUrl(socialX.link),
-                                    is_link:checkSocialUrl(socialX.link)
+                                    display_name:  extractUserFromSocialUrl(socialX),
+                                    is_link:checkSocialUrl(socialX)
                                 }
                             ">
                             <a ng-if="social.is_link"
@@ -199,7 +199,7 @@
                             <span ng-if="!social.is_link" >
                                     <span class="fa fa-fw fa-home fa-{$ social.name $}"
                                     ></span>&nbsp; {$ social.display_name $}
-                            </span>
+                            </span></span>
                         </p>
                     </div>
                     <div class="col-md-6">

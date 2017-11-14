@@ -21,8 +21,12 @@ export default [ '$scope', function ($scope) {
     $scope.openDatePopUp = () => $scope.datePopup.opened = true
     $scope.profileImageUpload = n=>$('#profile-image-input').trigger('click')
     
-    $scope.checkSocialUrl=(url)=>{
+    $scope.checkSocialUrl=(social)=>{
+        let url = social.link
+        let name = social.name
+    
         return (
+            name == 'twitter' ||
             url.match(/http:\/\//) || url.match(/https:\/\//) ||
             url.match(/www\./) ||
             url.match(/\.com/) ||
@@ -32,12 +36,18 @@ export default [ '$scope', function ($scope) {
         )
     }
     
-    $scope.addHttpToSocialUrl =(url)=>{
+    $scope.addHttpToSocialUrl =(social)=>{
+        let url = social.link
+        let name = social.name
+
+        if(name && name === 'twitter') return `https://twitter.com/${url}`
         if( !url.match(/http:\/\//) && !url.match(/https:\/\//) ) url = 'https://'+url;
         return url
+        
     }
     
-    $scope.extractUserFromSocialUrl =(url)=>{
+    $scope.extractUserFromSocialUrl =(social)=>{
+        let url = social.link
         
         if( url.match(/http:\/\//) || url.match(/https:\/\//) ) url = url.replace('https://', '') && url.replace('http://', '')
         if( url.match(/www\./)) url = url.replace('www.', '')
