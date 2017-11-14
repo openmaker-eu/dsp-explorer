@@ -47,6 +47,8 @@ class CrmTestCase(TestCase):
         cls.user.profile.tags.add(Tag.create('Social'))
         cls.user.profile.tags.add(Tag.create('Design'))
 
+        cls.user.profile.sector = 'ICT'
+
         cls.user.profile.technical_expertise = 'Digital fabrication - Digitalization of analog and traditional technologies'
         cls.user.profile.size = 'A small enterprise (<50 staff, ≲10 MLN of turnover, ≲10MLN total balance sheet)'
 

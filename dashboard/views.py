@@ -197,39 +197,13 @@ def profile(request, profile_id=None, action=None):
                     SourceOfInspiration.objects.filter(name=tagName).first() or
                     SourceOfInspiration.create(name=tagName)
                 )
-        
-        # Check for user on Capsule CRM
-        crmUser = capsule.CRMConnector.search_party_by_email(user.email)
-        if crmUser:
-            try:
-                capsule.CRMConnector.update_party(crmUser['id'], {'party': {
-                    'firstName': user.first_name,
-                    'lastName': user.last_name,
-                    'jobTitle': user.profile.occupation,
-                    'pictureURL': request.build_absolute_uri(user.profile.picture.url)
-                }
-                })
-            except:
-                messages.error(request, 'Some error occures, please try again!')
-                logging.error('[VALIDATION_ERROR] Error during CRM Update for user: %s' % crmUser.id)
-                return HttpResponseRedirect(reverse('dashboard:profile'))
-        else:
-            try:
-                capsule.CRMConnector.add_party({'party': {
-                    'emailAddresses': [{'address': user.email}],
-                    'firstName': user.first_name,
-                    'lastName': user.last_name,
-                    'jobTitle': user.profile.occupation,
-                    'pictureURL': request.build_absolute_uri(user.profile.picture.url)
-                }
-                })
-            except:
-                messages.error(request, 'Some error occures, please try again!')
-                logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
-                return HttpResponseRedirect(reverse('dashboard:profile'))
-            print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
-            logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
-        
+
+        # update on crm
+        from crmconnector.models import Party
+
+        party = Party(user)
+        party.create_or_update()
+
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
     

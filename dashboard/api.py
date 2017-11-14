@@ -1,6 +1,7 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
+from django.conf import settings
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
@@ -11,7 +12,10 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirm
 import json
 from datetime import date, timedelta
-import random
+import random, logging
+from crmconnector.models import Party
+
+logger = logging.getLogger(__name__)
 
 
 def search_members(request, search_string):
@@ -253,3 +257,33 @@ def get_audiences(request, topic_id):
         'status': 'ok',
         'result': audiences
     }, status=200)
+
+
+def update_crm(request, crmtoken):
+    import threading
+    if not crmtoken == settings.CRM_UPDATE_TOKEN:
+        return not_authorized
+    users = User.objects.all()
+
+    thr = threading.Thread(target=create_or_update_party,
+                           kwargs=dict(users=users))
+
+    thr.start()
+
+    return JsonResponse({
+        'status': 'ok',
+    }, status=200)
+
+
+def create_or_update_party(users):
+    for user in users:
+        try:
+            logger.debug('UPDATING %s' % user)
+            party = Party(user)
+            party.create_or_update()
+            logger.debug('UPDATED')
+        except Exception as e:
+            logger.error('ERROR %s' % e)
+            logger.error('USER %s' % user)
+
+

@@ -7,6 +7,7 @@ from json_tricks.np import dump, dumps, load, loads, strip_comments
 import operator
 from capsule import CRMConnector
 
+
 class Party(object):
 
     __capsule_id = None
@@ -58,9 +59,8 @@ class Party(object):
     def get_custom_field(self, user):
 
         custom_fields = {
-            # @TODO : utf8 problem on all text fields
             '444006': user.profile.city,
-            '411964': user.profile.sector,
+            '448805': user.profile.sector,
             '411952': user.profile.size,
             '444014': user.profile.technical_expertise,
             '412036': user.profile.technical_expertise,
@@ -85,12 +85,9 @@ class Party(object):
             # @TODO: make methods in model that saves and retrieve this
             '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None,
 
-            # @TODO: these fields does not work
-
         }
 
         return dict((k, v) for k, v in custom_fields.iteritems() if v)
-
 
     def all(self):
         return CRMConnector.get_all_parties()
