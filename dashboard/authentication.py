@@ -249,38 +249,12 @@ def onboarding_confirmation(request, token):
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    # Check for user on Capsule CRM
-    user = capsule.CRMConnector.search_party_by_email(profile.user.email)
-    if user:
-        try:
-            capsule.CRMConnector.update_party(user['id'], {'party': {
-                'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
-                'type': 'person',
-                'firstName': profile.user.first_name,
-                'lastName': profile.user.last_name,
-                'jobTitle': profile.occupation,
-            }
-            })
-        except:
-            messages.error(request, 'Some error occures, please try again!')
-            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
-            # TODO SEND ERROR EMAIL TO ADMIN
-            return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    else:
-        try:
-            capsule.CRMConnector.add_party({'party': {
-                'emailAddresses': [{'address': profile.user.email}],
-                'type': 'person',
-                'firstName': profile.user.first_name,
-                'lastName': profile.user.last_name,
-                'jobTitle': profile.occupation,
-            }
-            })
-        except:
-            messages.error(request, 'Some error occures, please try again!')
-            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
-            # TODO SEND ERROR EMAIL TO ADMIN
-            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    # create on crm
+    from crmconnector.models import Party
+
+    user = profile.user
+    party = Party(user)
+    party.create_or_update()
 
     profile.user.is_active = True
     profile.user.save()
