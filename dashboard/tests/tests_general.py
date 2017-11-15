@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from dashboard.models import Profile
 import json
 
+
 class GeneralTestCase(TestCase):
     def setUp(self):
         self.client = Client()
