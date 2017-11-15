@@ -21,6 +21,7 @@ class Party(object):
 
     def __from_user(self, user):
 
+
         # Standard Mandatory Fields
         self.fields = []
         self.type = 'person'
@@ -128,4 +129,6 @@ class Party(object):
             self.__capsule_emails = map(lambda x: x['address'], remote_party['emailAddresses']) if len(remote_party['emailAddresses']) > 0 else None
             return self.update()
         return self.create()
+
+
 

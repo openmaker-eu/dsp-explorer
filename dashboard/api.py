@@ -14,6 +14,7 @@ import json
 from datetime import date, timedelta
 import random, logging
 from crmconnector.models import Party
+from json_tricks.np import dump, dumps, load, loads, strip_comments
 
 logger = logging.getLogger(__name__)
 
@@ -276,14 +277,23 @@ def update_crm(request, crmtoken):
 
 
 def create_or_update_party(users):
+    errored = []
+
+    party = None
     for user in users:
         try:
             logger.debug('UPDATING %s' % user)
+            print('updating user %s' % user)
             party = Party(user)
             party.create_or_update()
             logger.debug('UPDATED')
+            print('%s updated ' % user)
         except Exception as e:
             logger.error('ERROR %s' % e)
             logger.error('USER %s' % user)
+            logger.error('USER data : %s' % dumps(party.__dict__) if party else 'no data')
+            errored.append(user.email)
 
-
+    print 'Errored users'
+    logger.error('ERROR updating users : %s' % errored)
+    print errored

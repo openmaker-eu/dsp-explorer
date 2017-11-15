@@ -20,7 +20,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             restrict_to && (options.params = { restrict_to : restrict_to })
             let apicall = $http(options)
             apicall.then(
-                n=>{ $rootScope.$emit(nochange ? 'user.search.results': 'user.search.results.all', n) },
+                n=>{ $rootScope.$emit('user.search.results', n) },
                 n=>$rootScope.$emit('user.search.error', n)
             )
             return apicall

@@ -7,16 +7,15 @@ let template = `
     </div>
     <style>
         
-        circle {
+        .node {
           /*fill: rgb(31, 119, 180);*/
-          fill-opacity: .0;
+          /*fill-opacity: .0;*/
           /*stroke: rgb(31, 119, 180);*/
           /*stroke-width: 1px;*/
         }
         
-        .leaf circle {
-          /*fill: #ff7f0e;*/
-          fill-opacity: 1;
+        .leaf.node {
+          fill-opacity: initial;
         }
         
         text {
@@ -38,10 +37,15 @@ export default [function(){
             
             $scope.bubble = bubble.bind($scope)
             $scope.filter = UserSearchFactory.search;
+            $scope.factory = UserSearchFactory;
+            $scope.results = ''
             
             $http.get('/api/v1.1/get_hot_tags/20/').then((results)=>{
-                $scope.bubble('#bubble_container', _.get( results, 'data.tags' ))
+                $scope.results = _.get( results, 'data.tags' )
+                $scope.reload()
             })
+            
+            $scope.reload = ()=>{ $scope.bubble('#bubble_container', $scope.results) }
             
         }]
     }
@@ -82,10 +86,13 @@ let bubble = function(div_id, tags){
             .enter()
             .append("g")
             .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+            .attr("fill", (d) =>{
+                if(d.children) return '#fff'
+                return this.factory.search_filter === d.data.name ? '#db4348' : '#bbbbbb'
+            })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-            .attr("class", "pointer")
-            .on('click', (d,i)=>{  this.filter(d.data.name, 'tags') });
-            // .attr('xlink:href', d=> '/search/members/'+d.data.name+'/')
+            .on('click', (d,i)=>{ this.filter(d.data.name, 'tags').then(this.reload()) })
+
         
         node.append("title")
             .text(function(d) { return d.data.name + "\n" + format(d.value); })
@@ -93,8 +100,9 @@ let bubble = function(div_id, tags){
         node
             .append("circle")
             .attr("r", function(d) { return d.r; } )
-            .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
-            //.attr("fill", (d,i)=> colorScale(i))
+            // .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
+            // .attr("fill", (d,i)=> colorScale(i))
+
     
     function getSize(d, i ,a) {
         let bbox = this.getBBox(),

@@ -91,7 +91,9 @@ let pie = function(div_id, sectors){
         .attr("fill", "#222")
         .attr("style", 'font-weight:900;')
         .style("text-anchor", d=>d.is_small ? 'start' : 'middle')
-        .text(function(d, i){ return d.name+' ('+ d.size +')'});
+        .text(function(d, i){ return d.name+' ('+ d.size +')'})
+        .attr("class", "pointer")
+        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
     
 }
 
