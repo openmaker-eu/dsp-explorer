@@ -15,7 +15,7 @@ export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', funct
         $scope.search_factory.search_filter = searchString || $scope.search_factory.search_filter
         
         if($scope.search_factory.search_filter.length === 0) UserSearchFactory.search()
-        else if($scope.search_factory.search_filter.length < 3) $scope.results = $scope.last_members;
+        else if($scope.search_factory.search_filter.length < 2) $scope.results = $scope.last_members;
         else UserSearchFactory.search($scope.search_factory.search_filter)
         
     };
