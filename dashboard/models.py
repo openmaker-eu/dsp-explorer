@@ -170,11 +170,11 @@ class Profile(models.Model):
         from django.db.models import Q
         if restrict_to == 'tags':
             return cls.objects \
-                .filter(Q(tags__name__icontains=search_string)) \
+                .filter(Q(tags__name=search_string)) \
                 .distinct()
         if restrict_to == 'sectors':
             return cls.objects \
-                .filter(Q(sector__icontains=search_string)) \
+                .filter(Q(sector=search_string)) \
                 .distinct()
 
         return cls.objects\

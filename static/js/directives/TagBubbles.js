@@ -31,21 +31,24 @@ export default [function(){
     return {
         template:template,
         scope: {
-            tags: '='
+            tags: '=',
+            standalone: '=',
         },
-        controller : ['$scope','$http', 'UserSearchFactory', function($scope, $http, UserSearchFactory){
+        controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
             
             $scope.bubble = bubble.bind($scope)
             $scope.filter = UserSearchFactory.search;
             $scope.factory = UserSearchFactory;
             $scope.results = ''
+            console.log($scope.standalone)
             
-            $http.get('/api/v1.1/get_hot_tags/20/').then((results)=>{
+            $http.get('/api/v1.1/get_hot_tags/25/').then((results)=>{
                 $scope.results = _.get( results, 'data.tags' )
                 $scope.reload()
             })
             
-            $scope.reload = ()=>{ $scope.bubble('#bubble_container', $scope.results) }
+            $scope.reload = ()=>{ $scope.results && $scope.bubble('#bubble_container', $scope.results) }
+            $rootScope.$on('user.search.results', $scope.reload)
             
         }]
     }
@@ -85,18 +88,23 @@ let bubble = function(div_id, tags){
             .data(pack(root).descendants())
             .enter()
             .append("g")
-            .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+            .attr("class", function(d) { return d.children ? "node" : "leaf node pointer"; })
             .attr("fill", (d) =>{
                 if(d.children) return '#fff'
-                return this.factory.search_filter === d.data.name ? '#db4348' : '#bbbbbb'
+                return this.factory.search_filter.toLowerCase() === d.data.name.toLowerCase() ? '#db4348' : '#bbbbbb'
             })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-            .on('click', (d,i)=>{ this.filter(d.data.name, 'tags').then(this.reload()) })
+            .on('click', (d,i)=>{
+                this.standalone ?
+                    window.location = '/search/members/'+d.data.name+'?restrict_to=tags' :
+                    this.filter(d.data.name, 'tags')
+            })
 
         
         node.append("title")
             .text(function(d) { return d.data.name + "\n" + format(d.value); })
-
+            .attr("class", 'pointer')
+    
         node
             .append("circle")
             .attr("r", function(d) { return d.r; } )
