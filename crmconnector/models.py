@@ -21,6 +21,7 @@ class Party(object):
 
     def __from_user(self, user):
 
+
         # Standard Mandatory Fields
         self.fields = []
         self.type = 'person'
@@ -60,7 +61,7 @@ class Party(object):
 
         custom_fields = {
             '444006': user.profile.city,
-            '448805': user.profile.sector,
+            # '448805': user.profile.sector,
             '411952': user.profile.size,
             '444014': user.profile.technical_expertise,
             '412036': user.profile.technical_expertise,
@@ -128,4 +129,3 @@ class Party(object):
             self.__capsule_emails = map(lambda x: x['address'], remote_party['emailAddresses']) if len(remote_party['emailAddresses']) > 0 else None
             return self.update()
         return self.create()
-

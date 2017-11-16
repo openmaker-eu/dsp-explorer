@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container-fluid" ng-controller="searchController" ng-init="search('{{search_string}}')">
+    <div class="container-fluid" ng-controller="searchController" ng-init="search_factory.search('{{search_string}}')">
 
         <div class="row">
             <div class="col-md-12">
@@ -25,16 +25,15 @@
                         <form>
                             <div class="has-feedback has-feedback-left" style="width:100%">
                                 <input class="form-control"
-                                       ng-change="search_factory.search_filter.length < 3 ? search() : searchDebounced()"
+                                       ng-change="search_factory.search_filter.length > 1 && search_debounced() "
                                        ng-model-options="{allowInvalid: true}"
                                        ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
                                        placeholder="Search members for name, city, tagwords and more" value=""
-
                                 >
-                                <i ng-if="search_factory.search_filter==''" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                                <i ng-if="search_factory.is_search_all()" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                                 <i
-                                        ng-if="search_factory.search_filter!=''"
-                                        ng-click="search()"
+                                        ng-if="!search_factory.is_search_all()"
+                                        ng-click="search_factory.search_all()"
                                         class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
                                         style="pointer-events:initial;"
                                 ></i>
@@ -61,7 +60,7 @@
                                 <i
                                     ng-repeat="tag in data.tags"
                                     ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
-                                    ng-click="search(tag.name)"
+                                    ng-click="search_factory.search_switch(tag.name)"
                                     class="pointer"
                                 >
                                     <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
@@ -69,6 +68,32 @@
 
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                            <button
+                                    ng-click="search_factory.prev_page()"
+                                    class="btn login-button pull-left"
+                                    ng-class="{ 'btn-disabled disabled' : search_factory.is_min_page }"
+                            >
+                                Prev&nbsp;&nbsp;
+                                <i class="glyphicon glyphicon-arrow-left"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <p style="text-align: center"><span class="btn btn-default">{$ search_factory.page $}/{$ search_factory.max_page $}</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <button
+                                 ng-click="search_factory.next_page()"
+                                 class="btn login-button pull-right"
+                                 ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
+                            >
+                                Next&nbsp;&nbsp;
+                                <i class="glyphicon glyphicon-arrow-right"></i>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
@@ -96,7 +121,7 @@
                         <div class="col-md-12">
                             <h3>Hot Tags</h3>
                             <div class="" >
-                                <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
+                                <tag-bubbles tags="{{ hot_tags }}" maxtags="25"></tag-bubbles>
                             </div>
                         </div>
 
@@ -113,9 +138,6 @@
                     <div class="row"><br><br>
                     </div>
                 </div>
-
-
-
 
             </div>
 

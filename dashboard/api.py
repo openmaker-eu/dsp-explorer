@@ -14,24 +14,52 @@ import json
 from datetime import date, timedelta
 import random, logging
 from crmconnector.models import Party
+from json_tricks.np import dump, dumps, load, loads, strip_comments
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 logger = logging.getLogger(__name__)
 
 
 def search_members(request, search_string):
+    import math
 
-    result = Profile.search_members(search_string, request.GET.get('restrict_to', None))
-    serializer = ProfileSerializer(instance=result, many=True)
-    return JsonResponse({'status': 'ok',
-                         'search_string': search_string,
-                         'result': serializer.data}, status=200)
+    members_per_page = 20
+
+    # Switch between Search and last_n_users
+    if search_string and search_string.strip() != '':
+        results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
+    else:
+        results = Profile.objects.all()
+
+    count = results.count()
+
+    # Pagination
+    page = request.GET.get('page', 1)
+    max_page = math.ceil(count//members_per_page) or 1
+
+    paginator = Paginator(results, members_per_page)
+    paginated_results = paginator.page(page)
+
+    # Serialize
+    serializer = ProfileSerializer(instance=paginated_results, many=True)
+
+    # Response
+    return JsonResponse({
+        'status': 'ok',
+        'search_string': search_string,
+        'result': serializer.data,
+        'page': page,
+        'max_page': max_page
+    }, status=200)
 
 
 def get_last_members(request):
     last_twenty = Profile.get_last_n_members(21)
     serializer = ProfileSerializer(instance=last_twenty, many=True)
-    return JsonResponse({'status': 'ok',
-                         'result': serializer.data}, status=200)
+    return JsonResponse({
+        'status': 'ok',
+        'result': serializer.data
+    }, status=200)
 
 
 def get_feeds(request, theme_name, date='yesterday', cursor=-1):
@@ -276,14 +304,23 @@ def update_crm(request, crmtoken):
 
 
 def create_or_update_party(users):
+    errored = []
+
+    party = None
     for user in users:
         try:
             logger.debug('UPDATING %s' % user)
+            print('updating user %s' % user)
             party = Party(user)
             party.create_or_update()
             logger.debug('UPDATED')
+            print('%s updated ' % user)
         except Exception as e:
             logger.error('ERROR %s' % e)
             logger.error('USER %s' % user)
+            logger.error('USER data : %s' % dumps(party.__dict__) if party else 'no data')
+            errored.append(user.email)
 
-
+    print 'Errored users'
+    logger.error('ERROR updating users : %s' % errored)
+    print errored
