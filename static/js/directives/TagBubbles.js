@@ -38,7 +38,7 @@ export default [function(){
         controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
             
             $scope.bubble = bubble.bind($scope)
-            $scope.filter = UserSearchFactory.search;
+            $scope.filter = UserSearchFactory.search_switch;
             $scope.factory = UserSearchFactory;
             $scope.results = ''
             console.log($scope.standalone)

@@ -15,7 +15,7 @@ export default [function(){
         template:template,
         controller : ['$scope','$http', '$element', 'UserSearchFactory', function($scope, $http, $element, UserSearchFactory){
             $scope.pie = pie.bind($scope)
-            $scope.filter = UserSearchFactory.search;
+            $scope.filter = UserSearchFactory.search_switch;
             $http.get('/api/v1.1/get_sectors').then( (results)=>{
                 results = _.get( results, 'data.sectors' )
                 results.length === 0 ? $('.sector-bar-container').hide() : $scope.pie('#pie_container', results )
