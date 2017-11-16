@@ -5,21 +5,19 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
-                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</h1>
-                    <h2><small>We are <strong class="text-red">{{ n_registered_user }} </strong> members!</small></h2>
+                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</span><br><small>We are <strong class="text-red">{{ n_registered_user }} </strong> members!</small></h1>
+                    <h2></h2>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12">
-
                 <div class="col-md-7" style="padding-right:3%; ">
                     <!--Anchor for members on page load-->
                     <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                     <div class="col-md-12">
                         <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_factory.search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
-                        <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded </h3>
                     </div>
                     <div class="col-md-12">
                         <form>
@@ -58,10 +56,10 @@
                                 <br>
 
                                 <i
-                                    ng-repeat="tag in data.tags"
-                                    ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
-                                    ng-click="search_factory.search_switch(tag.name)"
-                                    class="pointer"
+                                        ng-repeat="tag in data.tags"
+                                        ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
+                                        ng-click="search_factory.search_switch(tag.name)"
+                                        class="pointer"
                                 >
                                     <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
                                 </i>
@@ -85,9 +83,9 @@
                         </div>
                         <div class="col-md-4">
                             <button
-                                 ng-click="search_factory.next_page()"
-                                 class="btn login-button pull-right"
-                                 ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
+                                    ng-click="search_factory.next_page()"
+                                    class="btn login-button pull-right"
+                                    ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
                             >
                                 Next&nbsp;&nbsp;
                                 <i class="glyphicon glyphicon-arrow-right"></i>
@@ -103,13 +101,8 @@
                 <div class="col-md-5">
                     <div class="row">
 
-                        <div class="col-md-12 margin-top-30">
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-                        </div>
 
-                        <div class="col-md-12"><a id="maps" href="#" ></a>&nbsp;</a></div>
+
                         <div class="col-md-12">
                             <h3>Location</h3>
                             <br>
