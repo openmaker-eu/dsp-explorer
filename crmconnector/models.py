@@ -61,7 +61,7 @@ class Party(object):
 
         custom_fields = {
             '444006': user.profile.city,
-            # '448805': user.profile.sector,
+            '448805': user.profile.sector,
             '411952': user.profile.size,
             '444014': user.profile.technical_expertise,
             '412036': user.profile.technical_expertise,
