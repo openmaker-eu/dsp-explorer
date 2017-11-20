@@ -7,12 +7,9 @@ class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-
         if response and response.status_code < 205:
             return response.json()
-        else:
-            print '[DSP-CONNECTOR ERROR] : %s' % response.content
-        raise Exception(response)
+        raise Exception('Status Code: {0}\nResponse: {1}'.format(response.status_code, response.content))
     
     @staticmethod
     def _get_headers():
@@ -40,7 +37,7 @@ class CRMConnector(object):
         :data: Content Body
         :return: Requests Response Object
         """
-        return CRMConnector._wrapper_request(requests.post(url=url, data=data, headers=CRMConnector._get_headers()))
+        return CRMConnector._wrapper_request(requests.post(url=url, data=data.encode("ascii", "ignore"), headers=CRMConnector._get_headers()))
 
     @staticmethod
     def _perform_put(url, data):
@@ -109,3 +106,12 @@ class CRMConnector(object):
     @staticmethod
     def delete_party(party_id):
         return CRMConnector._perform_delete(settings.CAPSULE_BASE_URL_PARTIES + '/' + str(party_id))
+
+    @staticmethod
+    def get_custom_field_definitions(entity_name):
+        url = settings.CAPSULE_BASE_URL+'/'+entity_name+'/fields/definitions?perPage=100'
+        resp = CRMConnector._wrapper_request(requests.get(url=url, headers=CRMConnector._get_headers()))
+        try:
+            return resp.get('definitions', [])
+        except IndexError:
+            return None
