@@ -20,13 +20,13 @@
 {#        </div>#}
 {#    </div>#}
     <span ng-controller="dashboardController">
-        <div class="container margin-bottom-50">
+        <div class="container-fluid margin-bottom-50">
             <div class="row margin-top-50">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12 theme-name">
-                            <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}</h2>
-                            <h2>Discover the Movement!</h2>
+                            <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}<br>
+                                <span style="font-size: 20px;">discover the movement!</span></h2>
 
                             <div class="col-md-12 text-center margin-bottom-25">
                                 <div class="col-md-12 text-center theme-name">
@@ -147,7 +147,7 @@
             </div>
         </div>
         <div class="container-fluid color-row padding-bottom-50" style="margin-top: -20px;">
-            <div class="container">
+            <div class="">
                 <div class="row">
                     <div class="col-md-12 margin-top-50">
                         <user-stories></user-stories>
@@ -155,7 +155,7 @@
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <!-- Last Members -->
                 <div class="col-md-8 col-sm-12 margin-top-50">

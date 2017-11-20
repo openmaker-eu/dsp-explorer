@@ -1,36 +1,26 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container">
+    <div class="container-fluid">
         <div class="row margin-bottom-15">
             <div class="col-md-12">
-                <h1 class="margin-bottom-30">Invite<br><strong class="text-red"> New members</strong></h1>
+                <h1 class="">Invite<br><strong class="text-red"> New members</strong></h1>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <p class="col-xs-12 col-md-10 col-md-offset-1">
-                    Help us to reach <strong>makers, innovators and thinkers</strong> and engage in the <strong>4th Industrial revolution!</strong><br/><br />
+                <p>
+                    Help us to reach <strong>makers, innovators and thinkers</strong> and engage in the <strong>4th Industrial revolution!</strong>
                     If you know someone with great ideas, projects and visions around
-                    <strong>new forms of production and making</strong>, give us their contact and we will invite them to join our movement, participate in our events, and connect with the cutting-edge OpenMaker community.<br /><br />
+                    <strong>new forms of production and making</strong>, give us their contact and we will invite them to join our movement, participate in our events, and connect with the cutting-edge OpenMaker community.
                 </p>
-
-
             </div>
         </div>
-        <div class="row margin-bottom-40 margin-top-20">
+        <div class="row">
             <div class="col-md-12">
-                <div class="col-md-12">
-                    <hr>
-                </div>
-            </div>
-        </div>
-        <div class="row margin-bottom-40">
-            <div class="col-md-12">
-                <p class="col-xs-12 col-md-10 col-md-offset-1 margin-bottom-40">
-                    To invite a new member, just fill in the fields below. You can invite as many as you want. We can’t wait to welcome them all!
+                <p>
+                    To invite a new member, just fill in the fields below. You can invite as many as you want.<br>We can’t wait to welcome them all!
                 </p>
-
-                    <form class="form-group" action="{% url 'dashboard:invite' %}" method="post">
+                    <form class="form-group margin-top-40" action="{% url 'dashboard:invite' %}" method="post">
                         <div class="col-md-8 col-md-offset-2">
                         {% csrf_token %}
                         <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
@@ -71,26 +61,28 @@
                                 </label>
                                 <!--(<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)-->
                             </span>
+                            <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Invite">
                         </div>
-                        <div class="col-xs-12 col-md-10 col-md-offset-1 margin-top-20">
-
-                            <small>
-                                The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
-                                <a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">terms and the conditions</a>
-                                <br><br>
-
-                                Be aware that <strong>OpenMaker</strong> manages personal contacts in a responsible way: contacts are used only to send an invitation e-mail to the nominated person, and our systems will ensure that multiple emails are avoided.<br />
-                                The contacts that you provide will not be exploited for commercial purposes, and will not be passed to third parties who may do so.<br /><br />
-                                If you wish to get more information about the <strong>OpenMaker</strong>’s chain of nomination, <strong><a href="mailto:info@openmaker.eu"><span class="text-red">contact us</span></a></strong>!
-                            </small>
-                            <div class="form-group margin-top-20" ng-init="privacy=false; tac=false;" style="padding: 1%;">
-
+                        <div class="col-xs-12 col-md-10 col-md-offset-1">
+                            <div class="form-group" ng-init="privacy=false; tac=false;" style="padding: 1%;">
                             </div>
                         </div>
-                        <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Invite">
                     </form>
                 </div>
             </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+            <p>
+                    <small>
+                        The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
+                        <a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">terms and the conditions</a>.<br>
+                        Be aware that <strong>OpenMaker</strong> manages personal contacts in a responsible way: contacts are used only to send an invitation e-mail to the nominated person, and our systems will ensure that multiple emails are avoided.<br />
+                        The contacts that you provide will not be exploited for commercial purposes, and will not be passed to third parties who may do so.<br />
+                        If you wish to get more information about the <strong>OpenMaker</strong>’s chain of nomination, <strong><a href="mailto:info@openmaker.eu"><span class="text-red">contact us</span></a></strong>!
+                    </small>
+                </p>
+                </div>
+        </div>
         </div>
     </div>
 {% endblock %}
