@@ -21,6 +21,8 @@ import logging
 import re
 import random
 
+from crmconnector.models import Party
+from rest_framework.exceptions import NotFound
 
 @login_required()
 def dashboard(request):
@@ -199,10 +201,14 @@ def profile(request, profile_id=None, action=None):
                 )
 
         # update on crm
-        from crmconnector.models import Party
-
-        party = Party(user)
-        party.create_or_update()
+        try:
+            party = Party(user)
+            party.create_or_update()
+        except NotFound as e:
+            messages.error(request, 'There was some connection problem, please try again')
+            return HttpResponseRedirect(reverse('dashboard:profile'))
+        except Exception as e:
+            pass
 
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))

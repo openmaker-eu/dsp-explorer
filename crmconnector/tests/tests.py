@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from dashboard.models import Profile, User, SourceOfInspiration, Tag
-from itertools import groupby
 import json
 from ..capsule import CRMConnector
 from utils.Colorizer import Colorizer
@@ -35,7 +34,7 @@ class CrmTestCase(TestCase):
 
         # Extra fields
         # cls.user.profile.types_of_innovation = 'Product innovation,Technological innovation,Business model innovation'
-        cls.user.profile.organization = 'testerorg'
+        cls.user.profile.organization = 'aaa_unit_test_organization'
         cls.user.profile.statement = 'Hi im a test user generated from unit test suite'
 
         ## SOP

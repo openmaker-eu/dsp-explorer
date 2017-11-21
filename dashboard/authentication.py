@@ -21,6 +21,8 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 import re
 from django.utils.encoding import force_unicode
 
+from crmconnector.models import Party
+from rest_framework.exceptions import NotFound
 
 def logout_page(request):
     logout(request)
@@ -249,12 +251,16 @@ def onboarding_confirmation(request, token):
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    # create on crm
-    from crmconnector.models import Party
+    # update on crm
+    try:
+        party = Party(profile.user)
+        party.create_or_update()
+    except NotFound as e:
+        messages.error(request, 'There was some connection problem, please try again')
+        return HttpResponseRedirect(reverse('dashboard:profile'))
+    except Exception as e:
+        pass
 
-    user = profile.user
-    party = Party(user)
-    party.create_or_update()
 
     profile.user.is_active = True
     profile.user.save()

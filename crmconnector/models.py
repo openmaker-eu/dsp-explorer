@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
-from django.forms.models import model_to_dict
-from django.db import models
-import itertools
-from django.db.models.query import QuerySet
 from json_tricks.np import dump, dumps, load, loads, strip_comments
-import operator
 from capsule import CRMConnector
 from copy import copy, deepcopy
 from utils.Colorizer import Colorizer
-from itertools import chain
-
 
 class Party(object):
 
     __capsule_party = None
-    __local_email = None
+    __local_user = None
+
     __local_websites = None
     __social_allowed_names = {
 
@@ -41,7 +35,7 @@ class Party(object):
 
     def __init__(self, user):
 
-        self.__local_email = user.email
+        self.__set_user(user)
 
         # Standard Mandatory Fields
         self.fields = []
@@ -79,8 +73,14 @@ class Party(object):
         return dumps(self)
 
     def as_dict(self):
-        # return dict((x, y) for x, y in self.__dict__.items() if x[:1] != '_')
-        return self.__dict__
+        return dict((x, y) for x, y in self.__dict__.items() if x[:6] != '_Party')
+        # return self.__dict__
+
+    def __set_user(self, user):
+        self.__local_user = user
+
+    def __set_party(self, party):
+        self.__capsule_party = party
 
     ###################
     # PUBLIC METHODS #
@@ -99,7 +99,7 @@ class Party(object):
             '411953': user.profile.gender.capitalize(),
             '444016': user.profile.statement if len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
 
-            # # Types of innovation
+            # Types of innovation
             '411984': 'Product innovation' in user.profile.types_of_innovation,
             '411985': 'Process innovation' in user.profile.types_of_innovation,
             '411987': 'Technological innovation' in user.profile.types_of_innovation,
@@ -141,11 +141,15 @@ class Party(object):
         # @TODO : write error/exception
         return 'error'
 
-    def create_or_update(self):
+    def create_or_update(self, safe=False):
+        from .capsule import CRMValidationException
         self.get()
         if self.__capsule_party:
             clone = self.__merge_all()
-            return clone.update()
+            try:
+                return clone.update()
+            except CRMValidationException as e:
+                return clone.safe_update()
         return self.create()
 
     def safe_update(self):
@@ -182,30 +186,31 @@ class Party(object):
     def __merge_all(self):
         clone = deepcopy(self)
         clone.__merge_email()
-        clone.__merge_websites()
+        clone.__delete_remote_websites_and_add_local()
         return clone
 
     def __merge_email(self):
         if self.__capsule_party and len(self.__capsule_party['emailAddresses']) > 0:
             self.emailAddresses = self.__capsule_party['emailAddresses']
-            email_match = filter(lambda x: x['address'] == self.__local_email, self.__capsule_party['emailAddresses'])
+            email_match = filter(lambda x: x['address'] == self.__local_user.email, self.__capsule_party['emailAddresses'])
             if len(email_match) == 0:
-                self.emailAddresses.append({'address': self.__local_email})
+                self.emailAddresses.append({'address': self.__local_user.email})
 
-    def __merge_websites(self):
-        # for key in self.__capsule_party['websites'].iterkeys():
-        #     self.__capsule_party['websites'][key]['_delete'] = True
-        self.websites = self.websites + map(self.prova, self.__capsule_party['websites'])
+    # Set delete flag to remote websites and add local to websites field
+    # Will remove all websites on capsule crm
+    def __delete_remote_websites_and_add_local(self):
+        self.websites = self.websites + map(lambda x: x.update({'_delete': True}) or x, self.__capsule_party['websites'])
 
-        # if self.__capsule_party and len(self.__capsule_party['websites']) > 0 and len(self.websites) > 0:
-        #     self.websites = map(
-        #         lambda x: self.__get_merged_websites(x),
-        #         self.websites
-        #     )
-
-    def prova(self, website):
-        website['_delete'] = True
-        return website
+    # Merge remote websites with local
+    # Will keep remote websites and update with local values if local name match
+    def __merge_remote_websites_with_local(self):
+        for key in self.__capsule_party['websites'].iterkeys():
+            self.__capsule_party['websites'][key]['_delete'] = True
+        if self.__capsule_party and len(self.__capsule_party['websites']) > 0 and len(self.websites) > 0:
+            self.websites = map(
+                lambda x: self.__get_merged_websites(x),
+                self.websites
+            )
 
     def __get_merged_websites(self, local_social):
         match = filter(lambda x: x['service'] == local_social['service'], self.__capsule_party['websites'])

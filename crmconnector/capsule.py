@@ -1,16 +1,23 @@
 import requests
 from django.conf import settings
 import json
+from rest_framework.exceptions import NotFound
+
+
+class CRMValidationException(Exception):
+    pass
 
 
 class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-        if response and response.status_code < 205:
+        if response.status_code < 205:
             return response.json()
-        raise Exception('Status Code: {0}\nResponse: {1}'.format(response.status_code, response.content))
-    
+        if response.status_code == 422:
+            raise CRMValidationException('Status Code: {0}\nResponse: {1}'.format(response.status_code, response.content))
+        raise NotFound('There are some connection problem, try again later')
+
     @staticmethod
     def _get_headers():
         headers = {
