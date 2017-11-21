@@ -100,7 +100,7 @@ let bubble = function(div_id, tags){
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on('click', (d,i)=>{
                 this.standalone ?
-                    window.location = '/search/members/'+d.data.name :
+                    window.location = '/search/members/'+d.data.name+'#tags' :
                     this.filter(d.data.name, 'tags')
             })
 

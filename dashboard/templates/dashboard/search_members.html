@@ -68,30 +68,31 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="col-md-4">
-                            <button
-                                    ng-click="search_factory.prev_page()"
-                                    class="btn login-button pull-left"
-                                    ng-class="{ 'btn-disabled disabled' : search_factory.is_min_page }"
-                            >
-                                Prev&nbsp;&nbsp;
-                                <i class="glyphicon glyphicon-arrow-left"></i>
-                            </button>
+                        <div class="row">
+                            <div class="col-md-5 col-xs-5">
+                                <button
+                                        ng-click="search_factory.prev_page()"
+                                        class="btn login-button pull-left"
+                                        ng-class="{ 'btn-disabled disabled' : search_factory.is_min_page }"
+                                >
+                                    Prev&nbsp;&nbsp;
+                                    <i class="glyphicon glyphicon-arrow-left"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-2 col-xs-2">
+                                <p style="text-align: center; float: left;"><span class="btn btn-default">{$ search_factory.page $}/{$ search_factory.max_page $}</span></p>
+                            </div>
+                            <div class="col-md-5 col-xs-5">
+                                <button
+                                        ng-click="search_factory.next_page()"
+                                        class="btn login-button pull-right"
+                                        ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
+                                >
+                                    Next&nbsp;&nbsp;
+                                    <i class="glyphicon glyphicon-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <p style="text-align: center"><span class="btn btn-default">{$ search_factory.page $}/{$ search_factory.max_page $}</span></p>
-                        </div>
-                        <div class="col-md-4">
-                            <button
-                                    ng-click="search_factory.next_page()"
-                                    class="btn login-button pull-right"
-                                    ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
-                            >
-                                Next&nbsp;&nbsp;
-                                <i class="glyphicon glyphicon-arrow-right"></i>
-                            </button>
-                        </div>
-
                     </div>
                 </div>
 
