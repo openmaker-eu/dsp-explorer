@@ -40,7 +40,8 @@ export default [ '$scope', function ($scope) {
         let url = social.link
         let name = social.name
 
-        if(name && name === 'twitter') return `https://twitter.com/${url}`
+        if(name && name === 'twitter') if(!(url.match(/http:\/\//) || url.match(/https:\/\//)) ) return `https://twitter.com/${url}`
+
         if( !url.match(/http:\/\//) && !url.match(/https:\/\//) ) url = 'https://'+url;
         return url
         
