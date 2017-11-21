@@ -97,7 +97,7 @@ class Party(object):
             '444008': user.profile.occupation,
             '444007': user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
-            '444016': user.profile.statement if len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
+            '444016': user.profile.statement if not user.profile.statement or len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
 
             # Types of innovation
             '411984': 'Product innovation' in user.profile.types_of_innovation,

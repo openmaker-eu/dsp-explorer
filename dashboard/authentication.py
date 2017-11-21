@@ -24,6 +24,8 @@ from django.utils.encoding import force_unicode
 from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
 
+logger = logging.getLogger(__name__)
+
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
@@ -257,9 +259,11 @@ def onboarding_confirmation(request, token):
         party.create_or_update()
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
+        logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
         return HttpResponseRedirect(reverse('dashboard:profile'))
     except Exception as e:
-        pass
+        logger.debug('CRM CREATION USER ERROR %s' % e)
+        return HttpResponseRedirect(reverse('dashboard:profile'))
 
 
     profile.user.is_active = True
