@@ -35,7 +35,7 @@ def search_members(request, search_string):
 
     # Pagination
     page = request.GET.get('page', 1)
-    max_page = math.ceil(count//members_per_page) or 1
+    max_page = int(math.ceil(float(count)/float(members_per_page))) or 1
 
     paginator = Paginator(results, members_per_page)
     paginated_results = paginator.page(page)
@@ -49,7 +49,8 @@ def search_members(request, search_string):
         'search_string': search_string,
         'result': serializer.data,
         'page': page,
-        'max_page': max_page
+        'max_page': max_page,
+        'results_count': count
     }, status=200)
 
 

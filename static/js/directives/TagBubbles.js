@@ -48,8 +48,10 @@ export default [function(){
                 $scope.reload()
             })
             
-            $scope.reload = ()=>{ $scope.results && $scope.bubble('#bubble_container', $scope.results) }
+            $scope.reload = ()=>$scope.results && $scope.bubble('#bubble_container', $scope.results)
             $rootScope.$on('user.search.results', $scope.reload)
+            
+            angular.element(window).on('resize', ()=>jQuery('#bubble_container').html('') && $scope.reload());
             
         }]
     }
@@ -101,20 +103,15 @@ let bubble = function(div_id, tags){
             .on('click', (d,i)=>{
                 this.standalone ?
                     window.location = '/search/members/'+d.data.name+'#tags' :
-                    this.filter(d.data.name, 'tags')
+                    this.filter(d.data.name, 'tags') || jQuery("html,body").animate({scrollTop: 100}, 1000)
             })
-
-        
-        node.append("title")
-            .text(function(d) { return d.data.name + "\n" + format(d.value); })
-            .attr("class", 'pointer')
     
+        node.append("title").attr("class", 'pointer')
         node
             .append("circle")
             .attr("r", function(d) { return d.r; } )
             // .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
             // .attr("fill", (d,i)=> colorScale(i))
-
     
     function getSize(d, i ,a) {
         let bbox = this.getBBox(),
@@ -124,16 +121,22 @@ let bubble = function(div_id, tags){
     }
 
     node.filter(function(d) { return !d.children; })
-        //.append("a")
-        //.style("font-size", function(d) { return d.scaleFontSize + "px"; })
-        //.attr('href', d=> '/search/members/'+d.data.name+'/')
         .append("text")
         .attr("dy", "0.3em")
-        .text(function(d) { return d.data.name })
+        .text(function(d) {
+            if(d.data.name && d.data.name.length > 16){
+                // return _.reduce(d.data.name.match(/.{1,12}/g), (acc, el)=>  acc+'\n'+el )
+                return d.data.name.substring(0,12)+'...'
+            }
+            else return d.data.name
+        })
+        
         .each(getSize)
         .style("font-size", function(d) { return d.scaleFontSize + "px"; })
         .style("font-weight", 900 )
         .style("fill", '#353535')
+        .append('title')
+        .text(d=>d.data.name)
     
     
 }

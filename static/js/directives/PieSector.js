@@ -20,6 +20,12 @@ export default [function(){
                 results = _.get( results, 'data.sectors' )
                 results.length === 0 ? $('.sector-bar-container').hide() : $scope.pie('#pie_container', results )
             })
+    
+            $scope.reload = ()=>$scope.results && $scope.bubble('#pie_container', $scope.results)
+            $rootScope.$on('user.search.results', $scope.reload)
+    
+            angular.element(window).on('resize', ()=>jQuery('#bubble_container').html('') && $scope.reload());
+    
         }]
     }
     
@@ -74,8 +80,7 @@ let pie = function(div_id, sectors){
         .attr("width", function (d) { return x(d.size); })
         .attr("fill",  (d, i) => colorScale(d.size) )
         .attr("class", "pointer")
-        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
-    
+        .on('click', (d,i)=>this.filter(d.name, 'sectors') || jQuery("html,body").animate({scrollTop: 100}, 1000))
     
     bars.append('text')
         .each((d)=>{
@@ -93,7 +98,7 @@ let pie = function(div_id, sectors){
         .style("text-anchor", d=>d.is_small ? 'start' : 'middle')
         .text(function(d, i){ return d.name+' ('+ d.size +')'})
         .attr("class", "pointer")
-        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') })
+        .on('click', (d,i)=>{  this.filter(d.name, 'sectors') || jQuery("html,body").animate({scrollTop: 100}, 1000) })
     
 }
 

@@ -7,12 +7,14 @@ import { debounce } from 'lodash'
 export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', function ($scope, $http, $sce, UserSearchFactory, $rootScope) {
     
     $scope.search_factory = UserSearchFactory
+    $scope.results_count = 0
     $scope.results = [];
     
     $scope.search_debounced = debounce($scope.search_factory.search.bind($scope.search_factory.search), 500)
     
     $rootScope.$on('user.search.results', (event, results)=>{
         $scope.results = results['data']['result']
+        $scope.results_count = results['data']['results_count']
         $scope.is_last_members_label = $scope.search_factory.search_filter === ''
     })
     
