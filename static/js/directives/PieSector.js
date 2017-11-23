@@ -33,8 +33,6 @@ export default [function(){
 
 let pie = function(div_id, sectors){
     
-    console.log('SEctoris : ', sectors);
-    
     var container =  $(div_id)
     var parent = container.parent()
     
