@@ -7,16 +7,15 @@ let template = `
     </div>
     <style>
         
-        circle {
+        .node {
           /*fill: rgb(31, 119, 180);*/
-          fill-opacity: .0;
+          /*fill-opacity: .0;*/
           /*stroke: rgb(31, 119, 180);*/
           /*stroke-width: 1px;*/
         }
         
-        .leaf circle {
-          /*fill: #ff7f0e;*/
-          fill-opacity: 1;
+        .leaf.node {
+          fill-opacity: initial;
         }
         
         text {
@@ -26,23 +25,43 @@ let template = `
     </style>
 `
 
+// TODO want to pass to the directive the Angular search function instead of reloading the page
 export default [function(){
     
     return {
         template:template,
         scope: {
-            tags: '='
+            tags: '=',
+            standalone: '=',
+            maxtags: '='
         },
-        controller : ['$scope','$http', function($scope, $http){
-            $http.get('/api/v1.1/get_hot_tags/20/').then( (results)=>{
-                bubble('#bubble_container', _.get( results, 'data.tags' ) );
+        controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
+            
+            $scope.bubble = bubble.bind($scope)
+            $scope.filter = UserSearchFactory.search_switch;
+            $scope.factory = UserSearchFactory;
+            $scope.results = ''
+            console.log($scope.standalone)
+            
+            $http.get(`/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`).then((results)=>{
+                $scope.results = _.get( results, 'data.tags' )
+                $scope.reload()
             })
+            
+            $scope.reload = ()=>$scope.results && $scope.bubble('#bubble_container', $scope.results)
+            $rootScope.$on('user.search.results', $scope.reload)
+            
+            angular.element(window).on('resize', ()=>jQuery('#bubble_container').html('') && $scope.reload());
+            
         }]
     }
     
 }]
 
-let bubble = (div_id, tags) => {
+let bubble = function(div_id, tags){
+    
+    var tag_default_color = this.standalone? '#db4348' : '#bbbbbb'
+
     
     var container =  $(div_id)
     var parent = container.parent()
@@ -75,15 +94,23 @@ let bubble = (div_id, tags) => {
             .data(pack(root).descendants())
             .enter()
             .append("g")
-            .attr("class", function(d) { return d.children ? "node" : "leaf node"; })
+            .attr("class", function(d) { return d.children ? "node" : "leaf node pointer"; })
+            .attr("fill", (d) =>{
+                if(d.children) return '#fff'
+                return this.factory.search_filter.toLowerCase() === d.data.name.toLowerCase() ? '#db4348' : tag_default_color
+            })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-        
-        node.append("title")
-            .text(function(d) { return d.data.name + "\n" + format(d.value); })
-        
-        node.append("circle")
+            .on('click', (d,i)=>{
+                this.standalone ?
+                    window.location = '/search/members/'+d.data.name+'#tags' :
+                    this.filter(d.data.name, 'tags') || jQuery("html,body").animate({scrollTop: 100}, 1000)
+            })
+    
+        node.append("title").attr("class", 'pointer')
+        node
+            .append("circle")
             .attr("r", function(d) { return d.r; } )
-            .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
+            // .attr("fill", (d,i)=> colorScale(Math.floor(Math.random() * (10 - 0 + 1)) + 0))
             // .attr("fill", (d,i)=> colorScale(i))
     
     function getSize(d, i ,a) {
@@ -94,16 +121,22 @@ let bubble = (div_id, tags) => {
     }
 
     node.filter(function(d) { return !d.children; })
-        // .append("a")
-        // .style("font-size", function(d) { return d.scaleFontSize + "px"; })
-        .attr('href', d=> '/search/members/'+d.data.name+'/')
         .append("text")
         .attr("dy", "0.3em")
-        .text(function(d) { return d.data.name })
+        .text(function(d) {
+            if(d.data.name && d.data.name.length > 16){
+                // return _.reduce(d.data.name.match(/.{1,12}/g), (acc, el)=>  acc+'\n'+el )
+                return d.data.name.substring(0,12)+'...'
+            }
+            else return d.data.name
+        })
+        
         .each(getSize)
         .style("font-size", function(d) { return d.scaleFontSize + "px"; })
         .style("font-weight", 900 )
         .style("fill", '#353535')
+        .append('title')
+        .text(d=>d.data.name)
     
     
 }
