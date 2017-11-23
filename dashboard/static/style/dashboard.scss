@@ -237,3 +237,5 @@ a {
     text-decoration: none!important;
     &:hover{color: $dsp-red;}
 }
+
+.user-card:nth-child(2n+3){ clear:both; }

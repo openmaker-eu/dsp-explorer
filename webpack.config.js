@@ -8,7 +8,8 @@ module.exports = {
 
     entry: {
         dashboard: [ path.resolve(__dirname, 'dashboard/static/js') ],
-        pss: [ path.resolve(__dirname, 'pss/static/js') ]
+        pss: [ path.resolve(__dirname, 'pss/static/js') ],
+        chatbot: [ path.resolve(__dirname, 'chatbot/static/js') ]
         // enter a new entry point here
     },
     output: {

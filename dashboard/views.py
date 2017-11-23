@@ -21,6 +21,8 @@ import logging
 import re
 import random
 
+from crmconnector.models import Party
+from rest_framework.exceptions import NotFound
 
 @login_required()
 def dashboard(request):
@@ -29,6 +31,7 @@ def dashboard(request):
         selected_topic = random.choice(topics_list)
         hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
         top_influencers = DSPConnectorV12.get_audiences(selected_topic['topic_id'])['audiences'][:4]
+        events_by_topic = DSPConnectorV12.get_events(selected_topic['topic_id'])['events'][:4]
     except DSPConnectorException as e:
         messages.error(request, e.message)
         topics_list = {}
@@ -38,6 +41,7 @@ def dashboard(request):
     
     hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
+
     context = {
         'selected_topic': selected_topic,
         'topics': topics_list,
@@ -45,14 +49,14 @@ def dashboard(request):
         'hot_tags': hot_tags,
         'json_hot_tags': json.dumps(hot_tags),
         'hot_news': hot_news,
-        'top_influencers': top_influencers
+        'top_influencers': top_influencers,
+        'events': events_by_topic
     }
     return render(request, 'dashboard/dashboard.html', context)
 
 
 @login_required()
 def theme(request, topic_id):
-    print topic_id
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
@@ -65,6 +69,22 @@ def theme(request, topic_id):
         return HttpResponseRedirect(reverse('dashboard:theme'))
     context = {'selected_topic': selected_topic, 'topics': topics_list}
     return render(request, 'dashboard/theme.html', context)
+
+
+@login_required()
+def events(request, topic_id):
+    try:
+        topics_list = DSPConnectorV12.get_topics()['topics']
+        selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
+            random.choice(topics_list)
+    except DSPConnectorException as e:
+        messages.error(request, e.message)
+        topics_list = {}
+        selected_topic = 'No themes'
+    except IndexError:
+        return HttpResponseRedirect(reverse('dashboard:events'))
+    context = {'selected_topic': selected_topic, 'topics': topics_list}
+    return render(request, 'dashboard/events.html', context)
 
 
 @login_required()
@@ -179,27 +199,17 @@ def profile(request, profile_id=None, action=None):
                     SourceOfInspiration.objects.filter(name=tagName).first() or
                     SourceOfInspiration.create(name=tagName)
                 )
-        
-        # Check for user on Capsule CRM
-        crmUser = capsule.CRMConnector.search_party_by_email(user.email)
-        if crmUser:
-            try:
-                capsule.CRMConnector.update_party(crmUser['id'], {'party': {
-                    'firstName': user.first_name,
-                    'lastName': user.last_name,
-                    'jobTitle': user.profile.occupation,
-                    'pictureURL': request.build_absolute_uri(user.profile.picture.url)
-                }
-                })
-            except:
-                messages.error(request, 'Some error occures, please try again!')
-                logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % crmUser.id)
-                # TODO SEND ERROR EMAIL TO ADMIN
-                return HttpResponseRedirect(reverse('dashboard:profile'))
-        else:
-            print('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
-            logging.error('[ ERROR ] : user not found on CRM during update ! for user : %s' % crmUser.id)
-        
+
+        # update on crm
+        try:
+            party = Party(user)
+            party.create_or_update()
+        except NotFound as e:
+            messages.error(request, 'There was some connection problem, please try again')
+            return HttpResponseRedirect(reverse('dashboard:profile'))
+        except Exception as e:
+            pass
+
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
     
@@ -220,7 +230,7 @@ def profile(request, profile_id=None, action=None):
 
 
 @login_required()
-def search_members(request, search_string=0):
+def search_members(request, search_string=''):
     return render(request, 'dashboard/search_members.html', {
         'search_string': search_string,
         'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),

@@ -1,16 +1,23 @@
 import requests
 from django.conf import settings
 import json
+from rest_framework.exceptions import NotFound
+
+
+class CRMValidationException(Exception):
+    pass
 
 
 class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-        if response and response.status_code < 205:
+        if response.status_code < 205:
             return response.json()
-        raise Exception(response)
-    
+        if response.status_code == 422:
+            raise CRMValidationException('Status Code: {0}\nResponse: {1}'.format(response.status_code, response.content))
+        raise NotFound('There are some connection problem, try again later')
+
     @staticmethod
     def _get_headers():
         headers = {
@@ -37,7 +44,7 @@ class CRMConnector(object):
         :data: Content Body
         :return: Requests Response Object
         """
-        return CRMConnector._wrapper_request(requests.post(url=url, data=data, headers=CRMConnector._get_headers()))
+        return CRMConnector._wrapper_request(requests.post(url=url, data=data.encode("ascii", "ignore"), headers=CRMConnector._get_headers()))
 
     @staticmethod
     def _perform_put(url, data):
@@ -65,7 +72,22 @@ class CRMConnector(object):
         :param email: Email to search
         :return: API Response
         """
-        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}'.format(email)
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
+        resp = CRMConnector._perform_get(search_url)
+        try:
+            party = resp.json().get('parties', [])
+            return party[0]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def search_party(field_name, field_value):
+        """
+        Perform an API Search
+        :param email: Email to search
+        :return: API Response
+        """
+        search_url = settings.CAPSULE_BASE_URL_PARTIES+'/search?q={}&embed=fields,tags'.format(email)
         resp = CRMConnector._perform_get(search_url)
         try:
             party = resp.json().get('parties', [])
@@ -91,3 +113,12 @@ class CRMConnector(object):
     @staticmethod
     def delete_party(party_id):
         return CRMConnector._perform_delete(settings.CAPSULE_BASE_URL_PARTIES + '/' + str(party_id))
+
+    @staticmethod
+    def get_custom_field_definitions(entity_name):
+        url = settings.CAPSULE_BASE_URL+'/'+entity_name+'/fields/definitions?perPage=100'
+        resp = CRMConnector._wrapper_request(requests.get(url=url, headers=CRMConnector._get_headers()))
+        try:
+            return resp.get('definitions', [])
+        except IndexError:
+            return None

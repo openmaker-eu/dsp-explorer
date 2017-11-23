@@ -1,6 +1,7 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
+from django.conf import settings
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
@@ -11,22 +12,55 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirm
 import json
 from datetime import date, timedelta
-import random
+import random, logging
+from crmconnector.models import Party
+from json_tricks.np import dump, dumps, load, loads, strip_comments
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from utils.Colorizer import Colorizer
 
+logger = logging.getLogger(__name__)
 
 def search_members(request, search_string):
-    result = Profile.search_members(search_string)
-    serializer = ProfileSerializer(instance=result, many=True)
-    return JsonResponse({'status': 'ok',
-                         'search_string': search_string,
-                         'result': serializer.data}, status=200)
+    import math
+
+    members_per_page = 20
+
+    # Switch between Search and last_n_users
+    if search_string and search_string.strip() != '':
+        results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
+    else:
+        results = Profile.objects.all()
+
+    count = results.count()
+
+    # Pagination
+    page = request.GET.get('page', 1)
+    max_page = int(math.ceil(float(count)/float(members_per_page))) or 1
+
+    paginator = Paginator(results, members_per_page)
+    paginated_results = paginator.page(page)
+
+    # Serialize
+    serializer = ProfileSerializer(instance=paginated_results, many=True)
+
+    # Response
+    return JsonResponse({
+        'status': 'ok',
+        'search_string': search_string,
+        'result': serializer.data,
+        'page': page,
+        'max_page': max_page,
+        'results_count': count
+    }, status=200)
 
 
 def get_last_members(request):
     last_twenty = Profile.get_last_n_members(21)
     serializer = ProfileSerializer(instance=last_twenty, many=True)
-    return JsonResponse({'status': 'ok',
-                         'result': serializer.data}, status=200)
+    return JsonResponse({
+        'status': 'ok',
+        'result': serializer.data
+    }, status=200)
 
 
 def get_feeds(request, theme_name, date='yesterday', cursor=-1):
@@ -63,9 +97,11 @@ def get_hot_tags(request, tag_number=4):
 
 
 def get_sector(request):
-    return JsonResponse({'status': 'ok',
-                         'sectors': [
-                             {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]}, status=200)
+    return JsonResponse(
+        {'status': 'ok',
+         'sectors': [
+             {'name': t[0], 'size': t[1]} for t in Profile.get_sectors()]
+         }, status=200)
 
 
 def get_places(request):
@@ -229,6 +265,18 @@ def get_news(request, topic_ids, date_name='yesterday', cursor=-1):
     }, status=200)
 
 
+def get_events(request, topic_ids, cursor=-1):
+    try:
+        events = DSPConnectorV12.get_events(topic_ids, cursor)
+    except DSPConnectorException:
+        events = {}
+
+    return JsonResponse({
+        'status': 'ok',
+        'result': events
+    }, status=200)
+
+
 def get_audiences(request, topic_id):
     try:
         audiences = DSPConnectorV12.get_audiences(topic_id)
@@ -238,3 +286,77 @@ def get_audiences(request, topic_id):
         'status': 'ok',
         'result': audiences
     }, status=200)
+
+
+def update_crm(request, crmtoken):
+    import threading
+    if not crmtoken == settings.CRM_UPDATE_TOKEN:
+        return not_authorized
+
+    users = User.objects.all()
+    thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
+    thr.start()
+
+    return JsonResponse({'status': 'ok'}, status=200)
+
+
+def create_or_update_party(users):
+    errored = []
+    sanititized = []
+    party = None
+    for user in users:
+        try:
+            print ('--------------------')
+            print ('UPDATING USER : %s' % user)
+            print ('--------------------')
+            print (' ')
+            # logger.debug('UPDATING %s' % user)
+            party = Party(user)
+            party.create_or_update()
+            # logger.debug('UPDATED')
+            print Colorizer.Green('UPDATED %s' % user)
+            print (' ')
+
+        except Profile.DoesNotExist as e:
+            print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
+            print (' ')
+
+        except Exception as e:
+            try:
+                print Colorizer.Red('Try to exclude incompatible custom fields for user: %s' % user)
+                party.safe_create_or_update()
+                sanititized.append(user.email)
+                print Colorizer.Yellow('UPDATED partially: %s' % user)
+                print (' ')
+
+            except Exception as safe_exc:
+                print Colorizer.Red('[ ERROR IN SAFE UPDATE ] : %s' % safe_exc)
+                print json.dumps(party.as_dict(), indent=1)
+                print (' ')
+
+                # logger.error('ERROR %s' % e)
+                # logger.error('USER %s' % user)
+                # logger.error('USER data : %s' % dumps(party.__dict__) if party else 'no data')
+
+                print Colorizer.Red('ERROR UPDATING USER : %s' % user)
+                print ('ERROR: %s' % e)
+                print (' ')
+                errored.append(user.email)
+
+    # PRINT RESULTS
+    print '-------------'
+    print 'TOTAL RESULTS'
+    print '-------------'
+
+    if len(errored):
+        print Colorizer.Red('%s errored users' % len(errored))
+        # logger.error('ERROR updating users : %s' % errored)
+        print errored
+
+    if len(sanititized):
+        print Colorizer.Purple('%s partially updated users : ' % len(sanititized))
+        print(sanititized)
+
+    elif not len(errored) and not len(sanititized):
+        print Colorizer.Green('No errored users')
+    print '-------------'

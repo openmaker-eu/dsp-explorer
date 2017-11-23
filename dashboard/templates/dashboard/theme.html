@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 
-<div class="container" ng-controller="themesController">
+<div class="container-fluid" ng-controller="themesController">
     <span ng-init="
         topic_id='{{ selected_topic.topic_id }}';
     " ></span>
@@ -11,8 +11,8 @@
 
             <div class="col-md-8 col-sm-7 col-xs-12 breadcrumb-wrapper">
                 <ol class="breadcrumb">
-                    <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-                    <li class="active">{{selected_topic.topic_name}}</li>
+                    <li><a href="{% url 'dashboard:dashboard' %}">Home</a></li>
+                    <li class="active">{{selected_topic.topic_name}} feed news</li>
                 </ol>
             </div>
             <div class="col-md-4 col-sm-5 col-xs-12 open-influencers-wrapper" ng-click="openAside()">
@@ -106,7 +106,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-12">
-                <h3>Discover the hottest topics by reading social media most recommended news.</h3>
+                <h3 class="margin-bottom-25">Discover the hottest topics by reading social media most recommended news.</h3>
             </div>
             <!-- FEED SPACE -->
             <div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">

@@ -58,6 +58,15 @@ class DSPConnectorV12(object):
         )
 
     @staticmethod
+    def get_events(topic_id, cursor=None):
+        # Default value for params
+        cursor = 0
+        return DSPConnectorV12._get(DSPConnectorV12.generate_url(
+            endpoint='/get_events',
+            parameter='?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor))
+        )
+
+    @staticmethod
     def generate_url(endpoint, parameter=None):
         return settings.DSP_BASE_URL + '/api/v1.2' + endpoint + parameter if parameter else settings.DSP_BASE_URL + '/api/v1.2' + endpoint
 

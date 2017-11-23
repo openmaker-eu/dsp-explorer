@@ -1,65 +1,103 @@
 {% extends "base.html" %}
 {% block container %}
-    <div class="container" ng-controller="searchController" ng-init="get_last_members('{{search_string}}')">
+    <div class="container-fluid" ng-controller="searchController" ng-init="search_factory.search('{{search_string}}')">
 
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12">
-                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</h1>
-                    <h2><small>We are <strong class="text-red">{{ n_registered_user }} </strong> members!</small></h2>
+                    <h1 class="margin-bottom-30">Explore the <br><strong class="text-red">OpenMaker</strong><span class="text-black"> Community</span><br><small>We are <strong class="text-red">{{ n_registered_user }} </strong> members!</small></h1>
+                    <h2></h2>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12">
-
-                <div class="col-md-5" style="padding-right:3%; ">
-                    <!--Anchor for members on page load-->
-                    <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
-                    <div class="col-md-12">
-                        <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_filter $}&nbsp;</span>&nbsp;({$results.length$} Results)</h3>
-                        <h3 ng-show="is_last_members_label" class="margin-bottom-30">OM Last Onboarded </h3>
+                <div class="col-md-7" style="padding-right:3%; ">
+                    <div class="row">
+                        <!--Anchor for members on page load-->
+                        <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
+                        <div class="col-md-12">
+                            <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_factory.search_filter $}&nbsp;</span>&nbsp;({$ results_count $} Results)</h3>
+                        </div>
+                        <div class="col-md-12">
+                            <form>
+                                <div class="has-feedback has-feedback-left" style="width:100%">
+                                    <input class="form-control"
+                                           ng-change="search_factory.search_filter.length > 1 && search_debounced() "
+                                           ng-model-options="{allowInvalid: true}"
+                                           ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
+                                           placeholder="Search members for name, city, tagwords and more" value=""
+                                    >
+                                    <i ng-if="search_factory.is_search_all()" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                                    <i
+                                            ng-if="!search_factory.is_search_all()"
+                                            ng-click="search_factory.search_all()"
+                                            class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
+                                            style="pointer-events:initial;"
+                                    ></i>
+                                </div>
+                            </form>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
                     </div>
-                    <div class="col-md-12">
-                        <form>
-                            <div class="has-feedback has-feedback-left" style="width:100%">
-                                <input class="form-control"
-                                       ng-change="search_filter.length < 3 ? search() : searchDebounced()"
-                                       ng-model-options="{allowInvalid: true}"
-                                       ng-model="search_filter" id="filter" type="text" class="form-control"
-                                       placeholder="Search members for name, city, tagwords and more" value=""
-                                >
-                                <i class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+
+                    <div class="row">
+                        <div class="col-md-6 user-card" style="margin-bottom: 3%;" ng-repeat="data in results">
+                            <div class="row">
+                                <div class="col-md-4 col-xs-4">
+                                    <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
+                                </div>
+
+                                <div class="col-md-8 col-xs-8">
+                                    <a href="/profile/{$data['id']$}">
+                                        <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_factory.search_filter)"></span></strong>
+                                    </a>
+                                    <br><span ng-bind-html="highlight((data.city), search_factory.search_filter)"></span>
+                                    <br><span ng-bind-html="highlight((data.occupation), search_factory.search_filter)"></span>
+                                    <br>
+
+                                    <i
+                                            ng-repeat="tag in data.tags"
+                                            ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
+                                            ng-click="search_factory.search_switch(tag.name)"
+                                            class="pointer"
+                                    >
+                                        <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
+                                    </i>
+
+                                </div>
                             </div>
-                        </form>
-                        <br>
-                        <br>
-                        <br>
+                        </div>
                     </div>
-                    <div class="col-md-12" style="margin-bottom: 3%;" ng-repeat="data in results">
-                        <div class="row">
-                            <div class="col-md-4 col-xs-4">
-                                <circle-image src="data.picture" href="'/profile/'+data['id']" ></circle-image>
-                            </div>
-
-                            <div class="col-md-8 col-xs-8">
-                                <a href="/profile/{$data['id']$}">
-                                    <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_filter)"></span></strong>
-                                </a>
-                                <br><span ng-bind-html="highlight((data.city), search_filter)"></span>
-                                <br><span ng-bind-html="highlight((data.occupation), search_filter)"></span>
-                                <br>
-
-                                <i
-                                        ng-repeat="tag in data.tags"
-                                        ng-class="{ 'text-red' : search_filter == tag.name }"
-                                        ng-click="search( search_filter == tag.name ? ' ' : tag.name)"
-                                        class="pointer"
-                                >
-                                    <strong>#</strong><span ng-bind-html="highlight((tag.name), search_filter)"></span></i>&nbsp;&nbsp;
-                                </i>
-
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-5 col-xs-5">
+                                    <button
+                                            ng-click="search_factory.prev_page()"
+                                            class="btn login-button pull-left"
+                                            ng-class="{ 'btn-disabled disabled' : search_factory.is_min_page }"
+                                    >
+                                        Prev&nbsp;&nbsp;
+                                        <i class="glyphicon glyphicon-arrow-left"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-2 col-xs-2">
+                                    <p style="text-align: center; float: left;"><span class="btn btn-default">{$ search_factory.page $}/{$ search_factory.max_page $}</span></p>
+                                </div>
+                                <div class="col-md-5 col-xs-5">
+                                    <button
+                                            ng-click="search_factory.next_page()"
+                                            class="btn login-button pull-right"
+                                            ng-class="{ 'btn-disabled disabled' : search_factory.is_max_page }"
+                                    >
+                                        Next&nbsp;&nbsp;
+                                        <i class="glyphicon glyphicon-arrow-right"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,16 +106,11 @@
                 <!--Anchor for tag on page load-->
 
 
-                <div class="col-md-7">
+                <div class="col-md-5">
                     <div class="row">
 
-                        <div class="col-md-12 margin-top-30">
-                            <div class="col-md-12">
-                                <br>
-                            </div>
-                        </div>
 
-                        <div class="col-md-12"><a id="maps" href="#" ></a>&nbsp;</a></div>
+
                         <div class="col-md-12">
                             <h3>Location</h3>
                             <br>
@@ -89,7 +122,7 @@
                         <div class="col-md-12">
                             <h3>Hot Tags</h3>
                             <div class="" >
-                                <tag-bubbles tags="{{ hot_tags }}"></tag-bubbles>
+                                <tag-bubbles tags="{{ hot_tags }}" maxtags="25"></tag-bubbles>
                             </div>
                         </div>
 
@@ -106,9 +139,6 @@
                     <div class="row"><br><br>
                     </div>
                 </div>
-
-
-
 
             </div>
 

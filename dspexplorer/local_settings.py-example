@@ -21,6 +21,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# ENV PRODUCTION OR STAGING FOR ENABLE GOOGLE ANALYTICS CODE (options : staging or production)
+ENV = ''
+GOOGLE_ANALYTICS_CODE = ''
+
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -148,3 +152,10 @@ ITA_API_KEY = ''
 # CSRF_FAILURE
 
 CSRF_FAILURE_VIEW = 'dashboard.authentication.csrf_failure'
+
+SETTINGS_EXPORT = [
+    'ENV',
+    'GOOGLE_ANALYTICS_CODE',
+]
+
+CRM_UPDATE_TOKEN = ''

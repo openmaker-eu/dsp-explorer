@@ -10,10 +10,13 @@ urlpatterns = [
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
-    
+
     # Explore
     url(r'^dashboard/theme/(?P<topic_id>[0-9]+)/$', views.theme, name='theme'),
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
+    url(r'^dashboard/events/(?P<topic_id>[0-9]+)/$', views.events, name='events'),
+    url(r'^dashboard/events/$', views.events, {'topic_id': None}, name='events'),
+    # Dashboard
     url(r'^dashboard', views.dashboard, name='dashboard'),
     
     # Profiles
@@ -45,6 +48,8 @@ urlpatterns = [
     # API v1.2
     # NEWS (Ex Feeds)
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
+    # EVENTS
+    url(r'^api/v1.2/events/(?P<topic_ids>.+)/(?P<cursor>.+)/$', api.get_events, name='api_get_events'),
     
     # TOPICS (Ex Themes)
     url(r'^api/v1.2/topics', api.get_topics, name='api_get_topics'),
@@ -52,10 +57,14 @@ urlpatterns = [
     
     # AUDIENCES (EX Influencers)
     url(r'^api/v1.2/audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
-    
+
+    # UPDATE CRM API
+    url(r'^api/v1.2/crm/(?P<crmtoken>.+)/', api.update_crm, name='api_update_crm'),
     
     # API v1.1
     url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
+    url(r'^api/v1.1/search/members/', api.search_members, {'search_string': None},  name='api_search_member'),
+
     url(r'^api/v1.1/search/last_members/$', api.get_last_members, name='api_get_last_members'),
     url(r'^api/v1.1/get_feeds/(?P<theme_name>.+)/(?P<date>.+)/(?P<cursor>.+)/$', api.get_feeds, name='api_get_feeds'),
     url(r'^api/v1.1/get_themes', api.get_themes, name='api_get_themes'),

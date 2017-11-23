@@ -4,11 +4,11 @@ let template = `
     <div class="row">
         <div class="col-md-12">
             <!--<h2><strong class="text-red">Stories</strong> <small>from <a href="http://openmaker.eu/" target="_blank">openmaker.eu</a></small></h2>-->
-            <h2>Explore the <strong class="text-red">Community</strong></h2>
+            <h2><span style="color:white;">Explore the</span> <strong class="text-red">Community</strong></h2>
         </div>
         
         <div class="col-md-3" ng-repeat="story in stories | limitTo:3">
-            <div class="card margin-bottom-20" ng-if="story">
+            <div class="card margin-bottom-20" style="background-color: #fff;" ng-if="story">
                 <a href="{$ story.link $}" target="_blank">
                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                         <img ng-if="story.image" style="min-width:100%;" ng-src="{$ story.image $}" class="img-responsive" alt="Story image">
@@ -25,7 +25,7 @@ let template = `
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                             <a href="http://openmaker.eu/" target="_blank">
-                                <div class="card margin-bottom-20" style="min-height: 326px;">
+                                <div class="card margin-bottom-20" style="min-height: 326px;background-color: #fff;">
                                     <h3 class="text-red" style="position: absolute;
                                 top: 50%;
                                 left: 50%;

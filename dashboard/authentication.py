@@ -21,12 +21,15 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
 import re
 from django.utils.encoding import force_unicode
 
+from crmconnector.models import Party
+from rest_framework.exceptions import NotFound
+
+logger = logging.getLogger(__name__)
 
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
-
 
 def login_page(request):
     if request.user.is_authenticated:
@@ -250,38 +253,18 @@ def onboarding_confirmation(request, token):
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    # Check for user on Capsule CRM
-    user = capsule.CRMConnector.search_party_by_email(profile.user.email)
-    if user:
-        try:
-            capsule.CRMConnector.update_party(user['id'], {'party': {
-                'emailAddresses': [{'id': user['emailAddresses'][0]['id'], 'address': profile.user.email}],
-                'type': 'person',
-                'firstName': profile.user.first_name,
-                'lastName': profile.user.last_name,
-                'jobTitle': profile.occupation,
-            }
-            })
-        except:
-            messages.error(request, 'Some error occures, please try again!')
-            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
-            # TODO SEND ERROR EMAIL TO ADMIN
-            return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    else:
-        try:
-            capsule.CRMConnector.add_party({'party': {
-                'emailAddresses': [{'address': profile.user.email}],
-                'type': 'person',
-                'firstName': profile.user.first_name,
-                'lastName': profile.user.last_name,
-                'jobTitle': profile.occupation,
-            }
-            })
-        except:
-            messages.error(request, 'Some error occures, please try again!')
-            logging.error('[VALIDATION_ERROR] Error during CRM Creation for user: %s' % profile.user.id)
-            # TODO SEND ERROR EMAIL TO ADMIN
-            return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    # update on crm
+    try:
+        party = Party(profile.user)
+        party.create_or_update()
+    except NotFound as e:
+        messages.error(request, 'There was some connection problem, please try again')
+        logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
+        return HttpResponseRedirect(reverse('dashboard:profile'))
+    except Exception as e:
+        logger.debug('CRM CREATION USER ERROR %s' % e)
+        return HttpResponseRedirect(reverse('dashboard:profile'))
+
 
     profile.user.is_active = True
     profile.user.save()
