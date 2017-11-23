@@ -104,46 +104,45 @@
                         {% endif %}
                     </div>
                 </div>
-
-                <div class="margin-top-25">
-                    <div class="col-md-12">
-                        <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Events</strong></h2>
-                    </div>
-                    {% for event in events|slice:":3" %}
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card margin-bottom-20">
-                                <a href="{{ event.link }}" target="_blank">
-                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" src="{{ event.cover }}" class="img-responsive"
-                                             alt="{{ event.name }}">
-                                    </div>
-                                    <div class="card-content">
-                                        <h5>{{ event.name|truncatechars:40 }}</h5>
-                                    </div>
-                                    <div class="card-action">
-                                        <p>
-                                            <i class="glyphicon glyphicon-globe"></i> {{ event.place|truncatechars:50 }} <br>
-                                            <i class="glyphicon glyphicon-time"></i> {{ event.start_time }}<br>
-                                            <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>
-                                            <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <a href="{% url 'dashboard:events' selected_topic.topic_id %}">
-                            <div class="card margin-bottom-20" style="min-height: 326px;">
-                                <h3 class="text-red" style="position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    margin-right: -50%;
-                                    transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+{#                <div class="margin-top-25">#}
+{#                    <div class="col-md-12">#}
+{#                        <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Events</strong></h2>#}
+{#                    </div>#}
+{#                    {% for event in events|slice:":3" %}#}
+{#                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">#}
+{#                            <div class="card margin-bottom-20">#}
+{#                                <a href="{{ event.link }}" target="_blank">#}
+{#                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">#}
+{#                                        <img style="min-width:100%;" src="{{ event.cover }}" class="img-responsive"#}
+{#                                             alt="{{ event.name }}">#}
+{#                                    </div>#}
+{#                                    <div class="card-content">#}
+{#                                        <h5>{{ event.name|truncatechars:40 }}</h5>#}
+{#                                    </div>#}
+{#                                    <div class="card-action">#}
+{#                                        <p>#}
+{#                                            <i class="glyphicon glyphicon-globe"></i> {{ event.place|truncatechars:50 }} <br>#}
+{#                                            <i class="glyphicon glyphicon-time"></i> {{ event.start_time }}<br>#}
+{#                                            <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>#}
+{#                                            <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}#}
+{#                                        </p>#}
+{#                                    </div>#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">#}
+{#                        <a href="{% url 'dashboard:events' selected_topic.topic_id %}">#}
+{#                            <div class="card margin-bottom-20" style="min-height: 326px;">#}
+{#                                <h3 class="text-red" style="position: absolute;#}
+{#                                    top: 50%;#}
+{#                                    left: 50%;#}
+{#                                    margin-right: -50%;#}
+{#                                    transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>#}
+{#                            </div>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                </div>#}
             </div>
         </div>
         <div class="container-fluid color-row padding-bottom-50" style="margin-top: -20px;">
