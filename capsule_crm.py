@@ -1,46 +1,32 @@
-
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dspexplorer.settings")
+import sys
+import django
 
-from dspexplorer.wsgi import application
+sys.path.append("/dspexplorer/")
+os.environ['DJANGO_SETTINGS_MODULE'] = 'dspexplorer.settings'
+django.setup()
 
-
-
-from django.conf import settings
-from dashboard import models
-from utils.api import *
+from dashboard.models import User, Profile
 import json
 from crmconnector.models import Party
 from utils.Colorizer import Colorizer
+from crmconnector.capsule import CRMValidationException
 
-
-def update_crm(request, crmtoken):
-    import threading
-    if not crmtoken == settings.CRM_UPDATE_TOKEN:
-        return not_authorized
-
-    # users = User.objects.all()
-    users = User.objects.filter(email='massimo.santoli@top-ix.org')
-
-    thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
-    thr.start()
-
-    return JsonResponse({'status': 'ok'}, status=200)
-
-def create_or_update_party(users):
+def update_crm(user=None):
     errored = []
-    sanititized = []
+    partially_updated = []
     party = None
+
+    users = user or User.objects.all()
+
     for user in users:
         try:
             print ('--------------------')
             print ('UPDATING USER : %s' % user)
             print ('--------------------')
             print (' ')
-            # logger.debug('UPDATING %s' % user)
             party = Party(user)
             party.create_or_update()
-            # logger.debug('UPDATED')
             print Colorizer.Green('UPDATED %s' % user)
             print (' ')
 
@@ -48,11 +34,11 @@ def create_or_update_party(users):
             print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
             print (' ')
 
-        except Exception as e:
+        except CRMValidationException as e:
             try:
                 print Colorizer.Red('Try to exclude incompatible custom fields for user: %s' % user)
                 party.safe_create_or_update()
-                sanititized.append(user.email)
+                partially_updated.append(user.email)
                 print Colorizer.Yellow('UPDATED partially: %s' % user)
                 print (' ')
 
@@ -61,15 +47,20 @@ def create_or_update_party(users):
                 print json.dumps(party.as_dict(), indent=1)
                 print (' ')
 
-                # logger.error('ERROR %s' % e)
-                # logger.error('USER %s' % user)
-                # logger.error('USER data : %s' % dumps(party.__dict__) if party else 'no data')
-
                 print Colorizer.Red('ERROR UPDATING USER : %s' % user)
                 print ('ERROR: %s' % e)
                 print (' ')
                 errored.append(user.email)
 
+        except Exception as e:
+            print Colorizer.Red('ERROR UPDATING USER : %s' % user)
+            print ('ERROR: %s' % e)
+            print (' ')
+
+    return errored, partially_updated
+
+
+def print_results(errored=None, partially_updated=None):
     # PRINT RESULTS
     print '-------------'
     print 'TOTAL RESULTS'
@@ -80,10 +71,23 @@ def create_or_update_party(users):
         # logger.error('ERROR updating users : %s' % errored)
         print errored
 
-    if len(sanititized):
-        print Colorizer.Purple('%s partially updated users : ' % len(sanititized))
-        print(sanititized)
+    if len(partially_updated):
+        print Colorizer.Purple('%s partially updated users : ' % len(partially_updated))
+        print(partially_updated)
 
-    elif not len(errored) and not len(sanititized):
+    elif not len(errored) and not len(partially_updated):
         print Colorizer.Green('No errored users')
     print '-------------'
+
+
+def get_test_user(user_email):
+    user = User.objects.filter(email=user_email)
+    return user if len(user) > 0 else User.objects.filter(email='massimo.santoli@top-ix.org')
+
+if __name__ == "__main__":
+    user = get_test_user(sys.argv[1]) if len(sys.argv) > 1 else None
+    if len(user) > 0:
+        errored, partially_updated = update_crm(user)
+        print_results(errored, partially_updated)
+    else:
+        print Colorizer.Red('No user found')
