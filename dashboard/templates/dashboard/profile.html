@@ -5,7 +5,7 @@
     <!--Pass Django vars to Angular-->
     <span ng-init="
         role = {
-            selected : '{{ profile.role }}',
+            selected : '{{ profile.role|escapejs }}',
             available : [
                 'Entrepreneur',
                 'Manager',
@@ -14,10 +14,11 @@
                 'Researcher',
                 'Policy-Maker',
                 'Other'
-            ]
+            ],
+            other : '{{ profile.role_other|escapejs }}'
         };
         technical_expertise = {
-            selected: '{{ profile.technical_expertise }}',
+            selected: '{{ profile.technical_expertise|escapejs }}',
             available: [
                 'IoT',
                 'Digital fabrication - additive technologies',
@@ -42,10 +43,11 @@
                 'CAD/3D modelling-printing',
                 'Computer vision',
                 'Other'
-            ]
+            ],
+            other : '{{ profile.technical_expertise_other|escapejs  }}'
         };
         sector = {
-            selected : '{{ profile.sector }}',
+            selected : '{{ profile.sector|escapejs }}',
             available : [
                 'Agriculture, forestry, fishing, mining',
                 'Manufacturing: Food, Environment and Agriculture industries',
@@ -77,10 +79,11 @@
                 'Arts, entertainment and recreation',
                 'Sectoral Associations and Trade Unions',
                 'Other..'
-            ]
+            ],
+             other : '{{ profile.sector_other|escapejs }}'
         };
         size = {
-            selected : '{{ profile.size }}',
+            selected : '{{ profile.size|escapejs }}',
             available : [
                 'A micro enterprise (<10 staff)',
                 'A small enterprise (<50 staff)',
@@ -92,7 +95,7 @@
 
         socialLinks = {{ profile.socialLinks }} ;
 
-        is_edit = '{{ profile_action }}' === 'edit';
+        is_edit = '{{ profile_action|escapejs }}' === 'edit';
 
         tags={
             available: {% firstof tags 'False' %} || [],
@@ -416,12 +419,30 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="role" ng-value="role.selected"/>
+
+                            <div
+                                 ng-show="role.selected != '' || role.other != ''"
+                                 class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your role</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="role.other"
+                                        name="role_other"
+                                        maxlenght="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':role.selected != ''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
 
                         <div class="col-md-12">
                             <label for="">Organization</label>
-                            <input class="form-control" type="text" name="organization" value="{{ profile.organization }}">
-                            <br/>
+                            <input class="form-control" type="text" name="organization"value="{{ profile.organization }}">
+                            <br>
                         </div>
 
                         <div class="col-md-12">
@@ -433,6 +454,24 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="sector" ng-value="sector.selected" />
+
+                            <div
+                                    ng-show="sector.selected!='' || sector.other!='' "
+                                    class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your sector</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="sector.other"
+                                        name="sector_other"
+                                        maxlenght="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':sector.selected!=''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
 
                         <div class="col-md-12">
@@ -454,6 +493,24 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="technical_expertise" ng-value="technical_expertise.selected" />
+
+                            <div
+                                    ng-show="technical_expertise.selected!='' || technical_expertise.other!=''"
+                                    class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your technical expertise</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="technical_expertise.other"
+                                        name="technical_expertise_other"
+                                        maxlenght="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':technical_expertise.selected!=''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
                     </div>
 

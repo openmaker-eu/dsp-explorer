@@ -46,7 +46,12 @@ class Profile(models.Model):
     sector = models.TextField(_('Sector'), max_length=200, null=True, blank=True, default='')
     types_of_innovation = models.TextField(_('Types of Innovation'), max_length=200, null=True, blank=True, default='')
     size = models.TextField(_('Size'), max_length=200, null=True, blank=True, default='')
+
     technical_expertise = models.TextField(_('Technical Expertise'), max_length=200, null=True, blank=True, default='')
+
+    technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
+    role_other = models.TextField(_('Role other'), max_length=200, null=True, blank=True, default='')
+    sector_other = models.TextField(_('Sector other'), max_length=200, null=True, blank=True, default='')
 
     tags = models.ManyToManyField(Tag, related_name='profile_tags')
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')

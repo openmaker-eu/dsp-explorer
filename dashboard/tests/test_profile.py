@@ -9,7 +9,7 @@ from utils.Colorizer import Colorizer
 import datetime
 import pytz
 from django.utils import timezone
-
+from itertools import chain
 
 class ProfileTestCase(TestCase):
 
@@ -55,6 +55,24 @@ class ProfileTestCase(TestCase):
         # @TODO : now tests only by equality of the string method output of the 2 objects. Need to test also user data
         self.assertEqual(response.context['user'], self.user, 'Response User data is not an User instance')
 
+    def test6_save_data_response(self):
+        print Colorizer.LightPurple('\n[TEST PROFILE PAGE] check update with valid data')
+        response = self.post_profile(None)
+        self.assertLessEqual(
+            response.status_code,
+            202,
+            Colorizer.Red('Update Response Error: \n code: %s \n Info : %s' % (response.status_code, response))
+        )
+
+    def test7_save_data_errors(self):
+        print Colorizer.LightPurple('\n[TEST PROFILE PAGE] check update with valid data')
+        response = self.post_profile(None)
+        update_errors = filter(lambda x: x.level >= 40, list(response.context['messages']))
+        self.assertFalse(
+            len(update_errors),
+            Colorizer.Red('Update profile errors: %s' % '\n'.join(d.message for d in update_errors))
+        )
+
     @classmethod
     def login(cls):
         return cls.client.login(username=cls.user.username, password=cls.password)
@@ -63,3 +81,13 @@ class ProfileTestCase(TestCase):
     def get_profile_page(cls):
         cls.login()
         return cls.client.get('/profile/%s/' % cls.user.profile.pk, follow=True)
+
+    @classmethod
+    def post_profile(cls, data):
+        cls.login()
+        # @TODO: this not send vaid data
+        data = dict(chain(cls.user.__dict__.iteritems(), cls.user.profile.__dict__.iteritems()))
+        data['birthdate'] = '1983/05/14'
+        return cls.client.post('/profile/%s/' % cls.user.profile.pk, data, follow=True)
+
+

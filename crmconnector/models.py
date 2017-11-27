@@ -106,6 +106,11 @@ class Party(object):
             '411988': 'Business model innovation' in user.profile.types_of_innovation,
             '411989': 'Social innovation' in user.profile.types_of_innovation,
 
+            #Other
+            '450898': user.profile.role_other,
+            '450899': user.profile.technical_expertise_other,
+            '450900': user.profile.sector_other,
+
             # @TODO: make methods in model that saves and retrieve this
             '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None
         }

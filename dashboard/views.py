@@ -118,7 +118,11 @@ def profile(request, profile_id=None, action=None):
             new_profile['sector'] = request.POST.get('sector', None)
             new_profile['size'] = request.POST.get('size', None)
             new_profile['technical_expertise'] = request.POST.get('technical_expertise', None)
-            
+
+            new_profile['technical_expertise_other'] = request.POST.get('technical_expertise_other', None)
+            new_profile['role_other'] = request.POST.get('role_other', None)
+            new_profile['sector_other'] = request.POST.get('sector_other', None)
+
             if request.POST.get('place', None) != '{}': new_profile['place'] = request.POST.get('place', None)
             
             # Multiple choice fields

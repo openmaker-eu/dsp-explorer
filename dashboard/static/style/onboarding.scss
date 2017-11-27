@@ -86,6 +86,20 @@
 	&:hover, &:hover * { color: $dsp-red; font-weight: 900; }
 
 }
-
-
 /*rgba(204, 204, 204, 0.5)*/
+
+//.textarea-blink-in{
+//	-webkit-animation: blink-animation 1s steps(5, start) 10s;
+//	animation: blink-animation 1s steps(5, start) 10s;
+//}
+//
+//@keyframes blink-animation {
+//	from{
+//		border:solid 1px;
+//		border-color:$gray-light;
+//	}
+//	to {
+//		border:solid 3px;
+//		border-color:$red;
+//	}
+//}
