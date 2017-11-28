@@ -230,9 +230,26 @@ def get_om_events(request):
 # API V 1.3
 ###########
 
+
 class v13:
+
     @staticmethod
-    def get_influencers(request, topic_id):
+    def __wrap_response(*args, **kwargs):
+        try:
+            results = args[0](args[1:])
+        except DSPConnectorException:
+            return JsonResponse({
+                'status': 'error',
+                'result': {}
+            }, status=400)
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+
+    @staticmethod
+    def get_influencers(request, topic_id=1):
         try:
             results = DSPConnectorV13.get_influencers(topic_id)
         except DSPConnectorException:
@@ -243,7 +260,7 @@ class v13:
         }, status=200)
 
     @staticmethod
-    def get_audiences(request, topic_id):
+    def get_audiences(request, topic_id=1):
         try:
             results = DSPConnectorV13.get_audiences(topic_id)
         except DSPConnectorException:
@@ -252,6 +269,12 @@ class v13:
             'status': 'ok',
             'result': results
         }, status=200)
+
+    # @staticmethod
+    # def get_themes(request):
+    #     return v13.__wrap_response(v13.get_themes)
+
+
 
 ###########
 # API V 1.2

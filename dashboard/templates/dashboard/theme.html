@@ -68,7 +68,7 @@
                             <div class="card margin-bottom-20">
                                 <a href="{$feed.url$}" target="_blank">
                                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" ng-if="feed.im" src="{$ feed.im $}" class="img-responsive" alt="{$feed.title$}">
+                                        <img style="min-width:100%;" ng-if="feed.im" ng-src="feed.im" class="img-responsive" alt="{$feed.title$}">
                                         <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
                                     </div>
                                     <div class="card-content">

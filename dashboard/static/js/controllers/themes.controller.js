@@ -37,7 +37,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         get_news : function(theme=this.theme , filter=this.filter , cursor = this.next_cursor){
             console.log('get news');
             this.progress = true;
-            $http.get('/api/v1.2/news/' + theme + '/' + filter + '/' + cursor + '/')
+            $http.get('/api/v1.2/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
                         console.log('get news response');
@@ -50,7 +50,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             return this
         },
         get_influencers : function (theme) {
-            $http.get('/api/v1.3/influencers/' + theme)
+            $http.get('/api/v1.3/influencers/' + (theme || 1) + '/')
                 .then(function (response) {
                     $scope.influencers = _.get(response.data, 'result.audience_sample');
                 },function (err) {
@@ -58,7 +58,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
                 })
         },
         get_audiences : function (theme) {
-            $http.get('/api/v1.3/audiences/' + theme)
+            $http.get('/api/v1.3/audiences/' + (theme || 1) + '/' )
                 .then(function (response) {
                     $scope.audiences = _.get(response.data, 'result.local_influencers');
                 },function (err) {
