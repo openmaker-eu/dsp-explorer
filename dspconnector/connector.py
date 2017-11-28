@@ -19,41 +19,32 @@ class DSPConnectorException(Exception):
 class DSPConnectorV13(object):
     @staticmethod
     def get_influencers(topic_id, location="", cursor=0):
-
-        loc = DSPConnectorV13._set_location_filter(location)
-        params = DSPConnectorV13._set_params_with_or_without_location(topic_id, loc, cursor)
-
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_local_influencers',
-            parameter=params)
+            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
         )
 
     @staticmethod
     def get_audiences(topic_id, location="", cursor=0):
-
-        loc = DSPConnectorV13._set_location_filter(location)
-        if loc != "":
-            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=loc, cursor=cursor)
-        else:
-            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
-
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_audience_sample',
-            parameter=params)
+            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
+        )
+
+    @classmethod
+    def get_events(topic_id, location="", cursor=0):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_events',
+            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
         )
 
     @staticmethod
-    def get_events(topic_id, location="", cursor=0):
+    def __get_params(topic_id, location="", cursor=0):
+        location_id = DSPConnectorV13._set_location_filter(location)
 
-        loc = DSPConnectorV13._set_location_filter(location)
-        params = DSPConnectorV13._set_params_with_or_without_location(topic_id, loc, cursor)
-
-        print params
-
-        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
-            endpoint='/get_events',
-            parameter=params)
-        )
+        params = '?topic_id={topic_id}'.format(topic_id=topic_id)
+        params += '&location={location}'.format(location=location_id) if location_id else ''
+        return params
 
     @staticmethod
     def generate_url(endpoint, parameter=None):
