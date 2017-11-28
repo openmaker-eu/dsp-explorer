@@ -83,7 +83,7 @@
                         </div>
                         {% if top_influencers %}
                             <div class="text-center">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Influencers</strong></h2>
                                 </div>
                                 {% for influencer in top_influencers %}
@@ -94,6 +94,22 @@
                                                     <img class="img-circle" src="{{influencer.profile_image_url_https}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                 <h5 class="pull-left" style="line-height: 2em;">
                                                     <p style="line-height: 40px;">{{influencer.name}}</p>
+                                                </h5>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="col-md-6">
+                                    <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Audience</strong></h2>
+                                </div>
+                                {% for audience in audiences %}
+                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                        <div class="pull-left" style="clear: both;">
+                                            <a href="https://www.twitter.com/{{audience.screen_name}}" target="_blank">
+                                                <h5 class="pull-left" style="height: 2em;">
+                                                    <img class="img-circle" src="{{audience.profile_image_url_https}}" alt="" style="height:50px; width: 50px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                <h5 class="pull-left" style="line-height: 2em;">
+                                                    <p style="line-height: 40px;">{{audience.name}}</p>
                                                 </h5>
                                             </a>
                                         </div>
