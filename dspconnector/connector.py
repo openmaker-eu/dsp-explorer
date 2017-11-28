@@ -21,30 +21,41 @@ class DSPConnectorV13(object):
     def get_influencers(topic_id, location="", cursor=0):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_local_influencers',
-            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
         )
 
     @staticmethod
     def get_audiences(topic_id, location="", cursor=0):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_audience_sample',
-            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
-        )
-
-    @classmethod
-    def get_events(topic_id, location="", cursor=0):
-        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
-            endpoint='/get_events',
-            parameter=DSPConnectorV13.__get_params(topic_id, location, cursor))
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
         )
 
     @staticmethod
-    def __get_params(topic_id, location="", cursor=0):
+    def get_events(topic_id, location="", cursor=0):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_events',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
+        )
+
+    @staticmethod
+    def get_news(topic_id, date='yesterday', cursor=0):
+
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_news',
+            parameter='?topic_ids={topic_id}&date={date}&cursor={cursor}'.format(topic_id=topic_id, date=date, cursor=cursor))
+        )
+
+    @staticmethod
+    def __get_parameters(topic_id, date=None, location="", cursor=0):
+
         location_id = DSPConnectorV13._set_location_filter(location)
 
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
+        params += '&date={date}'.format(date=date) if date else ''
         params += '&location={location}'.format(location=location_id) if location_id else ''
         params += '&cursor={cursor}'.format(cursor=cursor)
+
         return params
 
     @staticmethod

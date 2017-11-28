@@ -26,9 +26,8 @@ def dashboard(request):
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = random.choice(topics_list)
-        hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
 
-        print hot_news
+        hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
 
         # check user location and according to that ask for events, influencers and audiences
 
@@ -58,6 +57,7 @@ def dashboard(request):
         'audiences':audiences,
         'events': events_by_topic_and_location
     }
+
     return render(request, 'dashboard/dashboard.html', context)
 
 
