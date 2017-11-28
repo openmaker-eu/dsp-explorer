@@ -33,6 +33,7 @@ export default [function(){
         scope: {
             tags: '=',
             standalone: '=',
+            static: '=',
             maxtags: '=',
             theme: '@'
         },
@@ -97,19 +98,23 @@ let bubble = function(div_id, tags){
             .data(pack(root).descendants())
             .enter()
             .append("g")
-            .attr("class", function(d) { return d.children ? "node" : "leaf node pointer"; })
+            .attr("class", function(d) { return d.children ? "node" : "leaf node pointer" })
             .attr("fill", (d) =>{
                 if(d.children) return '#fff'
                 return this.factory.search_filter.toLowerCase() === d.data.name.toLowerCase() ? '#db4348' : tag_default_color
             })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on('click', (d,i)=>{
-                this.standalone ?
+                if(!this.static)
+                    this.standalone ?
                     window.location = '/search/members/'+d.data.name+'#tags' :
                     this.filter(d.data.name, 'tags') || jQuery("html,body").animate({scrollTop: 100}, 1000)
             })
     
-        node.append("title").attr("class", 'pointer')
+        node.append("title")
+        
+        // !this.static && node.attr("class", 'pointer')
+    
         node
             .append("circle")
             .attr("r", function(d) { return d.r; } )

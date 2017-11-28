@@ -90,7 +90,7 @@
             <div id="row">
                 <div class="col-md-12">
                     <h2 class="text-red"><span class="text-black">Hot</span>&nbsp;Tags</h2>
-                    <tag-bubbles standalone="true" maxtags="15"></tag-bubbles>
+                    <tag-bubbles standalone="true" static="true" maxtags="15"></tag-bubbles>
                     <br>
                 </div>
 
@@ -126,7 +126,9 @@
                     </div>
                 </div>
 
-                <div class="col-md-12" ng-if="audiences_selected!=true">
+                <div class="col-md-12" ng-if="audiences_selected!=true" style="padding:20px;">
+                    <p class="text-grey"><i>Influencer are individuals with large followings in this topic</i></p>
+
                     <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
                         <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
                             <h5 class="pull-left" style="height: 2em;">
@@ -138,7 +140,8 @@
                     </div>
                 </div>
 
-                <div class="col-md-12" ng-if="audiences_selected==true">
+                <div class="col-md-12" ng-if="audiences_selected==true" style="padding:20px;">
+                    <p class="text-grey"><i>Audiences are individuals that are interested in this topic</i></p>
                     <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
                         <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
                             <h5 class="pull-left" style="height: 2em;">

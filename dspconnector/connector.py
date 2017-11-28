@@ -32,6 +32,20 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
+    def get_audiences(topic_id, location="", cursor=0):
+
+        loc = DSPConnectorV13._set_location_filter(location)
+        if loc != "":
+            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=loc, cursor=cursor)
+        else:
+            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
+
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_audience_sample',
+            parameter=params)
+        )
+
+    @staticmethod
     def get_events(topic_id, location="", cursor=0):
 
         loc = DSPConnectorV13._set_location_filter(location)

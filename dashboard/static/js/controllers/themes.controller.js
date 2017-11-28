@@ -52,7 +52,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         get_influencers : function (theme) {
             $http.get('/api/v1.3/influencers/' + theme)
                 .then(function (response) {
-                    $scope.influencers = response.data.result.audiences;
+                    $scope.influencers = _.get(response.data, 'result.audience_sample');
                 },function (err) {
                     // ToDo show API errors with a common error message using toastr?
                 })
@@ -60,7 +60,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         get_audiences : function (theme) {
             $http.get('/api/v1.3/audiences/' + theme)
                 .then(function (response) {
-                    $scope.audiences = response.data.result.audiences;
+                    $scope.audiences = _.get(response.data, 'result.local_influencers');
                 },function (err) {
                     // ToDo show API errors with a common error message using toastr?
                 })
@@ -86,26 +86,29 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
             $scope.FeedModel.reset($scope.theme)
         }
     }
+    
+    let audiences_watch = $scope.$watch('topic_id', ()=>{ $scope.FeedModel.get_audiences($scope.topic_id);  audiences_watch=null})
+    let influencers_watch = $scope.$watch('topic_id', ()=>{ $scope.FeedModel.get_influencers($scope.topic_id); influencers_watch=null})
 
-    // open aside with influencers
-    $scope.openAside = () => {
-        $scope.aside = $aside({
-            scope:$scope,
-            title: "Title",
-            templateUrl: false,
-            backdrop: 'static',
-            template: require("../../../templates/aside/influencers.html"),
-            show:false
-        });
-        $scope.aside.$promise.then(function() {
-            $scope.aside.show();
-            $('body').addClass('no-scroll');
-        })
-    }
-    $scope.closeAside = () =>{
-        $scope.aside.hide()
-        $('body').removeClass('no-scroll');
-        
-    }
+    // // open aside with influencers
+    // $scope.openAside = () => {
+    //     $scope.aside = $aside({
+    //         scope:$scope,
+    //         title: "Title",
+    //         templateUrl: false,
+    //         backdrop: 'static',
+    //         template: require("../../../templates/aside/influencers.html"),
+    //         show:false
+    //     });
+    //     $scope.aside.$promise.then(function() {
+    //         $scope.aside.show();
+    //         $('body').addClass('no-scroll');
+    //     })
+    // }
+    // $scope.closeAside = () =>{
+    //     $scope.aside.hide()
+    //     $('body').removeClass('no-scroll');
+    //
+    // }
     
 }]

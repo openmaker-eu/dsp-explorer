@@ -6,7 +6,7 @@ from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer
-from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12
+from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import *
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirm
@@ -19,6 +19,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from utils.Colorizer import Colorizer
 
 logger = logging.getLogger(__name__)
+
+from django.http import HttpResponse
+from django.views import View
+
 
 def search_members(request, search_string):
     import math
@@ -222,9 +226,35 @@ def get_om_events(request):
             'results': {}},
             status=500)
 
+###########
+# API V 1.3
+###########
+
+class v13:
+    @staticmethod
+    def get_influencers(request, topic_id):
+        try:
+            results = DSPConnectorV13.get_influencers(topic_id)
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_audiences(request, topic_id):
+        try:
+            results = DSPConnectorV13.get_audiences(topic_id)
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
 
 ###########
-# API V.2
+# API V 1.2
 ###########
 
 def get_topics(request):
