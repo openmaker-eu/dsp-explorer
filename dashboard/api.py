@@ -98,9 +98,10 @@ def get_influencers(request, theme_name):
 
 
 def get_hot_tags(request, tag_number=4):
-    return JsonResponse({'status': 'ok',
-                         'tags': [
-                             {'name': t[0], 'size': t[1]} for t in Profile.get_hot_tags(tag_number)]}, status=200)
+    return JsonResponse({
+        'status': 'ok',
+        'results': [{'hashtag': t[0], 'count': t[1]} for t in Profile.get_hot_tags(tag_number)]
+    }, status=200)
 
 
 def get_sector(request):
@@ -230,9 +231,7 @@ def get_om_events(request):
 # API V 1.3
 ###########
 
-
 class v13:
-
     @staticmethod
     def __wrap_response(*args, **kwargs):
         try:
@@ -270,11 +269,16 @@ class v13:
             'result': results
         }, status=200)
 
-    # @staticmethod
-    # def get_themes(request):
-    #     return v13.__wrap_response(v13.get_themes)
-
-
+    @staticmethod
+    def get_hashtags(request, topic_id=1, date_string='yesterday'):
+        try:
+            results = DSPConnectorV13.get_hashtags(topic_id, date_string)['hashtags']
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
 
 ###########
 # API V 1.2

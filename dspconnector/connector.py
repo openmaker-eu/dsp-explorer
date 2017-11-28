@@ -39,6 +39,13 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
+    def get_hashtags(topic_id, date_string="yesterday"):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_hashtags',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, date=date_string))
+        )
+
+    @staticmethod
     def get_news(topic_id, date='yesterday', cursor=0):
 
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
