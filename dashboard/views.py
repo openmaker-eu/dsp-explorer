@@ -8,21 +8,18 @@ from django.contrib import messages
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
-from dspconnector.connector import DSPConnectorException, DSPConnectorV12
+from dspconnector.connector import DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
-import datetime as dt
-import json
-import os
-import logging
-import re
-import random
+import datetime as dt, json, os, logging, re, random
 
 from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
+
+logger = logging.getLogger(__name__)
 
 @login_required()
 def dashboard(request):
@@ -30,8 +27,15 @@ def dashboard(request):
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = random.choice(topics_list)
         hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
-        top_influencers = DSPConnectorV12.get_audiences(selected_topic['topic_id'])['audiences'][:4]
+
+        # check user location and according to that ask for events, influencers and audiences
+
+        user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
+        top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
+
         events_by_topic = DSPConnectorV12.get_events(selected_topic['topic_id'])['events'][:4]
+
+
     except DSPConnectorException as e:
         messages.error(request, e.message)
         topics_list = {}
@@ -49,7 +53,7 @@ def dashboard(request):
         'hot_tags': hot_tags,
         'json_hot_tags': json.dumps(hot_tags),
         'hot_news': hot_news,
-        'top_influencers': top_influencers,
+        'top_influencers': top_influencers_by_user_location,
         'events': events_by_topic
     }
     return render(request, 'dashboard/dashboard.html', context)
