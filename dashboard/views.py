@@ -32,8 +32,7 @@ def dashboard(request):
 
         user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
         top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
-
-        events_by_topic = DSPConnectorV12.get_events(selected_topic['topic_id'])['events'][:4]
+        events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location)['events'][:4]
 
 
     except DSPConnectorException as e:
@@ -54,7 +53,7 @@ def dashboard(request):
         'json_hot_tags': json.dumps(hot_tags),
         'hot_news': hot_news,
         'top_influencers': top_influencers_by_user_location,
-        'events': events_by_topic
+        'events': events_by_topic_and_location
     }
     return render(request, 'dashboard/dashboard.html', context)
 
