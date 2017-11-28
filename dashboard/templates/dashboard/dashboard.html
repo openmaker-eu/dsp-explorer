@@ -121,10 +121,18 @@
                                     </div>
                                     <div class="card-action">
                                         <p>
+                                            {{ event.description.text|truncatechars:50 }}
+                                        </p>
+                                        <p>
                                             <i class="glyphicon glyphicon-globe"></i> {{ event.place|truncatechars:50 }} <br>
                                             <i class="glyphicon glyphicon-time"></i> {{ event.start_time }}<br>
-                                            <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>
-                                            <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}
+                                            {#do not show if -1 is displayed#}
+                                            {% if event.interested != -1 %}
+                                                <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>
+                                            {% endif %}
+                                            {% if event.coming != -1 %}
+                                                <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}
+                                            {% endif %}
                                         </p>
                                     </div>
                                 </a>

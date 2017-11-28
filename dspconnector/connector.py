@@ -14,17 +14,14 @@ class DSPConnectorException(Exception):
         else:
             self.message = "Connection error, please try again later."
             self.response = None
-            
+
 
 class DSPConnectorV13(object):
     @staticmethod
     def get_influencers(topic_id, location="", cursor=0):
 
         loc = DSPConnectorV13._set_location_filter(location)
-        if loc != "":
-            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=loc, cursor=cursor)
-        else:
-            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
+        params = DSPConnectorV13._set_params_with_or_without_location(topic_id, loc, cursor)
 
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_local_influencers',
@@ -49,12 +46,11 @@ class DSPConnectorV13(object):
     def get_events(topic_id, location="", cursor=0):
 
         loc = DSPConnectorV13._set_location_filter(location)
-        if loc != "":
-            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=loc, cursor=cursor)
-        else:
-            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
+        params = DSPConnectorV13._set_params_with_or_without_location(topic_id, loc, cursor)
 
-        return DSPConnectorV13._get(DSPConnectorV12.generate_url(
+        print params
+
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_events',
             parameter=params)
         )
@@ -89,6 +85,14 @@ class DSPConnectorV13(object):
         if location in locations:
             loc = locations[location]
         return loc
+
+    @staticmethod
+    def _set_params_with_or_without_location(topic_id, location, cursor):
+        if location != "":
+            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=location, cursor=cursor)
+        else:
+            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
+        return params
 
 class DSPConnectorV12(object):
 
