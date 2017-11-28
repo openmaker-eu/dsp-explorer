@@ -44,6 +44,7 @@ class DSPConnectorV13(object):
 
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
         params += '&location={location}'.format(location=location_id) if location_id else ''
+        params += '&cursor={cursor}'.format(cursor=cursor)
         return params
 
     @staticmethod
@@ -77,13 +78,6 @@ class DSPConnectorV13(object):
             loc = locations[location]
         return loc
 
-    @staticmethod
-    def _set_params_with_or_without_location(topic_id, location, cursor):
-        if location != "":
-            params = '?topic_id={topic_id}&location={location}&cursor={cursor}'.format(topic_id=topic_id, location=location, cursor=cursor)
-        else:
-            params = '?topic_id={topic_id}&cursor={cursor}'.format(topic_id=topic_id, cursor=cursor)
-        return params
 
 class DSPConnectorV12(object):
 

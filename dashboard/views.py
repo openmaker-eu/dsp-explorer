@@ -28,6 +28,8 @@ def dashboard(request):
         selected_topic = random.choice(topics_list)
         hot_news = DSPConnectorV12.search_news(selected_topic['topic_id'])['news'][:4]
 
+        print hot_news
+
         # check user location and according to that ask for events, influencers and audiences
 
         user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
