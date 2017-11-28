@@ -49,10 +49,18 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
                 )
             return this
         },
-        get_audiences : function (theme) {
-            $http.get('/api/v1.2/audiences/' + theme)
+        get_influencers : function (theme) {
+            $http.get('/api/v1.3/influencers/' + theme)
                 .then(function (response) {
                     $scope.influencers = response.data.result.audiences;
+                },function (err) {
+                    // ToDo show API errors with a common error message using toastr?
+                })
+        },
+        get_audiences : function (theme) {
+            $http.get('/api/v1.3/audiences/' + theme)
+                .then(function (response) {
+                    $scope.audiences = response.data.result.audiences;
                 },function (err) {
                     // ToDo show API errors with a common error message using toastr?
                 })

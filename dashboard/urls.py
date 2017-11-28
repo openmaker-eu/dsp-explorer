@@ -44,7 +44,14 @@ urlpatterns = [
     
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
-    
+
+
+    # API v1.3
+
+    # AUDIENCES
+    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_13_get_audiences'),
+    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/', api.get_audiences, name='api_13_get_influencers'),
+
     # API v1.2
     # NEWS (Ex Feeds)
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),

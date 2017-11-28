@@ -33,7 +33,8 @@ export default [function(){
         scope: {
             tags: '=',
             standalone: '=',
-            maxtags: '='
+            maxtags: '=',
+            theme: '@'
         },
         controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
             
@@ -61,6 +62,8 @@ export default [function(){
 let bubble = function(div_id, tags){
     
     var tag_default_color = this.standalone? '#db4348' : '#bbbbbb'
+    // var tag_text_color = this.standalone? '#ffffff' : '#353535'
+    var tag_text_color =  '#353535'
 
     
     var container =  $(div_id)
@@ -75,7 +78,7 @@ let bubble = function(div_id, tags){
     
     var svg = d3.select(div_id),
         g = svg.append("g")
-            .attr("transform", "translate(2,2)")
+            // .attr("transform", "translate(2,2)")
         ,
         format = d3.format(",d");
     
@@ -134,7 +137,7 @@ let bubble = function(div_id, tags){
         .each(getSize)
         .style("font-size", function(d) { return d.scaleFontSize + "px"; })
         .style("font-weight", 900 )
-        .style("fill", '#353535')
+        .style("fill", tag_text_color)
         .append('title')
         .text(d=>d.data.name)
     
