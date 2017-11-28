@@ -33,9 +33,10 @@ export default [function(){
         scope: {
             tags: '=',
             standalone: '=',
-            static: '=',
+            disablelinks: '=',
             maxtags: '=',
-            theme: '@'
+            themefilter: '=',
+            themeid: '@'
         },
         controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
             
@@ -45,15 +46,33 @@ export default [function(){
             $scope.results = ''
             console.log($scope.standalone)
             
-            $http.get(`/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`).then((results)=>{
-                $scope.results = _.get( results, 'data.tags' )
-                $scope.reload()
+            $scope.get_endpoint = ()=>$scope.themeid ?
+                `/api/v1.3/hashtags/${$scope.themeid}/${$scope.themefilter}` :
+                `/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`
+            
+            $scope.get_data = ()=>
+                $http.get($scope.get_endpoint()).then((results)=>{
+                    console.log(results);
+                    $scope.results = _.get( results, 'data.result' )
+                    console.log($scope.results);
+                    $scope.reload()
             })
-            
+                    
             $scope.reload = ()=>$scope.results && $scope.bubble('#bubble_container', $scope.results)
-            $rootScope.$on('user.search.results', $scope.reload)
             
+            $rootScope.$on('user.search.results', $scope.reload)
             angular.element(window).on('resize', ()=>jQuery('#bubble_container').html('') && $scope.reload());
+            $scope.get_data()
+    
+    
+            // @TODO: remove pointer class on disablelinks
+            // @TODO: check reload filter
+            // $scope.reload_data = ()=>$scope.results && $scope.get_data().then(
+            //     n=>{ log$scope.bubble('#bubble_container', $scope.results)}
+            // )
+            // $scope.$watch('themefilter', ()=>{ console.log('reload'); $scope.reload_data() })
+            // $scope.$watch('results', ()=>{ console.log('new_results'); $scope.bubble('#bubble_container', $scope.results) })
+    
             
         }]
     }
@@ -91,29 +110,34 @@ let bubble = function(div_id, tags){
     var pack = d3.pack()
         .size([diameter - 4, diameter - 4]);
         var root = d3.hierarchy({name:'tags', children:tags})
-            .sum(function(d) {return d.size; })
+            .sum(function(d) {return d.count; })
             .sort(function(a, b) { return b.value - a.value; });
         
         var node = g.selectAll(".node")
             .data(pack(root).descendants())
             .enter()
             .append("g")
-            .attr("class", function(d) { return d.children ? "node" : "leaf node pointer" })
+            .attr("class", function(d) {
+                let html_class = 'node'
+                // !d.children && (html_class += ' leaf')
+                !this.disablelinks && (html_class += ' pointer')
+                return html_class
+            })
             .attr("fill", (d) =>{
                 if(d.children) return '#fff'
-                return this.factory.search_filter.toLowerCase() === d.data.name.toLowerCase() ? '#db4348' : tag_default_color
+                return this.factory.search_filter.toLowerCase() === d.data.hashtag.toLowerCase() ? '#db4348' : tag_default_color
             })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on('click', (d,i)=>{
-                if(!this.static)
+                if(!this.disablelinks)
                     this.standalone ?
-                    window.location = '/search/members/'+d.data.name+'#tags' :
-                    this.filter(d.data.name, 'tags') || jQuery("html,body").animate({scrollTop: 100}, 1000)
+                    window.location = '/search/members/'+d.data.hashtag+'#tags' :
+                    this.filter(d.data.hashtag, 'tags') || jQuery("html,body").animate({scrollTop: 100}, 1000)
             })
     
         node.append("title")
         
-        // !this.static && node.attr("class", 'pointer')
+        // !this.disablelinks && node.attr("class", 'pointer')
     
         node
             .append("circle")
@@ -132,11 +156,11 @@ let bubble = function(div_id, tags){
         .append("text")
         .attr("dy", "0.3em")
         .text(function(d) {
-            if(d.data.name && d.data.name.length > 16){
-                // return _.reduce(d.data.name.match(/.{1,12}/g), (acc, el)=>  acc+'\n'+el )
-                return d.data.name.substring(0,12)+'...'
+            if(d.data.hashtag && d.data.hashtag.length > 16){
+                // return _.reduce(d.data.hashtag.match(/.{1,12}/g), (acc, el)=>  acc+'\n'+el )
+                return d.data.hashtag.substring(0,12)+'...'
             }
-            else return d.data.name
+            else return d.data.hashtag
         })
         
         .each(getSize)
@@ -144,7 +168,7 @@ let bubble = function(div_id, tags){
         .style("font-weight", 900 )
         .style("fill", tag_text_color)
         .append('title')
-        .text(d=>d.data.name)
+        .text(d=>d.data.hashtag)
     
     
 }

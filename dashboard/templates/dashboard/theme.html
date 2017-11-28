@@ -68,7 +68,7 @@
                             <div class="card margin-bottom-20">
                                 <a href="{$feed.url$}" target="_blank">
                                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" ng-if="feed.im" ng-src="feed.im" class="img-responsive" alt="{$feed.title$}">
+                                        <img style="min-width:100%;" ng-if="feed.im" ng-src="{$ feed.im || '/static/images/rasp-icon.png'$}" class="img-responsive" alt="{$feed.title$}">
                                         <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
                                     </div>
                                     <div class="card-content">
@@ -90,7 +90,13 @@
             <div id="row">
                 <div class="col-md-12">
                     <h2 class="text-red"><span class="text-black">Hot</span>&nbsp;Tags</h2>
-                    <tag-bubbles standalone="true" static="true" maxtags="15"></tag-bubbles>
+                    <tag-bubbles
+                            themeid="{{selected_topic.topic_id}}"
+                            themefilter="FeedModel.filter"
+                            standalone="true"
+                            disablelinks="true"
+                            maxtags="10"
+                    ></tag-bubbles>
                     <br>
                 </div>
 

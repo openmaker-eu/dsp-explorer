@@ -35,12 +35,10 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         },
         
         get_news : function(theme=this.theme , filter=this.filter , cursor = this.next_cursor){
-            console.log('get news');
             this.progress = true;
             $http.get('/api/v1.2/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
-                        console.log('get news response');
                         this.data = this.data.concat(response.data.result.news)
                         this.next_cursor = parseInt(response.data.result.next_cursor)
                         this.progress = false;
@@ -68,7 +66,6 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     }
     
     let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
-        console.log('default topic');
         // if(newValue === oldValue) return
         $scope.FeedModel.theme = newValue
         $scope.FeedModel
@@ -79,9 +76,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     
     // Set filter for time
     $scope.setFilter = function (filter) {
-        console.log('Set filter');
         if($scope.FeedModel.progress==false){
-            console.log('SET filter inside');
             $scope.FeedModel.filter = filter;
             $scope.FeedModel.reset($scope.theme)
         }
