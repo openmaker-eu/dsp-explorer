@@ -50,10 +50,13 @@
                                 </div>
                                 <div class="card-action">
                                     <p>
+                                        {$ event.description.text | limitTo: 50 $}{$ event.description.text > 50 ? '...' : '' $}
+                                    </p>
+                                    <p>
                                         <i class="glyphicon glyphicon-globe"></i> {$ event.place | limitTo: 24 $}{$ event.place.length > 24 ? '...' : '' $} <br>
                                         <i class="glyphicon glyphicon-time"></i> {$ event.start_time $}<br>
-                                        <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {$ event.interested $}<br>
-                                        <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {$ event.coming $}
+                                        <span ng-hide="event.interested < 0"><i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {$ event.interested $}</span><br>
+                                        <span ng-hide="event.interested < 0"><i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {$ event.coming $}</span>
                                     </p>
                                 </div>
                             </a>
