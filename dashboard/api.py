@@ -270,6 +270,19 @@ class v13:
             'result': results
         }, status=200)
 
+    @staticmethod
+    def get_events(request, topic_id, location='', cursor=0):
+        print 'get event api 1.3'
+        try:
+            events = DSPConnectorV13.get_events(topic_id, location, cursor)
+        except DSPConnectorException:
+            events = {}
+
+        return JsonResponse({
+            'status': 'ok',
+            'result': events
+        }, status=200)
+
     # @staticmethod
     # def get_themes(request):
     #     return v13.__wrap_response(v13.get_themes)
