@@ -17,6 +17,7 @@ class DSPConnectorException(Exception):
 
 
 class DSPConnectorV13(object):
+
     @staticmethod
     def get_influencers(topic_id, location="", cursor=0):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
@@ -56,7 +57,7 @@ class DSPConnectorV13(object):
     @staticmethod
     def __get_parameters(topic_id, date=None, location="", cursor=0):
 
-        location_id = DSPConnectorV13._set_location_filter(location)
+        location_id = DSPConnectorV13._get_location_filter(location)
 
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
         params += '&date={date}'.format(date=date) if date else ''
@@ -84,7 +85,7 @@ class DSPConnectorV13(object):
         return DSPConnectorV13._wrapper_request(response=response)
 
     @staticmethod
-    def _set_location_filter(location):
+    def _get_location_filter(location):
         loc = ""
         locations = {
             'IT': 'italy',

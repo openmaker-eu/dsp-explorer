@@ -51,36 +51,33 @@ export default [function(){
                 `/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`
             
             $scope.get_data = ()=>
-                $http.get($scope.get_endpoint()).then((results)=>{
-                    console.log(results);
-                    $scope.results = _.get( results, 'data.result' )
-                    console.log($scope.results);
-                    $scope.reload()
+                $http.get($scope.get_endpoint()).then((results)=>{ $scope.results = _.get( results, 'data.result' )
             })
                     
-            $scope.reload = ()=>$scope.results && $scope.bubble('#bubble_container', $scope.results)
+            $scope.reload = ()=> $scope.results && jQuery('#bubble_container').html('') && $scope.bubble('#bubble_container', $scope.results)
             
             $rootScope.$on('user.search.results', $scope.reload)
-            angular.element(window).on('resize', ()=>jQuery('#bubble_container').html('') && $scope.reload());
-            $scope.get_data()
-    
+            angular.element(window).on('resize', $scope.reload)
     
             // @TODO: remove pointer class on disablelinks
-            // @TODO: check reload filter
-            // $scope.reload_data = ()=>$scope.results && $scope.get_data().then(
-            //     n=>{ log$scope.bubble('#bubble_container', $scope.results)}
-            // )
-            // $scope.$watch('themefilter', ()=>{ console.log('reload'); $scope.reload_data() })
-            // $scope.$watch('results', ()=>{ console.log('new_results'); $scope.bubble('#bubble_container', $scope.results) })
-    
+            $scope.$watch('themefilter',
+                (new_data, old_data)=>{
+                    old_data && old_data !== new_data && $scope.get_data().then( n=>console.log('0'))
+                    console.log('new_data', new_data)
+                    console.log('old_data', old_data)
+                } )
             
+            $scope.$watch('results', (new_data, old_data)=>$scope.reload())
+            
+            !$scope.result && $scope.get_data()
+    
         }]
     }
     
 }]
 
 let bubble = function(div_id, tags){
-    
+    console.log('rebuld bubble graph');
     var tag_default_color = this.standalone? '#db4348' : '#bbbbbb'
     // var tag_text_color = this.standalone? '#ffffff' : '#353535'
     var tag_text_color =  '#353535'
