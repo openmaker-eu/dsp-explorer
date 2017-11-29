@@ -2,6 +2,10 @@
  * Created by andreafspeziale on 24/05/17.
  */
 export default [ '$scope', '$http', function ($scope,$http) {
+
+    $scope.country = {
+        code: ''
+    };
     
     $scope.EventModel = {
         theme : null,
@@ -41,7 +45,14 @@ export default [ '$scope', '$http', function ($scope,$http) {
         get_events : function(theme=this.theme, location=this.user_location, cursor=this.cursor){
             // console.log('get events: ' + theme + '-' + location + '-' + cursor);
 
-            $http.get('/api/v1.3/events/' + theme + '/' + location + '/'+ cursor + '/')
+            let params = ''
+
+            if (location!='')
+                params = theme + '/' + location + '/'+ cursor + '/'
+            else
+                params = theme + '/' + cursor + '/'
+
+            $http.get('/api/v1.3/events/' + params)
                 .then(
                     (response) => {
                         console.log('get events response');
@@ -54,13 +65,11 @@ export default [ '$scope', '$http', function ($scope,$http) {
         },
     }
     
-    let unbind_topic_id = $scope.$watch('[topic_id, country]', function (newValue, oldValue) {
-        // if(newValue === oldValue) return
+    $scope.$watch('[topic_id,country.code]', function (newValue, oldValue) {
         $scope.EventModel.theme = newValue[0]
         $scope.EventModel.user_location = newValue[1]
         $scope.EventModel
-            .get_events(newValue[0], $scope.cursor)
-        unbind_topic_id()
+            .get_events(newValue[0], newValue[1], $scope.cursor)
     })
     
 }]

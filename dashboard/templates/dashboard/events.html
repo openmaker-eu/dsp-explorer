@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 
-    <div class="container-fluid" ng-controller="eventsController">
-        <span ng-init="topic_id='{{ selected_topic.topic_id }}';country='{{ country }}'"></span>
-        <div class="row">
-            <div class="col-md-12">
-                <ol class="breadcrumb">
-                    <li><a href="{% url 'dashboard:dashboard' %}">Home</a></li>
-                    <li class="active">{{selected_topic.topic_name}} events</li>
-                </ol>
-            </div>
-        </div>
-
+    <div ng-init="topic_id='{{ selected_topic.topic_id }}';country.code='{{ country }}'" class="container-fluid" ng-controller="eventsController">
         <div class="row margin-bottom-25">
             <div class="col-md-12 text-center theme-name">
                 <span class="text-red">
@@ -27,17 +17,34 @@
                             <li><a href="{% url 'dashboard:events' t.topic_id %}">{{t.topic_name}}</a></li>
                         {% endfor %}
                     </ul>
-
                 </span>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-12">
-                    <h3>Discover the hottest events</h3>
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <h3>Discover the hottest events</h3>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-6 pull-right">
+                        <select
+                          name="singleSelect"
+                          ng-model="country.code"
+                          class="form-control margin-top-20"
+                          style="color:rgba(119, 119, 119, 0.81);"
+                        >
+                                <option value="IT">Italy</option>
+                                <option value="GB" >UK</option>
+                                <option value="ES" >Spain</option>
+                                <option value="SK" >Slovakia</option>
+                                <option value="" >All over the World</option>
+                        </select>
+                    </div>
                 </div>
                 <!-- EVENTS SPACE -->
-                <div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
+                <div class="col-md-12 infinite-container margin-top-25" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="event in EventModel.data" ng-cloak="EventModel.data.length">
                         <div class="card margin-bottom-20">
                             <a href="{$ event.link $}" target="_blank">
