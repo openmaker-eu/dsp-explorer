@@ -30,11 +30,14 @@ def dashboard(request):
         hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
 
         # check user location and according to that ask for events, influencers and audiences
-
         user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
+
+
         top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
         audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
         events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location)['events'][:4]
+
+
 
     except DSPConnectorException as e:
         messages.error(request, e.message)
@@ -79,6 +82,7 @@ def theme(request, topic_id):
 
 @login_required()
 def events(request, topic_id):
+    user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
@@ -89,7 +93,7 @@ def events(request, topic_id):
         selected_topic = 'No themes'
     except IndexError:
         return HttpResponseRedirect(reverse('dashboard:events'))
-    context = {'selected_topic': selected_topic, 'topics': topics_list}
+    context = {'selected_topic': selected_topic, 'topics': topics_list, 'country': user_profile_location}
     return render(request, 'dashboard/events.html', context)
 
 

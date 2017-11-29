@@ -6,6 +6,7 @@ export default [ '$scope', '$http', function ($scope,$http) {
     $scope.EventModel = {
         theme : null,
         cursor: 0,
+        user_location: null,
         // current_cursor : null,
         // next_cursor : -1,
         // progress : false,
@@ -37,12 +38,14 @@ export default [ '$scope', '$http', function ($scope,$http) {
         },
         */
 
-        get_events : function(theme=this.theme, cursor = this.cursor){
-            console.log('get events');
-            $http.get('/api/v1.2/events/' + theme + '/' + cursor + '/')
+        get_events : function(theme=this.theme, location=this.user_location, cursor=this.cursor){
+            // console.log('get events: ' + theme + '-' + location + '-' + cursor);
+
+            $http.get('/api/v1.3/events/' + theme + '/' + location + '/'+ cursor + '/')
                 .then(
                     (response) => {
                         console.log('get events response');
+                        console.log(response)
                         this.data = response.data.result.events
                     },
                     (err)=>{ console.log('ERROR:', err); }
@@ -51,12 +54,12 @@ export default [ '$scope', '$http', function ($scope,$http) {
         },
     }
     
-    let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
-        console.log('default topic');
+    let unbind_topic_id = $scope.$watch('[topic_id, country]', function (newValue, oldValue) {
         // if(newValue === oldValue) return
-        $scope.EventModel.theme = newValue
+        $scope.EventModel.theme = newValue[0]
+        $scope.EventModel.user_location = newValue[1]
         $scope.EventModel
-            .get_events(newValue, $scope.cursor)
+            .get_events(newValue[0], $scope.cursor)
         unbind_topic_id()
     })
     

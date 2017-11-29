@@ -20,6 +20,13 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_influencers(topic_id, location="", cursor=0):
+
+        print DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor)
+        print DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_local_influencers',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
+        )
+
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_local_influencers',
             parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
@@ -34,6 +41,9 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_events(topic_id, location="", cursor=0):
+        print 'CONNECTOR GET EVENTS'
+        print DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor)
+
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_events',
             parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
