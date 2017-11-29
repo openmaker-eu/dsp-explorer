@@ -9,12 +9,13 @@
                     <button style="padding-left: 15px; padding-right: 15px;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                     </button>
-                    </h2>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                         {% for t in topics %}
                             <li><a href="{% url 'dashboard:events' t.topic_id %}">{{t.topic_name}}</a></li>
                         {% endfor %}
                     </ul>
+                    </h2>
+
                 </span>
             </div>
         </div>
