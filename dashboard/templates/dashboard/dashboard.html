@@ -1,93 +1,72 @@
 {% extends "base.html" %}
 {% block container %}
-{#    <div class="container-fluid" style="margin-top: -20px;">#}
-{#        <div class="row color-row">#}
-{#            <div class="col-md-12 text-white text-center margin-top-50 margin-bottom-50">#}
-{#                <p class="claim text-center">#}
-{#                    <strong>HAVE A BRILLIANT IDEA?</strong><br>#}
-{#                </p>#}
-{#                <!--<p class="text-white margin-top-50 margin-bottom-50">-->#}
-{#                <p class="margin-top-20 margin-bottom-20">#}
-{#                    <strong>2017 PILOT SUPPORT SCHEME CALL FOR PROPOSAL</strong><br><strong>€20,0000</strong> and the help you need to make your idea a reality.#}
-{#                </p>#}
-                {#                <a class="btn custom-button margin-left-5" href="{% url 'pss:application' %}">#}
-                {#                    SUBMIT YOUR APPLICATION#}
-                {#                </a>#}
-{#                <p class="claim text-center">#}
-{#                    <strong class="text-red">THE CALL IS CLOSED! STAY TUNED</strong><br>#}
-{#                </p>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
     <span ng-controller="dashboardController">
         <div class="container-fluid margin-bottom-50">
-            <div class="row margin-top-50">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12 theme-name">
-                            <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}<br>
-                                <span style="font-size: 20px;">discover the movement!</span></h2>
+            <div class="row">
+                <div class="col-md-12 theme-name">
+                    <h2><strong class="text-red">Hi</strong> {{request.user.first_name}}<br>
+                        <span style="font-size: 20px;">discover the movement!</span></h2>
 
-                            <div class="col-md-12 text-center margin-bottom-25">
-                                <div class="col-md-12 text-center theme-name">
-                                    <span class="text-red">
-                                        <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
+                    <div class="col-md-12 text-center margin-bottom-25">
+                        <div class="col-md-12 text-center theme-name">
+                            <span class="text-red">
+                                <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
 
-                                        <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
-                                            <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                                        </button>
+                                <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
+                                    <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                                </button>
 
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                            {% for t in topics %}
-                                                <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
-                                            {% endfor %}
-                                        </ul>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    {% for t in topics %}
+                                        <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
+                                    {% endfor %}
+                                </ul>
 
-                                    </span>
-                                </div>
-                            </div>
-
+                            </span>
                         </div>
-
-                        <div class="margin-top-25">
-                            {% for news in hot_news|slice:":3" %}
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                    <div class="card margin-bottom-20">
-                                        <a href="{{ news.url }}" target="_blank">
-                                            <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                                <img style="min-width:100%;" src="{{ news.im }}" class="img-responsive"
-                                                     alt="{{ news.title }}">
-                                            </div>
-                                            <div class="card-content">
-                                                <h5>{{ news.title|truncatechars:40 }}</h5>
-                                            </div>
-                                            <div class="card-action">
-                                                <p>{{ news.summary|truncatechars:100 }}</p>
-                                            </div>
-                                        </a>
-                                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row margin-top-25">
+                {% for news in hot_news|slice:":3" %}
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card margin-bottom-20">
+                            <a href="{{ news.url }}" target="_blank">
+                                <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                    <img style="min-width:100%;" src="{{ news.im }}" class="img-responsive"
+                                         alt="{{ news.title }}">
                                 </div>
-                            {% endfor %}
-                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                <a href="{% url 'dashboard:theme' selected_topic.topic_id %}">
-                                    <div class="card margin-bottom-20" style="min-height: 326px;">
-                                        <h3 class="text-red" style="position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    margin-right: -50%;
-                                    transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>
-                                    </div>
-                                </a>
-                            </div>
+                                <div class="card-content">
+                                    <h5>{{ news.title|truncatechars:40 }}</h5>
+                                </div>
+                                <div class="card-action">
+                                    <p>{{ news.summary|truncatechars:100 }}</p>
+                                </div>
+                            </a>
                         </div>
-                        {% if top_influencers %}
-                            <div class="text-center">
-                                <div class="col-md-6">
-                                    <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Influencers</strong></h2>
-                                </div>
+                    </div>
+                {% endfor %}
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <a href="{% url 'dashboard:theme' selected_topic.topic_id %}">
+                        <div class="card margin-bottom-20" style="min-height: 326px;">
+                            <h3 class="text-red" style="position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        margin-right: -50%;
+                        transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="row margin-top-25">
+                <div class="text-center">
+                    {% if top_influencers %}
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Influencers</strong></h2>
+                            <div class="row">
                                 {% for influencer in top_influencers %}
-                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
                                         <div class="pull-left" style="clear: both;">
                                             <a href="https://www.twitter.com/{{influencer.screen_name}}" target="_blank">
                                                 <h5 class="pull-left" style="height: 2em;">
@@ -99,13 +78,15 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-                        {% endif %}
-                        {% if audiences %}
-                                <div class="col-md-6">
-                                    <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Audience</strong></h2>
-                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if audiences %}
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <h2 class="margin-bottom-25 text-left">its <strong class="text-red">Audience</strong></h2>
+                                <div class="row">
                                 {% for audience in audiences %}
-                                    <div class="col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
                                         <div class="pull-left" style="clear: both;">
                                             <a href="https://www.twitter.com/{{audience.screen_name}}" target="_blank">
                                                 <h5 class="pull-left" style="height: 2em;">
@@ -118,55 +99,55 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="margin-top-25">
-                    <div class="col-md-12">
-                        <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Events</strong></h2>
-                    </div>
-                    {% for event in events|slice:":3" %}
-                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card margin-bottom-20">
-                                <a href="{{ event.link }}" target="_blank">
-                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" src="{{ event.cover }}" class="img-responsive"
-                                             alt="{{ event.name }}">
-                                    </div>
-                                    <div class="card-content">
-                                        <h5>{{ event.name|truncatechars:40 }}</h5>
-                                    </div>
-                                    <div class="card-action">
-                                        <p>
-                                            {{ event.description.text|truncatechars:50 }}
-                                        </p>
-                                        <p>
-                                            <i class="glyphicon glyphicon-globe"></i> {{ event.place|truncatechars:50 }} <br>
-                                            <i class="glyphicon glyphicon-time"></i> {{ event.start_time }}<br>
-                                            {#do not show if -1 is displayed#}
-                                            {% if event.interested != -1 %}
-                                                <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>
-                                            {% endif %}
-                                            {% if event.coming != -1 %}
-                                                <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
                         </div>
-                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row margin-top-25">
+                <div class="col-md-12">
+                    <h2 class="margin-bottom-25 text-left">and its <strong class="text-red">Events</strong></h2>
+                </div>
+                {% for event in events|slice:":3" %}
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <a href="{% url 'dashboard:events' selected_topic.topic_id %}">
-                            <div class="card margin-bottom-20" style="min-height: 326px;">
-                                <h3 class="text-red" style="position: absolute;
-                                    top: 50%;
-                                    left: 50%;
-                                    margin-right: -50%;
-                                    transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>
-                            </div>
-                        </a>
+                        <div class="card margin-bottom-20">
+                            <a href="{{ event.link }}" target="_blank">
+                                <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                    <img style="min-width:100%;" src="{{ event.cover }}" class="img-responsive"
+                                         alt="{{ event.name }}">
+                                </div>
+                                <div class="card-content">
+                                    <h5>{{ event.name|truncatechars:40 }}</h5>
+                                </div>
+                                <div class="card-action">
+                                    <p>
+                                        {{ event.description.text|truncatechars:50 }}
+                                    </p>
+                                    <p>
+                                        <i class="glyphicon glyphicon-globe"></i> {{ event.place|truncatechars:50 }} <br>
+                                        <i class="glyphicon glyphicon-time"></i> {{ event.start_time }}<br>
+                                        {#do not show if -1 is displayed#}
+                                        {% if event.interested != -1 %}
+                                            <i class="glyphicon glyphicon-heart"></i> <small>Interested</small> {{ event.interested }}<br>
+                                        {% endif %}
+                                        {% if event.coming != -1 %}
+                                            <i class="glyphicon glyphicon-pushpin"></i> <small>Coming</small> {{ event.coming }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
+                {% endfor %}
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <a href="{% url 'dashboard:events' selected_topic.topic_id %}">
+                        <div class="card margin-bottom-20" style="min-height: 326px;">
+                            <h3 class="text-red" style="position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                margin-right: -50%;
+                                transform: translate(-50%, -50%)">Discover <small class="text-black">more</small><br><i class="fa fa-hand-o-right" aria-hidden="true"></i></h3>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -214,19 +195,7 @@
                     <h2 class="margin-top-25"><small>
                         <a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a>
                     </small></h2>
-
-                    <!--{% for tag in hot_tags %}-->
-                        <!--<div class="pull-left">-->
-                        <!--<h4><a href="{% url 'dashboard:search_members' tag %}#tags">-->
-                        <!--<span class="text-black">#</span>{{ tag }}</a>-->
-                        <!--<span>&nbsp;&nbsp;</span>-->
-                        <!--</h4>-->
-
-                        <!--</div>-->
-                        <!--{% endfor %}-->
-
                     <tag-bubbles tags="{{ json_hot_tags }}" standalone="true"></tag-bubbles>
-
                 </div>
             </div>
         </div>
