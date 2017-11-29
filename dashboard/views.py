@@ -21,23 +21,25 @@ from rest_framework.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
 
+
 @login_required()
-def dashboard(request):
+def dashboard(request, topic_id=None):
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
-        selected_topic = random.choice(topics_list)
+
+        if topic_id:
+            selected_topic = filter(lambda x: x['topic_id'] == int(topic_id), topics_list)[0]
+        else:
+            selected_topic = random.choice(topics_list)
 
         hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
 
         # check user location and according to that ask for events, influencers and audiences
         user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
 
-
         top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
         audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
         events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location)['events'][:4]
-
-
 
     except DSPConnectorException as e:
         messages.error(request, e.message)
@@ -60,6 +62,8 @@ def dashboard(request):
         'audiences':audiences,
         'events': events_by_topic_and_location
     }
+
+    print context['selected_topic']
 
     return render(request, 'dashboard/dashboard.html', context)
 

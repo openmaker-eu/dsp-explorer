@@ -10,16 +10,14 @@
                     <div class="col-md-12 text-center margin-bottom-25">
                         <div class="col-md-12 text-center theme-name">
                             <span class="text-red">
-                                <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
-
-                                <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
+                                <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}
+                                <button style="padding-left: 15px; padding-right: 15px;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                     <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                                 </button>
-
+                                </h2>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                     {% for t in topics %}
-                                        <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
+                                        <li><a href="{% url 'dashboard:dashboard' t.topic_id %}">{{t.topic_name}}</a></li>
                                     {% endfor %}
                                 </ul>
 

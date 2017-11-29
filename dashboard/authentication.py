@@ -188,7 +188,10 @@ def onboarding(request):
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
         # Check image and get url
-        imagefile = 'images/profile/default_user_icon.png'
+        if gender == 'male': imagefile = 'images/profile/male.svg'
+        if gender == 'female': imagefile = 'images/profile/female.svg'
+        if gender == 'other': imagefile = 'images/profile/other.svg'
+
 
         # Check if user exist
         try:

@@ -16,8 +16,10 @@ urlpatterns = [
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
     url(r'^dashboard/events/(?P<topic_id>[0-9]+)/$', views.events, name='events'),
     url(r'^dashboard/events/$', views.events, {'topic_id': None}, name='events'),
+
     # Dashboard
-    url(r'^dashboard', views.dashboard, name='dashboard'),
+    url(r'^dashboard/(?P<topic_id>[0-9]+)/$', views.dashboard, name='dashboard'),
+    url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
     
     # Profiles
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
