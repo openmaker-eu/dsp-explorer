@@ -249,6 +249,10 @@ class v13:
 
     @staticmethod
     def get_influencers(request, topic_id=1):
+
+        # place = request.user.profile.place
+        # print place['country_short']
+
         try:
             results = DSPConnectorV13.get_influencers(topic_id)
         except DSPConnectorException:
