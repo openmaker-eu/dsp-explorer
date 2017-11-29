@@ -22,10 +22,9 @@ logger = logging.getLogger(__name__)
 
 from django.http import HttpResponse
 from django.views import View
-
+import math
 
 def search_members(request, search_string):
-    import math
 
     members_per_page = 20
 
@@ -303,6 +302,29 @@ class v13:
         return JsonResponse({
             'status': 'ok',
             'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_news(request, topic_id=1, date_string='yesterday', cursor=0):
+
+        item_per_page = 20
+        news = []
+        next_cursor = 0
+        resp = {}
+
+        try:
+            results = DSPConnectorV13.get_news(topic_id, date_string, cursor*item_per_page)
+            print results
+            news = results['news']
+            next_cursor = results['next_cursor']/item_per_page
+            resp = {'news': news, 'next_cursor': next_cursor, 'max_page': None}
+            print resp
+        except DSPConnectorException:
+            pass
+        return JsonResponse({
+            'status': 'ok',
+            'result': resp,
+            'test': results
         }, status=200)
 
     # @staticmethod
