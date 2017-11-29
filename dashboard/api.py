@@ -100,7 +100,7 @@ def get_influencers(request, theme_name):
 def get_hot_tags(request, tag_number=4):
     return JsonResponse({
         'status': 'ok',
-        'results': [{'hashtag': t[0], 'count': t[1]} for t in Profile.get_hot_tags(tag_number)]
+        'result': [{'hashtag': t[0], 'count': t[1]} for t in Profile.get_hot_tags(tag_number)]
     }, status=200)
 
 
@@ -248,13 +248,15 @@ class v13:
 
 
     @staticmethod
-    def get_influencers(request, topic_id=1):
+    def get_influencers(request, topic_id=1, location=None):
 
-        # place = request.user.profile.place
-        # print place['country_short']
+        if not location:
+            place = json.loads(request.user.profile.place)
+            location = place['country_short']
+            print location
 
         try:
-            results = DSPConnectorV13.get_influencers(topic_id)
+            results = DSPConnectorV13.get_influencers(topic_id, location)
         except DSPConnectorException:
             results = {}
         return JsonResponse({
@@ -263,9 +265,14 @@ class v13:
         }, status=200)
 
     @staticmethod
-    def get_audiences(request, topic_id=1):
+    def get_audiences(request, topic_id=1, location=None):
+
+        if not location:
+            place = json.loads(request.user.profile.place)
+            location = place['country_short']
+            print location
         try:
-            results = DSPConnectorV13.get_audiences(topic_id)
+            results = DSPConnectorV13.get_audiences(topic_id, location)
         except DSPConnectorException:
             results = {}
         return JsonResponse({

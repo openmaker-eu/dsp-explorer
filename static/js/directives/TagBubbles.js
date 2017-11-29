@@ -51,8 +51,11 @@ export default [function(){
                 `/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`
             
             $scope.get_data = ()=>
-                $http.get($scope.get_endpoint()).then((results)=>{ $scope.results = _.get( results, 'data.result' )
-            })
+                $http.get($scope.get_endpoint()).then((results)=>{
+                    $scope.results = _.get( results, 'data.result' )
+                    console.log('get_data', results);
+                }
+            )
                     
             $scope.reload = ()=> $scope.results && jQuery('#bubble_container').html('') && $scope.bubble('#bubble_container', $scope.results)
             
@@ -68,8 +71,8 @@ export default [function(){
                 } )
             
             $scope.$watch('results', (new_data, old_data)=>$scope.reload())
-            
-            !$scope.result && $scope.get_data()
+            console.log('results sdgsd', $scope.results);
+            !$scope.results && $scope.get_data()
     
         }]
     }
