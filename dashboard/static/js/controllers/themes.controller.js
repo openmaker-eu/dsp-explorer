@@ -1,76 +1,72 @@
-/**
- * Created by andreafspeziale on 24/05/17.
- */
+import * as _ from 'lodash'
+
 export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibModal,$http,$aside) {
     
-    $scope.FeedModel = {
+    let feed = {
         theme : null,
         filter : 'yesterday' ,
         current_cursor : null,
-        next_cursor : -1,
+        next_cursor : 0,
         progress : false,
         top:  $(window).scrollTop(),
         data : [],
         
-        next : function( theme = this.theme , filter = this.filter , cursor = this.next_cursor){
-            if(
-                this.progress === true
-                || this.next_cursor == 0
-                || this.current_cursor == this.next_cursor
-            ) return
-            
-            this.progress = true;
-            this.current_cursor = this.next_cursor
-            this.get_news( theme, filter, cursor )
-            return this
-            
-        },
-    
-        reset : function(theme=this.theme, filter=this.filter, cursor=-1){
-            this.data = []
-            this.current_cursor = null
-            this.next_cursor = -1
-            this.next(theme, filter, cursor)
-            return this
+        prev : function(){$scope.FeedModel.get_news()},
+        next : function(){$scope.FeedModel.get_news()},
+        reset : function(theme=feed.theme, filter=feed.filter, cursor=-1){
+            feed.data = []
+            feed.current_cursor = null
+            feed.next_cursor = -13,
+            feed.next(theme, filter, cursor)
+            return feed
         },
         
-        get_news : function(theme=this.theme , filter=this.filter , cursor = this.next_cursor){
-            this.progress = true;
-            $http.get('/api/v1.2/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
+        get_news : function(theme=feed.theme , filter=feed.filter , cursor = feed.next_cursor){
+            $http.get('/api/v1.3/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
-                        this.data = this.data.concat(response.data.result.news)
-                        this.next_cursor = parseInt(response.data.result.next_cursor)
-                        this.progress = false;
+                        feed.data = _.get(response, 'data.result.news')
+                        feed.next_cursor = _.get(response, 'data.result.next_cursor')
+                        
+                        console.log(response);
+                        console.log(feed.data);
+                        console.log(feed.next_cursor);
                     },
-                    (err)=>{ console.log('ERROR:', err); this.progress = false; }
+                    (err)=>{ console.log('ERROR:', err)}
                 )
-            return this
-        },
+            return feed
+        }
+    }
+    
+    
+    let influencers = {
+        influencers : [],
+        audiences : [],
         get_influencers : function (theme) {
             $http.get('/api/v1.3/influencers/' + (theme || 1) + '/')
-                .then(function (response) {
-                    $scope.influencers = _.get(response.data, 'result.audience_sample');
-                },function (err) {
-                    // ToDo show API errors with a common error message using toastr?
-                })
+                .then(
+                    function (response) {influencers.influencers = _.get(response, 'data.result.local_influencers')},
+                    function (err) { /* ToDo show API errors with a common error message using toastr? */}
+                )
         },
         get_audiences : function (theme) {
             $http.get('/api/v1.3/audiences/' + (theme || 1) + '/' )
-                .then(function (response) {
-                    $scope.audiences = _.get(response.data, 'result.local_influencers');
-                },function (err) {
-                    // ToDo show API errors with a common error message using toastr?
-                })
+                .then(
+                    function (response) {influencers.audiences = _.get(response, 'data.result.audience_sample')},
+                    function (err) { /* ToDo show API errors with a common error message using toastr? */}
+                )
         }
     }
+    
+    $scope.FeedModel = feed
+    $scope.InfluencersModel = influencers
     
     let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
         // if(newValue === oldValue) return
         $scope.FeedModel.theme = newValue
-        $scope.FeedModel
-            .get_news(newValue, $scope.filter, $scope.cursor)
-            .get_audiences(newValue)
+        $scope.FeedModel.get_news(newValue, $scope.filter, $scope.cursor)
+        influencers.get_audiences($scope.topic_id);
+        influencers.get_influencers($scope.topic_id);
         unbind_topic_id()
     })
     
@@ -82,28 +78,9 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         }
     }
     
-    let audiences_watch = $scope.$watch('topic_id', ()=>{ $scope.FeedModel.get_audiences($scope.topic_id);  audiences_watch=null})
-    let influencers_watch = $scope.$watch('topic_id', ()=>{ $scope.FeedModel.get_influencers($scope.topic_id); influencers_watch=null})
-
-    // // open aside with influencers
-    // $scope.openAside = () => {
-    //     $scope.aside = $aside({
-    //         scope:$scope,
-    //         title: "Title",
-    //         templateUrl: false,
-    //         backdrop: 'static',
-    //         template: require("../../../templates/aside/influencers.html"),
-    //         show:false
-    //     });
-    //     $scope.aside.$promise.then(function() {
-    //         $scope.aside.show();
-    //         $('body').addClass('no-scroll');
-    //     })
-    // }
-    // $scope.closeAside = () =>{
-    //     $scope.aside.hide()
-    //     $('body').removeClass('no-scroll');
     //
-    // }
+    // let audiences_watch = $scope.$watch('topic_id', ()=>{  audiences_watch=null})
+    // let influencers_watch = $scope.$watch('topic_id', ()=>{ influencers.get_influencers($scope.topic_id); influencers_watch=null})
+
     
 }]

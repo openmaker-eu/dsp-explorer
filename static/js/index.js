@@ -43,5 +43,6 @@ export function dataVizDirectives(app){
     app.directive('tagBubbles', require('./directives/TagBubbles').default )
     app.directive('pieSector', require('./directives/PieSector').default )
     app.directive('locationsMap', require('./directives/LocationsMap').default )
+    app.directive('simplePagination', require('./directives/SimplePagination').default )
     return this
 }

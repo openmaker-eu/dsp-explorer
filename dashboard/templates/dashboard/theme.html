@@ -63,8 +63,9 @@
                     </div>
                     </div>
                     <!-- FEED SPACE -->
-                    <div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-4" ng-repeat="feed in FeedModel.data" ng-cloak="FeedModel.data.length">
+                    <!--<div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">-->
+                    <div class="col-md-12">
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-4" ng-repeat="feed in FeedModel.data track by $index" ng-cloak="FeedModel.data.length">
                             <div class="card margin-bottom-20">
                                 <a href="{$feed.url$}" target="_blank">
                                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
@@ -83,6 +84,16 @@
                             </div>
                         </div>
                     </div>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <simple-pagination
+                                prevfunction="FeedModel.prev"
+                                nextfunction="FeedModel.next"
+                                nextcursor="FeedModel.next_cursor"
+                        ></simple-pagination>
+                        <br>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -134,11 +145,10 @@
 
                 <div class="col-md-12" ng-if="audiences_selected!=true" style="padding:20px;">
                     <p class="text-grey"><i>Influencer are individuals with large followings in this topic</i></p>
-
-                    <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
+                    <div class="pull-left" style="clear: both;" ng-repeat="data in InfluencersModel.influencers">
                         <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
                             <h5 class="pull-left" style="height: 2em;">
-                                <img class="img-circle" ng-src="{$ data.profile_image_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                <img class="img-circle" ng-src="{$ data.profile_image_url_https $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                             <h5 class="pull-left" style="line-height: 2em;">
                                 <p style="line-height: 40px;">{$ data.name $}</p>
                             </h5>
@@ -148,11 +158,11 @@
 
                 <div class="col-md-12" ng-if="audiences_selected==true" style="padding:20px;">
                     <p class="text-grey"><i>Audiences are individuals that are interested in this topic</i></p>
-                    <div class="pull-left" style="clear: both;" ng-repeat="data in influencers">
+                    <div class="pull-left" style="clear: both;" ng-repeat="data in InfluencersModel.audiences">
                         <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
                             <h5 class="pull-left" style="height: 2em;">
-                                <img class="img-circle" ng-src="{$ data.profile_image_url $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                            <h5 class="pull-left" style="line-height: 2em;">
+                                <img class="img-circle" ng-src="{$ data.profile_image_url_https $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                            <h5 class="pull-left text-red" style="line-height: 2em;">
                                 <p style="line-height: 40px;">{$ data.name $}</p>
                             </h5>
                         </a>

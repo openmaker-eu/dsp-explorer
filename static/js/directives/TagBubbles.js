@@ -44,34 +44,23 @@ export default [function(){
             $scope.filter = UserSearchFactory.search_switch;
             $scope.factory = UserSearchFactory;
             $scope.results = ''
+    
+            // @TODO: remove pointer class on disablelinks
             console.log($scope.standalone)
             
             $scope.get_endpoint = ()=>$scope.themeid ?
                 `/api/v1.3/hashtags/${$scope.themeid}/${$scope.themefilter}` :
                 `/api/v1.1/get_hot_tags/${ $scope.maxtags || 20 }`
             
-            $scope.get_data = ()=>
-                $http.get($scope.get_endpoint()).then((results)=>{
-                    $scope.results = _.get( results, 'data.result' )
-                    console.log('get_data', results);
-                }
-            )
-                    
+            $scope.get_data = ()=> $http.get($scope.get_endpoint()).then((results)=>$scope.results = _.get( results, 'data.result' ))
             $scope.reload = ()=> $scope.results && jQuery('#bubble_container').html('') && $scope.bubble('#bubble_container', $scope.results)
             
             $rootScope.$on('user.search.results', $scope.reload)
             angular.element(window).on('resize', $scope.reload)
     
-            // @TODO: remove pointer class on disablelinks
-            $scope.$watch('themefilter',
-                (new_data, old_data)=>{
-                    old_data && old_data !== new_data && $scope.get_data().then( n=>console.log('0'))
-                    console.log('new_data', new_data)
-                    console.log('old_data', old_data)
-                } )
-            
+            $scope.$watch('themefilter', (new_data, old_data)=>old_data && old_data !== new_data && $scope.get_data())
             $scope.$watch('results', (new_data, old_data)=>$scope.reload())
-            console.log('results sdgsd', $scope.results);
+            
             !$scope.results && $scope.get_data()
     
         }]
@@ -80,7 +69,6 @@ export default [function(){
 }]
 
 let bubble = function(div_id, tags){
-    console.log('rebuld bubble graph');
     var tag_default_color = this.standalone? '#db4348' : '#bbbbbb'
     // var tag_text_color = this.standalone? '#ffffff' : '#353535'
     var tag_text_color =  '#353535'

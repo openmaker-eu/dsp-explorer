@@ -48,14 +48,16 @@ urlpatterns = [
 
     # API v1.3
     ## AUDIENCES
-    url(r'^api/v1.3/audiences/(?P<topic_id>.+)', api.v13.get_audiences, {'location': None}, name='api_13_get_audiences'),
-    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/(?P<location>.+)/', api.v13.get_audiences, name='api_13_get_audiences'),
+    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/$', api.v13.get_audiences, {'location': None}, name='api_13_get_audiences'),
+    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_audiences, name='api_13_get_audiences'),
 
-    url(r'^api/v1.3/influencers/(?P<topic_id>.+)', api.v13.get_influencers, {'location': None}, name='api_13_get_influencers'),
-    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/(?P<location>.+)/', api.v13.get_influencers, name='api_13_get_influencers'),
+    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/$', api.v13.get_influencers, {'location': None}, name='api_13_get_influencers'),
+    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_influencers, name='api_13_get_influencers'),
 
     url(r'^api/v1.3/events/(?P<topic_id>.+)/(?P<location>.+)/(?P<cursor>.+)/$', api.v13.get_events, name='api_13_get_events'),
     url(r'^api/v1.3/hashtags/(?P<topic_id>.+)/(?P<date_string>.+)', api.v13.get_hashtags, name='api_13_hashtags'),
+
+    url(r'^api/v1.3/news/(?P<topic_id>.+)/(?P<date_string>.+)/(?P<cursor>.+)/$', api.v13.get_news, name='api_13_news'),
 
     # API v1.2
     # NEWS (Ex Feeds)
