@@ -56,14 +56,11 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def __get_parameters(topic_id, date=None, location="", cursor=0):
-
         location_id = DSPConnectorV13._get_location_filter(location)
-
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
         params += '&date={date}'.format(date=date) if date else ''
         params += '&location={location}'.format(location=location_id) if location_id else ''
         params += '&cursor={cursor}'.format(cursor=cursor)
-
         return params
 
     @staticmethod

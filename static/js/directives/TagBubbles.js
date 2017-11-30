@@ -31,12 +31,12 @@ export default [function(){
     return {
         template:template,
         scope: {
-            tags: '=', // Provide tag data instead of default obtained from api call. [type:bool, default:false]
-            isstandalone: '=', // Does not inbteract with other element trough $rootscope events [type:bool, default:false]
-            isstatic: '=', // Does not have any interaction( not clickable + isstandalone ) [type:bool, default:false]
-            maxtags: '=', // Max number of tags dispayed [type:int default: 25]
-            themefilter: '=', // Time filter [type:'yesterday'|'week'|'month', default:'yesterday]
-            themeid: '@' // Topic/theme ID from watchtower [type:int, default:1]
+            tags: '=?', // Provide tag data instead of default obtained from api call. [type:bool, default:false]
+            isstandalone: '=?', // Does not interact with other element trough $rootscope events [type:bool, default:false]
+            isstatic: '=?', // Does not have any interaction( not clickable + isstandalone ) [type:bool, default:false]
+            maxtags: '=?', // Max number of tags dispayed [type:int default: 25]
+            themefilter: '=?', // Time filter [type:'yesterday'|'week'|'month', default:'yesterday]
+            themeid: '@?' // Topic/theme ID from watchtower [type:int, default:1]
         },
         controller : ['$scope','$http', 'UserSearchFactory', '$rootScope', function($scope, $http, UserSearchFactory,$rootScope){
             
@@ -46,9 +46,6 @@ export default [function(){
             $scope.results = ''
     
             $scope.isstatic && ($scope.isstandalone = true)
-    
-            // @TODO: remove pointer class on isstatic
-            console.log($scope.isstandalone)
             
             $scope.get_endpoint = ()=>$scope.themeid ?
                 `/api/v1.3/hashtags/${$scope.themeid}/${$scope.themefilter}` :
@@ -109,7 +106,6 @@ let bubble = function(div_id, tags){
             .attr("class", (d)=>{
                 let html_class = 'node'
                 // !d.children && (html_class += ' leaf')
-                console.log('is static', this.isstatic);
                 !this.isstatic && (html_class += ' pointer')
                 return html_class
             })

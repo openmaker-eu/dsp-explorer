@@ -70,6 +70,7 @@ def dashboard(request, topic_id=None):
 
 @login_required()
 def theme(request, topic_id):
+    selected_location = ''
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
@@ -80,7 +81,17 @@ def theme(request, topic_id):
         selected_topic = 'No themes'
     except IndexError:
         return HttpResponseRedirect(reverse('dashboard:theme'))
-    context = {'selected_topic': selected_topic, 'topics': topics_list}
+
+    try:
+        selected_location = json.loads(request.user.profile.place)['country_short']
+    except:
+        selected_location = ''
+
+    context = {
+        'selected_topic': selected_topic,
+        'topics': topics_list,
+        'selected_location': selected_location
+    }
     return render(request, 'dashboard/theme.html', context)
 
 

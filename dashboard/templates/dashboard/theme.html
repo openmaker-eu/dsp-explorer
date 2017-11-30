@@ -4,6 +4,7 @@
 <div class="container-fluid" ng-controller="themesController">
     <span ng-init="
         topic_id='{{ selected_topic.topic_id }}';
+        selected_location='{{ selected_location }}';
     " ></span>
     <div class="row">
         <div class="col-md-8">
@@ -64,7 +65,7 @@
                     <!-- FEED SPACE -->
                     <!--<div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">-->
                     <div class="col-md-12">
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-4" ng-repeat="feed in FeedModel.data track by $index" ng-cloak="FeedModel.data.length">
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-repeat="feed in FeedModel.data track by $index" ng-cloak="FeedModel.data.length">
                             <div class="card margin-bottom-20">
                                 <a href="{$feed.url$}" target="_blank">
                                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
@@ -110,23 +111,6 @@
                     <br>
                 </div>
 
-                <style>
-
-                    .influencer-toggle{
-                        width:100%; border-radius:5px; float: left; overflow: hidden; border:solid 1px #ccc;
-                    }
-                    .influencer-toggle > span{
-                        width: 50%; text-align: center;
-                        float: left;
-                        padding:3% 5%;
-                    }
-
-                    .feed-right div[class*="col-"]{
-                        padding-left:0;
-                    }
-
-                </style>
-
                 <div class="col-md-12">
                     <div class="influencer-toggle" style="">
                         <span
@@ -140,6 +124,20 @@
                                 ng-click="audiences_selected=true"
                         >Audiences</span>
                     </div>
+                </div>
+
+                <div class="col-md-12">
+                    <br>
+                    <p>{$ InfluencersModel.location_filter $}</p>
+                    <select
+                            ng-model="InfluencersModel.location"
+                            ng-change="InfluencersModel.get_influencers(); InfluencersModel.get_audiences();"
+                            class="form-control influencers-select"
+                    >
+                        <option value="IT">Italy</option>
+                        <option value="ES">Spain</option>
+                        <option value="SK">Slovakia</option>
+                    </select>
                 </div>
 
                 <div class="col-md-12" ng-if="audiences_selected!=true" style="padding:20px;">

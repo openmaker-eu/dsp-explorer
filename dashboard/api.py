@@ -245,10 +245,8 @@ class v13:
             'result': results
         }, status=200)
 
-
     @staticmethod
     def get_influencers(request, topic_id=1, location=None):
-
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']
@@ -263,7 +261,7 @@ class v13:
 
     @staticmethod
     def get_audiences(request, topic_id=1, location=None):
-
+        results = {}
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']

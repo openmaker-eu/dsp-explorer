@@ -2,6 +2,8 @@ import * as _ from 'lodash'
 
 export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibModal,$http,$aside) {
     
+    $scope.selected_location = ''
+    
     let feed = {
         theme : null,
         filter : 'yesterday' ,
@@ -28,10 +30,6 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
                     (response) => {
                         feed.data = _.get(response, 'data.result.news')
                         feed.next_cursor = _.get(response, 'data.result.next_cursor')
-                        
-                        console.log(response);
-                        console.log(feed.data);
-                        console.log(feed.next_cursor);
                     },
                     (err)=>{ console.log('ERROR:', err)}
                 )
@@ -41,17 +39,20 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     
     
     let influencers = {
+        
+        theme: null,
+        location:null,
         influencers : [],
         audiences : [],
         get_influencers : function (theme) {
-            $http.get('/api/v1.3/influencers/' + (theme || 1) + '/')
+            $http.get('/api/v1.3/influencers/' + (theme || influencers.theme || 1) + '/' +(influencers.location_filter || ''))
                 .then(
                     function (response) {influencers.influencers = _.get(response, 'data.result.local_influencers')},
                     function (err) { /* ToDo show API errors with a common error message using toastr? */}
                 )
         },
         get_audiences : function (theme) {
-            $http.get('/api/v1.3/audiences/' + (theme || 1) + '/' )
+            $http.get('/api/v1.3/audiences/' + (theme || influencers.theme || 1) + '/' +(influencers.location_filter || ''))
                 .then(
                     function (response) {influencers.audiences = _.get(response, 'data.result.audience_sample')},
                     function (err) { /* ToDo show API errors with a common error message using toastr? */}
@@ -63,12 +64,22 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     $scope.InfluencersModel = influencers
     
     let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
-        // if(newValue === oldValue) return
+        
+        // Set Theme for this page
         $scope.FeedModel.theme = newValue
+        influencers.theme = newValue
+        influencers.location = $scope.selected_location
+        
+        // Get all data
         $scope.FeedModel.get_news(newValue, $scope.filter, $scope.cursor)
         influencers.get_audiences($scope.topic_id);
         influencers.get_influencers($scope.topic_id);
+        
+        console.log(influencers.location);
+        
+        // Unbind to execute watch only once
         unbind_topic_id()
+        
     })
     
     // Set filter for time

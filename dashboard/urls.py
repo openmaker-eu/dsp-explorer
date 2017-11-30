@@ -3,7 +3,6 @@ from django.conf.urls import url
 from . import views, authentication, api, static
 
 app_name = 'dashboard'
-
 urlpatterns = [
     # Auth
     url(r'^$', authentication.login_page, name='login'),
@@ -20,41 +19,41 @@ urlpatterns = [
     # Dashboard
     url(r'^dashboard/(?P<topic_id>[0-9]+)/$', views.dashboard, name='dashboard'),
     url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
-    
+
     # Profiles
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
-    
+
     # Search
     url(r'^search/members/$', views.search_members, name='search_members'),
     url(r'^search/members/(?P<search_string>[\w\-]+)/$', views.search_members, name='search_members'),
-    
+
     # Invite
     url(r'^invite/$', views.invite, name='invite'),
-    
+
     # Onboarding
     url(r'^onboarding/$', authentication.onboarding, name='onboarding'),
     url(r'^onboarding/confirmation/(?P<token>.+)/$', authentication.onboarding_confirmation, name='onboarding_confirmation'),
     url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', authentication.om_confirmation, name='om_confirmation'),
-    
+
     # static
     url(r'^privacy/$', static.privacy, name='privacy'),
     url(r'^support/$', static.support, name='support'),
     url(r'terms/$', static.terms_conditions, name='terms_conditions'),
     url(r'express_acceptance/$', static.express_acceptance, name='express_acceptance'),
-    
+
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
 
     # API v1.3
     ## AUDIENCES
-    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/$', api.v13.get_audiences, {'location': None}, name='api_13_get_audiences'),
     url(r'^api/v1.3/audiences/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_audiences, name='api_13_get_audiences'),
+    url(r'^api/v1.3/audiences/(?P<topic_id>.+)/$', api.v13.get_audiences, {'location': None}, name='api_13_get_audiences'),
 
-    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/$', api.v13.get_influencers, {'location': None}, name='api_13_get_influencers'),
     url(r'^api/v1.3/influencers/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_influencers, name='api_13_get_influencers'),
+    url(r'^api/v1.3/influencers/(?P<topic_id>.+)/$', api.v13.get_influencers, {'location': None}, name='api_13_get_influencers'),
 
     url(r'^api/v1.3/events/(?P<topic_id>.+)/(?P<location>.+)/(?P<cursor>.+)/$', api.v13.get_events, name='api_13_get_events'),
     url(r'^api/v1.3/events/(?P<topic_id>.+)/(?P<cursor>.+)/$', api.v13.get_events, name='api_13_get_events'),
@@ -68,17 +67,17 @@ urlpatterns = [
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
     # EVENTS
     url(r'^api/v1.2/events/(?P<topic_ids>.+)/(?P<cursor>.+)/$', api.get_events, name='api_get_events'),
-    
+
     # TOPICS (Ex Themes)
     url(r'^api/v1.2/topics', api.get_topics, name='api_get_topics'),
     url(r'^api/v1.2/suggested_topic', api.get_suggested_topic, name='api_get_suggested_topic'),
-    
+
     # AUDIENCES (EX Influencers)
     url(r'^api/v1.2/audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
 
     # UPDATE CRM API
     url(r'^api/v1.2/update_field/(?P<to_be_updated>.+)/(?P<update_token>.+)/', api.update_field, name='api_update_field'),
-    
+
     # API v1.1
     url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
     url(r'^api/v1.1/search/members/', api.search_members, {'search_string': None},  name='api_search_member'),
@@ -95,3 +94,4 @@ urlpatterns = [
     url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
     url(r'^api/v1.1/get_om_events/$', api.get_om_events, name='get_om_events'),
 ]
+

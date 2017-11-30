@@ -45,24 +45,14 @@ export default [function(){
             nextcursor: '='
         },
         controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
-            // console.log('prev funct', $scope);
             
             $scope.is_max_page = false
             $scope.is_min_page = false
             
             $scope.$watch('[currentpagenumber, maxpagenumber, nextcursor]', (new_val, old_val)=>{
-                
-                if ($scope.currentpagenumber){
-                    $scope.is_min_page = $scope.currentpagenumber <= 1
-                }
-                if($scope.maxpagenumber && $scope.currentpagenumber){
-                    $scope.is_max_page = $scope.maxpagenumber === $scope.currentpagenumber
-                }
-                if($scope.nextcursor!==undefined) {
-                    $scope.is_max_page = $scope.nextcursor === 0
-                    console.log('next cursor :', $scope.nextcursor);
-                    console.log('$scope.is_max_page :', $scope.is_max_page);
-                }
+                if ($scope.currentpagenumber) $scope.is_min_page = $scope.currentpagenumber <= 1
+                if($scope.maxpagenumber && $scope.currentpagenumber) $scope.is_max_page = $scope.maxpagenumber === $scope.currentpagenumber
+                if($scope.nextcursor!==undefined) $scope.is_max_page = $scope.nextcursor === 0
             })
     
         }]
