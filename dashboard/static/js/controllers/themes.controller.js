@@ -13,10 +13,11 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         
         prev : function(){$scope.FeedModel.get_news()},
         next : function(){$scope.FeedModel.get_news()},
+        
         reset : function(theme=feed.theme, filter=feed.filter, cursor=-1){
             feed.data = []
             feed.current_cursor = null
-            feed.next_cursor = -13,
+            feed.next_cursor = 0,
             feed.next(theme, filter, cursor)
             return feed
         },
