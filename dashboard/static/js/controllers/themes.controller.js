@@ -39,25 +39,29 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     
     
     let influencers = {
-        
         theme: null,
         location:null,
         influencers : [],
         audiences : [],
         get_influencers : function (theme) {
-            $http.get('/api/v1.3/influencers/' + (theme || influencers.theme || 1) + '/' +(influencers.location_filter || ''))
+            $http.get('/api/v1.3/influencers/' + (theme || influencers.theme || 1) + '/' +(influencers.location || ''))
                 .then(
                     function (response) {influencers.influencers = _.get(response, 'data.result.local_influencers')},
                     function (err) { /* ToDo show API errors with a common error message using toastr? */}
                 )
         },
         get_audiences : function (theme) {
-            $http.get('/api/v1.3/audiences/' + (theme || influencers.theme || 1) + '/' +(influencers.location_filter || ''))
+            $http.get('/api/v1.3/audiences/' + (theme || influencers.theme || 1) + '/' +(influencers.location || ''))
                 .then(
                     function (response) {influencers.audiences = _.get(response, 'data.result.audience_sample')},
                     function (err) { /* ToDo show API errors with a common error message using toastr? */}
                 )
-        }
+        },
+        get_all : function(){
+            influencers.get_audiences()
+            influencers.get_influencers()
+        },
+        set_location : function(location){ influencers.location = location, influencers.get_all() }
     }
     
     $scope.FeedModel = feed

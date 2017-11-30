@@ -86,7 +86,6 @@ def theme(request, topic_id):
         selected_location = json.loads(request.user.profile.place)['country_short']
     except:
         selected_location = ''
-
     context = {
         'selected_topic': selected_topic,
         'topics': topics_list,

@@ -242,10 +242,14 @@ a {
 
 .influencer-toggle{
     width:100%; border-radius:5px; float: left; overflow: hidden; border:solid 1px $grey;
-    &> span{
-        width: 50%; text-align: center;
+    .influencers-location-btn { border-left:solid 1px $grey;  border-right: solid 1px $grey; width:20%;}
+    & > span {
+        text-align: center;
         float: left;
         padding:3% 5%;
+    }
+    & > span:first-child, & > span:last-child{
+        width: 40%;
     }
 }
 .feed-right div[class*="col-"]{
@@ -253,11 +257,19 @@ a {
 }
 
 .influencers-select {
+    position:absolute;
+    margin-top:1%;
+    z-index:1000;
+    width:100%;
     border-radius:5px;
     border:solid 1px $red;
-    color:$white;
-    background-color:$red;
-
+    color:$red;
+    background-color:$white;
     &:active, &:focus, &:visited { border:solid 1px $red!important; box-shadow:none;}
+
+    & > * {
+        padding: 1%; text-align:center; cursor:pointer;
+        &:hover { background: $red; color:$white; }
+    }
 
 }

@@ -118,6 +118,10 @@
                                 ng-class="{ 'bg-red text-white': audiences_selected!=true }"
                                 ng-click="audiences_selected=false"
                         >Influencers</span>
+                        <span class="influencers-location-btn pointer">
+                            {$ InfluencersModel.location $}&nbsp;
+                            <i class="fa fa-caret-down"></i>
+                        </span>
                         <span
                                 class="audiences-btn pointer"
                                 ng-class="{ 'bg-red text-white': audiences_selected==true }"
@@ -127,19 +131,22 @@
                 </div>
 
                 <div class="col-md-12">
-                    <br>
-                    <p>{$ InfluencersModel.location_filter $}</p>
-                    <select
-                            ng-model="InfluencersModel.location"
-                            ng-change="InfluencersModel.get_influencers(); InfluencersModel.get_audiences();"
-                            class="form-control influencers-select"
-                    >
-                        <option value="IT">Italy</option>
-                        <option value="ES">Spain</option>
-                        <option value="SK">Slovakia</option>
-                    </select>
-                </div>
+                    <ul class="list-unstyled influencers-select" style="display:none;">
+                        <li ng-click="InfluencersModel.set_location('IT')">Italy</li>
+                        <li ng-click="InfluencersModel.set_location('ES')">Spain</li>
+                        <li ng-click="InfluencersModel.set_location('SK')">Slovakia</li>
+                        <li ng-click="InfluencersModel.set_location('UK')">United Kingdom</li>
 
+                        <script>
+                            jQuery('body').on('click', function(e){
+                                let select = $('.influencers-select')
+                                if(e.target === $('.influencers-location-btn')[0] || e.target === $('.influencers-location-btn i')[0]) select.show()
+                                else select.hide()
+                            })
+                        </script>
+
+                    </ul>
+                </div>
                 <div class="col-md-12" ng-if="audiences_selected!=true" style="padding:20px;">
                     <p class="text-grey"><i>Influencer are individuals with large followings in this topic</i></p>
                     <div class="pull-left" style="clear: both;" ng-repeat="data in InfluencersModel.influencers">
