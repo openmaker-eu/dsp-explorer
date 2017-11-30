@@ -1,13 +1,13 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
-from utils.api import *
+from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirm
 import json
@@ -400,16 +400,62 @@ def get_audiences(request, topic_id):
     }, status=200)
 
 
-def update_crm(request, crmtoken):
+def update_field(request, to_be_updated, update_token):
     import threading
-    if not crmtoken == settings.CRM_UPDATE_TOKEN:
-        return not_authorized
 
-    users = User.objects.all()
-    thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
-    thr.start()
+    if not update_token == settings.UPDATE_TOKEN:
+        return not_authorized()
 
-    return JsonResponse({'status': 'ok'}, status=200)
+    if to_be_updated == 'crm':
+        users = User.objects.all()
+        thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
+        thr.start()
+
+    if to_be_updated == 'default_img':
+        # update default images
+        users = User.objects.all()
+        thr = threading.Thread(target=update_default_profile_image, kwargs=dict(users=users))
+        thr.start()
+
+    return JsonResponse({'status': 'ok', 'updating': to_be_updated}, status=200)
+
+
+def update_default_profile_image(users):
+    print 'update_default_profile_image'
+    errored = []
+    sanititized = []
+    for user in users:
+        try:
+            if user.profile.picture == 'images/profile/default_user_icon.png':
+                print ('--------------------')
+                print ('UPDATING USER : %s' % user)
+                print ('--------------------')
+                print (' ')
+                if user.profile.gender == 'male': user.profile.picture = 'images/profile/male.svg'
+                if user.profile.gender == 'female': user.profile.picture = 'images/profile/female.svg'
+                if user.profile.gender == 'other': user.profile.picture = 'images/profile/other.svg'
+                sanititized.append(user.email)
+                user.profile.save()
+        except Profile.DoesNotExist as e:
+            errored.append(user.email)
+            print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
+            print (' ')
+    # PRINT RESULTS
+    print '-------------'
+    print 'TOTAL RESULTS'
+    print '-------------'
+
+    if len(errored):
+        print Colorizer.Red('%s errored users' % len(errored))
+        print errored
+
+    if len(sanititized):
+        print Colorizer.Purple('%s updated users : ' % len(sanititized))
+        print(sanititized)
+
+    elif not len(errored) and not len(sanititized):
+        print Colorizer.Green('no updates or errors')
+    print '-------------'
 
 
 def create_or_update_party(users):

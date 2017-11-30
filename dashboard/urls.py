@@ -77,7 +77,7 @@ urlpatterns = [
     url(r'^api/v1.2/audiences/(?P<topic_id>.+)/', api.get_audiences, name='api_get_audiences'),
 
     # UPDATE CRM API
-    url(r'^api/v1.2/crm/(?P<crmtoken>.+)/', api.update_crm, name='api_update_crm'),
+    url(r'^api/v1.2/update_field/(?P<to_be_updated>.+)/(?P<update_token>.+)/', api.update_field, name='api_update_field'),
     
     # API v1.1
     url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),
