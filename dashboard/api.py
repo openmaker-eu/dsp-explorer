@@ -252,8 +252,6 @@ class v13:
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']
-            print location
-
         try:
             results = DSPConnectorV13.get_influencers(topic_id, location)
         except DSPConnectorException:
@@ -269,7 +267,6 @@ class v13:
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']
-            print location
         try:
             results = DSPConnectorV13.get_audiences(topic_id, location)
         except DSPConnectorException:
@@ -281,7 +278,6 @@ class v13:
 
     @staticmethod
     def get_events(request, topic_id, location='', cursor=0):
-        print 'get event api 1.3'
         try:
             events = DSPConnectorV13.get_events(topic_id, location, cursor)
         except DSPConnectorException:
@@ -314,11 +310,9 @@ class v13:
 
         try:
             results = DSPConnectorV13.get_news(topic_id, date_string, cursor*item_per_page)
-            print results
             news = results['news']
             next_cursor = results['next_cursor']/item_per_page
             resp = {'news': news, 'next_cursor': next_cursor, 'max_page': None}
-            print resp
         except DSPConnectorException:
             pass
         return JsonResponse({
