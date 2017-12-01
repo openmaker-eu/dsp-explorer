@@ -106,6 +106,7 @@ let bubble = function(div_id, tags){
             .attr("class", (d)=>{
                 let html_class = 'node'
                 // !d.children && (html_class += ' leaf')
+                console.log('static',this.isstatic);
                 !this.isstatic && (html_class += ' pointer')
                 return html_class
             })

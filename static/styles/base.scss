@@ -96,6 +96,11 @@ textarea.form-control:focus{
 	align-self: flex-end;
 }
 
+.Aligner-left {
+	@extend .Aligner;
+	justify-content: start;
+}
+
 .navbar-default {
 	background-image: none!important;
 	background-color: #fff!important;

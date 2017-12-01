@@ -58,10 +58,11 @@
             </div>
             <div class="row">
                     <div class="col-md-12">
-                    <div class="col-md-12">
-                        <h4 class="margin-bottom-25 text-grey">Discover the hottest topics by reading social media most recommended news.</h4>
+                        <div class="col-md-12">
+                            <p class="margin-bottom-25 text-grey"><i>Discover the hottest topics by reading social media most recommended news.</i></p>
+                        </div>
                     </div>
-                    </div>
+
                     <!-- FEED SPACE -->
                     <!--<div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">-->
                     <div class="col-md-12">
@@ -87,7 +88,6 @@
                 <div class="col-md-12">
                     <div class="col-md-12">
                         <simple-pagination
-                                prevfunction="FeedModel.prev"
                                 nextfunction="FeedModel.next"
                                 nextcursor="FeedModel.next_cursor"
                         ></simple-pagination>
@@ -97,22 +97,23 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-nopadding feed-right">
+        <div class="col-md-4">
             <div id="row">
                 <div class="col-md-12">
-                    <h2 class="text-red"><span class="text-black">Hot</span>&nbsp;Tags</h2>
+                    <h2>Hot&nbsp;Tags</h2>
                     <tag-bubbles
                             themeid="{{selected_topic.topic_id}}"
                             themefilter="FeedModel.filter"
                             isstatic="true"
-                            disablelinks="true"
                             maxtags="10"
                     ></tag-bubbles>
                     <br>
                 </div>
 
                 <div class="col-md-12">
-                    <div class="influencer-toggle" style="">
+                    <h2>Community</h2>
+                    <br>
+                    <div class="influencer-toggle">
                         <span
                                 class="influencers-btn pointer"
                                 ng-class="{ 'bg-red text-white': audiences_selected!=true }"
@@ -131,7 +132,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <ul class="list-unstyled influencers-select" style="display:none;">
+                    <ul class="list-unstyled influencers-select" style="display:none; float: left;">
                         <li ng-click="InfluencersModel.set_location('IT')">Italy</li>
                         <li ng-click="InfluencersModel.set_location('ES')">Spain</li>
                         <li ng-click="InfluencersModel.set_location('SK')">Slovakia</li>
@@ -147,30 +148,60 @@
 
                     </ul>
                 </div>
-                <div class="col-md-12" ng-if="audiences_selected!=true" style="padding:20px;">
-                    <p class="text-grey"><i>Influencer are individuals with large followings in this topic</i></p>
-                    <div class="pull-left" style="clear: both;" ng-repeat="data in InfluencersModel.influencers">
-                        <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
-                            <h5 class="pull-left" style="height: 2em;">
-                                <img class="img-circle" ng-src="{$ data.profile_image_url_https $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                            <h5 class="pull-left" style="line-height: 2em;">
-                                <p style="line-height: 40px;">{$ data.name $}</p>
-                            </h5>
-                        </a>
+                <div class="col-md-12" ng-if="audiences_selected!=true">
+
+                    <div class="row">
+                        <br>
+                        <p class="col-md-12"><i class="text-grey">Individuals with large followings in {{selected_topic.topic_name}} comunity</i></p>
                     </div>
+                    <a
+                            class="row Aligner-left margin-bottom-1perc"
+                            ng-repeat="data in InfluencersModel.influencers"
+                            href="https://www.twitter.com/{$ data.screen_name $}"
+                            target="_blank"
+                            style="margin:2% 0;"
+                    >
+                        <div class="col-md-2">
+                            <img class="img-circle" style="width:100%;" ng-src="{$ data.profile_image_url_https $}" alt="">
+                        </div>
+                        <div class="col-md-10">
+                            <h4 style="margin-bottom:5px;">{$ data.name $}</h4>
+                            <p>
+                                <i>{$ data.description && data.description.length > 50? (data.description|limitTo:50)+'[...]': data.description $}</i>
+                            </p>
+                        </div>
+                        <br>
+                    </a>
+
                 </div>
 
-                <div class="col-md-12" ng-if="audiences_selected==true" style="padding:20px;">
-                    <p class="text-grey"><i>Audiences are individuals that are interested in this topic</i></p>
-                    <div class="pull-left" style="clear: both;" ng-repeat="data in InfluencersModel.audiences">
-                        <a href="https://www.twitter.com/{$ data.screen_name $}" target="_blank">
-                            <h5 class="pull-left" style="height: 2em;">
-                                <img class="img-circle" ng-src="{$ data.profile_image_url_https $}" alt="" style="height:40px; width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                            <h5 class="pull-left text-red" style="line-height: 2em;">
-                                <p style="line-height: 40px;">{$ data.name $}</p>
-                            </h5>
-                        </a>
+
+                <div class="col-md-12" ng-if="audiences_selected==true">
+
+                    <div class="row">
+                        <br>
+                        <p class="col-md-12"><i class="text-grey">Individuals that shows intereset in {{selected_topic.topic_name}} topic, or individuals very active in {{selected_topic.topic_name}} comunity</i></p>
                     </div>
+
+                    <a
+                            class="row Aligner-left margin-bottom-1perc"
+                            ng-repeat="data in InfluencersModel.audiences"
+                            href="https://www.twitter.com/{$ data.screen_name $}"
+                            target="_blank"
+                            style="margin:2% 0;"
+                    >
+                        <div class="col-md-2">
+                            <img class="img-circle" style="width:100%;" ng-src="{$ data.profile_image_url_https $}" alt="">
+                        </div>
+                        <div class="col-md-10">
+                            <h4 style="margin-bottom:5px;">{$ data.name $}</h4>
+                            <p>
+                                <i>{$ data.description && data.description.length > 50? (data.description|limitTo:45)+'[...]': data.description $}</i>
+                            </p>
+                        </div>
+                        <br>
+                    </a>
+
                 </div>
 
 

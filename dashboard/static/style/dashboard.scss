@@ -241,7 +241,7 @@ a {
 .user-card:nth-child(2n+3){ clear:both; }
 
 .influencer-toggle{
-    width:100%; border-radius:5px; float: left; overflow: hidden; border:solid 1px $grey;
+    width:100%; border-radius:5px; overflow: hidden; border:solid 1px $grey;
     .influencers-location-btn { border-left:solid 1px $grey;  border-right: solid 1px $grey; width:20%;}
     & > span {
         text-align: center;
@@ -257,8 +257,9 @@ a {
 }
 
 .influencers-select {
-    position:absolute;
-    margin-top:1%;
+    //position:absolute;
+    //box-sizing: border-box;
+    margin-top:2%;
     z-index:1000;
     width:100%;
     border-radius:5px;
@@ -269,6 +270,7 @@ a {
 
     & > * {
         padding: 1%; text-align:center; cursor:pointer;
+        color: $red;
         &:hover { background: $red; color:$white; }
     }
 

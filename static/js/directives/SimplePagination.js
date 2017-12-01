@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 let template = `
     <div class="row">
         <div class="col-md-5 col-xs-5">
-            <button
+            <button ng-show="prevfunction"
                     ng-click="!is_min_page && prevfunction()"
                     class="btn login-button pull-left"
                     ng-class="{ 'btn-disabled disabled' : is_min_page }"
@@ -20,6 +20,7 @@ let template = `
         </div>
         <div class="col-md-5 col-xs-5">
             <button
+                    ng-show="nextfunction"
                     ng-click="!is_max_page && nextfunction()"
                     class="btn login-button pull-right"
                     ng-class="{ 'btn-disabled disabled' : is_max_page }"
