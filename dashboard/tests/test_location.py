@@ -84,13 +84,13 @@ class ProfileTestCase(TestCase):
         )
 
 
-    # def test_add_location_to_profile(self):
-    #     print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] add location')
-    #
-    #     location = Location(self.location)
-    #
-    #     self.user.profile.set_location()
-    #     self.user.profile.save()
-    #     user = User.objects.filter(email=self.user.email)[0]
-    #
-    #     self.assertIsNotNone(user.profile.location)
+    def test_add_location_to_profile(self):
+        print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] add location')
+
+        location = Location.create(**self.location)
+
+        self.user.profile.location = location
+        self.user.profile.save()
+        user = User.objects.filter(email=self.user.email)[0]
+
+        self.assertIsNotNone(user.profile.location)
