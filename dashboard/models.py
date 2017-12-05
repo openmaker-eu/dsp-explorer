@@ -19,6 +19,53 @@ class Tag(models.Model):
         return tag
 
 
+class Location(models.Model):
+
+    lat = models.FloatField(null=True, blank=True)
+    lng = models.FloatField(null=True, blank=True)
+
+    city = models.CharField(max_length=200, null=True, blank=True)
+    state = models.CharField(max_length=200, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    country_short = models.CharField(max_length=200, null=True, blank=True)
+    post_code = models.CharField(max_length=200, null=True, blank=True)
+    city_alias = models.CharField(max_length=200, null=True, blank=True)
+
+    @classmethod
+    def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
+
+        existing_location = Location.objects.filter(lat=lat, lng=lng)
+
+        # Model does not esxist
+        if not len(existing_location):
+            new_location = cls(
+                lat=lat,
+                lng=lng,
+                city=city,
+                state=state,
+                country=country,
+                country_short=country_short,
+                post_code=post_code,
+                city_alias=city+','
+            )
+            new_location.save()
+            return new_location
+
+        existing_location = existing_location[0]
+
+        # Model Exist, update
+        if existing_location and not city+',' in existing_location.city_alias:
+            existing_location.city_alias += city+','
+            existing_location.save()
+
+        return existing_location
+
+    class Meta:
+        ordering = ('lat', 'lng', 'city')
+
+    def __str__(self):
+        return self.city+', '+self.state+' '+self.country+' '+self.country_short
+
 class SourceOfInspiration(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
 
@@ -56,6 +103,8 @@ class Profile(models.Model):
     tags = models.ManyToManyField(Tag, related_name='profile_tags')
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
 
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
     socialLinks = models.TextField(
         _('Social Links'),
         max_length=200,
@@ -63,6 +112,10 @@ class Profile(models.Model):
         blank=True,
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
+
+
+    def set_location(self):
+        return None
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -292,3 +345,4 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.message_text
+
