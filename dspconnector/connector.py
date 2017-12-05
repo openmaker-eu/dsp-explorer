@@ -86,8 +86,8 @@ class DSPConnectorV13(object):
         loc = ""
         locations = {
             'IT': 'italy',
-            'GB': 'GB',
-            'UK': 'GB',
+            'GB': 'UK',
+            'UK': 'UK',
             'ES': 'spain',
             'SK': 'slovakia'
         }

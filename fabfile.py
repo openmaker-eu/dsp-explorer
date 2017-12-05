@@ -92,3 +92,7 @@ def test(filename=''):
     local('python manage.py test %s ' % filename)
 
 
+def test_e2e():
+    # local('webdriver-manager start')
+    local('protractor protractor-conf.js')
+
