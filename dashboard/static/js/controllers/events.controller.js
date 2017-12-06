@@ -43,7 +43,7 @@ export default [ '$scope', '$http', function ($scope,$http) {
         */
 
         get_events : function(theme=this.theme, location=this.user_location, cursor=this.cursor){
-            // console.log('get events: ' + theme + '-' + location + '-' + cursor);
+            console.log('get events: ' + theme + '-' + location + '-' + cursor);
 
             let params = ''
 
