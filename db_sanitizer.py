@@ -16,27 +16,23 @@ from crmconnector.capsule import CRMValidationException
 from collections import OrderedDict
 import urllib
 from decimal import Decimal
+from django.db.models import Q
+
+def sanitize_place(user):
 
 
-def sanitize_place(city=None):
-    from django.db.models import Q
+    place = None
+    try:
+        if user.profile and not user.profile.place:
+            city = user.profile.city
+            place = get_city(city)
+            if place:
+                user.profile.place = json.dumps(place)
+                user.profile.save()
 
-    users = User.objects.filter(Q(profile__place=None)).distinct()
-
-    for user in users:
-        pass
-        # try:
-        #     if user.profile:
-        #         city = user.profile.city
-        #         print ' '
-        #         print '----------------------------'
-        #         print city
-        #         print '############################'
-        #         print get_city(city)
-        #         print '----------------------------'
-        #         print ' '
-        # except:
-        #     pass
+    except Exception as e:
+        print 'error'
+        print e
 
 
 def get_city(city=None):
@@ -100,40 +96,35 @@ def get_city(city=None):
             print e
 
     else:
-        print 'place'
-        print not not place
-        print 'place_detail'
-        print not not place_detail
         return None
 
 
-def add_place_to_all():
-    print 'start'
-    users = User.objects.all()
-    # users = User.objects.filter(email='massimo.santoli@top-ix.org')
+def add_location_to_user(user):
+    try:
+        if user.profile.place:
+            place = json.loads(user.profile.place)
 
-    for user in users:
-        try:
-            if user.profile.place:
-                place = json.loads(user.profile.place)
-                location = Location.create(
-                    lat=repr(place['lat']),
-                    lng=repr(place['long']),
-                    city=place['city'],
-                    state=place['state'],
-                    country=place['country'],
-                    country_short=place['country_short'],
-                    post_code=place['post_code'],
-                    city_alias=place['city']+','
-                )
-                user.profile.location = location
-                user.profile.save()
-        except Exception as e:
-            print e
+            location = Location.create(
+                lat=repr(place['lat']),
+                lng=repr(place['long']),
+                city=place['city'],
+                state=place['state'],
+                country=place['country'],
+                country_short=place['country_short'],
+                post_code=place['post_code'] if 'post_code' in place else '',
+                city_alias=place['city']+','
+            )
+            user.profile.location = location
+            user.profile.save()
+
+    except Exception as e:
+        print 'Error 2'
+        print e
 
 
 if __name__ == "__main__":
-    city_name = sys.argv[1] if len(sys.argv) > 1 else None
-    add_place_to_all()
-    # sanitize_place(city_name)
+    users = User.objects.all()
+    for user in users:
+        sanitize_place(user)
+        add_location_to_user(user)
 

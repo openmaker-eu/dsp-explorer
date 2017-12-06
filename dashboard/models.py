@@ -95,20 +95,16 @@ class Location(models.Model):
 
     @classmethod
     def add_country_alias(cls, location):
-        print 'update_alias'
-
         if not location.country_alias:
-            print 'update existent counntry alias'
             existing_country = Country.objects.filter(code=location.country_short)
             if len(existing_country):
                 location.country_alias = existing_country[0]
                 location.save()
                 return location
 
-            print 'create new country alias'
-            country_aliases = RestCountriesConnector.get_city_alias(results.country)
+            country_aliases = RestCountriesConnector.get_city_alias(location.country)
             if country_aliases:
-                country_alias = Country.create(results.country_short, country_aliases)
+                country_alias = Country.create(location.country_short, country_aliases)
                 location.country_alias = country_alias
                 location.save()
 

@@ -22,7 +22,6 @@ class OpenDataConnector(object):
 
     @classmethod
     def __handle_response(cls, results):
-        print results
         if results and results.status_code < 203:
             return results
         else:
