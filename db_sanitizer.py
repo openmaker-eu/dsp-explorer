@@ -8,13 +8,14 @@ sys.path.append("/dspexplorer/")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'dspexplorer.settings'
 django.setup()
 
-from dashboard.models import User, Profile
+from dashboard.models import User, Profile, Location
 import json
 from crmconnector.models import Party
 from utils.Colorizer import Colorizer
 from crmconnector.capsule import CRMValidationException
 from collections import OrderedDict
 import urllib
+from decimal import Decimal
 
 
 def sanitize_place(city=None):
@@ -106,7 +107,35 @@ def get_city(city=None):
         return None
 
 
+def add_place_to_all():
+    print 'start'
+    users = User.objects.all()
+    # users = User.objects.filter(email='massimo.santoli@top-ix.org')
+
+    for user in users:
+        try:
+            if user.profile.place:
+                place = json.loads(user.profile.place)
+
+                print place
+                location = Location.create(
+                    lat=repr(place['lat']),
+                    lng=repr(place['long']),
+                    city=place['city'],
+                    state=place['state'],
+                    country=place['country'],
+                    country_short=place['country_short'],
+                    post_code=place['post_code'],
+                    city_alias=place['city']+','
+                )
+                user.profile.location = location
+                user.profile.save()
+        except Exception as e:
+            print e
+
+
 if __name__ == "__main__":
     city_name = sys.argv[1] if len(sys.argv) > 1 else None
-    sanitize_place(city_name)
+    add_place_to_all()
+    # sanitize_place(city_name)
 

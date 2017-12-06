@@ -27,8 +27,8 @@ class ProfileTestCase(TestCase):
             "state": "Piemonte",
             "country_short": "IT",
             "country": "Italia",
-            "lat": 45.07031200000001,
-            "lng": 7.686856499999976
+            "lat": '45.07031200000001',
+            "lng": '7.686856499999976'
         }
 
     def test1_save_location_new(self):
@@ -61,30 +61,32 @@ class ProfileTestCase(TestCase):
         new_dict['city'] = 'Test_city'
 
         Location.create(**self.location)
+        location1 = Location.objects.filter(lat=self.location['lat'], lng=self.location['lng'])[0]
+
         Location.create(**new_dict)
         location = Location.objects.filter(lat=self.location['lat'], lng=self.location['lng'])
 
         self.assertEqual(
             location[0].city_alias,
-            self.location['city']+','+new_dict['city']+',',
+            location1.city_alias+new_dict['city']+',',
             'Save Location with same lat an lng and different name, should update existing location adding new alias'
         )
 
-    def test3_save_existing_location_same_coord_same_city(self):
+    def test4_save_existing_location_same_coord_same_city(self):
         print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] assert should not update existing field')
 
         Location.create(**self.location)
+        location1 = Location.objects.filter(lat=self.location['lat'], lng=self.location['lng'])[0]
         Location.create(**self.location)
         location = Location.objects.filter(lat=self.location['lat'], lng=self.location['lng'])
 
         self.assertEqual(
             location[0].city_alias,
-            self.location['city']+',',
+            location1.city_alias,
             'Save Location with same lat an lng and same name should not update'
         )
 
-
-    def test_add_location_to_profile(self):
+    def test5_add_location_to_profile(self):
         print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] add location')
 
         location = Location.create(**self.location)

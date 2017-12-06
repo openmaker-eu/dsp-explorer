@@ -7,7 +7,7 @@ from datetime import datetime as dt
 from utils.hasher import HashHelper
 import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
-
+from opendataconnector.odconnector import OpenDataConnector
 
 class Tag(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
@@ -21,15 +21,15 @@ class Tag(models.Model):
 
 class Location(models.Model):
 
-    lat = models.FloatField(null=True, blank=True)
-    lng = models.FloatField(null=True, blank=True)
+    lat = models.CharField(null=True, blank=True, max_length=20)
+    lng = models.CharField(null=True, blank=True, max_length=20)
 
     city = models.CharField(max_length=200, null=True, blank=True)
     state = models.CharField(max_length=200, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     country_short = models.CharField(max_length=200, null=True, blank=True)
     post_code = models.CharField(max_length=200, null=True, blank=True)
-    city_alias = models.CharField(max_length=200, null=True, blank=True)
+    city_alias = models.TextField(null=True, blank=True, default=None)
 
     @classmethod
     def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
@@ -48,6 +48,10 @@ class Location(models.Model):
                 post_code=post_code,
                 city_alias=city+','
             )
+            latlng = cls.get_latlng(lat, lng)
+            aliases = OpenDataConnector.get_city_alternate_name_by_latlng(latlng)
+            if aliases:
+                new_location.city_alias = aliases+','
             new_location.save()
             return new_location
 
@@ -59,6 +63,12 @@ class Location(models.Model):
             existing_location.save()
 
         return existing_location
+
+    @classmethod
+    def get_latlng(cls, lat=None, lng=None):
+        lat = lat or cls.lat
+        lng = lng or cls.lng
+        return lat+','+lng
 
     class Meta:
         ordering = ('lat', 'lng', 'city')
@@ -244,7 +254,8 @@ class Profile(models.Model):
                 Q(twitter_username__icontains=search_string) |
                 Q(occupation__icontains=search_string) |
                 Q(sector__icontains=search_string) |
-                Q(city__icontains=search_string))\
+                Q(city__icontains=search_string) |
+                Q(location__city_alias__icontains=search_string))\
             .distinct()
 
     @classmethod
