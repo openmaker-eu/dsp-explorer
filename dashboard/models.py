@@ -8,6 +8,8 @@ from utils.hasher import HashHelper
 import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from opendataconnector.odconnector import OpenDataConnector
+from restcountriesconnector.rcconnector import RestCountriesConnector
+
 
 class Tag(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
@@ -17,6 +19,29 @@ class Tag(models.Model):
         tag = Tag(name=name)
         tag.save()
         return tag
+
+
+class Country(models.Model):
+    code = models.CharField(max_length=20, null=True, blank=True, default=None)
+    alias = models.TextField(null=True, blank=True, default=None)
+
+    @classmethod
+    def create(cls, code, alias):
+        existing = Country.objects.filter(code=code)
+        
+        if len(existing):
+            return existing
+
+        new_country = cls(code=code, alias=alias)
+        new_country.save()
+        return new_country
+
+
+    class Meta:
+        ordering = ('code',)
+
+    def __str__(self):
+        return self.code
 
 
 class Location(models.Model):
@@ -30,11 +55,13 @@ class Location(models.Model):
     country_short = models.CharField(max_length=200, null=True, blank=True)
     post_code = models.CharField(max_length=200, null=True, blank=True)
     city_alias = models.TextField(null=True, blank=True, default=None)
+    country_alias = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
 
     @classmethod
     def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
-
         existing_location = Location.objects.filter(lat=lat, lng=lng)
+        new_location = None
 
         # Model does not esxist
         if not len(existing_location):
@@ -53,16 +80,37 @@ class Location(models.Model):
             if aliases:
                 new_location.city_alias = aliases+','
             new_location.save()
-            return new_location
 
-        existing_location = existing_location[0]
+        else:
+            existing_location = existing_location[0]
+            # Model Exist, update
+            if existing_location and not city+',' in existing_location.city_alias:
+                existing_location.city_alias += city+','
+                existing_location.save()
 
-        # Model Exist, update
-        if existing_location and not city+',' in existing_location.city_alias:
-            existing_location.city_alias += city+','
-            existing_location.save()
+        results = new_location or existing_location
+        cls.add_country_alias(results)
 
-        return existing_location
+        return results
+
+    @classmethod
+    def add_country_alias(cls, location):
+        print 'update_alias'
+
+        if not location.country_alias:
+            print 'update existent counntry alias'
+            existing_country = Country.objects.filter(code=location.country_short)
+            if len(existing_country):
+                location.country_alias = existing_country[0]
+                location.save()
+                return location
+
+            print 'create new country alias'
+            country_aliases = RestCountriesConnector.get_city_alias(results.country)
+            if country_aliases:
+                country_alias = Country.create(results.country_short, country_aliases)
+                location.country_alias = country_alias
+                location.save()
 
     @classmethod
     def get_latlng(cls, lat=None, lng=None):
@@ -247,15 +295,17 @@ class Profile(models.Model):
 
         return cls.objects\
             .filter(
-                Q(user__email__icontains=search_string) |
-                Q(user__first_name__icontains=search_string) |
-                Q(user__last_name__icontains=search_string) |
-                Q(tags__name__icontains=search_string) |
-                Q(twitter_username__icontains=search_string) |
-                Q(occupation__icontains=search_string) |
-                Q(sector__icontains=search_string) |
-                Q(city__icontains=search_string) |
-                Q(location__city_alias__icontains=search_string))\
+                    Q(user__email__icontains=search_string) |
+                    Q(user__first_name__icontains=search_string) |
+                    Q(user__last_name__icontains=search_string) |
+                    Q(tags__name__icontains=search_string) |
+                    Q(twitter_username__icontains=search_string) |
+                    Q(occupation__icontains=search_string) |
+                    Q(sector__icontains=search_string) |
+                    Q(city__icontains=search_string) |
+                    Q(location__city_alias__icontains=search_string) |
+                    Q(location__country_alias__alias__icontains=search_string)
+                )\
             .distinct()
 
     @classmethod

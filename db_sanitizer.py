@@ -116,8 +116,6 @@ def add_place_to_all():
         try:
             if user.profile.place:
                 place = json.loads(user.profile.place)
-
-                print place
                 location = Location.create(
                     lat=repr(place['lat']),
                     lng=repr(place['long']),

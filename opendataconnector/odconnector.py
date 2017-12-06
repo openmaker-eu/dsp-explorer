@@ -5,7 +5,7 @@ from rest_framework.exceptions import NotFound
 import urllib
 
 dataset = 'geonames-all-cities-with-a-population-1000@public'
-api_key = settings.OPENDATA_KEY
+# api_key = settings.OPENDATA_KEY
 
 class OPENDATAValidationException(Exception):
     pass
