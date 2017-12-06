@@ -9,7 +9,8 @@ import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
 from opendataconnector.odconnector import OpenDataConnector
 from restcountriesconnector.rcconnector import RestCountriesConnector
-
+import json
+from utils.GoogleHelper import GoogleHelper
 
 class Tag(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
@@ -337,6 +338,20 @@ class Profile(models.Model):
     def get_places(cls):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         return places
+
+    def sanitize_place(self):
+        place = None
+        try:
+            if not self.place:
+                city = self.city
+                place = GoogleHelper.get_city(city)
+                if place:
+                    self.place = json.dumps(place)
+                    self.save()
+
+        except Exception as e:
+            print 'error'
+            print e
 
 
 class Invitation(models.Model):
