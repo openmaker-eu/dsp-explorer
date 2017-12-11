@@ -85,7 +85,7 @@ class DSPConnectorV13(object):
     def _get_location_filter(location):
         loc = ""
         locations = {
-            'IT': 'italy',
+            'IT': 'it',
             'GB': 'UK',
             'UK': 'UK',
             'ES': 'spain',
