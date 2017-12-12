@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 
-    <div ng-init="topic_id='{{ selected_topic.topic_id }}';country.code='{{ country }}'" class="container-fluid" ng-controller="eventsController">
+    <div ng-init="topic_id='{{ selected_topic.topic_id }}';user_country.short_code='{{ country.short_code }}'; user_country.label='{{ country.label }}'" class="container-fluid" ng-controller="eventsController">
         <div class="row margin-bottom-25">
             <div class="col-md-12 text-center theme-name">
                 <span class="text-red">
@@ -28,22 +28,29 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-md-6 pull-right">
-                        <select
-                          name="singleSelect"
-                          ng-model="country.code"
-                          class="form-control margin-top-20"
-                          style="color:rgba(119, 119, 119, 0.81);"
-                        >
+{#                        <select#}
+{#                          name="singleSelect"#}
+{#                          ng-model="country.code"#}
+{#                          class="form-control margin-top-20"#}
+{#                          style="color:rgba(119, 119, 119, 0.81);"#}
+{#                        >#}
                                 {# TODO think a way to let people filter for more country codes #}
                                 {# displaying your country code if is not in the choosable below #}
-                                <option ng-if="country.code != 'it' && country.code != 'uk' && country.code != 'es' && country.code != 'sk'" ng-value="country.code"> {$ country.code $} </option>
-
-                                <option value="it">Italy</option>
-                                <option value="uk" >United Kingdom</option>
-                                <option value="es" >Spain</option>
-                                <option value="sk" >Slovakia</option>
-                                <option value="" >All over the World</option>
-                        </select>
+{#                                <option ng-if="country.code != 'it' && country.code != 'uk' && country.code != 'es' && country.code != 'sk'" ng-value="country.code"> {$ country.code $} </option>#}
+{#                                <option value="it">Italy</option>#}
+{#                                <option value="uk" >United Kingdom</option>#}
+{#                                <option value="es" >Spain</option>#}
+{#                                <option value="sk" >Slovakia</option>#}
+{#                                <option value="" >All over the World</option>#}
+{#                        </select>#}
+                         <select name="singleSelect"
+                          ng-model="user_country.short_code"
+                          class="form-control margin-top-20"
+                          style="color:rgba(119, 119, 119, 0.81);">
+                                {# TODO think a way to let people filter for more country codes #}
+                                {# displaying your country code if is not in the choosable below #}
+                                <option ng-repeat="c in countries" ng-value="c.short_code">{$ c.label $}</option>
+                         </select>
                     </div>
                 </div>
                 <!-- EVENTS SPACE -->
