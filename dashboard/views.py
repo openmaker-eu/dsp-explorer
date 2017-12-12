@@ -349,24 +349,29 @@ def invite(request):
             pass
         
         # email not present, filling invitation model
+        # @TODO: use new mailer
         try:
-            Invitation.create(user=request.user,
-                              sender_email=request.user.email,
-                              sender_first_name=request.user.first_name,
-                              sender_last_name=request.user.last_name,
-                              receiver_first_name=first_name,
-                              receiver_last_name=last_name,
-                              receiver_email=address,
-                              )
+            Invitation.create(
+                user=request.user,
+                sender_email=request.user.email,
+                sender_first_name=request.user.first_name,
+                sender_last_name=request.user.last_name,
+                receiver_first_name=first_name,
+                receiver_last_name=last_name,
+                receiver_email=address,
+            )
             
             subject = 'You are invited to join the OpenMaker community!'
-            content = "{0}{1}{2}".format(invitation_base_template_header,
-                                         invitation_email_receiver.format(RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
-                                                                          RECEIVER_LAST_NAME=last_name.encode('utf-8'),
-                                                                          SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
-                                                                          SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
-                                                                          ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
-                                         invitation_base_template_footer)
+            content = "{0}{1}{2}".format(
+                invitation_base_template_header,
+                invitation_email_receiver.format(
+                    RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
+                    RECEIVER_LAST_NAME=last_name.encode('utf-8'),
+                    SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
+                    SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
+                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
+                ),
+                invitation_base_template_footer)
             
             EmailHelper.send_email(
                 message=content,

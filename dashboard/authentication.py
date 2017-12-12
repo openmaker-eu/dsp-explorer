@@ -26,10 +26,12 @@ from rest_framework.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
 
+
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
+
 
 def login_page(request):
     if request.user.is_authenticated:
