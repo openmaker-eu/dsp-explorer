@@ -6,6 +6,8 @@ export default [ '$scope', '$http', function ($scope,$http) {
     $scope.country = {
         code: ''
     };
+
+    let countries = ['sk', 'es', 'uk', 'it']
     
     $scope.EventModel = {
         theme : null,
