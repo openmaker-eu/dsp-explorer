@@ -97,7 +97,7 @@ def theme(request, topic_id):
 
 @login_required()
 def events(request, topic_id):
-    user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
+    user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short'].lower()
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \
