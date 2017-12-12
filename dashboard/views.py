@@ -77,11 +77,11 @@ def insight(request, user_twitter_username=None):
         # user_profile_twitter_username = ''
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    canvas_url = settings.INSIGHT_BASE_URL + '/gui/api/' + user_profile_twitter_username
+    canvas_url = settings.INSIGHT_BASE_URL + '/gui/api/'
 
     context = {
-        'user_profile_twitter_username': user_profile_twitter_username,
-        'canvas_url': canvas_url
+        'user_profile_twitter_username': str(user_profile_twitter_username),
+        'canvas_url': str(canvas_url)
     }
     print context
     return render(request, 'dashboard/insight.html', context)
