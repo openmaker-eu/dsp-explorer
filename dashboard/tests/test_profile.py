@@ -11,6 +11,7 @@ import pytz
 from django.utils import timezone
 from itertools import chain
 
+
 class ProfileTestCase(TestCase):
 
     client = Client()
@@ -21,6 +22,11 @@ class ProfileTestCase(TestCase):
     def setUpTestData(cls):
         user = testhelpers.create_test_user()
         cls.user = User.objects.filter(email=user.email)[0]
+        cls.login()
+
+    #######################
+    # TEST PAGE RESPONSE #
+    #######################
 
     def test1_login(self):
         print Colorizer.LightPurple('\n[TEST PROFILE PAGE] test login')
@@ -73,21 +79,55 @@ class ProfileTestCase(TestCase):
             Colorizer.Red('Update profile errors: %s' % '\n'.join(d.message for d in update_errors))
         )
 
+    def test8_save_data_response(self):
+        from utils.testhelpers import profile_form_update_data
+        print Colorizer.LightPurple('\n[TEST PROFILE PAGE] check update with valid data')
+
+        response = self.post_profile_test(profile_form_update_data())
+        form = response.context['form']
+        print len(form.errors.as_data())
+
+        # print response
+
+        self.assertTrue(
+            form.is_valid(),
+            Colorizer.Red('Update Response Error')
+        )
+
+    ########
+    # Unit #
+    ########
+
+    # def test_8(self):
+    #     self.assertFalse(
+    #             True,
+    #             Colorizer.Red('Update profile errors:')
+    #         )
+
+    ###########
+    # Helpers #
+    ###########
     @classmethod
     def login(cls):
         return cls.client.login(username=cls.user.username, password=cls.password)
 
     @classmethod
     def get_profile_page(cls):
-        cls.login()
         return cls.client.get('/profile/%s/' % cls.user.profile.pk, follow=True)
 
     @classmethod
     def post_profile(cls, data):
-        cls.login()
         # @TODO: this not send vaid data
-        data = dict(chain(cls.user.__dict__.iteritems(), cls.user.profile.__dict__.iteritems()))
-        data['birthdate'] = '1983/05/14'
+        extra = {'birthdate': '1983/05/14'}
+        data = {
+            k: v
+            for to_merge in [cls.user.__dict__, cls.user.profile.__dict__, extra]
+            for k, v in to_merge.items()
+        }
         return cls.client.post('/profile/%s/' % cls.user.profile.pk, data, follow=True)
+
+    @classmethod
+    def post_profile_test(cls, data):
+        return cls.client.post('/test/', data, follow=True)
 
 

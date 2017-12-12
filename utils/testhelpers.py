@@ -57,3 +57,42 @@ def create_test_user():
     user.save()
     user.profile.save()
     return user
+
+
+def profile_form_update_data():
+    user_dict = {
+        "sector": "Professional, scientific and technical activities aaa",
+        "city": "Toronto, Ontario, Canada",
+        "first_name": "Massimo",
+        "last_name": "Santoli",
+        "role_other": "Im a full stack developer in Top-ix",
+        "tags": "Innovation,Software,Open", "gender": "male",
+        "technical_expertise_other": "Im a talented full stack developer.",
+        "technical_expertise": "Other",
+        "birthdate": "1983/05/14",
+        "socialLinks": "["
+                       "{\"link\":\"https://twitter.com/top_ix\",\"name\":\"twitter\"},"
+                       "{\"link\":\"www.google.it\",\"name\":\"google-plus\"},"
+                       "{\"link\":\"https://www.facebook.com/topixconsortium/\",\"name\":\"facebook\"},"
+                       "{\"name\":\"youtube\",\"link\":\"https://www.youtube.com/channel/UC2e2-e70sYMTxx1jXHdiSeg\"},"
+                       "{\"name\":\"github\",\"link\":\"https://github.com/topix-hackademy\"}"
+                       "]",
+        "source_of_inspiration": "Science ,Culture ,Technology",
+        "types_of_innovation": "Process innovation,Business model innovation and   other, development innnovation   ,Social innovation",
+        "place": "{"
+                 "\"city\":\"Toronto\","
+                 "\"state\":\"ON\","
+                 "\"country_short\":\"CA\","
+                 "\"country\":\"Canada\","
+                 "\"lat\":43.653226,"
+                 "\"long\":-79.38318429999998"
+                 "}",
+        "statement": "Hi im a full stack developer!",
+        "organization": "Top-ix",
+        "role": "Employee",
+        "csrfmiddlewaretoken": "ZPRuCqwHshEcBf6kcZ0rjUxrJnWvmbWGVIcV3wSjcC2r7uGSvkejXoZV7rkSD5T7",
+        "size": "A small enterprise (<50 staff but cool)",
+        "sector_other": "Developer sector",
+        "occupation": "Developer"
+    }
+    return user_dict

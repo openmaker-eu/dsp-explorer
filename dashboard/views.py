@@ -113,7 +113,31 @@ def events(request, topic_id):
 
 
 @login_required()
+def test(request):
+    from dashboard.form import ProfileForm
+
+    # print json.dumps(request.POST)
+    # form = ProfileForm(data=dict(request.POST), files=request.FILES)
+
+    # if form.is_valid():
+    #     print 'Form is valid'
+    #     print 'Form data :'
+    #     print form.fields
+    # else:
+    #     print 'form not valid'
+    #     print form.errors
+
+    form = ProfileForm(request.POST or None)
+
+    return render(request, 'test.html', {'form': form})
+
+
+@login_required()
 def profile(request, profile_id=None, action=None):
+    from form import ProfileForm
+    from rest_framework.renderers import JSONRenderer
+    from collections import OrderedDict
+
     try:
         if profile_id:
             user_profile = Profile.get_by_id(profile_id)
@@ -123,7 +147,9 @@ def profile(request, profile_id=None, action=None):
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     
     if request.method == 'POST':
-        
+
+        print json.dumps(request.POST)
+
         new_profile = {}
         new_user = {}
         try:
