@@ -237,7 +237,12 @@
             <!--Edit profile data-->
             {% if is_my_profile %}
             <div ng-show="is_edit">
-                <form class="form-group" action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}" method="post" enctype="multipart/form-data">
+                <form
+                        class="form-group"
+                        action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}"
+                        method="post"
+                        enctype="multipart/form-data"
+                >
                     {% csrf_token %}
 
                     <!--Image-->
@@ -596,10 +601,8 @@
                                 <span class="input-group-addon" tooltip-placement="top" uib-tooltip="{$ social.name $}">
                                     <span class="fa fa-fw fa-home fa-{$ social.name $}" ></span>
                                 </span>
-
                                 <input type="text" class="form-control"
                                        ng-model="social.link"
-                                       name="{$ social.name $}"
                                        placeholder="{$ social.name $} username or link to your profile page"
                                 >
                                 <span class="input-group-addon pointer"

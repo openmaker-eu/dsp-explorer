@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -78,6 +79,7 @@ class Location(models.Model):
             )
             latlng = cls.get_latlng(lat, lng)
             aliases = OpenDataConnector.get_city_alternate_name_by_latlng(latlng)
+
             if aliases:
                 new_location.city_alias = aliases+','
             new_location.save()

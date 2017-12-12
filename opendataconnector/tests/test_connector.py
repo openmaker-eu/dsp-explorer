@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.test import TestCase, Client
 from utils import testhelpers
 from dashboard.models import Profile
@@ -43,8 +43,8 @@ class ConnectorTestCase(TestCase):
             Colorizer.Red('Update Response Error: \n code: %s \n Info : %s' % (response.status_code, response))
         )
 
-    def test1_get_alternate_city_names(self):
-        print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] assert should respond correctly')
+    def test2_get_alternate_city_names(self):
+        print Colorizer.LightPurple('\n[TEST PROFILE LOCATION] assert should respond')
 
         latlng = self.user.profile.location.lat+','+self.user.profile.location.lng
         response = OpenDataConnector.get_city_alternate_name_by_latlng(latlng)

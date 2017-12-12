@@ -4,7 +4,10 @@ from . import views, authentication, api, static
 
 app_name = 'dashboard'
 urlpatterns = [
+
     # Auth
+    url(r'^test/$', views.test, name='test'),
+
     url(r'^$', authentication.login_page, name='login'),
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
