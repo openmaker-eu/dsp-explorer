@@ -5,6 +5,7 @@ from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
@@ -66,6 +67,24 @@ def dashboard(request, topic_id=None):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
+
+@login_required()
+def insight(request, user_twitter_username=None):
+    try:
+        user_profile_twitter_username = Profile.get_by_email(request.user.email).twitter_username
+    except:
+        messages.warning(request, 'Hey fill your Twitter username to check your Insight data!')
+        # user_profile_twitter_username = ''
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    canvas_url = settings.INSIGHT_BASE_URL + '/gui/api/' + user_profile_twitter_username
+
+    context = {
+        'user_profile_twitter_username': user_profile_twitter_username,
+        'canvas_url': canvas_url
+    }
+    print context
+    return render(request, 'dashboard/insight.html', context)
 
 
 @login_required()

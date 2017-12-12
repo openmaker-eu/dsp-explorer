@@ -16,11 +16,11 @@ export default [ '$scope', '$http', function ($scope,$http) {
         },
         {
             label: 'United Kingdom',
-            short_code: 'uk'
+            short_code: 'gb'
         },
         {
             label: 'Slovakia',
-            short_code: 'uk'
+            short_code: 'sk'
         },
         {
             label: 'Spain',

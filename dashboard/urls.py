@@ -19,6 +19,10 @@ urlpatterns = [
     url(r'^dashboard/events/(?P<topic_id>[0-9]+)/$', views.events, name='events'),
     url(r'^dashboard/events/$', views.events, {'topic_id': None}, name='events'),
 
+    # Insight
+    url(r'^insight/(?P<user_twitter_username>[0-9]+)/$', views.insight, name='insight'),
+    url(r'^insight', views.insight, {'user_twitter_username': None}, name='insight'),
+
     # Dashboard
     url(r'^dashboard/(?P<topic_id>[0-9]+)/$', views.dashboard, name='dashboard'),
     url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
