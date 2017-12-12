@@ -68,7 +68,7 @@ export default [ '$scope', '$http', function ($scope,$http) {
         */
 
         get_events : function(theme=this.theme, location=this.user_location, cursor=this.cursor){
-            console.log('get events: ' + theme + '-' + location + '-' + cursor);
+            // console.log('get events: ' + theme + '-' + location + '-' + cursor);
 
             let params = ''
 
@@ -90,8 +90,8 @@ export default [ '$scope', '$http', function ($scope,$http) {
         },
     }
 
-    $scope.$watch('[topic_id,user_country.short_code]', function (newValue, oldValue) {
-        if(_.filter($scope.countries, { short_code: newValue[1] }).length == 0) $scope.countries.unshift( { label: newValue[1],  short_code: newValue[1]} )
+    $scope.$watch('[topic_id,user_country.short_code,user_country.label]', function (newValue, oldValue) {
+        if(_.filter($scope.countries, { short_code: newValue[1] }).length == 0) $scope.countries.unshift( { label: newValue[2],  short_code: newValue[1]} )
         $scope.EventModel.theme = newValue[0]
         $scope.EventModel.user_location = newValue[1]
         $scope.EventModel
