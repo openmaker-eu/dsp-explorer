@@ -5,6 +5,7 @@
 export default [ '$scope', '$http', '$sce', function ($scope, $http, $sce) {
 
     $scope.show_canvas = true
+    $scope.no_data_message = ''
 
     $scope.canvas_info = {
         base_url: '',
