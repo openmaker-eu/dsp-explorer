@@ -34,9 +34,14 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_events(topic_id, location="", cursor=0):
+
+        params = '?topic_id={topic_id}'.format(topic_id=topic_id)
+        params += '&location={location}'.format(location=location) if location else ''
+        params += '&cursor={cursor}'.format(cursor=cursor)
+
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_events',
-            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
+            parameter=params)
         )
 
     @staticmethod
@@ -85,7 +90,7 @@ class DSPConnectorV13(object):
     def _get_location_filter(location):
         loc = ""
         locations = {
-            'IT': 'it',
+            'IT': 'italy',
             'GB': 'UK',
             'UK': 'UK',
             'ES': 'spain',

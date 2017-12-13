@@ -19,6 +19,10 @@ urlpatterns = [
     url(r'^dashboard/events/(?P<topic_id>[0-9]+)/$', views.events, name='events'),
     url(r'^dashboard/events/$', views.events, {'topic_id': None}, name='events'),
 
+    # Insight
+    url(r'^insight/(?P<user_twitter_username>[0-9]+)/$', views.insight, name='insight'),
+    url(r'^insight', views.insight, {'user_twitter_username': None}, name='insight'),
+
     # Dashboard
     url(r'^dashboard/(?P<topic_id>[0-9]+)/$', views.dashboard, name='dashboard'),
     url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
@@ -80,6 +84,7 @@ urlpatterns = [
 
     # UPDATE CRM API
     url(r'^api/v1.2/update_field/(?P<to_be_updated>.+)/(?P<update_token>.+)/', api.update_field, name='api_update_field'),
+    url(r'^api/v1.2/check_canvas/(?P<twitter_username>.+)/', api.check_canvas, name='api_check_canvas'),
 
     # API v1.1
     url(r'^api/v1.1/search/members/(?P<search_string>.*)/$', api.search_members, name='api_search_member'),

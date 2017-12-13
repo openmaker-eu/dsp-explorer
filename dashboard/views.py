@@ -5,6 +5,7 @@ from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
@@ -40,7 +41,8 @@ def dashboard(request, topic_id=None):
 
         top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
         audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
-        events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location)['events'][:4]
+
+        events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location.lower())['events'][:4]
 
     except DSPConnectorException as e:
         messages.error(request, e.message)
@@ -64,9 +66,25 @@ def dashboard(request, topic_id=None):
         'events': events_by_topic_and_location
     }
 
-    print context['selected_topic']
-
     return render(request, 'dashboard/dashboard.html', context)
+
+@login_required()
+def insight(request, user_twitter_username=None):
+    try:
+        user_profile_twitter_username = Profile.get_by_email(request.user.email).twitter_username
+    except:
+        messages.warning(request, 'Hey fill your Twitter username to check your Insight data!')
+        # user_profile_twitter_username = ''
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    canvas_url = settings.INSIGHT_BASE_URL + settings.INSIGHT_API_URL
+
+    context = {
+        'user_profile_twitter_username': str(user_profile_twitter_username),
+        'canvas_url': str(canvas_url)
+    }
+    print context
+    return render(request, 'dashboard/insight.html', context)
 
 
 @login_required()
@@ -97,7 +115,9 @@ def theme(request, topic_id):
 
 @login_required()
 def events(request, topic_id):
-    user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short'].lower()
+    user_profile_location = {}
+    user_profile_location['short_code'] = json.loads(Profile.get_by_email(request.user.email).place)['country_short'].lower()
+    user_profile_location['label'] = json.loads(Profile.get_by_email(request.user.email).place)['country']
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
         selected_topic = filter(lambda x: str(x['topic_id']) == str(topic_id), topics_list)[0] if topic_id else \

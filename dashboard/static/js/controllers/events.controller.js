@@ -1,12 +1,37 @@
 /**
  * Created by andreafspeziale on 24/05/17.
  */
+import * as _ from 'lodash'
 export default [ '$scope', '$http', function ($scope,$http) {
 
-    $scope.country = {
-        code: ''
+    $scope.user_country = {
+        short_code: '',
+        label: ''
     };
-    
+
+    $scope.countries = [
+        {
+            label: 'Italy',
+            short_code: 'it'
+        },
+        {
+            label: 'United Kingdom',
+            short_code: 'gb'
+        },
+        {
+            label: 'Slovakia',
+            short_code: 'sk'
+        },
+        {
+            label: 'Spain',
+            short_code: 'es'
+        },
+        {
+            label: 'All over the World',
+            short_code: ''
+        }
+    ];
+
     $scope.EventModel = {
         theme : null,
         cursor: 0,
@@ -16,7 +41,7 @@ export default [ '$scope', '$http', function ($scope,$http) {
         // progress : false,
         top:  $(window).scrollTop(),
         data : [],
-        
+
         /*
         next : function( theme = this.theme, cursor = this.next_cursor){
             if(
@@ -43,7 +68,7 @@ export default [ '$scope', '$http', function ($scope,$http) {
         */
 
         get_events : function(theme=this.theme, location=this.user_location, cursor=this.cursor){
-            console.log('get events: ' + theme + '-' + location + '-' + cursor);
+            // console.log('get events: ' + theme + '-' + location + '-' + cursor);
 
             let params = ''
 
@@ -64,12 +89,13 @@ export default [ '$scope', '$http', function ($scope,$http) {
             return this
         },
     }
-    
-    $scope.$watch('[topic_id,country.code]', function (newValue, oldValue) {
+
+    $scope.$watch('[topic_id,user_country.short_code,user_country.label]', function (newValue, oldValue) {
+        if(_.filter($scope.countries, { short_code: newValue[1] }).length == 0) $scope.countries.unshift( { label: newValue[2],  short_code: newValue[1]} )
         $scope.EventModel.theme = newValue[0]
         $scope.EventModel.user_location = newValue[1]
         $scope.EventModel
             .get_events(newValue[0], newValue[1], $scope.cursor)
     })
-    
+
 }]

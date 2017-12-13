@@ -12,7 +12,7 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirm
 import json
 from datetime import date, timedelta
-import random, logging
+import random, logging, requests
 from crmconnector.models import Party
 from json_tricks.np import dump, dumps, load, loads, strip_comments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -515,3 +515,25 @@ def create_or_update_party(users):
     elif not len(errored) and not len(sanititized):
         print Colorizer.Green('No errored users')
     print '-------------'
+
+
+def check_canvas(request, twitter_username):
+    url = settings.INSIGHT_BASE_URL + settings.INSIGHT_API_URL + twitter_username
+    res = {}
+
+    try:
+        response = requests.get(url)
+    except Exception as e:
+        print e
+        res['result'] = False
+        res['status'] = 'error'
+        return JsonResponse(res, status=200)
+
+    if response.status_code == 200:
+        res['result'] = True
+    else:
+        res['result'] = False
+
+    res['status'] = 'ok'
+
+    return JsonResponse(res, status=200)
