@@ -10,7 +10,7 @@ from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
-from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
+from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
 from django.http import HttpResponseRedirect
 from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
@@ -327,30 +327,10 @@ def search_members(request, search_string=''):
 def invite(request):
     if request.method == 'POST':
         try:
-            address = request.POST['email'].lower()
+            receiver_email = request.POST['email'].lower()
             first_name = request.POST['first_name'].title()
             last_name = request.POST['last_name'].title()
-        except KeyError:
-            messages.error(request, 'Please all the fields are required!')
-            return HttpResponseRedirect(reverse('dashboard:invite'))
-        
-        try:
-            User.objects.get(email=address)
-            messages.error(request, 'User is already a DSP member!')
-            return HttpResponseRedirect(reverse('dashboard:invite'))
-        except User.DoesNotExist:
-            pass
-        
-        try:
-            Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
-            messages.error(request, 'User is been already invited!')
-            return HttpResponseRedirect(reverse('dashboard:invite'))
-        except Invitation.DoesNotExist:
-            pass
-        
-        # email not present, filling invitation model
-        # @TODO: use new mailer
-        try:
+
             Invitation.create(
                 user=request.user,
                 sender_email=request.user.email,
@@ -358,35 +338,124 @@ def invite(request):
                 sender_last_name=request.user.last_name,
                 receiver_first_name=first_name,
                 receiver_last_name=last_name,
-                receiver_email=address,
+                receiver_email=receiver_email,
             )
-            
-            subject = 'You are invited to join the OpenMaker community!'
-            content = "{0}{1}{2}".format(
-                invitation_base_template_header,
-                invitation_email_receiver.format(
-                    RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
-                    RECEIVER_LAST_NAME=last_name.encode('utf-8'),
-                    SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
-                    SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
-                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
-                ),
-                invitation_base_template_footer)
-            
-            EmailHelper.send_email(
-                message=content,
-                subject=subject,
-                receiver_email=address,
-                receiver_name=''
-            )
+
+            # Emails
+            try:
+                # Invitation email already sent
+                Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+            except Invitation.DoesNotExist:
+                # Send email for the first time
+                print 'sending email'
+                # EmailHelper.email(
+                #     template_name='invitation_email_receiver',
+                #     title='You are invited to join the OpenMaker community!',
+                #     vars={
+                #         'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
+                #         'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
+                #         'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
+                #         'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
+                #         'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+                #     },
+                #     receiver_email=receiver_email
+                # )
+
+            # EmailHelper.email(
+            #     template_name='invitation_email_confirmed',
+            #     title='OpenMaker Nomination done!',
+            #     vars={'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')},
+            #     receiver_email=sender_email
+            # )
+
             messages.success(request, 'Invitation sent!')
+
+        except KeyError:
+            print 'keyerror'
+            messages.error(request, 'Please all the fields are required!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
         except EmailAlreadyUsed:
+            print 'emailexist'
             messages.error(request, 'User is already a member!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
         except UserAlreadyInvited:
+            print 'user exist'
             messages.error(request, 'User has already received an invitation!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+        except SelfInvitation:
+            print 'self invition'
+            messages.error(request, 'You cant invite youself!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
         except Exception as e:
             print e.message
             messages.error(request, 'Please try again!')
+            return HttpResponseRedirect(reverse('dashboard:invite'))
+
+
+    print 'okkei'
+    return render(request, 'dashboard/invite.html', {})
+
+        # try:
+        #     address = request.POST['email'].lower()
+        #     first_name = request.POST['first_name'].title()
+        #     last_name = request.POST['last_name'].title()
+        # except KeyError:
+        #     messages.error(request, 'Please all the fields are required!')
+        #     return HttpResponseRedirect(reverse('dashboard:invite'))
+        #
+        # try:
+        #     User.objects.get(email=address)
+        #     messages.error(request, 'User is already a DSP member!')
+        #     return HttpResponseRedirect(reverse('dashboard:invite'))
+        # except User.DoesNotExist:
+        #     pass
+        #
+        # try:
+        #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
+        #     messages.error(request, 'User is been already invited!')
+        #     return HttpResponseRedirect(reverse('dashboard:invite'))
+        # except Invitation.DoesNotExist:
+        #     pass
+        #
+        # # email not present, filling invitation model
+        # # @TODO: use new mailer
+        # try:
+        #     Invitation.create(
+        #         user=request.user,
+        #         sender_email=request.user.email,
+        #         sender_first_name=request.user.first_name,
+        #         sender_last_name=request.user.last_name,
+        #         receiver_first_name=first_name,
+        #         receiver_last_name=last_name,
+        #         receiver_email=address,
+        #     )
+        #
+        #     subject = 'You are invited to join the OpenMaker community!'
+        #     content = "{0}{1}{2}".format(
+        #         invitation_base_template_header,
+        #         invitation_email_receiver.format(
+        #             RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
+        #             RECEIVER_LAST_NAME=last_name.encode('utf-8'),
+        #             SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
+        #             SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
+        #             ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
+        #         ),
+        #         invitation_base_template_footer)
+        #
+        #     EmailHelper.send_email(
+        #         message=content,
+        #         subject=subject,
+        #         receiver_email=address,
+        #         receiver_name=''
+        #     )
+        #     messages.success(request, 'Invitation sent!')
+        # except EmailAlreadyUsed:
+        #     messages.error(request, 'User is already a member!')
+        # except UserAlreadyInvited:
+        #     messages.error(request, 'User has already received an invitation!')
+        # except Exception as e:
+        #     print e.message
+        #     messages.error(request, 'Please try again!')
     
     return render(request, 'dashboard/invite.html', {})
 

@@ -135,6 +135,7 @@ def get_user_stats(request):
 
 @csrf_exempt
 def post_om_invitation(request):
+
     if request.method != 'POST':
         return not_authorized()
     try:
@@ -144,6 +145,7 @@ def post_om_invitation(request):
         receiver_first_name = request.POST['receiver_first_name'].title()
         receiver_last_name = request.POST['receiver_last_name'].title()
         receiver_email = request.POST['receiver_email'].lower()
+
         if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
                 or receiver_last_name == '' or receiver_email == '':
             return bad_request("Please fill al the fields")
@@ -175,15 +177,15 @@ def post_om_invitation(request):
     except Invitation.DoesNotExist:
         pass
     
-    Invitation.create(user=None,
-                      sender_email=sender_email,
-                      sender_first_name=sender_first_name,
-                      sender_last_name=sender_last_name,
-                      receiver_first_name=receiver_first_name,
-                      receiver_last_name=receiver_last_name,
-                      receiver_email=receiver_email,
-                      sender_verified=False
-                      )
+    Invitation.create(
+        sender_email=sender_email,
+        sender_first_name=sender_first_name,
+        sender_last_name=sender_last_name,
+        receiver_first_name=receiver_first_name,
+        receiver_last_name=receiver_last_name,
+        receiver_email=receiver_email,
+        sender_verified=False
+    )
     
     activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
         get_current_site(request),

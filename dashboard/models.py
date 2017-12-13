@@ -7,11 +7,12 @@ from django.utils import timezone
 from datetime import datetime as dt
 from utils.hasher import HashHelper
 import uuid
-from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
+from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
 from opendataconnector.odconnector import OpenDataConnector
 from restcountriesconnector.rcconnector import RestCountriesConnector
 import json
 from utils.GoogleHelper import GoogleHelper
+
 
 class Tag(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
@@ -373,34 +374,94 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name,
-               receiver_last_name, sender_verified=True):
-        try:
-            Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-            raise UserAlreadyInvited
-        except Invitation.DoesNotExist:
-            pass
-        try:
-            user = User.objects.get(email=receiver_email)
-            raise EmailAlreadyUsed
-        except User.DoesNotExist:
-            pass
+    def create(cls, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name,
+               receiver_last_name, sender_verified=True, user=None):
 
+        # @TODO: remove when sanitize old user whit no profile from db
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             profile = None
+
+        try:
+            cls.__validate(sender_email=sender_email, receiver_email=receiver_email)
+        except:
+            raise
+
+        # try:
+        #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+        #     raise UserAlreadyInvited
+        # except Invitation.DoesNotExist:
+        #     pass
             
-        invitation = cls(profile=profile,
-                         sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
-                         sender_first_name=HashHelper.md5_hash(sender_first_name) if not profile else sender_first_name,
-                         sender_last_name=HashHelper.md5_hash(sender_last_name) if not profile else sender_last_name,
-                         receiver_first_name=HashHelper.md5_hash(receiver_first_name),
-                         receiver_last_name=HashHelper.md5_hash(receiver_last_name),
-                         receiver_email=HashHelper.md5_hash(receiver_email),
-                         sender_verified=sender_verified)
+        invitation = cls(
+            profile=profile,
+            sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
+            sender_first_name=HashHelper.md5_hash(sender_first_name) if not profile else sender_first_name,
+            sender_last_name=HashHelper.md5_hash(sender_last_name) if not profile else sender_last_name,
+            receiver_first_name=HashHelper.md5_hash(receiver_first_name),
+            receiver_last_name=HashHelper.md5_hash(receiver_last_name),
+            receiver_email=HashHelper.md5_hash(receiver_email),
+            sender_verified=sender_verified
+        )
         invitation.save()
         return invitation
+
+    @classmethod
+    def __validate(cls, sender_email, receiver_email, user=None):
+
+        # Check if SENDER try to invite himself -> SelfInvitation
+        if sender_email == receiver_email:
+            raise SelfInvitation
+
+        # Check if RECEIVER is already a member -> EmailAlreadyUsed
+        try:
+            User.objects.get(email=receiver_email)
+            raise EmailAlreadyUsed
+        except User.DoesNotExist:
+            pass
+
+        # Check if SENDER has already send invitation to RECEIVER -> UserAlreadyInvited
+        existing_invitation = Invitation.objects.filter(
+            receiver_email=HashHelper.md5_hash(receiver_email),
+            sender_email=HashHelper.md5_hash(sender_email)
+        )
+        if len(existing_invitation):
+            raise UserAlreadyInvited
+
+
+    @classmethod
+    def get_by_email(cls, sender_email=None, receiver_email=None):
+        filter = {}
+        sender_email and filter.update({'sender_email': HashHelper.md5_hash(sender_email)})
+        receiver_email and filter.update({'receiver_email': HashHelper.md5_hash(receiver_email)})
+        return cls.objects.filter(**filter)
+
+    @classmethod
+    def deobfuscate_email(cls, email):
+        hashed = HashHelper.md5_hash(email)
+        cls.objects.filter(sender_email=hashed).update(sender_email=email)
+        cls.objects.filter(receiver_email=hashed).update(receiver_email=email)
+
+    @classmethod
+    def confirm_sender(cls, sender_email, receiver_email):
+        try:
+            cls.__validate(sender_email=sender_email, receiver_email=receiver_email)
+        except UserAlreadyInvited:
+            pass
+        except:
+            raise
+
+        existent_invitation = cls.objects.filter(
+            sender_email=HashHelper.md5_hash(sender_email),
+            receiver_email=HashHelper.md5_hash(receiver_email)
+        )
+        if len(existent_invitation):
+            existent_invitation[0].sender_verified = True
+            existent_invitation[0].save()
+            return existent_invitation[0]
+        else:
+            return False
 
 
 class Feedback(models.Model):
