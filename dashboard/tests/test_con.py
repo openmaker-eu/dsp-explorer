@@ -23,27 +23,8 @@ class ProfileTestCase(TestCase):
     def setUpTestData(cls):
         user = testhelpers.create_test_user()
         cls.user = User.objects.filter(email=user.email)[0]
-        cls.invitation = {
-            'sender_email': 'sender_email@omcon.ix',
-            'sender_first_name': 'adam',
-            'sender_last_name': 'sender',
-            'receiver_email': 'receiver_email@omcon.ix',
-            'receiver_first_name': 'adam',
-            'receiver_last_name': 'receiver',
-            'sender_verified': False
-        }
-        cls.invitation_2 = {
-            'sender_email': 'sender_email_2@omcon.ix',
-            'sender_first_name': 'adam',
-            'sender_last_name': 'sender',
-            'receiver_email': 'receiver_email_2@omcon.ix',
-            'receiver_first_name': 'adam',
-            'receiver_last_name': 'receiver',
-            'sender_verified': False
-        }
         cls.login()
-        Invitation.create(**cls.invitation)
-        Invitation.create(**cls.invitation_2)
+        cls.reset_invitations()
 
     #############
     # UNIT TEST #
@@ -74,19 +55,6 @@ class ProfileTestCase(TestCase):
 
     def test0_invitation_can_invite(self):
         # assert should return true if invitation does not exist
-
-        print Invitation.get_by_email(sender_email=self.invitation['sender_email'])
-        print Invitation.get_by_email(receiver_email=self.invitation['receiver_email'])
-        print Invitation.get_by_email(sender_email=self.invitation['sender_email'], receiver_email=self.invitation['receiver_email'])
-        print Invitation.get_by_email(sender_email=self.invitation['sender_email'], receiver_email='i_do_not_exist@fakeuser.ix')
-        print Invitation.get_by_email(sender_email='i_do_not_exist@fakeuser.ix', receiver_email='i_do_not_exist@fakeuser.ix')
-        print 'can'
-        print Invitation.can_invite(sender_email=self.invitation['sender_email'], receiver_email=self.invitation['receiver_email'])
-        print Invitation.can_invite(sender_email=self.invitation['sender_email'], receiver_email='i_do_not_exist@fakeuser.ix')
-        print Invitation.can_invite(sender_email='i_do_not_exist@fakeuser.ix', receiver_email='i_do_not_exist@fakeuser.ix')
-
-
-
         self.assertTrue(
             Invitation.can_invite(
                 sender_email=self.invitation['sender_email'],
@@ -140,44 +108,29 @@ class ProfileTestCase(TestCase):
             'Should not deobfuscate provided email'
         )
 
-    # INVITE : as logged user i can invite people that are not om_explorer members
-    # should verify that invited user does not exist on explorer : (you can only invite user that are not explorer members)
-    # should verify that invited user and inviting user are different : (you can not invite yourself)
-    # should verify that an indentical invitation (same sender same receiver) is not not present : (to avodid duplicate invitation and email. Returns error)
-    # should verify that an invitation is not not yet confirmed : (to avodid duplicate invitation email and return error)
+    def test7_invitation_debfuscation_first_and_last_name(self):
+        # assert should deobfuscate first_name and last_name
+        self.reset_invitations()
+        Invitation.deobfuscate_email(self.invitation['sender_email'], self.invitation['sender_first_name'], self.invitation['sender_last_name'])
+        invitation = Invitation.get_by_email(sender_email=self.invitation['sender_email'])
 
+        self.assertEqual(
+            invitation[0].sender_first_name+invitation[0].sender_last_name,
+            self.invitation['sender_first_name']+self.invitation['sender_last_name'],
+            'Should deobfuscate first_name and last_name'
+        )
 
-    # OM_CONFIRMATION : confirm sender and then sends invitatin email to the invited user
-    # should verify that invited user does not exist on explorer : (you can only invite user that are not explorer members)
-    # should verify that an invitation exist : (to confirm an invitation that invitation must exist)
-    # should verify that an invitation is not not yet confirmed : (to avodid duplicate invitation email and return error)
-    # should verify that an invitation email is not sended twice if same invited_user is invited by 2 different people : (only avoid duplicated email)
+    def test8_invitation_debfuscation_first_name_only(self):
+        # assert should deobfuscate first_name only
+        self.reset_invitations()
+        Invitation.deobfuscate_email(self.invitation['sender_email'], self.invitation['sender_first_name'])
+        invitation = Invitation.get_by_email(sender_email=self.invitation['sender_email'])
 
-    #######################
-    # TEST PAGE RESPONSE #
-    #######################
-
-    # def test1_login(self):
-    #     print Colorizer.LightPurple('\n[TEST PROFILE PAGE] test login')
-    #     self.assertTrue(self.client.login(username=self.user.username, password=self.password), Colorizer.Red('Error during login'))
-    #
-    # def test2_response(self):
-    #     print Colorizer.LightPurple('\n[TEST PROFILE PAGE] test response success')
-    #     response = self.get_profile_page()
-    #     self.assertLessEqual(
-    #         response.status_code,
-    #         202,
-    #         Colorizer.Red('Response Error: \n code: %s \n Info : %s' % (response.status_code, response))
-    #     )
-    #
-    # def test3_is_profile_page(self):
-    #     print Colorizer.LightPurple('\n[TEST PROFILE PAGE] assert response is a profile page')
-    #     response = self.get_profile_page()
-    #     self.assertEqual(
-    #         response.request['PATH_INFO'],
-    #         '/profile/%s/' % self.user.profile.pk,
-    #         Colorizer.Red('Response is not the profile page but : %s' % response.request['PATH_INFO'])
-    #     )
+        self.assertEqual(
+            invitation[0].sender_first_name+invitation[0].sender_last_name,
+            self.invitation['sender_first_name']+HashHelper.md5_hash(self.invitation['sender_last_name']),
+            'Should deobfuscate first_name and last_name'
+        )
 
     ###########
     # Helpers #
@@ -205,5 +158,49 @@ class ProfileTestCase(TestCase):
     @classmethod
     def post_profile_test(cls, data):
         return cls.client.post('/test/', data, follow=True)
+
+    @classmethod
+    def reset_invitations(cls):
+
+        for invit in Invitation.objects.all():
+            invit.delete()
+
+        cls.invitation = {
+            'sender_email': 'sender_email@omcon.ix',
+            'sender_first_name': 'adam',
+            'sender_last_name': 'sender',
+            'receiver_email': 'receiver_email@omcon.ix',
+            'receiver_first_name': 'adam',
+            'receiver_last_name': 'receiver',
+            'sender_verified': False
+        }
+        cls.invitation_2 = {
+            'sender_email': 'sender_email_2@omcon.ix',
+            'sender_first_name': 'adam',
+            'sender_last_name': 'sender',
+            'receiver_email': 'receiver_email_2@omcon.ix',
+            'receiver_first_name': 'adam',
+            'receiver_last_name': 'receiver',
+            'sender_verified': False
+        }
+        Invitation.create(**cls.invitation)
+        Invitation.create(**cls.invitation_2)
+
+
+        # INVITE : as logged user i can invite people that are not om_explorer members
+        # should verify that invited user does not exist on explorer : (you can only invite user that are not explorer members)
+        # should verify that invited user and inviting user are different : (you can not invite yourself)
+        # should verify that an indentical invitation (same sender same receiver) is not not present : (to avodid duplicate invitation and email. Returns error)
+        # should verify that an invitation is not not yet confirmed : (to avodid duplicate invitation email and return error)
+
+
+        # OM_CONFIRMATION : confirm sender and then sends invitatin email to the invited user
+        # should verify that invited user does not exist on explorer : (you can only invite user that are not explorer members)
+        # should verify that an invitation exist : (to confirm an invitation that invitation must exist)
+        # should verify that an invitation is not not yet confirmed : (to avodid duplicate invitation email and return error)
+        # should verify that an invitation email is not sended twice if same invited_user is invited by 2 different people : (only avoid duplicated email)
+
+
+
 
 

@@ -24,6 +24,7 @@ from django.http import HttpResponse
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+from django.contrib.auth.decorators import login_required
 
 
 def search_members(request, search_string):
@@ -155,6 +156,14 @@ def post_om_invitation(request):
                 or receiver_last_name.strip() == '' \
                 or receiver_email.strip() == '':
             return bad_request("Please fill al the fields")
+
+
+        # Return to dsp error page if sender is already a DSP user?
+        try:
+            User.objects.get(email=sender_email)
+            return HttpResponseRedirect('http://openmaker.eu/error_sender/')
+        except User.DoesNotExist:
+            pass
 
         Invitation.create(
             sender_email=sender_email,
@@ -551,3 +560,47 @@ def check_canvas(request, twitter_username):
     res['status'] = 'ok'
 
     return JsonResponse(res, status=200)
+
+
+@login_required
+def get_invitation_csv(request):
+    import csv
+    try:
+        if request.user.is_superuser:
+            response = HttpResponse(
+                csv,
+                content_type='application/csv'
+            )
+            response['Content-Disposition'] = \
+                'attachment; filename="invitation.csv"'
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+            writer = csv.writer(response, delimiter=';', lineterminator='\n', quoting=csv.QUOTE_ALL, dialect='excel')
+
+            invitations = Invitation.objects.all()
+
+            writer.writerow([
+                'sender email',
+                'sender first_name',
+                'sender last_name',
+                'receiver email',
+                'receiver first_name',
+                'receiver last_name'
+            ])
+
+            for invitation in invitations:
+                writer.writerow([
+                    invitation.sender_email.encode('utf8'),
+                    invitation.sender_first_name.encode('utf8'),
+                    invitation.sender_last_name.encode('utf8'),
+                    invitation.receiver_email.encode('utf8'),
+                    invitation.receiver_first_name.encode('utf8'),
+                    invitation.receiver_last_name.encode('utf8'),
+                ])
+
+            return response
+
+    except:
+        return bad_request("Error generating invitation csv")

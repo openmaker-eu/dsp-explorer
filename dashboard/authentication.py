@@ -278,7 +278,7 @@ def onboarding_confirmation(request, token):
     profile.update_reset_token()
     login(request, profile.user)
 
-    Invitation.deobfuscate_email(profile.user.email)
+    Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
 
     # Modal creation after first login
     body = '' \

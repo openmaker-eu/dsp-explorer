@@ -101,5 +101,6 @@ urlpatterns = [
     url(r'^api/v1.1/get_sectors/$', api.get_sector, name='get_sector'),
     url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
     url(r'^api/v1.1/get_om_events/$', api.get_om_events, name='get_om_events'),
+    url(r'^api/v1.1/invitation/csv$', api.get_invitation_csv, name='get_invitation_csv'),
 ]
 

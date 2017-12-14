@@ -441,10 +441,20 @@ class Invitation(models.Model):
         return len(cls.get_by_email(sender_email, receiver_email)) < 1
 
     @classmethod
-    def deobfuscate_email(cls, email):
+    def deobfuscate_email(cls, email, first_name=None, last_name=None):
         hashed = HashHelper.md5_hash(email)
-        cls.objects.filter(sender_email=hashed).update(sender_email=email)
-        cls.objects.filter(receiver_email=hashed).update(receiver_email=email)
+        sender_dict = {
+            'sender_email': email,
+            'sender_first_name': first_name,
+            'sender_last_name': last_name
+        }
+        receiver_dict = {
+            'receiver_email': email,
+            'receiver_first_name': first_name,
+            'receiver_last_name': last_name
+        }
+        cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.iteritems() if v is not None})
+        cls.objects.filter(receiver_email=hashed).update(**{k: v for k, v in receiver_dict.iteritems() if v is not None})
 
     @classmethod
     def confirm_sender(cls, sender_email, receiver_email):
