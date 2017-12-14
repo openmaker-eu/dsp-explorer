@@ -575,7 +575,7 @@ def get_invitation_csv(request):
                 'attachment; filename="invitation.csv"'
 
             response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+            response['Content-Disposition'] = 'attachment; filename="OmExplorer_invitations.csv"'
 
             writer = csv.writer(response, delimiter=';', lineterminator='\n', quoting=csv.QUOTE_ALL, dialect='excel')
 

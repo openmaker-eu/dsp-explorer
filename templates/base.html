@@ -88,9 +88,22 @@
                             <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:search_members' %}">Community</a>
                             </li>
-                            <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+
+                            {% if request.user.is_superuser %}
+                            <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Invitation<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                            {% endif %}
+                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
+                                        <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+                                    </li>
+                            {% if request.user.is_superuser %}
+                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
+                                        <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
+                                    </li>
+                                </ul>
                             </li>
+                            {% endif %}
 
                             {% if not request.user.is_superuser %}
                                 {#                                <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >#}
