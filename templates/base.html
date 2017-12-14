@@ -156,8 +156,9 @@
         </div>
     {% endif %}
 </div>
-{% if user.is_anonymous %}
     <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+
+        {% if user.is_anonymous %}
         <div class="row" style="background: #efefef;">
             <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
                 <p class="claim text-center">
@@ -168,7 +169,10 @@
                 </a>
             </div>
         </div>
+        {% endif %}
+
         <div class="row back padding-bottom-20">
+            {% if user.is_anonymous %}
             <div class="container">
                 <div class="row margin-top-25">
                     <div class="col-md-8 text-white">
@@ -184,36 +188,23 @@
                         <a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>
                     </div>
                 </div>
-                <div class="row margin-top-20">
-                    <div class="col-md-12 pull-right">
-                        <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker </a><span class="text-red">&mdash;</span>
-                        {#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
-                        <a href="/terms" class="text-red">Terms & Conditions </a><span class="text-red">&mdash;</span>
-                        <a href="/privacy" class="text-red">Privacy Policy</a>
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
-{% else %}
+            {% endif %}
 
-    <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
-        <div class="row back padding-bottom-20">
             <div class="container">
                 <div class="row margin-top-20">
-                    <div class="col-md-12 pull-right">
-                        <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker </a><span class="text-red">&mdash;</span>
-                        {#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
-                        <a href="/terms" class="text-red">Terms & Conditions </a><span class="text-red">&mdash;</span>
-                        <a href="/privacy" class="text-red">Privacy Policy</a><span class="text-red">&mdash;</span>
-                        <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us</a>
+                        <div class="col-md-12 pull-right">
+                            <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-{% endif %}
 </div>
 
 {% include "./modals/login.html" %}

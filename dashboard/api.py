@@ -148,13 +148,13 @@ def post_om_invitation(request):
         receiver_last_name = request.POST['receiver_last_name'].title()
         receiver_email = request.POST['receiver_email'].lower()
 
-        if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
-                or receiver_last_name == '' or receiver_email == '':
+        if sender_first_name.strip() == '' \
+                or sender_last_name.strip() == '' \
+                or sender_email.strip() == '' \
+                or receiver_first_name.strip() == '' \
+                or receiver_last_name.strip() == '' \
+                or receiver_email.strip() == '':
             return bad_request("Please fill al the fields")
-        
-        if sender_email == receiver_email:
-            return bad_request("Sender and receiver must be different")
-
 
         Invitation.create(
             sender_email=sender_email,
@@ -175,16 +175,14 @@ def post_om_invitation(request):
             receiver_last_name.encode('utf-8').encode('base64'),
             receiver_email.encode('base64'))
 
-        subject = 'OpenMaker Nomination.. almost done!'
-        content = "{}{}{}".format(invitation_base_template_header,
-                                  invitation_email_confirm.format(SENDER_NAME=sender_first_name,
-                                                                  CONFIRMATION_LINK=activation_link),
-                                  invitation_base_template_footer)
-        EmailHelper.send_email(
-            message=content,
-            subject=subject,
-            receiver_email=sender_email,
-            receiver_name=''
+        EmailHelper.email(
+            template_name='invitation_email_confirm',
+            title='OpenMaker Nomination.. almost done!',
+            vars={
+                'SENDER_NAME': sender_first_name,
+                'CONFIRMATION_LINK': activation_link
+            },
+            receiver_email=sender_email
         )
 
     except KeyError:
@@ -195,7 +193,7 @@ def post_om_invitation(request):
         return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
     except SelfInvitation:
         # @TODO : make appropriate page in openmaker
-        return bad_request("You cannot invite yourself")
+        return bad_request("Sender and receiver must be different")
     except Exception as e:
         #@TODO : make appropriate page in openmaker
         return bad_request("Some erro occour please try again")

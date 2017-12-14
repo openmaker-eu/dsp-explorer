@@ -351,24 +351,17 @@ def invite(request):
             first_name = request.POST['first_name'].title()
             last_name = request.POST['last_name'].title()
 
-            vars = {
+            if first_name.strip() == '' or last_name.strip() == '' or receiver_email.strip() == '':
+                messages.error(request, 'Please fill all the required fields!')
+                return HttpResponseRedirect(reverse('dashboard:invite'))
+
+            email_vars = {
                        'RECEIVER_FIRST_NAME': first_name.encode('utf-8'),
                        'RECEIVER_LAST_NAME': last_name.encode('utf-8'),
                        'SENDER_FIRST_NAME': request.user.first_name.encode('utf-8'),
                        'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
                        'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
                    }
-
-            # Invitation email already sent
-            if len(Invitation.get_by_email(receiver_email=receiver_email)) < 1:
-                # Send email for the first time
-
-                EmailHelper.email(
-                    template_name='invitation_email_receiver',
-                    title='You are invited to join the OpenMaker community!',
-                    vars=vars,
-                    receiver_email=receiver_email
-                )
 
             Invitation.create(
                 user=request.user,
@@ -380,29 +373,35 @@ def invite(request):
                 receiver_email=receiver_email
             )
 
+            # Invitation email already sent
+            if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
+                # Send email for the first time
+                EmailHelper.email(
+                    template_name='invitation_email_receiver',
+                    title='You are invited to join the OpenMaker community!',
+                    vars=email_vars,
+                    receiver_email=receiver_email
+                )
+
             EmailHelper.email(
                 template_name='invitation_email_confirmed',
                 title='OpenMaker Nomination done!',
-                vars=vars,
+                vars=email_vars,
                 receiver_email=request.user.email
             )
 
             messages.success(request, 'Invitation sent!')
 
         except KeyError:
-            print 'keyerror'
             messages.error(request, 'Please fill all the required fields!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except EmailAlreadyUsed:
-            print 'emailexist'
             messages.error(request, 'User is already a member!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except UserAlreadyInvited:
-            print 'user exist'
             messages.error(request, 'You have already invited this Person!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except SelfInvitation:
-            print 'self invition'
             messages.error(request, 'You cannot invite youself!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except Exception as e:

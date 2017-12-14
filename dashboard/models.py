@@ -425,6 +425,7 @@ class Invitation(models.Model):
         if Invitation.get_by_email(receiver_email=receiver_email, sender_email=sender_email):
             raise UserAlreadyInvited
 
+
     @classmethod
     def get_by_email(cls, sender_email=None, receiver_email=None):
         q = Q()
