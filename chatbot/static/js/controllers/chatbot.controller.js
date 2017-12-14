@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 export default [ '$scope','$http', function ($scope,$http) {
 
     $scope.user_message = ''
@@ -7,6 +9,7 @@ export default [ '$scope','$http', function ($scope,$http) {
     $scope.available_articles = []
 
     $scope.otions = ['next', 'topics']
+    $scope.answers = ['Yes', 'No', 'Dunno']
     $scope.date_options = ['yesterday', 'week', 'month']
 
     $scope.filter = {
@@ -14,6 +17,26 @@ export default [ '$scope','$http', function ($scope,$http) {
         cursor: -1,
         topic_id: null,
         topic_name: null
+    }
+
+    let make_question_yes_or_not = false
+
+    // random display a question
+    $scope.questionOrNot = () => {
+        make_question_yes_or_not = _.sample([true,false])
+        if (make_question_yes_or_not) {
+            // question
+            let welcome_message = {
+                type : 'question',
+                source : 'bot',
+                date: Date.now(),
+                message: 'This is a sample question about something relevant?'
+            }
+            $scope.message_history.unshift(welcome_message)
+        } else {
+            // no question
+            $scope.options()
+        }
     }
 
     // welcome message
@@ -90,7 +113,13 @@ export default [ '$scope','$http', function ($scope,$http) {
             }
 
             $scope.message_history.unshift(bot_message)
-            $scope.options()
+
+            // check if question or not
+            // if question don't show next article button or topics but answers and than show next article button or topics
+            // if not question show next article button or topics
+            $scope.questionOrNot()
+
+            //$scope.options()
             $scope.available_articles.shift()
 
         } else {
@@ -116,7 +145,13 @@ export default [ '$scope','$http', function ($scope,$http) {
                     }
 
                     $scope.message_history.unshift(bot_message)
-                    $scope.options()
+
+                    // check if question or not
+                    // if question don't show next article button or topics but answers and than show next article button or topics
+                    // if not question show next article button or topics
+                    $scope.questionOrNot()
+
+                    //$scope.options()
                     $scope.available_articles.shift()
 
                 }
