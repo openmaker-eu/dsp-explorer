@@ -6,7 +6,7 @@ sys.path.append("/dspexplorer/")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'dspexplorer.settings'
 django.setup()
 
-from dashboard.models import User, Profile, Location
+from dashboard.models import User, Profile, Location, Invitation
 import json
 from utils.GoogleHelper import GoogleHelper
 
@@ -41,10 +41,19 @@ def add_location_to_user(user):
         print 'Error 2'
         print e
 
+def deobfuscate_invitation(user):
+    try:
+        Invitation.deobfuscate_email(user.email, user.first_name, user.last_name)
+    except Exception as e:
+        print 'Error Deobfuscation'
+        print e
 
 if __name__ == "__main__":
+    from utils.hasher import HashHelper
+    print HashHelper.md5_hash('massimo.santoli@top-ix.org')
     users = User.objects.all()
     for user in users:
         sanitize_place(user)
         add_location_to_user(user)
+        deobfuscate_invitation(user)
 
