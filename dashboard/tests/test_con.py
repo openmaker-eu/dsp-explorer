@@ -10,6 +10,7 @@ import datetime
 import pytz
 from django.utils import timezone
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
+from utils.hasher import HashHelper
 
 
 class ProfileTestCase(TestCase):
@@ -31,15 +32,71 @@ class ProfileTestCase(TestCase):
             'receiver_last_name': 'receiver',
             'sender_verified': False
         }
+        cls.invitation_2 = {
+            'sender_email': 'sender_email_2@omcon.ix',
+            'sender_first_name': 'adam',
+            'sender_last_name': 'sender',
+            'receiver_email': 'receiver_email_2@omcon.ix',
+            'receiver_first_name': 'adam',
+            'receiver_last_name': 'receiver',
+            'sender_verified': False
+        }
         cls.login()
         Invitation.create(**cls.invitation)
+        Invitation.create(**cls.invitation_2)
 
     #############
     # UNIT TEST #
     #############
 
+    # Invitation Find By Email
+    def test0_invitation_search_by_email_obfuscated(self):
+        # assert should find obfuscated email providing clear email
+        self.assertGreater(len(Invitation.get_by_email(sender_email=self.invitation['sender_email'])), 0, 'Cannot find invitatiton by email')
+
+    def test0_invitation_search_by_email_not_obfuscated(self):
+        # assert should find clear email providing clear email
+        invitation = Invitation.objects.get(sender_email=HashHelper.md5_hash(self.invitation_2['sender_email']))
+        invitation.sender_email = self.invitation_2['sender_email']
+        invitation.save()
+        self.assertGreater(len(Invitation.get_by_email(sender_email=self.invitation_2['sender_email'])), 0, 'Cannot find invitatiton by email')
+
+    # Invitation Can invite
+    def test0_invitation_cannot_invite(self):
+        # assert should return false if invitation exist
+        self.assertFalse(
+            Invitation.can_invite(
+                sender_email=self.invitation['sender_email'],
+                receiver_email=self.invitation['receiver_email']
+            ),
+            'Can invite should return return false if invitation exist'
+        )
+
+    def test0_invitation_can_invite(self):
+        # assert should return true if invitation does not exist
+
+        print Invitation.get_by_email(sender_email=self.invitation['sender_email'])
+        print Invitation.get_by_email(receiver_email=self.invitation['receiver_email'])
+        print Invitation.get_by_email(sender_email=self.invitation['sender_email'], receiver_email=self.invitation['receiver_email'])
+        print Invitation.get_by_email(sender_email=self.invitation['sender_email'], receiver_email='i_do_not_exist@fakeuser.ix')
+        print Invitation.get_by_email(sender_email='i_do_not_exist@fakeuser.ix', receiver_email='i_do_not_exist@fakeuser.ix')
+        print 'can'
+        print Invitation.can_invite(sender_email=self.invitation['sender_email'], receiver_email=self.invitation['receiver_email'])
+        print Invitation.can_invite(sender_email=self.invitation['sender_email'], receiver_email='i_do_not_exist@fakeuser.ix')
+        print Invitation.can_invite(sender_email='i_do_not_exist@fakeuser.ix', receiver_email='i_do_not_exist@fakeuser.ix')
+
+
+
+        self.assertTrue(
+            Invitation.can_invite(
+                sender_email=self.invitation['sender_email'],
+                receiver_email='i_do_not_exist@fakeuser.ix'
+            ),
+            'Can invite function should return true if invitation does not exist'
+        )
+
     # Invitation Creation
-    def test1_invitation_create_anonymous(self):
+    def test1_invitation_create_non_member_email(self):
         # assert should create invitation for both non-members data
         self.assertGreater(len(Invitation.objects.all()), 0, 'Cannot create invitation')
 

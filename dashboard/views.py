@@ -351,6 +351,25 @@ def invite(request):
             first_name = request.POST['first_name'].title()
             last_name = request.POST['last_name'].title()
 
+            vars = {
+                       'RECEIVER_FIRST_NAME': first_name.encode('utf-8'),
+                       'RECEIVER_LAST_NAME': last_name.encode('utf-8'),
+                       'SENDER_FIRST_NAME': request.user.first_name.encode('utf-8'),
+                       'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
+                       'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+                   }
+
+            # Invitation email already sent
+            if len(Invitation.get_by_email(receiver_email=receiver_email)) < 1:
+                # Send email for the first time
+
+                EmailHelper.email(
+                    template_name='invitation_email_receiver',
+                    title='You are invited to join the OpenMaker community!',
+                    vars=vars,
+                    receiver_email=receiver_email
+                )
+
             Invitation.create(
                 user=request.user,
                 sender_email=request.user.email,
@@ -358,41 +377,21 @@ def invite(request):
                 sender_last_name=request.user.last_name,
                 receiver_first_name=first_name,
                 receiver_last_name=last_name,
-                receiver_email=receiver_email,
+                receiver_email=receiver_email
             )
 
-            # Emails
-            try:
-                # Invitation email already sent
-                Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-            except Invitation.DoesNotExist:
-                # Send email for the first time
-                print 'sending email'
-                # EmailHelper.email(
-                #     template_name='invitation_email_receiver',
-                #     title='You are invited to join the OpenMaker community!',
-                #     vars={
-                #         'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
-                #         'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
-                #         'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
-                #         'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
-                #         'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
-                #     },
-                #     receiver_email=receiver_email
-                # )
-
-            # EmailHelper.email(
-            #     template_name='invitation_email_confirmed',
-            #     title='OpenMaker Nomination done!',
-            #     vars={'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')},
-            #     receiver_email=sender_email
-            # )
+            EmailHelper.email(
+                template_name='invitation_email_confirmed',
+                title='OpenMaker Nomination done!',
+                vars=vars,
+                receiver_email=request.user.email
+            )
 
             messages.success(request, 'Invitation sent!')
 
         except KeyError:
             print 'keyerror'
-            messages.error(request, 'Please all the fields are required!')
+            messages.error(request, 'Please fill all the required fields!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except EmailAlreadyUsed:
             print 'emailexist'
@@ -400,11 +399,11 @@ def invite(request):
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except UserAlreadyInvited:
             print 'user exist'
-            messages.error(request, 'User has already received an invitation!')
+            messages.error(request, 'You have already invited this Person!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except SelfInvitation:
             print 'self invition'
-            messages.error(request, 'You cant invite youself!')
+            messages.error(request, 'You cannot invite youself!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except Exception as e:
             print e.message

@@ -322,7 +322,7 @@ def om_confirmation(
     try:
         Invitation.confirm_sender(sender_email=sender_email, receiver_email=receiver_email)
     except SelfInvitation as e:
-        messages.error(request, 'You can\'t invite youself!')
+        messages.error(request, 'You cannot invite youself!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     except EmailAlreadyUsed as e:
         messages.error(request, 'User is already a DSP member!')

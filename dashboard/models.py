@@ -12,6 +12,7 @@ from opendataconnector.odconnector import OpenDataConnector
 from restcountriesconnector.rcconnector import RestCountriesConnector
 import json
 from utils.GoogleHelper import GoogleHelper
+from django.db.models import Q
 
 
 class Tag(models.Model):
@@ -283,7 +284,6 @@ class Profile(models.Model):
 
     @classmethod
     def search_members(cls, search_string, restrict_to=None):
-        from django.db.models import Q
         if restrict_to == 'tags':
             return cls.objects \
                 .filter(Q(tags__name=search_string)) \
@@ -422,20 +422,19 @@ class Invitation(models.Model):
             pass
 
         # Check if SENDER has already send invitation to RECEIVER -> UserAlreadyInvited
-        existing_invitation = Invitation.objects.filter(
-            receiver_email=HashHelper.md5_hash(receiver_email),
-            sender_email=HashHelper.md5_hash(sender_email)
-        )
-        if len(existing_invitation):
+        if Invitation.get_by_email(receiver_email=receiver_email, sender_email=sender_email):
             raise UserAlreadyInvited
-
 
     @classmethod
     def get_by_email(cls, sender_email=None, receiver_email=None):
-        filter = {}
-        sender_email and filter.update({'sender_email': HashHelper.md5_hash(sender_email)})
-        receiver_email and filter.update({'receiver_email': HashHelper.md5_hash(receiver_email)})
-        return cls.objects.filter(**filter)
+        q = Q()
+        sender_email and q.add(Q(sender_email=HashHelper.md5_hash(sender_email)) | Q(sender_email=sender_email), q.AND)
+        receiver_email and q.add(Q(receiver_email=HashHelper.md5_hash(receiver_email)) | Q(receiver_email=receiver_email), q.AND)
+        return cls.objects.filter(q).distinct()
+
+    @classmethod
+    def can_invite(cls, sender_email, receiver_email):
+        return len(cls.get_by_email(sender_email, receiver_email)) < 1
 
     @classmethod
     def deobfuscate_email(cls, email):

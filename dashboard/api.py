@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 from django.http import HttpResponse
 from django.views import View
 import math
+from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+
 
 def search_members(request, search_string):
 
@@ -152,62 +154,76 @@ def post_om_invitation(request):
         
         if sender_email == receiver_email:
             return bad_request("Sender and receiver must be different")
-    
+
+
+        Invitation.create(
+            sender_email=sender_email,
+            sender_first_name=sender_first_name,
+            sender_last_name=sender_last_name,
+            receiver_first_name=receiver_first_name,
+            receiver_last_name=receiver_last_name,
+            receiver_email=receiver_email,
+            sender_verified=False
+        )
+
+        activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
+            get_current_site(request),
+            sender_first_name.encode('utf-8').encode('base64'),
+            sender_last_name.encode('utf-8').encode('base64'),
+            sender_email.encode('base64'),
+            receiver_first_name.encode('utf-8').encode('base64'),
+            receiver_last_name.encode('utf-8').encode('base64'),
+            receiver_email.encode('base64'))
+
+        subject = 'OpenMaker Nomination.. almost done!'
+        content = "{}{}{}".format(invitation_base_template_header,
+                                  invitation_email_confirm.format(SENDER_NAME=sender_first_name,
+                                                                  CONFIRMATION_LINK=activation_link),
+                                  invitation_base_template_footer)
+        EmailHelper.send_email(
+            message=content,
+            subject=subject,
+            receiver_email=sender_email,
+            receiver_name=''
+        )
+
     except KeyError:
         return bad_request("Please fill al the fields")
-    
-    # sender already a DSP user?
-    try:
-        User.objects.get(email=sender_email)
-        return HttpResponseRedirect('http://openmaker.eu/error_sender/')
-    except User.DoesNotExist:
-        pass
-    
-    # receiver already a DSP user?
-    try:
-        User.objects.get(email=receiver_email)
+    except EmailAlreadyUsed:
         return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
-    except User.DoesNotExist:
-        pass
+    except UserAlreadyInvited:
+        return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
+    except SelfInvitation:
+        # @TODO : make appropriate page in openmaker
+        return bad_request("You cannot invite yourself")
+    except Exception as e:
+        #@TODO : make appropriate page in openmaker
+        return bad_request("Some erro occour please try again")
+
+    return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+
+    # sender already a DSP user?
+    # try:
+    #     User.objects.get(email=sender_email)
+    #     return HttpResponseRedirect('http://openmaker.eu/error_sender/')
+    # except User.DoesNotExist:
+    #     pass
+
+    # receiver already a DSP user?
+    # try:
+    #     User.objects.get(email=receiver_email)
+    #     return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
+    # except User.DoesNotExist:
+    #     pass
     
     # receiver already invited?
-    try:
-        Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-        return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
-    except Invitation.DoesNotExist:
-        pass
-    
-    Invitation.create(
-        sender_email=sender_email,
-        sender_first_name=sender_first_name,
-        sender_last_name=sender_last_name,
-        receiver_first_name=receiver_first_name,
-        receiver_last_name=receiver_last_name,
-        receiver_email=receiver_email,
-        sender_verified=False
-    )
-    
-    activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
-        get_current_site(request),
-        sender_first_name.encode('utf-8').encode('base64'),
-        sender_last_name.encode('utf-8').encode('base64'),
-        sender_email.encode('base64'),
-        receiver_first_name.encode('utf-8').encode('base64'),
-        receiver_last_name.encode('utf-8').encode('base64'),
-        receiver_email.encode('base64'))
-    
-    subject = 'OpenMaker Nomination.. almost done!'
-    content = "{}{}{}".format(invitation_base_template_header,
-                              invitation_email_confirm.format(SENDER_NAME=sender_first_name,
-                                                              CONFIRMATION_LINK=activation_link),
-                              invitation_base_template_footer)
-    EmailHelper.send_email(
-        message=content,
-        subject=subject,
-        receiver_email=sender_email,
-        receiver_name=''
-    )
-    return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+    # try:
+    #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+    #     return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
+    # except Invitation.DoesNotExist:
+    #     pass
+
+    # return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
 
 
 def get_om_events(request):
