@@ -46,6 +46,18 @@
                             </span>
                         </p>
 
+                        <p style="display: inline-flex;" ng-if="item.type == 'question'">
+                            <span>
+                                {$ item.message $} <br><br>
+                                <span class="message-body"
+                                      ng-repeat="answer in answers track by $index">
+                                    <span>
+                                        <a ng-click="newsByTopic(filter.topic_id, filter.topic_name)">{$ answer $}</a>
+                                    </span>
+                                </span>
+                            </span>
+                        </p>
+
                         <span ng-if="item.type == 'news'"
                               class="message-body">
                             <div class="card margin-bottom-20">
@@ -65,7 +77,7 @@
                                 </a>
                             </div>
                         </span>
-                        <span class="message-header">{$ item.date | date: 'HH:mm:ss' $}</i></span><br>
+                        <span class="message-header">{$ item.date | date: 'HH:mm:ss' $}</span><br>
                     </btn>
                 </span>
             </span>
