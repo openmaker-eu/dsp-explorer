@@ -355,14 +355,6 @@ def invite(request):
                 messages.error(request, 'Please fill all the required fields!')
                 return HttpResponseRedirect(reverse('dashboard:invite'))
 
-            email_vars = {
-                       'RECEIVER_FIRST_NAME': first_name.encode('utf-8'),
-                       'RECEIVER_LAST_NAME': last_name.encode('utf-8'),
-                       'SENDER_FIRST_NAME': request.user.first_name.encode('utf-8'),
-                       'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
-                       'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
-                   }
-
             Invitation.create(
                 user=request.user,
                 sender_email=request.user.email,
@@ -373,9 +365,17 @@ def invite(request):
                 receiver_email=receiver_email
             )
 
-            # Invitation email already sent
+            # Emails
+            email_vars = {
+                'RECEIVER_FIRST_NAME': first_name.encode('utf-8'),
+                'RECEIVER_LAST_NAME': last_name.encode('utf-8'),
+                'SENDER_FIRST_NAME': request.user.first_name.encode('utf-8'),
+                'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
+                'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+            }
+
+            # Send email to receiver only the first time
             if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
-                # Send email for the first time
                 EmailHelper.email(
                     template_name='invitation_email_receiver',
                     title='You are invited to join the OpenMaker community!',
@@ -383,6 +383,7 @@ def invite(request):
                     receiver_email=receiver_email
                 )
 
+            # Send mail to sender
             EmailHelper.email(
                 template_name='invitation_email_confirmed',
                 title='OpenMaker Nomination done!',

@@ -342,6 +342,9 @@ class Profile(models.Model):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         return places
 
+    # def deobfuscate_invitation_email(self):
+    #     print self.invitation
+
     def sanitize_place(self):
         place = None
         try:

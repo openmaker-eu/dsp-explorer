@@ -332,28 +332,28 @@ def om_confirmation(
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
     # Emails
-    try:
-        # Invitation email already sent
-        Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-    except Invitation.DoesNotExist:
+    email_vars = {
+        'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
+        'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
+        'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
+        'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
+        'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+    }
+
+    # Send email to receiver only the first time
+    if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
         # Send email for the first time
         EmailHelper.email(
             template_name='invitation_email_receiver',
             title='You are invited to join the OpenMaker community!',
-            vars={
-                'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
-                'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
-                'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
-                'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
-                'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
-            },
+            vars=email_vars,
             receiver_email=receiver_email
         )
-
+    # Send mail to sender
     EmailHelper.email(
         template_name='invitation_email_confirmed',
         title='OpenMaker Nomination done!',
-        vars={'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')},
+        vars=email_vars,
         receiver_email=sender_email
     )
 
