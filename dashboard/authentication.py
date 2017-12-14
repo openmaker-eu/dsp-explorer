@@ -277,6 +277,9 @@ def onboarding_confirmation(request, token):
     profile.user.save()
     profile.update_reset_token()
     login(request, profile.user)
+
+    Invitation.deobfuscate_email(profile.user.email)
+
     # Modal creation after first login
     body = '' \
            '<div class="row">' \
