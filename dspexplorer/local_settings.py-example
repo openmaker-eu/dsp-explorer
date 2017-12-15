@@ -123,6 +123,9 @@ DSP_GET_THEMES = '/get_themes'
 DSP_GET_FEEDS = '/get_feeds'
 DSP_GET_INFLUENCERS = '/get_influencers'
 
+INSIGHT_BASE_URL = ''
+INSIGHT_API_URL = '/gui/api/'
+
 # CRM SETTINGS
 
 SECRET_TOKEN = ''
