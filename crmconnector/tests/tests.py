@@ -63,7 +63,7 @@ class CrmTestCase(TestCase):
         cls.party = Party(cls.user)
 
     def tearDown(self):
-        # self.party.f ind_and_delete()
+        # self.party.find_and_delete()
         pass
 
     def testConnection(self):

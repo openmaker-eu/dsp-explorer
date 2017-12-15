@@ -7,29 +7,30 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     let feed = {
         theme : null,
         filter : 'yesterday' ,
-        current_cursor : null,
         next_cursor : 0,
+        prev_cursor : undefined,
+        
         progress : false,
         top:  $(window).scrollTop(),
         data : [],
-        
-        prev : function(){$scope.FeedModel.get_news()},
-        next : function(){$scope.FeedModel.get_news()},
+    
+        prev : function(){$scope.FeedModel.get_news(feed.prev_cursor)},
+        next : function(){$scope.FeedModel.get_news(feed.next_cursor)},
         
         reset : function(theme=feed.theme, filter=feed.filter, cursor=-1){
             feed.data = []
-            feed.current_cursor = null
             feed.next_cursor = 0,
             feed.next(theme, filter, cursor)
             return feed
         },
         
-        get_news : function(theme=feed.theme , filter=feed.filter , cursor = feed.next_cursor){
+        get_news : function(cursor = -1 , theme=feed.theme , filter=feed.filter){
             $http.get('/api/v1.3/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
                         feed.data = _.get(response, 'data.result.news')
                         feed.next_cursor = _.get(response, 'data.result.next_cursor')
+                        feed.prev_cursor = _.get(response, 'data.result.prev_cursor')
                     },
                     (err)=>{ console.log('ERROR:', err)}
                 )

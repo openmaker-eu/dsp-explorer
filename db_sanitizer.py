@@ -49,8 +49,6 @@ def deobfuscate_invitation(user):
         print e
 
 if __name__ == "__main__":
-    from utils.hasher import HashHelper
-    print HashHelper.md5_hash('massimo.santoli@top-ix.org')
     users = User.objects.all()
     for user in users:
         sanitize_place(user)

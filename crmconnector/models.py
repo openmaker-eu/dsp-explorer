@@ -140,9 +140,13 @@ class Party(object):
         return CRMConnector.delete_party(self.__capsule_party['id'])
 
     def find_and_delete(self):
+        from .exceptions import CRMdeletePartyException
         self.get()
-        if self.__capsule_party:
-            return CRMConnector.delete_party(self.__capsule_party['id'])
+        try:
+            if self.__capsule_party:
+                return CRMConnector.delete_party(self.__capsule_party['id'])
+        except:
+            raise CRMdeletePartyException
         # @TODO : write error/exception
         return 'error'
 

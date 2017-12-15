@@ -163,7 +163,7 @@
                 <div class="col-md-8 col-sm-12 margin-top-50">
                     <h2 class="margin-bottom-25"><strong class="text-red">Last Onboarded </strong> Members</h2>
                     <h2 class="margin-top-25"><small>
-                        <a href="{% url 'dashboard:search_members' %}#members">View <strong class="text-red">All</strong>&nbsp;Community Members</a></small>
+                        <a href="{% url 'dashboard:community' %}#members">View <strong class="text-red">All</strong>&nbsp;Community Members</a></small>
                     </h2>
                     {% for profile in last_members %}
                         <div class="col-md-12 margin-top-25">
@@ -177,7 +177,7 @@
                                         <br><span>{{ profile.city }}</span>
                                         <br>
                                         {% for tag in profile.tags.all %}
-                                            <a href="{% url 'dashboard:search_members' tag.name %}#members"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
+                                            <a href="{% url 'dashboard:community' tag.name %}#members"><i><strong>#</strong><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
 
                     <h2 class="margin-bottom-25"><small class="text-black">#</small><strong class="text-red">Hot Tags</strong></h2>
                     <h2 class="margin-top-25"><small>
-                        <a href="{% url 'dashboard:search_members' %}#tags">View <strong class="text-red">All</strong> Community Tags</a>
+                        <a href="{% url 'dashboard:community' %}#tags">View <strong class="text-red">All</strong> Community Tags</a>
                     </small></h2>
                     <tag-bubbles tags="{{ json_hot_tags }}" isstandalone="true"></tag-bubbles>
                 </div>

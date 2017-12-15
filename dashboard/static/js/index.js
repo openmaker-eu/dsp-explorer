@@ -11,6 +11,7 @@ baseImports.angularForm()
 // Stuff
 require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
+require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validator");
 
 // Init Angular APP
 var app = angular.module('dashboard', [

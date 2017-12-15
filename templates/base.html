@@ -85,8 +85,8 @@
 {#                            <li class="{% if current_url == 'dashboard:events' %}liactive{% endif %}" >#}
 {#                                <a href="{% url 'dashboard:events' %}">Explore Events</a>#}
 {#                            </li>#}
-                            <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:search_members' %}">Community</a>
+                            <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:community' %}">Community</a>
                             </li>
 
                             {% if request.user.is_superuser %}
@@ -223,6 +223,15 @@
 {% include "./modals/login.html" %}
 {% include "./modals/feedback.html" %}
 
+{% if not user.is_anonymous %}
+    <!--<style>-->
+        <!--.footer-height { max-height: 40px; }-->
+        <!--#footer { max-height: 40px; }-->
+        <!--#footer > .row { max-height: 40px; }-->
+        <!--#footer > .row > .container{ max-height: 40px;}-->
+        <!--#footer > .row > .container > .row{ max-height: 40px; }-->
+    <!--</style>-->
+{% endif %}
 
 </body>
 </html>

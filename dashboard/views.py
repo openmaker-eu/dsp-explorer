@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytz
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
@@ -37,7 +38,8 @@ def dashboard(request, topic_id=None):
         hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
 
         # check user location and according to that ask for events, influencers and audiences
-        user_profile_location = json.loads(Profile.get_by_email(request.user.email).place)['country_short']
+        profile = request.user.profile
+        user_profile_location = profile.get_location()['country_shot'] if 'country_shot' in profile.get_location() else ''
 
         top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
         audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
@@ -83,7 +85,6 @@ def insight(request, user_twitter_username=None):
         'user_profile_twitter_username': str(user_profile_twitter_username),
         'canvas_url': str(canvas_url)
     }
-    print context
     return render(request, 'dashboard/insight.html', context)
 
 
@@ -154,10 +155,6 @@ def test(request):
 
 @login_required()
 def profile(request, profile_id=None, action=None):
-    from form import ProfileForm
-    from rest_framework.renderers import JSONRenderer
-    from collections import OrderedDict
-
     try:
         if profile_id:
             user_profile = Profile.get_by_id(profile_id)
@@ -165,11 +162,35 @@ def profile(request, profile_id=None, action=None):
             user_profile = Profile.get_by_email(request.user.email)
     except Profile.DoesNotExist:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    
-    if request.method == 'POST':
 
-        print json.dumps(request.POST)
+    if request.method == 'POST' and action == 'delete':
+        try:
+            first_name=request.user.first_name
+            last_name=request.user.last_name
 
+            Profile.delete_account(request.user.pk)
+            messages.success(request, 'Account deleted')
+
+            EmailHelper.email(
+                template_name='account_deletion_confirmation',
+                title='Openmaker Explorer account deletion',
+                vars={
+                    'FIRST_NAME': first_name,
+                    'LAST_NAME': last_name,
+                },
+                receiver_email=request.user.email
+            )
+            logout(request)
+
+        except Exception as e:
+            print 'error removing user'
+            print e
+            messages.warning(request, 'An error occour deleting your profile, please try again.')
+            return HttpResponseRedirect(reverse('dashboard:profile'))
+
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    if request.method == 'POST' and request.POST.get('action') != 'delete':
         new_profile = {}
         new_user = {}
         try:
@@ -194,8 +215,6 @@ def profile(request, profile_id=None, action=None):
             new_profile['role_other'] = request.POST.get('role_other', None)
             new_profile['sector_other'] = request.POST.get('sector_other', None)
 
-            if request.POST.get('place', None) != '{}': new_profile['place'] = request.POST.get('place', None)
-            
             # Multiple choice fields
             new_profile['types_of_innovation'] = request.POST.get('types_of_innovation', None)
             new_profile['socialLinks'] = request.POST.get('socialLinks', None)
@@ -219,7 +238,7 @@ def profile(request, profile_id=None, action=None):
         if new_profile['birthdate'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate'].timetuple()[1:-2])):
             messages.error(request, 'You must be older than thirteen')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
-        
+
         # Update image
         try:
             imagefile = request.FILES['profile_img']
@@ -260,6 +279,9 @@ def profile(request, profile_id=None, action=None):
         # Update profile fields
         user.profile.__dict__.update(new_profile)
         user.profile.save()
+
+        # Update place, location, country
+        user.profile.set_place(request.POST.get('place', None))
         
         # Update tags
         user.profile.tags.clear()
@@ -275,35 +297,35 @@ def profile(request, profile_id=None, action=None):
                     SourceOfInspiration.create(name=tagName)
                 )
 
-        # Add location and Country
-        try:
-            print 'profile place'
-            if not user.profile.place:
-                print 'no place'
-                new_place = GoogleHelper.get_city(user.profile.city)
-                if new_place:
-                    user.profile.place = json.dumps(new_place)
-                    user.profile.save()
-                    print user.profile.place
-            if user.profile.place:
-                print 'there is place'
-                place = json.loads(user.profile.place)
-                location = Location.create(
-                    lat=repr(place['lat']),
-                    lng=repr(place['long']),
-                    city=place['city'],
-                    state=place['state'],
-                    country=place['country'],
-                    country_short=place['country_short'],
-                    post_code=place['post_code'] if 'post_code' in place else '',
-                    city_alias=place['city']+','
-                )
-
-                user.profile.location = location
-                user.profile.save()
-
-        except Exception as e:
-            print e
+        # # Add location and Country
+        # try:
+        #     print 'profile place'
+        #     if not user.profile.place or 'city' not in user.profile.place:
+        #         print 'no place'
+        #         new_place = GoogleHelper.get_city(user.profile.city)
+        #         if new_place:
+        #             user.profile.place = json.dumps(new_place)
+        #             user.profile.save()
+        #             print user.profile.place
+        #     if user.profile.place:
+        #         print 'there is place'
+        #         place = json.loads(user.profile.place)
+        #         location = Location.create(
+        #             lat=repr(place['lat']),
+        #             lng=repr(place['long']),
+        #             city=place['city'],
+        #             state=place['state'],
+        #             country=place['country'],
+        #             country_short=place['country_short'],
+        #             post_code=place['post_code'] if 'post_code' in place else '',
+        #             city_alias=place['city']+','
+        #         )
+        #
+        #         user.profile.location = location
+        #         user.profile.save()
+        #
+        # except Exception as e:
+        #     print e
 
         # update on crm
         try:
@@ -330,13 +352,13 @@ def profile(request, profile_id=None, action=None):
         'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())),
         'source_of_inspiration': json.dumps(map(lambda x: x.name, SourceOfInspiration.objects.all()))
     }
-    
+
     return render(request, 'dashboard/profile.html', context)
 
 
 @login_required()
-def search_members(request, search_string=''):
-    return render(request, 'dashboard/search_members.html', {
+def community(request, search_string=''):
+    return render(request, 'dashboard/community.html', {
         'search_string': search_string,
         'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),
         'n_registered_user': Profile.objects.count()
@@ -373,7 +395,6 @@ def invite(request):
                 'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
                 'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
             }
-
             # Send email to receiver only the first time
             if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
                 EmailHelper.email(
@@ -382,7 +403,6 @@ def invite(request):
                     vars=email_vars,
                     receiver_email=receiver_email
                 )
-
             # Send mail to sender
             EmailHelper.email(
                 template_name='invitation_email_confirmed',
@@ -410,74 +430,7 @@ def invite(request):
             messages.error(request, 'Please try again!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
 
-
-    print 'okkei'
     return render(request, 'dashboard/invite.html', {})
-
-        # try:
-        #     address = request.POST['email'].lower()
-        #     first_name = request.POST['first_name'].title()
-        #     last_name = request.POST['last_name'].title()
-        # except KeyError:
-        #     messages.error(request, 'Please all the fields are required!')
-        #     return HttpResponseRedirect(reverse('dashboard:invite'))
-        #
-        # try:
-        #     User.objects.get(email=address)
-        #     messages.error(request, 'User is already a DSP member!')
-        #     return HttpResponseRedirect(reverse('dashboard:invite'))
-        # except User.DoesNotExist:
-        #     pass
-        #
-        # try:
-        #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(address))
-        #     messages.error(request, 'User is been already invited!')
-        #     return HttpResponseRedirect(reverse('dashboard:invite'))
-        # except Invitation.DoesNotExist:
-        #     pass
-        #
-        # # email not present, filling invitation model
-        # # @TODO: use new mailer
-        # try:
-        #     Invitation.create(
-        #         user=request.user,
-        #         sender_email=request.user.email,
-        #         sender_first_name=request.user.first_name,
-        #         sender_last_name=request.user.last_name,
-        #         receiver_first_name=first_name,
-        #         receiver_last_name=last_name,
-        #         receiver_email=address,
-        #     )
-        #
-        #     subject = 'You are invited to join the OpenMaker community!'
-        #     content = "{0}{1}{2}".format(
-        #         invitation_base_template_header,
-        #         invitation_email_receiver.format(
-        #             RECEIVER_FIRST_NAME=first_name.encode('utf-8'),
-        #             RECEIVER_LAST_NAME=last_name.encode('utf-8'),
-        #             SENDER_FIRST_NAME=request.user.first_name.encode('utf-8'),
-        #             SENDER_LAST_NAME=request.user.last_name.encode('utf-8'),
-        #             ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
-        #         ),
-        #         invitation_base_template_footer)
-        #
-        #     EmailHelper.send_email(
-        #         message=content,
-        #         subject=subject,
-        #         receiver_email=address,
-        #         receiver_name=''
-        #     )
-        #     messages.success(request, 'Invitation sent!')
-        # except EmailAlreadyUsed:
-        #     messages.error(request, 'User is already a member!')
-        # except UserAlreadyInvited:
-        #     messages.error(request, 'User has already received an invitation!')
-        # except Exception as e:
-        #     print e.message
-        #     messages.error(request, 'Please try again!')
-    
-    return render(request, 'dashboard/invite.html', {})
-
 
 @login_required()
 def feedback(request):

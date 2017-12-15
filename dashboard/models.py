@@ -193,16 +193,16 @@ class Profile(models.Model):
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
                birthdate=None, city=None, occupation=None, twitter_username=None, place=None):
-
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            user = User.objects.create_user(username=email,
-                                            email=email,
-                                            password=password,
-                                            first_name=first_name,
-                                            last_name=last_name
-                                            )
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
             user.is_active = False
             user.save()
 
@@ -224,6 +224,21 @@ class Profile(models.Model):
             return profile
         raise EmailAlreadyUsed
 
+    @classmethod
+    def delete_account(cls, user_id):
+        from crmconnector.models import Party
+        user = User.objects.get(pk=user_id)
+        profile = user.profile
+        try:
+            # Crm
+            party = Party(user)
+            party.find_and_delete()
+            # Tags
+            profile.delete()
+            user.delete()
+        except:
+            raise
+
     def send_email(self, subject, message):
         """
         Send Async Email to the user
@@ -232,12 +247,15 @@ class Profile(models.Model):
         :return: Nothing
         """
         import threading
-        thr = threading.Thread(target=Profile._send_email,
-                               kwargs=dict(message=message,
-                                           subject=subject,
-                                           receiver_name=self.user.get_full_name(),
-                                           receiver_email=self.user.email
-                                           ))
+        thr = threading.Thread(
+            target=Profile._send_email,
+             kwargs=dict(
+                 message=message,
+                 subject=subject,
+                 receiver_name=self.user.get_full_name(),
+                 receiver_email=self.user.email
+             )
+        )
         thr.start()
 
     def get_name(self):
@@ -247,6 +265,9 @@ class Profile(models.Model):
     def get_last_name(self):
         import unicodedata
         return unicodedata.normalize('NFKD', self.user.last_name).encode('ascii', 'ignore')
+
+    def get_location(self):
+        return {k: v for x in [self.place] if x for k, v in json.loads(x).items()}
 
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
@@ -342,21 +363,41 @@ class Profile(models.Model):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         return places
 
-    # def deobfuscate_invitation_email(self):
-    #     print self.invitation
-
     def sanitize_place(self):
-        place = None
         try:
-            if not self.place:
+            if not self.place or 'city' not in self.place:
                 city = self.city
                 place = GoogleHelper.get_city(city)
                 if place:
                     self.place = json.dumps(place)
                     self.save()
-
         except Exception as e:
             print 'error'
+            print e
+
+    def set_place(self, place):
+        self.place = place
+        try:
+            if not self.place or 'city' not in self.place:
+                new_place = GoogleHelper.get_city(self.city)
+                if new_place:
+                    self.place = json.dumps(new_place)
+                    self.save()
+            if self.place or 'city' in self.place:
+                place = json.loads(self.place)
+                location = Location.create(
+                    lat=repr(place['lat']),
+                    lng=repr(place['long']),
+                    city=place['city'],
+                    state=place['state'],
+                    country=place['country'],
+                    country_short=place['country_short'],
+                    post_code=place['post_code'] if 'post_code' in place else '',
+                    city_alias=place['city']+','
+                )
+                self.location = location
+                self.save()
+        except Exception as e:
             print e
 
 
