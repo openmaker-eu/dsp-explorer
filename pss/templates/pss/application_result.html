@@ -48,15 +48,15 @@
                     <h1>{{les.0}}</h1>
                     <table class="table">
                         <thead>
-                        <tr>
-                            <th>User Email</th>
-                            <th>User First Name</th>
-                            <th>User Last Name</th>
-                            <th>Project Name</th>
-                            <!--<th>LES</th>-->
-                            <th>DOWNLOAD FILE</th>
-                            <th>UPLOADED AT</th>
-                        </tr>
+                            <tr>
+                                <th>User Email</th>
+                                <th>User First Name</th>
+                                <th>User Last Name</th>
+                                <th>Project Name</th>
+                                <!--<th>LES</th>-->
+                                <th>DOWNLOAD FILE</th>
+                                <th>UPLOADED AT</th>
+                            </tr>
                         </thead>
                         <tbody>
                                 {% for app in les.1 %}
@@ -66,7 +66,7 @@
                                     <td>{{ app.profile.user.last_name }}</td>
                                     <td>{{ app.project_name }}</td>
                                     <td style="display:none;">{{ app|hr_choices:'les' }}</td>
-        {#                            <td><a class="text-red" href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>#}
+                                    {#  <td><a class="text-red" href="{{ app.zip_location.url }}">DOWNLOAD</a> </td>#}
                                      <td><a class="text-red" href="{% url 'pss:application_pdf' app.id %}" download>DOWNLOAD</a></td>
                                     <td>{{ app.created_at }}</td>
                                 </tr>
@@ -74,9 +74,9 @@
                         </tbody>
                     </table>
                 </div>
-
-                {% endfor %}
             </div>
+            {% endfor %}
+
         </div>
     </div>
 {% endblock %}

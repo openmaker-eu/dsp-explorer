@@ -335,16 +335,15 @@ class v13:
         resp = {}
 
         try:
-            results = DSPConnectorV13.get_news(topic_id, date_string, cursor*item_per_page)
-            news = results['news']
-            next_cursor = results['next_cursor']/item_per_page
-            resp = {'news': news, 'next_cursor': next_cursor, 'max_page': None}
+            results = DSPConnectorV13.get_news(topic_id, date_string, cursor)
+            # news = results['news']
+            # next_cursor = results['next_cursor']/item_per_page
+            # resp = {'news': news, 'next_cursor': next_cursor, 'max_page': None}
         except DSPConnectorException:
             pass
         return JsonResponse({
             'status': 'ok',
-            'result': resp,
-            'test': results
+            'result': results,
         }, status=200)
 
     # @staticmethod

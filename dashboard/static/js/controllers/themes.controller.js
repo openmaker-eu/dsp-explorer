@@ -7,7 +7,8 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
     let feed = {
         theme : null,
         filter : 'yesterday' ,
-        next_cursor : 0,
+        
+        next_cursor : -1,
         prev_cursor : undefined,
         
         progress : false,
@@ -19,15 +20,17 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         
         reset : function(theme=feed.theme, filter=feed.filter, cursor=-1){
             feed.data = []
-            feed.next_cursor = 0,
+            feed.next_cursor = -1,
             feed.next(theme, filter, cursor)
             return feed
         },
         
         get_news : function(cursor = -1 , theme=feed.theme , filter=feed.filter){
+            console.log('cursor', cursor);
             $http.get('/api/v1.3/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
+                        console.log('next cursor', _.get(response, 'data.result.next_cursor'));
                         feed.data = _.get(response, 'data.result.news')
                         feed.next_cursor = _.get(response, 'data.result.next_cursor')
                         feed.prev_cursor = _.get(response, 'data.result.prev_cursor')
@@ -76,7 +79,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         influencers.location = $scope.selected_location
         
         // Get all data
-        $scope.FeedModel.get_news(newValue, $scope.filter, $scope.cursor)
+        $scope.FeedModel.get_news(-1, newValue, $scope.filter)
         influencers.get_audiences($scope.topic_id);
         influencers.get_influencers($scope.topic_id);
         

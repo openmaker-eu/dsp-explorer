@@ -20,67 +20,71 @@
                     <h3>OM BOT</h3>
                     <hr>
                     <span ng-repeat="item in message_history track by $index">
-                <span class="message">
-                    <btn
-                            class="message-button {$ item.source $}"
-                            ng-class="
-                             {
-                                'bg-red border-red text-white':item.source=='user',
-                                'bg-light-grey border-light-grey':item.source=='bot',
-                             }
-                             "
-                    >
-                        <span ng-if="item.type == ''" class="message-body">{$ item.message $}</span>
+                        <span class="message">
+                            <btn
+                                    class="message-button {$ item.source $}"
+                                    ng-class="
+                                     {
+                                        'bg-red border-red text-white':item.source=='user',
+                                        'bg-light-grey border-light-grey':item.source=='bot',
+                                     }
+                                     "
+                            >
+                                <span ng-if="item.type == ''" class="message-body">{$ item.message $}</span>
 
-                        <span ng-if="item.type == 'topics'"
-                              class="message-body"
-                              ng-repeat="topic in item.message track by $index">
-                            <a ng-click="newsByTopic(topic.topic_id, topic.topic_name)">{$ topic.topic_name $}</a>
-                        </span>
-                        <p style="display: inline-flex;">
-                            <span ng-if="item.type == 'options'"
-                                  class="message-body"
-                                  ng-repeat="option in item.message track by $index">
-                                <span ng-if="option == 'next'"><a style="display: inline-block" ng-click="newsByTopic(filter.topic_id, filter.topic_name)">Next Article</a>&nbsp;|&nbsp;</span>
-                                    <a style="display: inline-block" ng-if="option == 'topics'" ng-click="topics()">List of Topics</a>
-                            </span>
-                        </p>
-
-                        <p style="display: inline-flex;" ng-if="item.type == 'question'">
-                            <span>
-                                {$ item.message $} <br><br>
-                                <span class="message-body"
-                                      ng-repeat="answer in answers track by $index">
-                                    <span>
-                                        <a ng-click="newsByTopic(filter.topic_id, filter.topic_name)">{$ answer $}</a>
-                                    </span>
+                                <span ng-if="item.type == 'topics'"
+                                      class="message-body"
+                                      ng-repeat="topic in item.message track by $index"
+                                >
+                                    <a ng-click="newsByTopic(topic.topic_id, topic.topic_name)">{$ topic.topic_name $}</a>
                                 </span>
-                            </span>
-                        </p>
 
-                        <span ng-if="item.type == 'news'"
-                              class="message-body">
-                            <div class="card margin-bottom-20">
-                                <a href="{$item.message.url$}" target="_blank">
-                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                        <img style="min-width:100%;" ng-if="item.message.im" ng-src="{$ item.message.im $}" class="img-responsive" alt="{$item.message.title$}">
-                                        <img style="min-width:100%;" ng-if="!item.message.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$item.message.title$}">
+                                <p style="display: inline-flex;">
+                                    <span ng-if="item.type == 'options'" class="message-body"
+                                          ng-repeat="option in item.message track by $index"
+                                    >
+                                        <span ng-if="option == 'next'">
+                                            <a style="display: inline-block" ng-click="newsByTopic(filter.topic_id, filter.topic_name)">Next Article</a>&nbsp;|&nbsp;
+                                        </span>
+                                        <a style="display: inline-block" ng-if="option == 'topics'" ng-click="topics()">List of Topics</a>
+                                    </span>
+                                </p>
+
+                                <p style="display: inline-flex;" ng-if="item.type == 'question'">
+                                    <span>
+                                        {$ item.message $} <br><br>
+                                        <span class="message-body"
+                                              ng-repeat="answer in answers track by $index"
+                                        >
+                                            <span><a ng-click="newsByTopic(filter.topic_id, filter.topic_name)">{$ answer $}</a></span>
+                                        </span>
+                                    </span>
+                                </p>
+
+                                <span ng-if="item.type == 'news'"
+                                      class="message-body">
+                                    <div class="card margin-bottom-20">
+                                        <a href="{$item.message.url$}" target="_blank">
+                                            <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                                <img style="min-width:100%;" ng-if="item.message.im" ng-src="{$ item.message.im $}" class="img-responsive" alt="{$item.message.title$}">
+                                                <img style="min-width:100%;" ng-if="!item.message.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$item.message.title$}">
+                                            </div>
+                                            <div class="card-content">
+                                                <h5 ng-if="item.message.title">{$ item.message.title | limitTo: 40 $} {$ item.message.title.length > 50 ? '...' : '' $}</h5>
+                                                <h5 ng-if="!item.message.title" >No Title provided </h5>
+                                            </div>
+                                            <div class="card-action">
+                                                <p ng-if="item.message.summary">{$ item.message.summary | limitTo: 100 $} {$ item.message.summary.length > 100 ? '...' : '' $}</p>
+                                                <p ng-if="!item.message.summary">No Description provided </p>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div class="card-content">
-                                        <h5 ng-if="item.message.title">{$ item.message.title | limitTo: 40 $} {$ item.message.title.length > 50 ? '...' : '' $}</h5>
-                                        <h5 ng-if="!item.message.title" >No Title provided </h5>
-                                    </div>
-                                    <div class="card-action">
-                                        <p ng-if="item.message.summary">{$ item.message.summary | limitTo: 100 $} {$ item.message.summary.length > 100 ? '...' : '' $}</p>
-                                        <p ng-if="!item.message.summary">No Description provided </p>
-                                    </div>
-                                </a>
-                            </div>
+                                </span>
+                                <span class="message-header">{$ item.date | date: 'HH:mm:ss' $}</span><br>
+                            </btn>
+
                         </span>
-                        <span class="message-header">{$ item.date | date: 'HH:mm:ss' $}</span><br>
-                    </btn>
-                </span>
-            </span>
+                    </span>
                 </div>
             </div>
         </div>

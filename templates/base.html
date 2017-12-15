@@ -79,12 +79,6 @@
                             <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:insight' %}">Insight</a>
                             </li>
-{#                            <li class="{% if current_url == 'dashboard:theme' %}liactive{% endif %}" >#}
-{#                                <a href="{% url 'dashboard:theme' %}">Explore Feeds</a>#}
-{#                            </li>#}
-{#                            <li class="{% if current_url == 'dashboard:events' %}liactive{% endif %}" >#}
-{#                                <a href="{% url 'dashboard:events' %}">Explore Events</a>#}
-{#                            </li>#}
                             <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:community' %}">Community</a>
                             </li>
@@ -105,11 +99,7 @@
                             </li>
                             {% endif %}
 
-                            {% if not request.user.is_superuser %}
-                                {#                                <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >#}
-                                {#                                    <a href="{% url 'pss:application' %}">Apply</a>#}
-                                {#                                </li>#}
-                            {% else %}
+                            {% if request.user.is_superuser %}
                                 {# TODO check permission super admin and isstaff #}
                                 <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
@@ -117,9 +107,6 @@
                                         <li>
                                             <a href="{% url 'pss:application_result' %}">Results</a>
                                         </li>
-                                        {#                                        <li>#}
-                                        {#                                            <a href="{% url 'pss:application' %}">Submission</a>#}
-                                        {#                                        </li>#}
                                     </ul>
                                 </li>
                                 <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
@@ -222,16 +209,6 @@
 
 {% include "./modals/login.html" %}
 {% include "./modals/feedback.html" %}
-
-{% if not user.is_anonymous %}
-    <!--<style>-->
-        <!--.footer-height { max-height: 40px; }-->
-        <!--#footer { max-height: 40px; }-->
-        <!--#footer > .row { max-height: 40px; }-->
-        <!--#footer > .row > .container{ max-height: 40px;}-->
-        <!--#footer > .row > .container > .row{ max-height: 40px; }-->
-    <!--</style>-->
-{% endif %}
 
 </body>
 </html>

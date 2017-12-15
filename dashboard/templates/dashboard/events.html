@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% block container %}
-
-    <div ng-init="topic_id='{{ selected_topic.topic_id }}';user_country.short_code='{{ country.short_code }}'; user_country.label='{{ country.label }}'" class="container-fluid" ng-controller="eventsController">
+    <div
+        ng-init=
+        "
+            topic_id='{{ selected_topic.topic_id }}';
+            user_country.short_code='{{ country.short_code }}';
+            user_country.label='{{ country.label }}';
+        "
+        class="container-fluid"
+        ng-controller="eventsController"
+    >
         <div class="row margin-bottom-25">
             <div class="col-md-12 text-center theme-name">
                 <span class="text-red">
@@ -10,16 +18,18 @@
                         <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                     </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        {% for t in topics %}
-                            <li><a href="{% url 'dashboard:events' t.topic_id %}">{{t.topic_name}}</a></li>
-                        {% endfor %}
-                    </ul>
+                            {% for t in topics %}
+                                <li><a href="{% url 'dashboard:events' t.topic_id %}">{{t.topic_name}}</a></li>
+                            {% endfor %}
+                        </ul>
                     </h2>
 
                 </span>
             </div>
         </div>
+
         <div class="row">
+
             <div class="col-md-12">
                 <div class="col-md-6">
                     <div class="col-md-12">
@@ -28,47 +38,29 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-md-6 pull-right">
-{#                        <select#}
-{#                          name="singleSelect"#}
-{#                          ng-model="country.code"#}
-{#                          class="form-control margin-top-20"#}
-{#                          style="color:rgba(119, 119, 119, 0.81);"#}
-{#                        >#}
-                                {# TODO think a way to let people filter for more country codes #}
-                                {# displaying your country code if is not in the choosable below #}
-{#                                <option ng-if="country.code != 'it' && country.code != 'uk' && country.code != 'es' && country.code != 'sk'" ng-value="country.code"> {$ country.code $} </option>#}
-{#                                <option value="it">Italy</option>#}
-{#                                <option value="uk" >United Kingdom</option>#}
-{#                                <option value="es" >Spain</option>#}
-{#                                <option value="sk" >Slovakia</option>#}
-{#                                <option value="" >All over the World</option>#}
-{#                        </select>#}
                          <select name="singleSelect"
-                          ng-model="user_country.short_code"
-                          class="form-control margin-top-20"
-                          style="color:rgba(119, 119, 119, 0.81);">
-                                {# TODO think a way to let people filter for more country codes #}
-                                {# displaying your country code if is not in the choosable below #}
+                              ng-model="user_country.short_code"
+                              class="form-control margin-top-20"
+                              style="color:rgba(119, 119, 119, 0.81);"
+                         >
                                 <option ng-repeat="c in countries" ng-value="c.short_code">{$ c.label $}</option>
                          </select>
                     </div>
                 </div>
+
                 <!-- EVENTS SPACE -->
-                <div class="col-md-12 infinite-container margin-top-25" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
+                <div class="col-md-12 infinite-container margin-top-25" style="margin-bottom:10%;">
+
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="event in EventModel.data" ng-cloak="EventModel.data.length">
                         <div class="card margin-bottom-20">
+
                             <a href="{$ event.link $}" target="_blank">
                                 <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                    <img style="min-width:100%;" src="{$ event.cover $}" class="img-responsive"
-                                         alt="{$ event.name $}">
+                                    <img style="min-width:100%;" src="{$ event.cover $}" class="img-responsive" alt="{$ event.name $}">
                                 </div>
-                                <div class="card-content">
-                                    <h5>{$ event.name $}</h5>
-                                </div>
+                                <div class="card-content"><h5>{$ event.name $}</h5></div>
                                 <div class="card-action">
-                                    <p>
-                                        {$ event.description.text | limitTo: 50 $}{$ event.description.text > 50 ? '...' : '' $}
-                                    </p>
+                                    <p>{$ event.description.text | limitTo: 50 $}{$ event.description.text > 50 ? '...' : '' $}</p>
                                     <p>
                                         <i class="glyphicon glyphicon-globe"></i> {$ event.place | limitTo: 24 $}{$ event.place.length > 24 ? '...' : '' $} <br>
                                         <i class="glyphicon glyphicon-time"></i> {$ event.start_time $}<br>
@@ -77,10 +69,13 @@
                                     </p>
                                 </div>
                             </a>
+
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 {% endblock %}
