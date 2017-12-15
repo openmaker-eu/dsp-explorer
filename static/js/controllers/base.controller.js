@@ -82,7 +82,7 @@ export default
         }
     }
     
-    $scope.re_render =()=>{ _.debounce(push_footer, 1000 , false)}
+    $scope.re_render =()=>{push_footer()}
     
     $(window).on('resize', $scope.re_render);
     $(document ).ready($scope.re_render)
