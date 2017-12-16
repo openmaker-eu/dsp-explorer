@@ -1,0 +1,21 @@
+<svg style="position: absolute; top: -999999px" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="svgHueRotate" y="100" x="100">
+            <feColorMatrix type="hueRotate" values="283"/>
+        </filter>
+
+        <linearGradient id="gradient" x1="0" y1="00%" x2 ="0" y2="100%">
+            <stop stop-color="black" offset="1"/>
+            <stop stop-color="white" offset="0"/>
+        </linearGradient>
+
+        <mask id="mask-1" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+            <rect y="0.3" width="1" height=".7" fill="url(#gradient)" />
+            <circle cx=".5" cy=".5" r=".35" fill="white" />
+        </mask>
+    </defs>
+</svg>
+
+
+
+

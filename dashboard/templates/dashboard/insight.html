@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container-fluid"
-         ng-init="canvas_info.base_url='{{ canvas_url }}'; canvas_info.user_profile_twitter_username='{{ user_profile_twitter_username }}'"
+         ng-init="canvas_info.base_url='{{ canvas_url }}';
+         canvas_info.user_profile_twitter_username='{{ user_profile_twitter_username }}' || 'openmaker'"
          ng-controller="insightController">
         <div class="row margin-bottom-15">
             <div class="col-md-12">
@@ -29,10 +30,44 @@
                     Sed eu rhoncus nisi, vitae tempor odio. Ut condimentum aliquet ipsum in aliquam. Mauris pharetra velit a metus volutpat, vitae sodales ipsum euismod. In hac habitasse platea dictumst. Aenean mi tellus, tempus id ultricies eget, eleifend ut mauris. Aliquam bibendum nisi velit, ut viverra dolor facilisis efficitur. Sed vulputate elit vitae imperdiet ornare.
                 </p>
             </div>
-            <div class="col-md-9 col-sm-12 col-xs-12 pull-left">
-                <iframe ng-if="show_canvas" ng-src="{$ canvas_info.url $}" scrolling="no" ng-cloak="show_canvas"
-                        style="position: relative; width: 100%; height: 1100px; border: none; max-width: 916px; overflow: hidden; margin-left: -12px">
-                </iframe>
+
+            <svg display="none">
+                <defs>
+                    <filter id="openmakerize-top" x="0%" y="0%" height="100%" width="100%" primitiveUnits="userSpaceOnUse">
+                        <feColorMatrix x="15" y="39" width="685" height="461" type="hueRotate" values ="283" result="A"/>
+                        <feComponentTransfer in="A" result="B">
+                            <feFuncA type="linear" intercept="1"/>
+                        </feComponentTransfer>
+                        <feBlend mode="over" in="B" in2="SourceGraphic"/>
+                    </filter>
+
+                    <filter id="openmakerize-bottom" x="0%" y="0%" height="100%" width="100%" primitiveUnits="userSpaceOnUse">
+                        <feColorMatrix x="15" y="539" width="885" height="511" type="hueRotate" values ="183" result="C"/>
+                        <feComponentTransfer in="C" result="D">
+                            <feFuncA type="linear" intercept="1"/>
+                        </feComponentTransfer>
+                        <feBlend mode="over" in="D" in2="SourceGraphic"/>
+                    </filter>
+
+                </defs>
+            </svg>
+            <style>
+                iframe { filter: hue-rotate(189deg); }
+                iframe:not(*:root){ filter : url('#openmakerize-top') url('#openmakerize-bottom');}
+            </style>
+
+            <div class="col-md-9 col-sm-12 col-xs-12 pull-left test" >
+"
+                    <iframe ng-if="show_canvas" ng-src="{$ canvas_info.url $}" scrolling="no" ng-cloak="show_canvas"
+                            style="
+                                position: relative;
+                                width: 100%; height: 1100px;
+                                border: none; max-width: 916px; overflow: hidden;
+                                margin-left: -12px;
+
+                            ">
+                    </iframe>
+
                 <h1 ng-if="!show_canvas" ng-cloak="show_canvas">
                     Search data for: <strong class="text-red">{$ canvas_info.user_profile_twitter_username $}...</strong><br>
                     <small>{$ no_data_message $}</small>
