@@ -52,8 +52,15 @@
                 </defs>
             </svg>
             <style>
-                iframe { filter: hue-rotate(189deg); }
-                iframe:not(*:root){ filter : url('#openmakerize-top') url('#openmakerize-bottom');}
+                /*MOZILLA*/
+                _:-moz-tree-row(hover), iframe { filter: hue-rotate(189deg); }
+                /*SAFARI*/
+                iframe:not(*:root) {filter: hue-rotate(189deg);}
+                /*CHROME*/
+                @media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+                    iframe:not(*:root){ filter : url('#openmakerize-top') url('#openmakerize-bottom');}
+                }
+
             </style>
 
             <div class="col-md-9 col-sm-12 col-xs-12 pull-left test" >
