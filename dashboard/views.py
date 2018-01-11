@@ -14,7 +14,7 @@ from dspconnector.connector import DSPConnectorException, DSPConnectorV12, DSPCo
 from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
 from django.http import HttpResponseRedirect
-from form import FeedbackForm
+# from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
 import datetime as dt, json, os, logging, re, random
 
@@ -27,6 +27,18 @@ from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
+
+    top_influencers_by_user_location = None
+    events_by_topic_and_location = None
+    audiences = None
+    events_by_topic_and_location = None
+    selected_topic = None
+    topics = None
+    last_members = None
+    hot_tags= None
+    json_hot_tags = None
+    hot_news= None
+
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
 
@@ -52,6 +64,8 @@ def dashboard(request, topic_id=None):
         selected_topic = 'No themes'
         context = {'selected_topic': selected_topic, 'topics': topics_list}
         return render(request, 'dashboard/theme.html', context)
+    except Exception as e:
+        print e
     
     hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
@@ -163,6 +177,7 @@ def profile(request, profile_id=None, action=None):
     except Profile.DoesNotExist:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
+    # Delete Profile
     if request.method == 'POST' and action == 'delete':
         try:
             first_name=request.user.first_name
@@ -190,6 +205,7 @@ def profile(request, profile_id=None, action=None):
 
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
+    # Update Profile
     if request.method == 'POST' and request.POST.get('action') != 'delete':
         new_profile = {}
         new_user = {}
@@ -197,15 +213,19 @@ def profile(request, profile_id=None, action=None):
             new_user['first_name'] = request.POST['first_name'].title()
             new_user['last_name'] = request.POST['last_name'].title()
             new_profile['gender'] = request.POST['gender']
+
             new_profile['birthdate'] = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
             new_profile['birthdate'] = pytz.utc.localize(new_profile['birthdate'])
+
             new_profile['city'] = request.POST['city']
             new_profile['occupation'] = request.POST['occupation']
-            new_profile['statement'] = request.POST['statement']
-            
+
+            new_profile['statement'] = request.POST.get('statement', None)
+
+            # @TODO : check duplicate role assignment
             new_profile['role'] = request.POST.get('role', None)
-            new_profile['occupation'] = request.POST.get('occupation', None)
             new_profile['role'] = request.POST.get('role', '')
+
             new_profile['organization'] = request.POST.get('organization', None)
             new_profile['sector'] = request.POST.get('sector', None)
             new_profile['size'] = request.POST.get('size', None)

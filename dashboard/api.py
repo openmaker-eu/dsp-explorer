@@ -309,6 +309,9 @@ class v13:
         except DSPConnectorException:
             events = {}
 
+        print 'next_cursor' in events
+        'previous_cursor' not in events and events.update({'previous_cursor': 0})
+
         return JsonResponse({
             'status': 'ok',
             'result': events

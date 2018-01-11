@@ -79,29 +79,29 @@ class ProfileTestCase(TestCase):
     #         Colorizer.Red('Update profile errors: %s' % '\n'.join(d.message for d in update_errors))
     #     )
     #
-    # def test8_save_data_response(self):
-    #     from utils.testhelpers import profile_form_update_data
-    #     print Colorizer.LightPurple('\n[TEST PROFILE PAGE] check update with valid data')
-    #
-    #     response = self.post_profile_test(profile_form_update_data())
-    #     form = response.context['form']
-    #     print len(form.errors.as_data())
-    #
-    #     # print response
-    #
-    #     self.assertTrue(
-    #         form.is_valid(),
-    #         Colorizer.Red('Update Response Error')
-    #     )
+
+    def test8_save_data_response(self):
+        from utils.testhelpers import profile_form_update_data
+        print Colorizer.LightPurple('\n[TEST PROFILE PAGE] check update with valid data')
+
+        response = self.post_profile_test(profile_form_update_data())
+        form = response.context['form']
+        print len(form.errors.as_data())
+        print form.errors.as_data()
+
+        self.assertTrue(
+            form.is_valid(),
+            Colorizer.Red('Update Response Error')
+        )
 
     ########
     # Unit #
     ########
-    def test_8_remove_account(self):
-        # Assert should remove user adn related profile
-        Profile.delete_account(self.user.pk)
-        user = User.objects.filter(email=self.user.email)
-        self.assertLess(len(user), 1, Colorizer.Red('Delete profile errors:'))
+    # def test_8_remove_account(self):
+    #     # Assert should remove user adn related profile
+    #     Profile.delete_account(self.user.pk)
+    #     user = User.objects.filter(email=self.user.email)
+    #     self.assertLess(len(user), 1, Colorizer.Red('Delete profile errors:'))
 
     ###########
     # Helpers #

@@ -41,19 +41,23 @@ export default [function(){
         scope: {
             prevfunction: '=',
             nextfunction: '=',
-            currentpagenumber: '=',
-            maxpagenumber: '=',
-            nextcursor: '='
+            currentpagenumber: '=', // From 0 to N, increment 1 per page (EG: first page = 1, second page = 2 ...)
+            maxpagenumber: '=', // from 1 to N
+            nextcursor: '=', // Values -1 to N  [0 = no more next pages]
+            prevcursor: '=' // Values -1 to N, [0 = no more previous pages, -1 is the first page]
         },
         controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
             
-            $scope.is_max_page = false
-            $scope.is_min_page = false
-            
-            $scope.$watch('[currentpagenumber, maxpagenumber, nextcursor]', (new_val, old_val)=>{
-                if ($scope.currentpagenumber) $scope.is_min_page = $scope.currentpagenumber <= 1
+            $scope.$watch('[currentpagenumber, maxpagenumber, nextcursor, prevcursor]', (new_val, old_val)=>{
+                
+                // Pagination uses cursor
+                $scope.is_min_page = $scope.nextcursor!==undefined && $scope.prevcursor === 0
+                $scope.is_max_page = $scope.nextcursor!==undefined && $scope.nextcursor === 0 || $scope.nextcursor === -1
+                
+                // Pagination uses pagenumber
                 if($scope.maxpagenumber && $scope.currentpagenumber) $scope.is_max_page = $scope.maxpagenumber === $scope.currentpagenumber
-                if($scope.nextcursor!==undefined) $scope.is_max_page = $scope.nextcursor === 0
+                if ($scope.currentpagenumber) $scope.is_min_page = $scope.currentpagenumber <= 1
+
             })
     
         }]

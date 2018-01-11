@@ -61,7 +61,6 @@ export default
     })
     
     var push_footer =()=>{
-        console.log('rendering');
         $('#top-div').css('height', 'auto')
     
         var header_padding = 30;

@@ -1,5 +1,6 @@
 from django import forms
 import datetime
+import re
 
 
 class FeedbackForm(forms.Form):
@@ -13,11 +14,35 @@ class OnboardingForm(forms.Form):
     last_name = forms.CharField(label='last_name')
     gender = forms.CharField()
     birthdate = forms.DateField(input_formats=['%Y/%m/%d', '%m/%d/%Y', '%m/%d/%y', '%Y-%m-%d'], initial=datetime.date.today)
-    tags = forms.CharField()
+
+    tags = forms.ModelMultipleChoiceField(validators=[])
+
     occupation = forms.CharField()
     city = forms.CharField()
     statement = forms.CharField()
     twitter_username = forms.CharField()
+
+    def clean_tags(self):
+        tags = self.cleaned_data.get('tags', '')
+
+        if tags == 'undefined' or tags == None or tags == '':
+            raise forms.ValidationError("You must provide at least one tag.")
+
+        print 'tags'
+        print self.data['tags']
+
+        self.data['tags'] = [
+            tag for tag in
+            map(
+                lambda x: {'name': re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE)},
+                tags.split(",")
+            )
+        ]
+
+        print 'tags after'
+        print self.data['tags']
+
+
 
 
 class ProfileForm(OnboardingForm):
@@ -44,6 +69,9 @@ class ProfileForm(OnboardingForm):
 
     socialLinks = forms.CharField(required=False)
 
+    def clean(self):
+        pass
+        # super(self.__class__, self).clean()
 
     # def save(self, validated_data):
     #     print validated_data
