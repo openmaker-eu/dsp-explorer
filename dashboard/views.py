@@ -35,9 +35,9 @@ def dashboard(request, topic_id=None):
     selected_topic = None
     topics = None
     last_members = None
-    hot_tags= None
+    hot_tags = None
     json_hot_tags = None
-    hot_news= None
+    hot_news = None
 
     try:
         topics_list = DSPConnectorV12.get_topics()['topics']
@@ -51,9 +51,12 @@ def dashboard(request, topic_id=None):
 
         # check user location and according to that ask for events, influencers and audiences
         profile = request.user.profile
-        user_profile_location = profile.get_location()['country_shot'] if 'country_shot' in profile.get_location() else ''
+        user_profile_location = profile.get_location()['country_short'] if 'country_short' in profile.get_location() else ''
 
-        top_influencers_by_user_location = DSPConnectorV13.get_influencers(selected_topic['topic_id'], user_profile_location)['local_influencers'][:4]
+        top_influencers_by_user_location = DSPConnectorV13.get_influencers(
+            selected_topic['topic_id'],
+            user_profile_location
+        )['local_influencers'][:4]
         audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
 
         events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location.lower())['events'][:4]
@@ -65,8 +68,9 @@ def dashboard(request, topic_id=None):
         context = {'selected_topic': selected_topic, 'topics': topics_list}
         return render(request, 'dashboard/theme.html', context)
     except Exception as e:
+        print 'Exception -- '
         print e
-    
+
     hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
     last_members = Profile.get_last_n_members(3)
 
