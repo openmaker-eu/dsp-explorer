@@ -33,7 +33,7 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
                         console.log('next cursor', _.get(response, 'data.result.next_cursor'));
                         feed.data = _.get(response, 'data.result.news')
                         feed.next_cursor = _.get(response, 'data.result.next_cursor')
-                        feed.prev_cursor = _.get(response, 'data.result.prev_cursor')
+                        feed.prev_cursor = _.get(response, 'data.result.previous_cursor') || 0
                     },
                     (err)=>{ console.log('ERROR:', err)}
                 )
