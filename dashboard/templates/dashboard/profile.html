@@ -5,7 +5,7 @@
     <!--Pass Django vars to Angular-->
     <span ng-init="
         role = {
-            selected : '{{ profile.role }}',
+            selected : '{{ profile.role|escapejs }}',
             available : [
                 'Entrepreneur',
                 'Manager',
@@ -14,10 +14,11 @@
                 'Researcher',
                 'Policy-Maker',
                 'Other'
-            ]
+            ],
+            other : '{{ profile.role_other|escapejs }}'
         };
         technical_expertise = {
-            selected: '{{ profile.technical_expertise }}',
+            selected: '{{ profile.technical_expertise|escapejs }}',
             available: [
                 'IoT',
                 'Digital fabrication - additive technologies',
@@ -42,10 +43,11 @@
                 'CAD/3D modelling-printing',
                 'Computer vision',
                 'Other'
-            ]
+            ],
+            other : '{{ profile.technical_expertise_other|escapejs  }}'
         };
         sector = {
-            selected : '{{ profile.sector }}',
+            selected : '{{ profile.sector|escapejs }}',
             available : [
                 'Agriculture, forestry, fishing, mining',
                 'Manufacturing: Food, Environment and Agriculture industries',
@@ -77,10 +79,11 @@
                 'Arts, entertainment and recreation',
                 'Sectoral Associations and Trade Unions',
                 'Other..'
-            ]
+            ],
+             other : '{{ profile.sector_other|escapejs }}'
         };
         size = {
-            selected : '{{ profile.size }}',
+            selected : '{{ profile.size|escapejs }}',
             available : [
                 'A micro enterprise (<10 staff)',
                 'A small enterprise (<50 staff)',
@@ -92,7 +95,7 @@
 
         socialLinks = {{ profile.socialLinks }} ;
 
-        is_edit = '{{ profile_action }}' === 'edit';
+        is_edit = '{{ profile_action|escapejs }}' === 'edit';
 
         tags={
             available: {% firstof tags 'False' %} || [],
@@ -153,7 +156,7 @@
 
                             <p><i class="fa fa-fw fa-hashtag"></i>&nbsp;
                                 {% for tag in profile.tags.all %}
-                                <a href="{% url 'dashboard:search_members' tag.name %}"><i><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
+                                <a href="{% url 'dashboard:community' tag.name %}"><i><span>{{ tag.name }}</span></i>&nbsp;&nbsp;</a>
                                 {% endfor %}
                             </p>
                             <p><i class="fa fa-fw fa-envelope"></i>&nbsp;&nbsp;{{profile.user.email}}</p>
@@ -234,7 +237,12 @@
             <!--Edit profile data-->
             {% if is_my_profile %}
             <div ng-show="is_edit">
-                <form class="form-group" action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}" method="post" enctype="multipart/form-data">
+                <form
+                        class="form-group"
+                        action="{% url 'dashboard:profile' profile_id=request.user.profile.id action='edit' %}"
+                        method="post"
+                        enctype="multipart/form-data"
+                >
                     {% csrf_token %}
 
                     <!--Image-->
@@ -245,19 +253,10 @@
                         </div>
                         <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3" >
                             <div class="profile-image pointer" id="profile-image-div" ng-click="profileImageUpload();">
-                                <!--<i-->
-                                        <!--class="fa fa-cloud-upload"-->
-                                        <!--style="z-index:10000;"-->
-                                <!--&gt;<span style=" background:#fff; border-radius: 50%;"></span></i>-->
-
-                                    <span class="fa-stack fa-2x image_icon" style="z-index:10000;">
-                                      <i class="fa fa-circle-thin fa-stack-2x"></i>
-                                      <i class="fa fa-cloud-upload fa-stack-1x"></i>
-                                    </span>
-
-                                <!--<i-->
-                                   <!--class="material-icons md-48"-->
-                                   <!--style="z-index:10000; text-shadow: 0px 0px 3px #000;">file_upload</i>-->
+                                <span class="fa-stack fa-2x image_icon" style="z-index:10000;">
+                                  <i class="fa fa-circle-thin fa-stack-2x"></i>
+                                  <i class="fa fa-cloud-upload fa-stack-1x"></i>
+                                </span>
                                 <circle-image src="image_model.src"></circle-image>
                             </div>
 
@@ -323,7 +322,9 @@
 
                         <div class="col-md-12">
                             <label for="" >City <span class="text-red">*</span></label>
-                            <input ng-init="place={};" required class="form-control"
+                            <input ng-init="place={};"
+                                   autocomplete="******"
+                                   required class="form-control"
                                    vs-google-autocomplete="{ types:['(cities)'] }"
 
                                    ng-model="city"
@@ -416,12 +417,30 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="role" ng-value="role.selected"/>
+
+                            <div
+                                 ng-show="role.selected != '' || role.other != ''"
+                                 class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your role</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="role.other"
+                                        name="role_other"
+                                        maxlenght="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':role.selected != ''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
 
                         <div class="col-md-12">
                             <label for="">Organization</label>
-                            <input class="form-control" type="text" name="organization" value="{{ profile.organization }}">
-                            <br/>
+                            <input class="form-control" type="text" name="organization"value="{{ profile.organization }}">
+                            <br>
                         </div>
 
                         <div class="col-md-12">
@@ -433,6 +452,24 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="sector" ng-value="sector.selected" />
+
+                            <div
+                                    ng-show="sector.selected!='' || sector.other!='' "
+                                    class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your sector</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="sector.other"
+                                        name="sector_other"
+                                        maxlength="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':sector.selected!=''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
 
                         <div class="col-md-12">
@@ -454,6 +491,24 @@
                                 </ui-select-choices>
                             </ui-select><br/>
                             <input type="hidden" name="technical_expertise" ng-value="technical_expertise.selected" />
+
+                            <div
+                                    ng-show="technical_expertise.selected!='' || technical_expertise.other!=''"
+                                    class="other-textarea-container"
+                            >
+                                <label for="">Tell us more about your technical expertise</label>
+                                <textarea
+                                        class="form-control"
+                                        ng-model="technical_expertise.other"
+                                        name="technical_expertise_other"
+                                        maxlenght="150"
+                                        rows="2"
+                                        placeholder=""
+                                        ng-class="{'textarea-blink-in':technical_expertise.selected!=''}"
+                                ></textarea>
+                            </div>
+                            <br>
+
                         </div>
                     </div>
 
@@ -539,10 +594,8 @@
                                 <span class="input-group-addon" tooltip-placement="top" uib-tooltip="{$ social.name $}">
                                     <span class="fa fa-fw fa-home fa-{$ social.name $}" ></span>
                                 </span>
-
                                 <input type="text" class="form-control"
                                        ng-model="social.link"
-                                       name="{$ social.name $}"
                                        placeholder="{$ social.name $} username or link to your profile page"
                                 >
                                 <span class="input-group-addon pointer"
@@ -588,9 +641,48 @@
                         <div class="col-md-12">
                             <input class="col-md-2 col-md-offset-10 btn login-button" type="submit" value="Update">
                         </div>
+
                     </div>
                 </form>
                 <br>
+            </div>
+
+            <div class="row" ng-show="is_edit">
+                <hr>
+                <div class="col-md-12">
+                        <h2 class="">Delete Your account</h2>
+                        <br>
+                        <div class="alert alert-danger tex-red" role="alert">
+                            <p><i>If you choose to permanently leave openmaker, you account will be deleted, you will not be able to login to openmaker explorer anymore and all your personal data will be removed from openmaker explorer website</i>
+                            </p>
+                            <br>
+                            <button class=" btn btn-danger" data-toggle="modal" data-target="#deleteAccountModal">Delete My account</button>
+                            <span class="clearfix"></span>
+                        </div>
+                </div>
+
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form action="{% url 'dashboard:profile' action='delete' profile_id=request.user.profile.id  %}" method="POST" >
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Account deletion</h4>
+                                </div>
+                                <div class="modal-body">
+                                   <p>This operation cannot be reverted, You will permanenlty loose all your data saved to OpenMaker Explorer</p>
+                                   <p>Are you sure do you want to delete your account?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, Close</button>
+                                    <input type="submit" class="btn btn-default" value="Yes, Delete my Account">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             {% endif %}
 

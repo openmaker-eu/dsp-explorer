@@ -37,7 +37,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             factory.old_search = factory.search_filter
     
             factory.page = parseInt(results.data.page) || 1
-            factory.max_page = results.data.max_page
+            factory.max_page = results.data.max_page || null
     
             factory.is_min_page = factory.page === 1
             factory.is_max_page = factory.page === factory.max_page

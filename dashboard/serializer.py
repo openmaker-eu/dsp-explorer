@@ -17,9 +17,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     user = UserSerializer(many=False, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
         fields = ('id', 'user', 'picture', 'occupation', 'tags', 'city')
+

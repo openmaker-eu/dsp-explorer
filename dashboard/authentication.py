@@ -25,11 +25,15 @@ from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
+from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
+
+
 
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
     return HttpResponseRedirect(reverse('dashboard:login'))
+
 
 def login_page(request):
     if request.user.is_authenticated:
@@ -164,8 +168,6 @@ def onboarding(request):
             occupation = request.POST['occupation']
             tags = request.POST['tags']
 
-            place = request.POST.get('place', None) if request.POST.get('place', None) != '{}' else None
-
             if tags == '' or tags == None or tags == 'undefined':
                 raise KeyError
 
@@ -188,7 +190,10 @@ def onboarding(request):
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
 
         # Check image and get url
-        imagefile = 'images/profile/default_user_icon.png'
+        if gender == 'male': imagefile = 'images/profile/male.svg'
+        if gender == 'female': imagefile = 'images/profile/female.svg'
+        if gender == 'other': imagefile = 'images/profile/other.svg'
+
 
         # Check if user exist
         try:
@@ -201,11 +206,14 @@ def onboarding(request):
         # profile create
         try:
             profile = Profile.create(email, first_name, last_name, imagefile, pasw, gender, birthdate_dt,
-                                     city, occupation, twitter_username, place)
+                                     city, occupation, twitter_username)
         except Exception as exc:
             logging.error('[PROFILE_CREATION_ERROR] Error during local profile creation for user email: {USER} , EXCEPTION {EXC}'.format(USER=email, EXC=exc))
             messages.error(request, 'Error creating user')
             return HttpResponseRedirect(reverse('dashboard:onboarding'))
+
+        # Update place, location, country
+        profile.set_place(request.POST.get('place', None))
 
         # Add tags to profile
         # @TODO : handle tag Creation exception
@@ -270,6 +278,9 @@ def onboarding_confirmation(request, token):
     profile.user.save()
     profile.update_reset_token()
     login(request, profile.user)
+
+    Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
+
     # Modal creation after first login
     body = '' \
            '<div class="row">' \
@@ -313,64 +324,107 @@ def om_confirmation(
     receiver_email = receiver_email.decode('base64')
 
     try:
-        User.objects.get(email=receiver_email)
+        Invitation.confirm_sender(sender_email=sender_email, receiver_email=receiver_email)
+    except SelfInvitation as e:
+        messages.error(request, 'You cannot invite youself!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    except EmailAlreadyUsed as e:
         messages.error(request, 'User is already a DSP member!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
-    except User.DoesNotExist:
-        pass
+    except UserAlreadyInvited as e:
+        messages.error(request, 'You have already invite this user!')
+        return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    try:
-        invitation = Invitation.objects.get(
-            sender_email=HashHelper.md5_hash(sender_email),
-            receiver_email=HashHelper.md5_hash(receiver_email)
+    # Emails
+    email_vars = {
+        'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
+        'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
+        'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
+        'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
+        'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+    }
+
+    # Send email to receiver only the first time
+    if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
+        # Send email for the first time
+        EmailHelper.email(
+            template_name='invitation_email_receiver',
+            title='You are invited to join the OpenMaker community!',
+            vars=email_vars,
+            receiver_email=receiver_email
         )
+    # Send mail to sender
+    EmailHelper.email(
+        template_name='invitation_email_confirmed',
+        title='OpenMaker Nomination done!',
+        vars=email_vars,
+        receiver_email=sender_email
+    )
 
-        if invitation.sender_verified:
-            messages.error(request, 'Invitation already sent!')
-        else:
-            # invitation flow start
-            invitation.sender_verified = True
-            invitation.save()
-            # sending invitation mail
+    return HttpResponseRedirect('http://openmaker.eu/confirmed/')
 
-            subject = 'OpenMaker Nomination done!'
-            content = "{0}{1}{2}".format(
-                invitation_base_template_header,
-                invitation_email_confirmed.format(
-                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
-                ),
-                invitation_base_template_footer
-            )
-
-            EmailHelper.send_email(
-                message=content,
-                subject=subject,
-                receiver_email=sender_email,
-                receiver_name=''
-            )
-
-            subject = 'You are invited to join the OpenMaker community!'
-            content = "{0}{1}{2}".format(
-                invitation_base_template_header,
-                invitation_email_receiver.format(
-                    RECEIVER_FIRST_NAME=receiver_first_name.encode('utf-8'),
-                    RECEIVER_LAST_NAME=receiver_last_name.encode('utf-8'),
-                    SENDER_FIRST_NAME=sender_first_name.encode('utf-8'),
-                    SENDER_LAST_NAME=sender_last_name.encode('utf-8'),
-                    ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
-                invitation_base_template_footer
-            )
-
-            EmailHelper.send_email(
-                message=content,
-                subject=subject,
-                receiver_email=receiver_email,
-                receiver_name=''
-            )
-            messages.success(request, 'Invitation complete!')
-
-    except Invitation.DoesNotExist:
-        messages.error(request, 'Invitation does not exist')
+    # try:
+    #     # Check if invited user exist, if exist raise error?
+    #     User.objects.get(email=receiver_email)
+    #     messages.error(request, 'User is already a DSP member!')
+    #     return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    # except User.DoesNotExist:
+    #     pass
+    #
+    # try:
+    #     # Check invitaion exist if does not exist raise error
+    #     invitation = Invitation.objects.get(
+    #         sender_email=HashHelper.md5_hash(sender_email),
+    #         receiver_email=HashHelper.md5_hash(receiver_email)
+    #     )
+    #
+    #     # Check if invitation is already send, if exist raise error
+    #     if invitation.sender_verified:
+    #         messages.error(request, 'Invitation already sent!')
+    #     else:
+    #         # invitation flow start
+    #         invitation.sender_verified = True
+    #         invitation.save()
+    #
+    #         # sending invitation mail
+    #         subject = 'OpenMaker Nomination done!'
+    #         content = "{0}{1}{2}".format(
+    #             invitation_base_template_header,
+    #             invitation_email_confirmed.format(
+    #                 ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')
+    #             ),
+    #             invitation_base_template_footer
+    #         )
+    #
+    #         EmailHelper.send_email(
+    #             message=content,
+    #             subject=subject,
+    #             receiver_email=sender_email,
+    #             receiver_name=''
+    #         )
+    #
+    #         subject = 'You are invited to join the OpenMaker community!'
+    #         content = "{0}{1}{2}".format(
+    #             invitation_base_template_header,
+    #             invitation_email_receiver.format(
+    #                 RECEIVER_FIRST_NAME=receiver_first_name.encode('utf-8'),
+    #                 RECEIVER_LAST_NAME=receiver_last_name.encode('utf-8'),
+    #                 SENDER_FIRST_NAME=sender_first_name.encode('utf-8'),
+    #                 SENDER_LAST_NAME=sender_last_name.encode('utf-8'),
+    #                 ONBOARDING_LINK=request.build_absolute_uri('/onboarding/')),
+    #             invitation_base_template_footer
+    #         )
+    #
+    #         EmailHelper.send_email(
+    #             message=content,
+    #             subject=subject,
+    #             receiver_email=receiver_email,
+    #             receiver_name=''
+    #         )
+    #         messages.success(request, 'Invitation complete!')
+    #
+    # except Invitation.DoesNotExist:
+    #     messages.error(request, 'Invitation does not exist')
     return HttpResponseRedirect('http://openmaker.eu/confirmed/')
 
 

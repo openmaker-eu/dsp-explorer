@@ -16,6 +16,91 @@ class DSPConnectorException(Exception):
             self.response = None
 
 
+class DSPConnectorV13(object):
+
+    @staticmethod
+    def get_influencers(topic_id, location="", cursor=0):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_local_influencers',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
+        )
+
+    @staticmethod
+    def get_audiences(topic_id, location="", cursor=0):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_audience_sample',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, location=location, cursor=cursor))
+        )
+
+    @staticmethod
+    def get_events(topic_id, location="", cursor=0):
+
+        params = '?topic_id={topic_id}'.format(topic_id=topic_id)
+        params += '&location={location}'.format(location=location) if location else ''
+        params += '&cursor={cursor}'.format(cursor=cursor)
+
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_events',
+            parameter=params)
+        )
+
+    @staticmethod
+    def get_hashtags(topic_id, date_string="yesterday"):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_hashtags',
+            parameter=DSPConnectorV13.__get_parameters(topic_id=topic_id, date=date_string))
+        )
+
+    @staticmethod
+    def get_news(topic_id, date='yesterday', cursor=0):
+
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/get_news',
+            parameter='?topic_ids={topic_id}&date={date}&cursor={cursor}'.format(topic_id=topic_id, date=date, cursor=cursor))
+        )
+
+    @staticmethod
+    def __get_parameters(topic_id, date=None, location="", cursor=0):
+        location_id = DSPConnectorV13._get_location_filter(location)
+        params = '?topic_id={topic_id}'.format(topic_id=topic_id)
+        params += '&date={date}'.format(date=date) if date else ''
+        params += '&location={location}'.format(location=location_id) if location_id else ''
+        params += '&cursor={cursor}'.format(cursor=cursor)
+        return params
+
+    @staticmethod
+    def generate_url(endpoint, parameter=None):
+        return settings.DSP_BASE_URL + '/api/v1.3' + endpoint + parameter if parameter else settings.DSP_BASE_URL + '/api/v1.3' + endpoint
+
+    @staticmethod
+    def _wrapper_request(response):
+        if response and response.status_code < 205:
+            return response.json()
+        raise DSPConnectorException(response)
+
+    @staticmethod
+    def _get(url):
+        try:
+            response = requests.get(url, timeout=8)
+        except:
+            response = None
+        return DSPConnectorV13._wrapper_request(response=response)
+
+    @staticmethod
+    def _get_location_filter(location):
+        loc = ""
+        locations = {
+            'IT': 'italy',
+            'GB': 'UK',
+            'UK': 'UK',
+            'ES': 'spain',
+            'SK': 'slovakia'
+        }
+        if location in locations:
+            loc = locations[location]
+        return loc
+
+
 class DSPConnectorV12(object):
 
     @staticmethod

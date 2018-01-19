@@ -4,132 +4,212 @@
 <div class="container-fluid" ng-controller="themesController">
     <span ng-init="
         topic_id='{{ selected_topic.topic_id }}';
+        selected_location='{{ selected_location }}';
     " ></span>
-
     <div class="row">
-        <div class="col-md-12 influencers-breadcrumb" ng-class="{ 'no-influencers': influencers.length < 1 }">
-
-            <div class="col-md-8 col-sm-7 col-xs-12 breadcrumb-wrapper">
-                <ol class="breadcrumb">
-                    <li><a href="{% url 'dashboard:dashboard' %}">Home</a></li>
-                    <li class="active">{{selected_topic.topic_name}} feed news</li>
-                </ol>
+        <div class="col-md-8">
+            <div class="row margin-bottom-50">
+                <div class="col-md-12 text-center theme-name">
+                    <span class="text-red">
+                        <h2>
+                            <span class="text-black">Topic:</span> {{selected_topic.topic_name}}
+                            <button style="padding-left: 15px; padding-right: 15px;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                {% for t in topics %}
+                                    <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </h2>
+                    </span>
+                </div>
             </div>
-            <div class="col-md-4 col-sm-5 col-xs-12 open-influencers-wrapper" ng-click="openAside()">
-                <div class="open-influencers pull-right">
-                    <span class="pull-left" style="white-space: nowrap;">View Influencers&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <img
-                            ng-repeat="data in influencers | limitTo:2 track by $index"
-                            class="img-circle pull-left" ng-src="{$ data.profile_image_url $}"
-                    >
+            <div class="row margin-bottom-25">
+                <div class="col-md-8 col-md-offset-2">
+
+                    <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                        <button style="min-width:100%;" type="button"
+                                ng-click="setFilter('yesterday')"
+                                ng-class="FeedModel.filter == 'yesterday' ? 'btn login-button-active':'btn login-button'"
+                        >
+                            Yesterday
+                            <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'yesterday'"></span></button>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                        <button style="min-width:100%;" type="button"
+                                ng-click="setFilter('week')"
+                                ng-class="FeedModel.filter == 'week' ? 'btn login-button-active':'btn login-button'"
+                        >
+                            Week
+                            <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'week'"></span></button>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
+                        <button style="min-width:100%;" type="button"
+                                ng-click="setFilter('month')"
+                                ng-class="FeedModel.filter == 'month' ? 'btn login-button-active':'btn login-button'"
+                        >
+                            Month
+                            <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'month'"></span></button>
+                    </div>
+
                 </div>
 
             </div>
+            <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <p class="margin-bottom-25 text-grey"><i>Discover the hottest topics by reading social media most recommended news.</i></p>
+                        </div>
+                    </div>
 
-        </div>
-
-        <script>
-
-            jQuery('document').ready( function ($) {
-
-                var css = {
-                    "height" : $('.breadcrumb').height(),
-                    "max-height": $('.breadcrumb').height(),
-                    "paddingtop": ( parseInt( $('.breadcrumb').css('padding-top')) / 2 ),
-                    "paddingbottom": ( parseInt( $('.breadcrumb').css('padding-bottom')) / 2 ),
-                }
-
-                var img_heigt = css.height + css.paddingbottom+ css.paddingtop
-
-                $('.open-influencers').css( { 'padding-top' : css.paddingtop+'px', 'padding-bottom' : css.paddingbottom+'px'  } )
-                $('.open-influencers > span').css( { 'height' : img_heigt-2+'px', 'line-height' : img_heigt+'px' } )
-
-                $('body').on('DOMNodeInserted', '.open-influencers', function (e) {
-                    $(e.target).css( { 'height' : (img_heigt-2)+'px' } )
-                })
-            })
-
-        </script>
-
-    </div>
-
-    <div class="row margin-bottom-50">
-        <div class="col-md-12 text-center theme-name">
-                <span class="text-red">
-                    <h2><span class="text-black">Topic:</span> {{selected_topic.topic_name}}</h2>
-
-                    <button style="padding-left: 0; padding-right: 0;" type="button" class="btn login-button font-size-8" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <h2 style="opacity:0; line-height: 0; margin-top:0; margin-bottom:0;">{{selected_topic.topic_name}}</h2>
-                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                    </button>
-
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        {% for t in topics %}
-                            <li><a href="{% url 'dashboard:theme' t.topic_id %}">{{t.topic_name}}</a></li>
-                        {% endfor %}
-                    </ul>
-
-                </span>
-        </div>
-    </div>
-    <div class="row margin-bottom-25">
-        <div class="col-md-8 col-md-offset-2">
-
-            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" type="button"
-                        ng-click="setFilter('yesterday')"
-                        ng-class="FeedModel.filter == 'yesterday' ? 'btn login-button-active':'btn login-button'"
-                >
-                    Yesterday
-                <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'yesterday'"></span></button>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" type="button"
-                        ng-click="setFilter('week')"
-                        ng-class="FeedModel.filter == 'week' ? 'btn login-button-active':'btn login-button'"
-                >
-                    Week
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'week'"></span></button>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-12 margin-bottom-10">
-                <button style="min-width:100%;" type="button"
-                        ng-click="setFilter('month')"
-                        ng-class="FeedModel.filter == 'month' ? 'btn login-button-active':'btn login-button'"
-                >
-                    Month
-                    <span class="glyphicon glyphicon-calendar margin-left-10" aria-hidden="true" ng-show="FeedModel.filter == 'month'"></span></button>
-            </div>
-
-        </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-12">
-                <h3 class="margin-bottom-25">Discover the hottest topics by reading social media most recommended news.</h3>
-            </div>
-            <!-- FEED SPACE -->
-            <div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" ng-repeat="feed in FeedModel.data" ng-cloak="FeedModel.data.length">
-                    <div class="card margin-bottom-20">
-                        <a href="{$feed.url$}" target="_blank">
-                            <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
-                                <img style="min-width:100%;" ng-if="feed.im" src="{$ feed.im $}" class="img-responsive" alt="{$feed.title$}">
-                                <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
+                    <!-- FEED SPACE -->
+                    <!--<div class="col-md-12 infinite-container" infinite-scroll="FeedModel.next()" style="margin-bottom:10%;">-->
+                    <div class="col-md-12">
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4" ng-repeat="feed in FeedModel.data track by $index" ng-cloak="FeedModel.data.length">
+                            <div class="card margin-bottom-20">
+                                <a href="{$feed.url$}" target="_blank">
+                                    <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+                                        <img style="min-width:100%;" ng-if="feed.im" ng-src="{$ feed.im || '/static/images/rasp-icon.png'$}" class="img-responsive" alt="{$feed.title$}">
+                                        <img style="min-width:100%;" ng-if="!feed.im" src="/static/images/rasp-icon.png" class="img-responsive" alt="{$feed.title$}">
+                                    </div>
+                                    <div class="card-content">
+                                        <h5 ng-if="feed.title">{$ feed.title | limitTo: 40 $} {$ feed.title.length > 50 ? '...' : '' $}</h5>
+                                        <h5 ng-if="!feed.title" >No Title provided </h5>
+                                    </div>
+                                    <div class="card-action">
+                                        <p ng-if="feed.summary">{$ feed.summary | limitTo: 60 $} {$ feed.summary.length > 60 ? '...' : '' $}</p>
+                                        <p ng-if="!feed.summary">No Description provided </p>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="card-content">
-                                <h5 ng-if="feed.title">{$ feed.title | limitTo: 40 $} {$ feed.title.length > 50 ? '...' : '' $}</h5>
-                                <h5 ng-if="!feed.title" >No Title provided </h5>
-                            </div>
-                            <div class="card-action">
-                                <p ng-if="feed.summary">{$ feed.summary | limitTo: 100 $} {$ feed.summary.length > 100 ? '...' : '' $}</p>
-                                <p ng-if="!feed.summary">No Description provided </p>
-                            </div>
-                        </a>
+                        </div>
+                    </div>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <simple-pagination
+                                nextfunction="FeedModel.next"
+                                prevfunction="FeedModel.prev"
+                                nextcursor="FeedModel.next_cursor"
+                                prevcursor="FeedModel.prev_cursor"
+                        ></simple-pagination>
+                        <br>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div id="row">
+                <div class="col-md-12">
+                    <h2>Hot&nbsp;Tags</h2>
+                    <tag-bubbles
+                            themeid="{{selected_topic.topic_id}}"
+                            themefilter="FeedModel.filter"
+                            isstatic="true"
+                            maxtags="10"
+                    ></tag-bubbles>
+                    <br>
+                </div>
+
+                <div class="col-md-12">
+                    <h2>Community</h2>
+                    <br>
+                    <div class="influencer-toggle">
+                        <span
+                                class="influencers-btn pointer"
+                                ng-class="{ 'bg-red text-white': audiences_selected!=true }"
+                                ng-click="audiences_selected=false"
+                        >Influencers</span>
+                        <span class="influencers-location-btn pointer">
+                            {$ InfluencersModel.location $}&nbsp;
+                            <i class="fa fa-caret-down"></i>
+                        </span>
+                        <span
+                                class="audiences-btn pointer"
+                                ng-class="{ 'bg-red text-white': audiences_selected==true }"
+                                ng-click="audiences_selected=true"
+                        >Audiences</span>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <ul class="list-unstyled influencers-select" style="display:none; float: left;">
+                        <li ng-click="InfluencersModel.set_location('IT')">Italy</li>
+                        <li ng-click="InfluencersModel.set_location('ES')">Spain</li>
+                        <li ng-click="InfluencersModel.set_location('SK')">Slovakia</li>
+                        <li ng-click="InfluencersModel.set_location('UK')">United Kingdom</li>
+
+                        <script>
+                            jQuery('body').on('click', function(e){
+                                let select = $('.influencers-select')
+                                if(e.target === $('.influencers-location-btn')[0] || e.target === $('.influencers-location-btn i')[0]) select.show()
+                                else select.hide()
+                            })
+                        </script>
+
+                    </ul>
+                </div>
+                <div class="col-md-12" ng-if="audiences_selected!=true">
+
+                    <div class="row">
+                        <br>
+                        <p class="col-md-12"><i class="text-grey">Individuals with large followings in {{selected_topic.topic_name}} comunity</i></p>
+                    </div>
+                    <a
+                            class="row Aligner-left margin-bottom-1perc"
+                            ng-repeat="data in InfluencersModel.influencers"
+                            href="https://www.twitter.com/{$ data.screen_name $}"
+                            target="_blank"
+                            style="margin:2% 0;"
+                    >
+                        <div class="col-md-2">
+                            <img class="img-circle" style="width:100%;" ng-src="{$ data.profile_image_url_https $}" alt="">
+                        </div>
+                        <div class="col-md-10">
+                            <h4 style="margin-bottom:5px;">{$ data.name $}</h4>
+                            <p>
+                                <i>{$ data.description && data.description.length > 50? (data.description|limitTo:50)+'[...]': data.description $}</i>
+                            </p>
+                        </div>
+                        <br>
+                    </a>
+
+                </div>
+
+
+                <div class="col-md-12" ng-if="audiences_selected==true">
+
+                    <div class="row">
+                        <br>
+                        <p class="col-md-12"><i class="text-grey">Individuals that shows intereset in {{selected_topic.topic_name}} topic, or individuals very active in {{selected_topic.topic_name}} comunity</i></p>
+                    </div>
+                    <a
+                            class="row Aligner-left margin-bottom-1perc"
+                            ng-repeat="data in InfluencersModel.audiences"
+                            href="https://www.twitter.com/{$ data.screen_name $}"
+                            target="_blank"
+                            style="margin:2% 0;"
+                    >
+                        <div class="col-md-2">
+                            <img class="img-circle" style="width:100%;" ng-src="{$ data.profile_image_url_https $}" alt="">
+                        </div>
+                        <div class="col-md-10">
+                            <h4 style="margin-bottom:5px;">{$ data.name $}</h4>
+                            <p>
+                                <i>{$ data.description && data.description.length > 50? (data.description|limitTo:45)+'[...]': data.description $}</i>
+                            </p>
+                        </div>
+                        <br>
+                    </a>
+
+                </div>
+
+
+            </div>
+        </div>
+
     </div>
+
 </div>
 {% endblock %}

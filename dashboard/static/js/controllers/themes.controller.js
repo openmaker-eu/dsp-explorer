@@ -1,103 +1,106 @@
-/**
- * Created by andreafspeziale on 24/05/17.
- */
+import * as _ from 'lodash'
+
 export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibModal,$http,$aside) {
     
-    $scope.FeedModel = {
+    $scope.selected_location = ''
+    
+    let feed = {
         theme : null,
         filter : 'yesterday' ,
-        current_cursor : null,
+        
         next_cursor : -1,
+        prev_cursor : undefined,
+        
         progress : false,
         top:  $(window).scrollTop(),
         data : [],
-        
-        next : function( theme = this.theme , filter = this.filter , cursor = this.next_cursor){
-            if(
-                this.progress === true
-                || this.next_cursor == 0
-                || this.current_cursor == this.next_cursor
-            ) return
-            
-            this.progress = true;
-            this.current_cursor = this.next_cursor
-            this.get_news( theme, filter, cursor )
-            return this
-            
-        },
     
-        reset : function(theme=this.theme, filter=this.filter, cursor=-1){
-            this.data = []
-            this.current_cursor = null
-            this.next_cursor = -1
-            this.next(theme, filter, cursor)
-            return this
+        prev : function(){$scope.FeedModel.get_news(feed.prev_cursor)},
+        next : function(){$scope.FeedModel.get_news(feed.next_cursor)},
+        
+        reset : function(theme=feed.theme, filter=feed.filter, cursor=-1){
+            feed.data = []
+            feed.next_cursor = -1,
+            feed.next(theme, filter, cursor)
+            return feed
         },
         
-        get_news : function(theme=this.theme , filter=this.filter , cursor = this.next_cursor){
-            console.log('get news');
-            this.progress = true;
-            $http.get('/api/v1.2/news/' + theme + '/' + filter + '/' + cursor + '/')
+        get_news : function(cursor = -1 , theme=feed.theme , filter=feed.filter){
+            console.log('cursor', cursor);
+            $http.get('/api/v1.3/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
-                        console.log('get news response');
-                        this.data = this.data.concat(response.data.result.news)
-                        this.next_cursor = parseInt(response.data.result.next_cursor)
-                        this.progress = false;
+                        console.log('next cursor', _.get(response, 'data.result.next_cursor'));
+                        feed.data = _.get(response, 'data.result.news')
+                        feed.next_cursor = _.get(response, 'data.result.next_cursor')
+                        feed.prev_cursor = _.get(response, 'data.result.previous_cursor') || 0
                     },
-                    (err)=>{ console.log('ERROR:', err); this.progress = false; }
+                    (err)=>{ console.log('ERROR:', err)}
                 )
-            return this
-        },
-        get_audiences : function (theme) {
-            $http.get('/api/v1.2/audiences/' + theme)
-                .then(function (response) {
-                    $scope.influencers = response.data.result.audiences;
-                },function (err) {
-                    // ToDo show API errors with a common error message using toastr?
-                })
+            return feed
         }
     }
     
+    
+    let influencers = {
+        theme: null,
+        location:null,
+        influencers : [],
+        audiences : [],
+        get_influencers : function (theme) {
+            $http.get('/api/v1.3/influencers/' + (theme || influencers.theme || 1) + '/' +(influencers.location || ''))
+                .then(
+                    function (response) {influencers.influencers = _.get(response, 'data.result.local_influencers')},
+                    function (err) { /* ToDo show API errors with a common error message using toastr? */}
+                )
+        },
+        get_audiences : function (theme) {
+            $http.get('/api/v1.3/audiences/' + (theme || influencers.theme || 1) + '/' +(influencers.location || ''))
+                .then(
+                    function (response) {influencers.audiences = _.get(response, 'data.result.audience_sample')},
+                    function (err) { /* ToDo show API errors with a common error message using toastr? */}
+                )
+        },
+        get_all : function(){
+            influencers.get_audiences()
+            influencers.get_influencers()
+        },
+        set_location : function(location){ influencers.location = location, influencers.get_all() }
+    }
+    
+    $scope.FeedModel = feed
+    $scope.InfluencersModel = influencers
+    
     let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
-        console.log('default topic');
-        // if(newValue === oldValue) return
+        
+        // Set Theme for this page
         $scope.FeedModel.theme = newValue
-        $scope.FeedModel
-            .get_news(newValue, $scope.filter, $scope.cursor)
-            .get_audiences(newValue)
+        influencers.theme = newValue
+        influencers.location = $scope.selected_location
+        
+        // Get all data
+        $scope.FeedModel.get_news(-1, newValue, $scope.filter)
+        influencers.get_audiences($scope.topic_id);
+        influencers.get_influencers($scope.topic_id);
+        
+        console.log(influencers.location);
+        
+        // Unbind to execute watch only once
         unbind_topic_id()
+        
     })
     
     // Set filter for time
     $scope.setFilter = function (filter) {
-        console.log('Set filter');
         if($scope.FeedModel.progress==false){
-            console.log('SET filter inside');
             $scope.FeedModel.filter = filter;
             $scope.FeedModel.reset($scope.theme)
         }
     }
+    
+    //
+    // let audiences_watch = $scope.$watch('topic_id', ()=>{  audiences_watch=null})
+    // let influencers_watch = $scope.$watch('topic_id', ()=>{ influencers.get_influencers($scope.topic_id); influencers_watch=null})
 
-    // open aside with influencers
-    $scope.openAside = () => {
-        $scope.aside = $aside({
-            scope:$scope,
-            title: "Title",
-            templateUrl: false,
-            backdrop: 'static',
-            template: require("../../../templates/aside/influencers.html"),
-            show:false
-        });
-        $scope.aside.$promise.then(function() {
-            $scope.aside.show();
-            $('body').addClass('no-scroll');
-        })
-    }
-    $scope.closeAside = () =>{
-        $scope.aside.hide()
-        $('body').removeClass('no-scroll');
-        
-    }
     
 }]

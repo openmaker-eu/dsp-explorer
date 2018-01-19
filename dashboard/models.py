@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -6,7 +7,12 @@ from django.utils import timezone
 from datetime import datetime as dt
 from utils.hasher import HashHelper
 import uuid
-from .exceptions import EmailAlreadyUsed, UserAlreadyInvited
+from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
+from opendataconnector.odconnector import OpenDataConnector
+from restcountriesconnector.rcconnector import RestCountriesConnector
+import json
+from utils.GoogleHelper import GoogleHelper
+from django.db.models import Q
 
 
 class Tag(models.Model):
@@ -18,6 +24,106 @@ class Tag(models.Model):
         tag.save()
         return tag
 
+
+class Country(models.Model):
+    code = models.CharField(max_length=20, null=True, blank=True, default=None)
+    alias = models.TextField(null=True, blank=True, default=None)
+
+    @classmethod
+    def create(cls, code, alias):
+        existing = Country.objects.filter(code=code)
+        
+        if len(existing):
+            return existing
+
+        new_country = cls(code=code, alias=alias)
+        new_country.save()
+        return new_country
+
+
+    class Meta:
+        ordering = ('code',)
+
+    def __str__(self):
+        return self.code
+
+
+class Location(models.Model):
+
+    lat = models.CharField(null=True, blank=True, max_length=20)
+    lng = models.CharField(null=True, blank=True, max_length=20)
+
+    city = models.CharField(max_length=200, null=True, blank=True)
+    state = models.CharField(max_length=200, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    country_short = models.CharField(max_length=200, null=True, blank=True)
+    post_code = models.CharField(max_length=200, null=True, blank=True)
+    city_alias = models.TextField(null=True, blank=True, default=None)
+    country_alias = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
+
+    @classmethod
+    def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
+        existing_location = Location.objects.filter(lat=lat, lng=lng)
+        new_location = None
+
+        # Model does not esxist
+        if not len(existing_location):
+            new_location = cls(
+                lat=lat,
+                lng=lng,
+                city=city,
+                state=state,
+                country=country,
+                country_short=country_short,
+                post_code=post_code,
+                city_alias=city+','
+            )
+            latlng = cls.get_latlng(lat, lng)
+            aliases = OpenDataConnector.get_city_alternate_name_by_latlng(latlng)
+
+            if aliases:
+                new_location.city_alias = aliases+','
+            new_location.save()
+
+        else:
+            existing_location = existing_location[0]
+            # Model Exist, update
+            if existing_location and not city+',' in existing_location.city_alias:
+                existing_location.city_alias += city+','
+                existing_location.save()
+
+        results = new_location or existing_location
+        cls.add_country_alias(results)
+
+        return results
+
+    @classmethod
+    def add_country_alias(cls, location):
+        if not location.country_alias:
+            existing_country = Country.objects.filter(code=location.country_short)
+            if len(existing_country):
+                location.country_alias = existing_country[0]
+                location.save()
+                return location
+
+            country_aliases = RestCountriesConnector.get_city_alias(location.country)
+            if country_aliases:
+                country_alias = Country.create(location.country_short, country_aliases)
+                location.country_alias = country_alias
+                location.save()
+
+    @classmethod
+    def get_latlng(cls, lat=None, lng=None):
+        lat = lat or cls.lat
+        lng = lng or cls.lng
+        return lat+','+lng
+
+    class Meta:
+        ordering = ('lat', 'lng', 'city')
+
+    def __str__(self):
+        return self.city+', '+self.state+' '+self.country+' '+self.country_short
 
 class SourceOfInspiration(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
@@ -46,10 +152,17 @@ class Profile(models.Model):
     sector = models.TextField(_('Sector'), max_length=200, null=True, blank=True, default='')
     types_of_innovation = models.TextField(_('Types of Innovation'), max_length=200, null=True, blank=True, default='')
     size = models.TextField(_('Size'), max_length=200, null=True, blank=True, default='')
+
     technical_expertise = models.TextField(_('Technical Expertise'), max_length=200, null=True, blank=True, default='')
+
+    technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
+    role_other = models.TextField(_('Role other'), max_length=200, null=True, blank=True, default='')
+    sector_other = models.TextField(_('Sector other'), max_length=200, null=True, blank=True, default='')
 
     tags = models.ManyToManyField(Tag, related_name='profile_tags')
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
+
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     socialLinks = models.TextField(
         _('Social Links'),
@@ -58,6 +171,10 @@ class Profile(models.Model):
         blank=True,
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
+
+
+    def set_location(self):
+        return None
 
     # Reset Password
     reset_token = models.TextField(max_length=200, null=True, blank=True)
@@ -76,16 +193,16 @@ class Profile(models.Model):
     @classmethod
     def create(cls, email, first_name, last_name, picture, password=None, gender=None,
                birthdate=None, city=None, occupation=None, twitter_username=None, place=None):
-
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            user = User.objects.create_user(username=email,
-                                            email=email,
-                                            password=password,
-                                            first_name=first_name,
-                                            last_name=last_name
-                                            )
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
             user.is_active = False
             user.save()
 
@@ -107,6 +224,21 @@ class Profile(models.Model):
             return profile
         raise EmailAlreadyUsed
 
+    @classmethod
+    def delete_account(cls, user_id):
+        from crmconnector.models import Party
+        user = User.objects.get(pk=user_id)
+        profile = user.profile
+        try:
+            # Crm
+            party = Party(user)
+            party.find_and_delete()
+            # Tags
+            profile.delete()
+            user.delete()
+        except:
+            raise
+
     def send_email(self, subject, message):
         """
         Send Async Email to the user
@@ -115,12 +247,15 @@ class Profile(models.Model):
         :return: Nothing
         """
         import threading
-        thr = threading.Thread(target=Profile._send_email,
-                               kwargs=dict(message=message,
-                                           subject=subject,
-                                           receiver_name=self.user.get_full_name(),
-                                           receiver_email=self.user.email
-                                           ))
+        thr = threading.Thread(
+            target=Profile._send_email,
+             kwargs=dict(
+                 message=message,
+                 subject=subject,
+                 receiver_name=self.user.get_full_name(),
+                 receiver_email=self.user.email
+             )
+        )
         thr.start()
 
     def get_name(self):
@@ -130,6 +265,9 @@ class Profile(models.Model):
     def get_last_name(self):
         import unicodedata
         return unicodedata.normalize('NFKD', self.user.last_name).encode('ascii', 'ignore')
+
+    def get_location(self):
+        return {k: v for x in [self.place] if x for k, v in json.loads(x).items()}
 
     @staticmethod
     def _send_email(subject, message, receiver_name, receiver_email):
@@ -167,7 +305,6 @@ class Profile(models.Model):
 
     @classmethod
     def search_members(cls, search_string, restrict_to=None):
-        from django.db.models import Q
         if restrict_to == 'tags':
             return cls.objects \
                 .filter(Q(tags__name=search_string)) \
@@ -179,14 +316,17 @@ class Profile(models.Model):
 
         return cls.objects\
             .filter(
-                Q(user__email__icontains=search_string) |
-                Q(user__first_name__icontains=search_string) |
-                Q(user__last_name__icontains=search_string) |
-                Q(tags__name__icontains=search_string) |
-                Q(twitter_username__icontains=search_string) |
-                Q(occupation__icontains=search_string) |
-                Q(sector__icontains=search_string) |
-                Q(city__icontains=search_string))\
+                    Q(user__email__icontains=search_string) |
+                    Q(user__first_name__icontains=search_string) |
+                    Q(user__last_name__icontains=search_string) |
+                    Q(tags__name__icontains=search_string) |
+                    Q(twitter_username__icontains=search_string) |
+                    Q(occupation__icontains=search_string) |
+                    Q(sector__icontains=search_string) |
+                    Q(city__icontains=search_string) |
+                    Q(location__city_alias__icontains=search_string) |
+                    Q(location__country_alias__alias__icontains=search_string)
+                )\
             .distinct()
 
     @classmethod
@@ -223,6 +363,43 @@ class Profile(models.Model):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         return places
 
+    def sanitize_place(self):
+        try:
+            if not self.place or 'city' not in self.place:
+                city = self.city
+                place = GoogleHelper.get_city(city)
+                if place:
+                    self.place = json.dumps(place)
+                    self.save()
+        except Exception as e:
+            print 'error'
+            print e
+
+    def set_place(self, place):
+        self.place = place
+        try:
+            if not self.place or 'city' not in self.place:
+                new_place = GoogleHelper.get_city(self.city)
+                if new_place:
+                    self.place = json.dumps(new_place)
+                    self.save()
+            if self.place or 'city' in self.place:
+                place = json.loads(self.place)
+                location = Location.create(
+                    lat=repr(place['lat']),
+                    lng=repr(place['long']),
+                    city=place['city'],
+                    state=place['state'],
+                    country=place['country'],
+                    country_short=place['country_short'],
+                    post_code=place['post_code'] if 'post_code' in place else '',
+                    city_alias=place['city']+','
+                )
+                self.location = location
+                self.save()
+        except Exception as e:
+            print e
+
 
 class Invitation(models.Model):
 
@@ -241,34 +418,104 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     @classmethod
-    def create(cls, user, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name,
-               receiver_last_name, sender_verified=True):
-        try:
-            Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-            raise UserAlreadyInvited
-        except Invitation.DoesNotExist:
-            pass
-        try:
-            user = User.objects.get(email=receiver_email)
-            raise EmailAlreadyUsed
-        except User.DoesNotExist:
-            pass
+    def create(cls, sender_email, sender_first_name, sender_last_name, receiver_email, receiver_first_name,
+               receiver_last_name, sender_verified=True, user=None):
 
+        # @TODO: remove when sanitize old user whit no profile from db
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             profile = None
+
+        try:
+            cls.__validate(sender_email=sender_email, receiver_email=receiver_email)
+        except:
+            raise
+
+        # try:
+        #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+        #     raise UserAlreadyInvited
+        # except Invitation.DoesNotExist:
+        #     pass
             
-        invitation = cls(profile=profile,
-                         sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
-                         sender_first_name=HashHelper.md5_hash(sender_first_name) if not profile else sender_first_name,
-                         sender_last_name=HashHelper.md5_hash(sender_last_name) if not profile else sender_last_name,
-                         receiver_first_name=HashHelper.md5_hash(receiver_first_name),
-                         receiver_last_name=HashHelper.md5_hash(receiver_last_name),
-                         receiver_email=HashHelper.md5_hash(receiver_email),
-                         sender_verified=sender_verified)
+        invitation = cls(
+            profile=profile,
+            sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
+            sender_first_name=HashHelper.md5_hash(sender_first_name) if not profile else sender_first_name,
+            sender_last_name=HashHelper.md5_hash(sender_last_name) if not profile else sender_last_name,
+            receiver_first_name=HashHelper.md5_hash(receiver_first_name),
+            receiver_last_name=HashHelper.md5_hash(receiver_last_name),
+            receiver_email=HashHelper.md5_hash(receiver_email),
+            sender_verified=sender_verified
+        )
         invitation.save()
         return invitation
+
+    @classmethod
+    def __validate(cls, sender_email, receiver_email, user=None):
+
+        # Check if SENDER try to invite himself -> SelfInvitation
+        if sender_email == receiver_email:
+            raise SelfInvitation
+
+        # Check if RECEIVER is already a member -> EmailAlreadyUsed
+        try:
+            User.objects.get(email=receiver_email)
+            raise EmailAlreadyUsed
+        except User.DoesNotExist:
+            pass
+
+        # Check if SENDER has already send invitation to RECEIVER -> UserAlreadyInvited
+        if Invitation.get_by_email(receiver_email=receiver_email, sender_email=sender_email):
+            raise UserAlreadyInvited
+
+
+    @classmethod
+    def get_by_email(cls, sender_email=None, receiver_email=None):
+        q = Q()
+        sender_email and q.add(Q(sender_email=HashHelper.md5_hash(sender_email)) | Q(sender_email=sender_email), q.AND)
+        receiver_email and q.add(Q(receiver_email=HashHelper.md5_hash(receiver_email)) | Q(receiver_email=receiver_email), q.AND)
+        return cls.objects.filter(q).distinct()
+
+    @classmethod
+    def can_invite(cls, sender_email, receiver_email):
+        return len(cls.get_by_email(sender_email, receiver_email)) < 1
+
+    @classmethod
+    def deobfuscate_email(cls, email, first_name=None, last_name=None):
+        hashed = HashHelper.md5_hash(email)
+        sender_dict = {
+            'sender_email': email,
+            'sender_first_name': first_name,
+            'sender_last_name': last_name
+        }
+        receiver_dict = {
+            'receiver_email': email,
+            'receiver_first_name': first_name,
+            'receiver_last_name': last_name
+        }
+        cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.iteritems() if v is not None})
+        cls.objects.filter(receiver_email=hashed).update(**{k: v for k, v in receiver_dict.iteritems() if v is not None})
+
+    @classmethod
+    def confirm_sender(cls, sender_email, receiver_email):
+        try:
+            cls.__validate(sender_email=sender_email, receiver_email=receiver_email)
+        except UserAlreadyInvited:
+            pass
+        except:
+            raise
+
+        existent_invitation = cls.objects.filter(
+            sender_email=HashHelper.md5_hash(sender_email),
+            receiver_email=HashHelper.md5_hash(receiver_email)
+        )
+        if len(existent_invitation):
+            existent_invitation[0].sender_verified = True
+            existent_invitation[0].save()
+            return existent_invitation[0]
+        else:
+            return False
 
 
 class Feedback(models.Model):
@@ -287,3 +534,4 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.message_text
+

@@ -1,0 +1,15 @@
+
+
+        <!--<div class="container-fluid">-->
+            <!--<div class="row">-->
+                <!--<div class="col-md-12">-->
+
+                    <form action="{% url 'dashboard:test' %}" method="POST">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" value="submit">
+                    </form>
+
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->

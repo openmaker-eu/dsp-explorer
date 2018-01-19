@@ -6,6 +6,7 @@
 
     <title>Open Maker Explorer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
 
@@ -63,24 +64,42 @@
                             <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:dashboard' %}">Home</a>
                             </li>
-                            <li class="{% if current_url == 'dashboard:theme' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:theme' %}">Explore Feeds</a>
+                            <li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{% url 'dashboard:theme' %}">Feeds</a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li>
+                                        <a href="{% url 'dashboard:events' %}">Events</a>
+                                    </li>
+                                </ul>
                             </li>
-{#                            <li class="{% if current_url == 'dashboard:events' %}liactive{% endif %}" >#}
-{#                                <a href="{% url 'dashboard:events' %}">Explore Events</a>#}
-{#                            </li>#}
-                            <li class="{% if current_url == 'dashboard:search_members' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:search_members' %}">Community</a>
+                            <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:insight' %}">Insight</a>
                             </li>
-                            <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+                            <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:community' %}">Community</a>
                             </li>
 
-                            {% if not request.user.is_superuser %}
-                                {#                                <li class="{% if current_url == 'pss:application' %}liactive{% endif %}" >#}
-                                {#                                    <a href="{% url 'pss:application' %}">Apply</a>#}
-                                {#                                </li>#}
-                            {% else %}
+                            {% if request.user.is_superuser %}
+                            <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Invitation<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                            {% endif %}
+                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
+                                        <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+                                    </li>
+                            {% if request.user.is_superuser %}
+                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
+                                        <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+                            {% if request.user.is_superuser %}
                                 {# TODO check permission super admin and isstaff #}
                                 <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
@@ -88,17 +107,12 @@
                                         <li>
                                             <a href="{% url 'pss:application_result' %}">Results</a>
                                         </li>
-                                        {#                                        <li>#}
-                                        {#                                            <a href="{% url 'pss:application' %}">Submission</a>#}
-                                        {#                                        </li>#}
                                     </ul>
                                 </li>
                                 <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
                                     <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
                                 </li>
                             {% endif %}
-
-
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle"
                                    data-toggle="dropdown" role="button"
@@ -142,8 +156,9 @@
         </div>
     {% endif %}
 </div>
-{% if user.is_anonymous %}
     <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+
+        {% if user.is_anonymous %}
         <div class="row" style="background: #efefef;">
             <div class="col-md-12 text-center margin-top-50 margin-bottom-50">
                 <p class="claim text-center">
@@ -154,7 +169,10 @@
                 </a>
             </div>
         </div>
+        {% endif %}
+
         <div class="row back padding-bottom-20">
+            {% if user.is_anonymous %}
             <div class="container">
                 <div class="row margin-top-25">
                     <div class="col-md-8 text-white">
@@ -170,23 +188,27 @@
                         <a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>
                     </div>
                 </div>
+            </div>
+            {% endif %}
+
+            <div class="container">
                 <div class="row margin-top-20">
-                    <div class="col-md-12 pull-right">
-                        <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker </a><span class="text-red">&mdash;</span>
-                        {#                        <a href="/support" class="text-red">FAQ </a><span class="text-red">&mdash;</span>#}
-                        <a href="/terms" class="text-red">Terms & Conditions </a><span class="text-red">&mdash;</span>
-                        <a href="/privacy" class="text-red">Privacy Policy</a>
+                        <div class="col-md-12 pull-right">
+                            <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endif %}
+
 </div>
 
 {% include "./modals/login.html" %}
 {% include "./modals/feedback.html" %}
-
 
 </body>
 </html>

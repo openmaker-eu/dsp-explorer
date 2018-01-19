@@ -57,7 +57,6 @@
                                 <option value="other" >Does it matter?</option>
                             </select>
                         </div><br />
-
                         <div class="col-md-6">
                             <p class="input-group" style="margin: 0;">
                                 <input type="text" class="form-control" placeholder="Birthdate YYYYY/MM/DD *"
@@ -75,11 +74,16 @@
                             </p>
                             <br />
                         </div>
+
                         <div class="col-md-12">
                             <label for="" >City <span class="text-red">*</span></label>
-                            <input ng-init="place={};" required class="form-control"
-                                   vs-google-autocomplete="{ types:['(cities)'] }"
+                            <input ng-init="place={};"
+                                   autocomplete="**********"
+                                   required
+                                   class="form-control"
 
+                                   vs-google-autocomplete="{ types:['(cities)'] }"
+                                   vs-autocomplete-validator
                                    ng-model="city"
                                    vs-latitude ="place.lat"
                                    vs-longitude="place.long"
@@ -92,7 +96,6 @@
                                    vs-post-code="place.post_code"
 
                                    type="text" name="city" id="city"
-                                   class="form-control"
                                    placeholder="Start typing the city name where you are based *"><br />
 
                             <input type="hidden" value="{$ place $}" name="place">

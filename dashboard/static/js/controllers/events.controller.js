@@ -1,63 +1,76 @@
 /**
  * Created by andreafspeziale on 24/05/17.
  */
+import * as _ from 'lodash'
 export default [ '$scope', '$http', function ($scope,$http) {
-    
-    $scope.EventModel = {
+
+    $scope.user_country = {
+        short_code: '',
+        label: ''
+    };
+
+    $scope.countries = [
+        {
+            label: 'Italy',
+            short_code: 'it'
+        },
+        {
+            label: 'United Kingdom',
+            short_code: 'gb'
+        },
+        {
+            label: 'Slovakia',
+            short_code: 'sk'
+        },
+        {
+            label: 'Spain',
+            short_code: 'es'
+        },
+        {
+            label: 'All over the World',
+            short_code: ''
+        }
+    ];
+
+    let eventModel = {
         theme : null,
         cursor: 0,
-        // current_cursor : null,
-        // next_cursor : -1,
-        // progress : false,
+        user_location: null,
+        
+        prev_cursor : null,
+        next_cursor : null,
+        
         top:  $(window).scrollTop(),
         data : [],
         
-        /*
-        next : function( theme = this.theme, cursor = this.next_cursor){
-            if(
-                this.progress === true
-                || this.next_cursor == 0
-                || this.current_cursor == this.next_cursor
-            ) return
+        prev : function () { eventModel.get_events(eventModel.theme, eventModel.user_location, eventModel.prev_cursor) },
+        next :function () { eventModel.get_events(eventModel.theme, eventModel.user_location, eventModel.next_cursor) },
+        
+        get_events : function(theme=eventModel.theme, location=eventModel.user_location, cursor=eventModel.cursor){
+            let params = ''
+            if (location!=='') params = theme + '/' + location + '/'+ cursor + '/'
+            else params = theme + '/' + cursor + '/'
 
-            this.progress = true;
-            this.current_cursor = this.next_cursor
-            this.get_events( theme, cursor )
-            return this
-            
-        },
-
-
-        reset : function(theme=this.theme, cursor=-1){
-            this.data = []
-            this.current_cursor = null
-            this.next_cursor = -1
-            this.next(theme, cursor)
-            return this
-        },
-        */
-
-        get_events : function(theme=this.theme, cursor = this.cursor){
-            console.log('get events');
-            $http.get('/api/v1.2/events/' + theme + '/' + cursor + '/')
+            $http.get('/api/v1.3/events/' + params)
                 .then(
                     (response) => {
-                        console.log('get events response');
-                        this.data = response.data.result.events
+                        eventModel.prev_cursor = _.get(response, 'data.result.previous_cursor')
+                        eventModel.next_cursor = _.get(response, 'data.result.next_cursor')
+                        eventModel.data = response.data.result.events
                     },
                     (err)=>{ console.log('ERROR:', err); }
                 )
-            return this
+            return eventModel
         },
     }
     
-    let unbind_topic_id = $scope.$watch('topic_id', function (newValue, oldValue) {
-        console.log('default topic');
-        // if(newValue === oldValue) return
-        $scope.EventModel.theme = newValue
-        $scope.EventModel
-            .get_events(newValue, $scope.cursor)
-        unbind_topic_id()
+    $scope.EventModel = eventModel
+
+    $scope.$watch('[topic_id,user_country.short_code,user_country.label]', function (newValue, oldValue) {
+        if(_.filter($scope.countries, { short_code: newValue[1] }).length == 0) $scope.countries.unshift( { label: newValue[2],  short_code: newValue[1]} )
+        $scope.EventModel.theme = newValue[0]
+        $scope.EventModel.user_location = newValue[1]
+        $scope.EventModel.get_events(newValue[0], newValue[1], -1)
     })
-    
+
 }]

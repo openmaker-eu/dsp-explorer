@@ -1,18 +1,18 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer
-from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12
-from utils.api import *
+from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
+from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirm
 import json
 from datetime import date, timedelta
-import random, logging
+import random, logging, requests
 from crmconnector.models import Party
 from json_tricks.np import dump, dumps, load, loads, strip_comments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -20,8 +20,14 @@ from utils.Colorizer import Colorizer
 
 logger = logging.getLogger(__name__)
 
+from django.http import HttpResponse
+from django.views import View
+import math
+from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+from django.contrib.auth.decorators import login_required
+
+
 def search_members(request, search_string):
-    import math
 
     members_per_page = 20
 
@@ -68,8 +74,11 @@ def get_feeds(request, theme_name, date='yesterday', cursor=-1):
         feeds = DSPConnector.get_feeds(theme_name, date, cursor)
     except DSPConnectorException:
         feeds = {}
-    return JsonResponse({'status': 'ok',
-                         'result': feeds}, status=200)
+    return JsonResponse(
+        {
+            'status': 'ok',
+            'result': feeds
+        }, status=200)
 
 
 def get_themes(request):
@@ -91,9 +100,10 @@ def get_influencers(request, theme_name):
 
 
 def get_hot_tags(request, tag_number=4):
-    return JsonResponse({'status': 'ok',
-                         'tags': [
-                             {'name': t[0], 'size': t[1]} for t in Profile.get_hot_tags(tag_number)]}, status=200)
+    return JsonResponse({
+        'status': 'ok',
+        'result': [{'hashtag': t[0], 'count': t[1]} for t in Profile.get_hot_tags(tag_number)]
+    }, status=200)
 
 
 def get_sector(request):
@@ -128,6 +138,7 @@ def get_user_stats(request):
 
 @csrf_exempt
 def post_om_invitation(request):
+
     if request.method != 'POST':
         return not_authorized()
     try:
@@ -137,68 +148,89 @@ def post_om_invitation(request):
         receiver_first_name = request.POST['receiver_first_name'].title()
         receiver_last_name = request.POST['receiver_last_name'].title()
         receiver_email = request.POST['receiver_email'].lower()
-        if sender_first_name == '' or sender_last_name == '' or sender_email == '' or receiver_first_name == '' \
-                or receiver_last_name == '' or receiver_email == '':
+
+        if sender_first_name.strip() == '' \
+                or sender_last_name.strip() == '' \
+                or sender_email.strip() == '' \
+                or receiver_first_name.strip() == '' \
+                or receiver_last_name.strip() == '' \
+                or receiver_email.strip() == '':
             return bad_request("Please fill al the fields")
-        
-        if sender_email == receiver_email:
-            return bad_request("Sender and receiver must be different")
-    
+
+
+        # Return to dsp error page if sender is already a DSP user?
+        try:
+            User.objects.get(email=sender_email)
+            return HttpResponseRedirect('http://openmaker.eu/error_sender/')
+        except User.DoesNotExist:
+            pass
+
+        Invitation.create(
+            sender_email=sender_email,
+            sender_first_name=sender_first_name,
+            sender_last_name=sender_last_name,
+            receiver_first_name=receiver_first_name,
+            receiver_last_name=receiver_last_name,
+            receiver_email=receiver_email,
+            sender_verified=False
+        )
+
+        activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
+            get_current_site(request),
+            sender_first_name.encode('utf-8').encode('base64'),
+            sender_last_name.encode('utf-8').encode('base64'),
+            sender_email.encode('base64'),
+            receiver_first_name.encode('utf-8').encode('base64'),
+            receiver_last_name.encode('utf-8').encode('base64'),
+            receiver_email.encode('base64'))
+
+        EmailHelper.email(
+            template_name='invitation_email_confirm',
+            title='OpenMaker Nomination.. almost done!',
+            vars={
+                'SENDER_NAME': sender_first_name,
+                'CONFIRMATION_LINK': activation_link
+            },
+            receiver_email=sender_email
+        )
+
     except KeyError:
         return bad_request("Please fill al the fields")
-    
-    # sender already a DSP user?
-    try:
-        User.objects.get(email=sender_email)
-        return HttpResponseRedirect('http://openmaker.eu/error_sender/')
-    except User.DoesNotExist:
-        pass
-    
-    # receiver already a DSP user?
-    try:
-        User.objects.get(email=receiver_email)
+    except EmailAlreadyUsed:
         return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
-    except User.DoesNotExist:
-        pass
+    except UserAlreadyInvited:
+        return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
+    except SelfInvitation:
+        # @TODO : make appropriate page in openmaker
+        return bad_request("Sender and receiver must be different")
+    except Exception as e:
+        #@TODO : make appropriate page in openmaker
+        return bad_request("Some erro occour please try again")
+
+    return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+
+    # sender already a DSP user?
+    # try:
+    #     User.objects.get(email=sender_email)
+    #     return HttpResponseRedirect('http://openmaker.eu/error_sender/')
+    # except User.DoesNotExist:
+    #     pass
+
+    # receiver already a DSP user?
+    # try:
+    #     User.objects.get(email=receiver_email)
+    #     return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
+    # except User.DoesNotExist:
+    #     pass
     
     # receiver already invited?
-    try:
-        Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
-        return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
-    except Invitation.DoesNotExist:
-        pass
-    
-    Invitation.create(user=None,
-                      sender_email=sender_email,
-                      sender_first_name=sender_first_name,
-                      sender_last_name=sender_last_name,
-                      receiver_first_name=receiver_first_name,
-                      receiver_last_name=receiver_last_name,
-                      receiver_email=receiver_email,
-                      sender_verified=False
-                      )
-    
-    activation_link = 'http://{}/om_confirmation/{}/{}/{}/{}/{}/{}'.format(
-        get_current_site(request),
-        sender_first_name.encode('utf-8').encode('base64'),
-        sender_last_name.encode('utf-8').encode('base64'),
-        sender_email.encode('base64'),
-        receiver_first_name.encode('utf-8').encode('base64'),
-        receiver_last_name.encode('utf-8').encode('base64'),
-        receiver_email.encode('base64'))
-    
-    subject = 'OpenMaker Nomination.. almost done!'
-    content = "{}{}{}".format(invitation_base_template_header,
-                              invitation_email_confirm.format(SENDER_NAME=sender_first_name,
-                                                              CONFIRMATION_LINK=activation_link),
-                              invitation_base_template_footer)
-    EmailHelper.send_email(
-        message=content,
-        subject=subject,
-        receiver_email=sender_email,
-        receiver_name=''
-    )
-    return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
+    # try:
+    #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
+    #     return HttpResponseRedirect('http://openmaker.eu/error_invitation/')
+    # except Invitation.DoesNotExist:
+    #     pass
+
+    # return HttpResponseRedirect('http://openmaker.eu/pending_invitation/')
 
 
 def get_om_events(request):
@@ -219,9 +251,111 @@ def get_om_events(request):
             'results': {}},
             status=500)
 
+###########
+# API V 1.3
+###########
+
+class v13:
+    @staticmethod
+    def __wrap_response(*args, **kwargs):
+        try:
+            results = args[0](args[1:])
+        except DSPConnectorException:
+            return JsonResponse({
+                'status': 'error',
+                'result': {}
+            }, status=400)
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_influencers(request, topic_id=1, location=None):
+
+        print location
+
+        if not location:
+            place = json.loads(request.user.profile.place)
+            location = place['country_short']
+        try:
+            results = DSPConnectorV13.get_influencers(topic_id, location)
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_audiences(request, topic_id=1, location=None):
+        results = {}
+        if not location:
+            place = json.loads(request.user.profile.place)
+            location = place['country_short']
+        try:
+            results = DSPConnectorV13.get_audiences(topic_id, location)
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_events(request, topic_id, location='', cursor=0):
+        try:
+            events = DSPConnectorV13.get_events(topic_id, location, cursor)
+        except DSPConnectorException:
+            events = {}
+
+        print 'next_cursor' in events
+        'previous_cursor' not in events and events.update({'previous_cursor': 0})
+
+        return JsonResponse({
+            'status': 'ok',
+            'result': events
+        }, status=200)
+
+
+    @staticmethod
+    def get_hashtags(request, topic_id=1, date_string='yesterday'):
+        try:
+            results = DSPConnectorV13.get_hashtags(topic_id, date_string)['hashtags']
+        except DSPConnectorException:
+            results = {}
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_news(request, topic_id=1, date_string='yesterday', cursor=0):
+
+        item_per_page = 20
+        news = []
+        next_cursor = 0
+        resp = {}
+
+        try:
+            results = DSPConnectorV13.get_news(topic_id, date_string, cursor)
+            # news = results['news']
+            # next_cursor = results['next_cursor']/item_per_page
+            # resp = {'news': news, 'next_cursor': next_cursor, 'max_page': None}
+        except DSPConnectorException:
+            pass
+        return JsonResponse({
+            'status': 'ok',
+            'result': results,
+        }, status=200)
+
+    # @staticmethod
+    # def get_themes(request):
+    #     return v13.__wrap_response(v13.get_themes)
+
 
 ###########
-# API V.2
+# API V 1.2
 ###########
 
 def get_topics(request):
@@ -288,16 +422,62 @@ def get_audiences(request, topic_id):
     }, status=200)
 
 
-def update_crm(request, crmtoken):
+def update_field(request, to_be_updated, update_token):
     import threading
-    if not crmtoken == settings.CRM_UPDATE_TOKEN:
-        return not_authorized
 
-    users = User.objects.all()
-    thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
-    thr.start()
+    if not update_token == settings.UPDATE_TOKEN:
+        return not_authorized()
 
-    return JsonResponse({'status': 'ok'}, status=200)
+    if to_be_updated == 'crm':
+        users = User.objects.all()
+        thr = threading.Thread(target=create_or_update_party, kwargs=dict(users=users))
+        thr.start()
+
+    if to_be_updated == 'default_img':
+        # update default images
+        users = User.objects.all()
+        thr = threading.Thread(target=update_default_profile_image, kwargs=dict(users=users))
+        thr.start()
+
+    return JsonResponse({'status': 'ok', 'updating': to_be_updated}, status=200)
+
+
+def update_default_profile_image(users):
+    print 'update_default_profile_image'
+    errored = []
+    sanititized = []
+    for user in users:
+        try:
+            if user.profile.picture == 'images/profile/default_user_icon.png':
+                print ('--------------------')
+                print ('UPDATING USER : %s' % user)
+                print ('--------------------')
+                print (' ')
+                if user.profile.gender == 'male': user.profile.picture = 'images/profile/male.svg'
+                if user.profile.gender == 'female': user.profile.picture = 'images/profile/female.svg'
+                if user.profile.gender == 'other': user.profile.picture = 'images/profile/other.svg'
+                sanititized.append(user.email)
+                user.profile.save()
+        except Profile.DoesNotExist as e:
+            errored.append(user.email)
+            print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
+            print (' ')
+    # PRINT RESULTS
+    print '-------------'
+    print 'TOTAL RESULTS'
+    print '-------------'
+
+    if len(errored):
+        print Colorizer.Red('%s errored users' % len(errored))
+        print errored
+
+    if len(sanititized):
+        print Colorizer.Purple('%s updated users : ' % len(sanititized))
+        print(sanititized)
+
+    elif not len(errored) and not len(sanititized):
+        print Colorizer.Green('no updates or errors')
+    print '-------------'
 
 
 def create_or_update_party(users):
@@ -360,3 +540,69 @@ def create_or_update_party(users):
     elif not len(errored) and not len(sanititized):
         print Colorizer.Green('No errored users')
     print '-------------'
+
+
+def check_canvas(request, twitter_username):
+    url = settings.INSIGHT_BASE_URL + settings.INSIGHT_API_URL + twitter_username
+    res = {}
+
+    try:
+        response = requests.get(url)
+    except Exception as e:
+        print e
+        res['result'] = False
+        res['status'] = 'error'
+        return JsonResponse(res, status=200)
+
+    if response.status_code == 200:
+        res['result'] = True
+    else:
+        res['result'] = False
+
+    res['status'] = 'ok'
+
+    return JsonResponse(res, status=200)
+
+
+@login_required
+def get_invitation_csv(request):
+    import csv
+    try:
+        if request.user.is_superuser:
+            response = HttpResponse(
+                csv,
+                content_type='application/csv'
+            )
+            response['Content-Disposition'] = \
+                'attachment; filename="invitation.csv"'
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="OmExplorer_invitations.csv"'
+
+            writer = csv.writer(response, delimiter=';', lineterminator='\n', quoting=csv.QUOTE_ALL, dialect='excel')
+
+            invitations = Invitation.objects.all()
+
+            writer.writerow([
+                'sender email',
+                'sender first_name',
+                'sender last_name',
+                'receiver email',
+                'receiver first_name',
+                'receiver last_name'
+            ])
+
+            for invitation in invitations:
+                writer.writerow([
+                    invitation.sender_email.encode('utf8'),
+                    invitation.sender_first_name.encode('utf8'),
+                    invitation.sender_last_name.encode('utf8'),
+                    invitation.receiver_email.encode('utf8'),
+                    invitation.receiver_first_name.encode('utf8'),
+                    invitation.receiver_last_name.encode('utf8'),
+                ])
+
+            return response
+
+    except:
+        return bad_request("Error generating invitation csv")

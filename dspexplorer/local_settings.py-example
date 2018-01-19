@@ -123,6 +123,9 @@ DSP_GET_THEMES = '/get_themes'
 DSP_GET_FEEDS = '/get_feeds'
 DSP_GET_INFLUENCERS = '/get_influencers'
 
+INSIGHT_BASE_URL = ''
+INSIGHT_API_URL = '/gui/api/'
+
 # CRM SETTINGS
 
 SECRET_TOKEN = ''
@@ -158,4 +161,6 @@ SETTINGS_EXPORT = [
     'GOOGLE_ANALYTICS_CODE',
 ]
 
-CRM_UPDATE_TOKEN = ''
+UPDATE_TOKEN = ''
+OPENDATA_API_KEY = ''
+GOOGLE_API_KEY = ''

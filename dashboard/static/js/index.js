@@ -11,6 +11,7 @@ baseImports.angularForm()
 // Stuff
 require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
+require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validator");
 
 // Init Angular APP
 var app = angular.module('dashboard', [
@@ -31,6 +32,7 @@ baseImports.angularBase(app)
 app.factory('UserSearchFactory', require('./factories/UserSearchFactory').default )
 app.controller('landingController', require('./controllers/landing.controller').default )
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
+app.controller('insightController', require('./controllers/insight.controller').default )
 app.controller('onboardingController', require('./controllers/onboarding.controller').default )
 app.controller('themesController', require('./controllers/themes.controller').default )
 app.controller('eventsController', require('./controllers/events.controller').default )
