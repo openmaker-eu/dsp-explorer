@@ -13,7 +13,7 @@ export default [function(){
     
     return {
         template:template,
-        controller : ['$scope','$http', '$element', 'UserSearchFactory', function($scope, $http, $element, UserSearchFactory){
+        controller : ['$scope','$http', '$element', 'UserSearchFactory', '$rootScope', function($scope, $http, $element, UserSearchFactory, $rootScope){
             $scope.pie = pie.bind($scope)
             $scope.filter = UserSearchFactory.search_switch;
             $http.get('/api/v1.1/get_sectors').then( (results)=>{
