@@ -76,9 +76,11 @@
                                     </li>
                                 </ul>
                             </li>
+                            {% if request.user.is_superuser %}
                             <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:insight' %}">Insight</a>
                             </li>
+                            {% endif %}
                             <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
                                 <a href="{% url 'dashboard:community' %}">Community</a>
                             </li>
