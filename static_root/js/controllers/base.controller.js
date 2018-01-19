@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 export default
     ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory',
     function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory) {
@@ -58,26 +59,34 @@ export default
             
         })
     })
-
-    // $scope.fitImageToCircle = (image)=> {
-    //
-    //     if( !image || !image.get(0) ) return
-    //     image.removeAttr('style')
-    //
-    //     let width = image.get(0).naturalWidth
-    //     let height = image.get(0).naturalHeight
-    //     let css = {'display':'block', 'position': 'absolute'}
-    //     width > height? css.height = '100%' : css.width = '100%'
-    //     image.css({ display:'block' , width: 'auto'})
-    //     image.css(css)
-    //
-    // }
-    //
-    // $scope.resizeCircleImages = () =>{
-    //     _.each($('.profile-image-static img'), function( el, i){ $scope.fitImageToCircle($(el))})
-    //     $scope.fitImageToCircle($('#profile-image'))
-    // }
-    //
-    // angular.element(document).ready(function (a,b,c) {$scope.resizeCircleImages()});
+    
+    var push_footer =()=>{
+        $('#top-div').css('height', 'auto')
+    
+        var header_padding = 30;
+        var header_margin = 20;
+        var header_border = 1;
+    
+        var height_needed = $(".navbar").height() + header_padding + header_margin + header_border
+        var spacer = $("#spacer").length === 0 ? $('<div id="spacer"></div>').prependTo("body") : $("#spacer")
+    
+        spacer.css("height", height_needed)
+    
+        var body_height = $('body').height();
+        var content_height = $('#top-div').height();
+        var footer_height = $('#footer').height();
+    
+        if((height_needed + content_height + footer_height) < body_height) {
+            $('#top-div').height(body_height - height_needed - footer_height)
+        }
+    }
+    
+    $scope.re_render =()=>{push_footer()}
+    
+    $(window).on('resize', $scope.re_render);
+    $(document ).ready($scope.re_render)
+    
+    $scope.$watch(()=>$scope.$$postDigest(()=>$scope.re_render()))
 
 }]
+

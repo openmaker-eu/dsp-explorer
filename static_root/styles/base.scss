@@ -19,6 +19,8 @@ $fa-font-path : '../../../node_modules/font-awesome/fonts/';
 @import "./material.scss";
 @import "./card.scss";
 
+
+
 $dsp-red:#db4348;
 $dsp-grey :#333;
 .text-red{
@@ -29,6 +31,8 @@ html {
 	width: 100vw;
 	overflow-x: hidden;
 }
+
+#footer{background-color:$dsp-grey; }
 
 .cc-window {
 	z-index: 10001!important;
@@ -94,6 +98,11 @@ textarea.form-control:focus{
 
 .Aligner-item--bottom {
 	align-self: flex-end;
+}
+
+.Aligner-left {
+	@extend .Aligner;
+	justify-content: start;
 }
 
 .navbar-default {
@@ -270,3 +279,12 @@ a, a:hover {
 }
 
 .profile-image-static img, #profile-image { display:none; }
+
+.col-nopadding {
+	padding-left:0;
+	padding-right:0;
+}
+
+.container-fluid.ng-scope{
+	max-width: 1550px;
+}
