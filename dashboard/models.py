@@ -40,7 +40,6 @@ class Country(models.Model):
         new_country.save()
         return new_country
 
-
     class Meta:
         ordering = ('code',)
 
@@ -60,7 +59,6 @@ class Location(models.Model):
     post_code = models.CharField(max_length=200, null=True, blank=True)
     city_alias = models.TextField(null=True, blank=True, default=None)
     country_alias = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True, default=None)
-
 
     @classmethod
     def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
@@ -125,6 +123,7 @@ class Location(models.Model):
     def __str__(self):
         return self.city+', '+self.state+' '+self.country+' '+self.country_short
 
+
 class SourceOfInspiration(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
 
@@ -171,7 +170,6 @@ class Profile(models.Model):
         blank=True,
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
-
 
     def set_location(self):
         return None
@@ -535,3 +533,38 @@ class Feedback(models.Model):
     def __str__(self):
         return self.message_text
 
+
+class Company(models.Model):
+    company_picture = models.ImageField(_('Company picture'), upload_to='images/challenge', null=True, blank=True)
+    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    description = models.TextField(_('Description'), null=False, blank=False)
+    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+
+
+class Challenge(models.Model):
+
+    les_choices = (
+        (0, 'Spain'),
+        (1, 'Italy'),
+        (2, 'Slovakia'),
+        (3, 'United Kingdom'),
+    )
+
+    challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge', null=True, blank=True)
+    title = models.TextField(_('Title'), max_length=200, null=False, blank=False)
+    description = models.TextField(_('Description'), null=False, blank=False)
+    published = models.BooleanField(_('Published'), default=False)
+    start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
+    end_date = models.DateTimeField(_('End date'), blank=True, null=True)
+    closed = models.BooleanField(_('Closed'), default=False)
+    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+    video_link = models.TextField(_('Video link'), max_length=200, null=True, blank=True)
+    coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
+    les = models.IntegerField(default=0, choices=les_choices)
+
+    @staticmethod
+    def retrieve_les_label(code):
+        for les in Challenge.les_choices:
+            if code == les[0]:
+                return les[1]
+        return 'less found undefined'
