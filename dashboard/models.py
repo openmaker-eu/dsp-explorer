@@ -13,6 +13,8 @@ from restcountriesconnector.rcconnector import RestCountriesConnector
 import json
 from utils.GoogleHelper import GoogleHelper
 from django.db.models import Q
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class Tag(models.Model):
@@ -398,6 +400,14 @@ class Profile(models.Model):
         except Exception as e:
             print e
 
+    def add_interest(self, interest_obj):
+        interest = Interest(content_object=interest_obj)
+        interest.profile = self
+        interest.save()
+
+    def get_interests(self, model_class=None):
+        interests = map(lambda x: x.get(), self.profile_interest.all())
+        return filter(lambda x: isinstance(x, model_class), interests) if model_class is not None else interests
 
 class Invitation(models.Model):
 
@@ -538,7 +548,7 @@ class Company(models.Model):
     company_picture = models.ImageField(_('Company picture'), upload_to='images/challenge', null=True, blank=True)
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
-    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+    tags = models.ManyToManyField(Tag, related_name='company_tags')
 
 
 class Challenge(models.Model):
@@ -557,10 +567,16 @@ class Challenge(models.Model):
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)
     closed = models.BooleanField(_('Closed'), default=False)
-    tags = models.ManyToManyField(Tag, related_name='profile_tags')
+    tags = models.ManyToManyField(Tag, related_name='challenge_tags')
     video_link = models.TextField(_('Video link'), max_length=200, null=True, blank=True)
     coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
     les = models.IntegerField(default=0, choices=les_choices)
+
+    @classmethod
+    def create(cls, title):
+        model = cls(title=title)
+        model.save()
+        return model
 
     @staticmethod
     def retrieve_les_label(code):
@@ -568,3 +584,20 @@ class Challenge(models.Model):
             if code == les[0]:
                 return les[1]
         return 'less found undefined'
+
+    def __unicode__(self):
+        return self.title.encode('utf-8')
+
+
+class Interest(models.Model):
+    profile = models.ForeignKey(Profile, related_name='profile_interest')
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def get(self):
+        return self.content_object
+
+    def __unicode__(self):
+        return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
