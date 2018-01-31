@@ -13,8 +13,15 @@ from restcountriesconnector.rcconnector import RestCountriesConnector
 import json
 from utils.GoogleHelper import GoogleHelper
 from django.db.models import Q
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+
+
+class ModelHelper:
+    @classmethod
+    def filter_instance_list_by_class(cls, list_to_filter, filter_class=None):
+        return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
+            if filter_class is not None else list_to_filter
 
 
 class Tag(models.Model):
@@ -25,6 +32,9 @@ class Tag(models.Model):
         tag = Tag(name=name)
         tag.save()
         return tag
+
+    def __unicode__(self):
+        return self.name
 
 
 class Country(models.Model):
@@ -181,11 +191,17 @@ class Profile(models.Model):
     update_token_at = models.DateTimeField(default=None, null=True, blank=True)
     ask_reset_at = models.DateTimeField(default=dt.now, null=True, blank=True)
 
-    def __str__(self):
-        return "%s %s" % (self.get_name(), self.get_last_name())
-    
-    def __repr__(self):
-        return self.__str__()
+    # def __str__(self):
+    #     return "%s %s" % (self.get_name(), self.get_last_name())
+
+    def __unicode__(self):
+        try:
+            return self.user.email
+        except:
+            return 'Error'
+
+    # def __repr__(self):
+    #     return self.__str__()
 
     class Meta:
         ordering = ('user',)
@@ -405,9 +421,10 @@ class Profile(models.Model):
         interest.profile = self
         interest.save()
 
-    def get_interests(self, model_class=None):
+    def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
-        return filter(lambda x: isinstance(x, model_class), interests) if model_class is not None else interests
+        return ModelHelper.filter_instance_list_by_class(interests, filter_class)
+
 
 class Invitation(models.Model):
 
@@ -550,6 +567,31 @@ class Company(models.Model):
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
 
+    def __unicode__(self):
+        return self.name
+
+
+class Interest(models.Model):
+    profile = models.ForeignKey(Profile, related_name='profile_interest')
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def get(self):
+        return self.content_object
+
+    def __unicode__(self):
+        return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
+
+
+# class Interested(models.Model):
+#     interest = GenericRelation(Interest)
+#
+#     def get_interested(self):
+#         interested = self.interest.all()
+#         return map(lambda x: x.profile, interested) if len(interested) > 0 else []
+
 
 class Challenge(models.Model):
 
@@ -561,16 +603,23 @@ class Challenge(models.Model):
     )
 
     challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge', null=True, blank=True)
-    title = models.TextField(_('Title'), max_length=200, null=False, blank=False)
+    title = models.CharField(_('Title'), max_length=50, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
     published = models.BooleanField(_('Published'), default=False)
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)
     closed = models.BooleanField(_('Closed'), default=False)
     tags = models.ManyToManyField(Tag, related_name='challenge_tags')
-    video_link = models.TextField(_('Video link'), max_length=200, null=True, blank=True)
+    video_link = models.CharField(_('Video link'), max_length=200, null=True, blank=True)
     coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
     les = models.IntegerField(default=0, choices=les_choices)
+
+    interest = GenericRelation(Interest, )
+
+    def get_interested(self, filter_class=None):
+        interests = self.interest.all()
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     @classmethod
     def create(cls, title):
@@ -589,15 +638,3 @@ class Challenge(models.Model):
         return self.title.encode('utf-8')
 
 
-class Interest(models.Model):
-    profile = models.ForeignKey(Profile, related_name='profile_interest')
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    def get(self):
-        return self.content_object
-
-    def __unicode__(self):
-        return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'

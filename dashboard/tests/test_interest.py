@@ -14,7 +14,6 @@ from django.utils import timezone
 class ProfileTestCase(TestCase):
 
     user = None
-    password = '12345678'
 
     @classmethod
     def setUpTestData(cls):
@@ -48,7 +47,7 @@ class ProfileTestCase(TestCase):
         self.assertGreater(len(interests), 0, Colorizer.Red('No Company linked'))
 
     def test4_profile_filter_interest_challenge(self):
-        print Colorizer.LightPurple('\n[TEST CHALLENGE] should return only Challenge interests')
+        print Colorizer.LightPurple('\n[TEST CHALLENGE] should return only interests that are Challenges')
 
         Challenge.create('test challenge')
         challenge = Challenge.objects.get(title='test challenge')
@@ -57,6 +56,19 @@ class ProfileTestCase(TestCase):
         self.user.profile.add_interest(self.company)
         interests = self.user.profile.get_interests(Challenge)
 
-        self.assertTrue(all(isinstance(x, Challenge) for x in interests), Colorizer.Red('No Company linked'))
+        self.assertTrue(all(isinstance(x, Challenge) for x in interests), Colorizer.Red('Filter interest does not return a list of challenge'))
+
+    def test5_get_interested_from_challenge(self):
+        print Colorizer.LightPurple('\n[TEST CHALLENGE] should return a list of profile interested in a challenge')
+
+        Challenge.create('test challenge')
+        challenge = Challenge.objects.get(title='test challenge')
+        self.user.profile.add_interest(challenge)
+
+        profiles = challenge.get_interested()
+
+        self.assertTrue(all(isinstance(x, Profile) for x in profiles), Colorizer.Red('Challenge related interest are not a porofile list'))
+
+
 
 
