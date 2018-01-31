@@ -15,6 +15,7 @@ from utils.GoogleHelper import GoogleHelper
 from django.db.models import Q
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 
 
 class ModelHelper:
@@ -145,6 +146,8 @@ class SourceOfInspiration(models.Model):
         source.save()
         return source
 
+    def __unicode__(self):
+        return self.name
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -563,7 +566,7 @@ class Feedback(models.Model):
 
 class Company(models.Model):
     company_picture = models.ImageField(_('Company picture'), upload_to='images/challenge', null=True, blank=True)
-    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    name = models.CharField(_('Name'), max_length=200, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
 
@@ -604,7 +607,9 @@ class Challenge(models.Model):
 
     challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge', null=True, blank=True)
     title = models.CharField(_('Title'), max_length=50, null=False, blank=False)
+
     description = models.TextField(_('Description'), null=False, blank=False)
+
     published = models.BooleanField(_('Published'), default=False)
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)
@@ -613,6 +618,8 @@ class Challenge(models.Model):
     video_link = models.CharField(_('Video link'), max_length=200, null=True, blank=True)
     coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
     les = models.IntegerField(default=0, choices=les_choices)
+    company = models.ForeignKey(Company, blank=True, null=True)
+    profile = models.ForeignKey(Profile, blank=True, null=True)
 
     interest = GenericRelation(Interest, )
 
@@ -637,4 +644,9 @@ class Challenge(models.Model):
     def __unicode__(self):
         return self.title.encode('utf-8')
 
+    def clean(self):
+        if not self.profile and not self.company:
+            raise ValidationError('Provide a company or a profile as promoter of this challenge')
+        elif self.profile and self.company:
+            raise ValidationError('You can choose a profile OR a company as promoter of this challenge no both of them')
 
