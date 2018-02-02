@@ -5,9 +5,7 @@ from django import forms
 from froala_editor.widgets import FroalaEditor
 from django.template import Template, Context
 from django.db import models
-
 from django_select2.forms import Select2MultipleWidget
-
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user',)
@@ -29,6 +27,7 @@ class ProfileAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': Select2MultipleWidget}
     }
+
     def challenge(self, obj):
         t = Template(self.template)
         return t.render(Context({'challenges': obj.get_interests(Challenge)}))
@@ -139,6 +138,8 @@ class ChallengeAdmin(admin.ModelAdmin):
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Challenge, ChallengeAdmin)
 admin.site.register(Company, CompanyAdmin)
+
+
 # admin.site.register(Feedback, FeedbackAdmin)
 # admin.site.register(Tag, TagAdmin)
 # admin.site.register(Invitation, InvitationAdmin)

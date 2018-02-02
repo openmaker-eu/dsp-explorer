@@ -27,6 +27,11 @@ from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, Invitatio
 from dashboard.models import Challenge
 from django.contrib.auth.decorators import login_required
 import simplejson as simplejson
+
+from rest_framework import generics
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 def search_members(request, search_string):
 
     members_per_page = 20
@@ -609,12 +614,36 @@ def get_invitation_csv(request):
 
 @login_required
 def get_challenge(request, challenge_id=None):
-
+    from dashboard.serializer import ChallengeSerializer
     if challenge_id is not None:
-        results = list(Challenge.objects.filter(pk=challenge_id).values())[0]
+        results = ChallengeSerializer(Challenge.objects.filter(pk=challenge_id), many=True).data[0]
     else:
-        results = list(Challenge.objects.all().values())
+        results = ChallengeSerializer(Challenge.objects.all(), many=True).data
+    return JsonResponse(results, safe=False)
 
-    return JsonResponse({'results': results})
+
+@login_required
+def get_interest_ids(request):
+    return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(Challenge)), safe=False)
+
+
+@login_required
+def interest_challenge(request, challenge_id):
+    try:
+        if request.method == 'POST':
+            challenge = Challenge.objects.get(pk=challenge_id)
+            request.user.profile.add_interest(challenge)
+        if request.method == 'DELETE':
+            request.user.profile.delete_interest(Challenge, challenge_id)
+
+        return JsonResponse({'status': 'success'})
+    except:
+        response = JsonResponse({'status': 'error', 'message': ''})
+        response.status_code = 500
+        return response
+
+
+
+
 
 

@@ -426,7 +426,14 @@ class Profile(models.Model):
 
     def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
+
         return ModelHelper.filter_instance_list_by_class(interests, filter_class)
+
+    def delete_interest(self, interest_obj, interest_id):
+        ct_id = ContentType.objects.get_for_model(interest_obj).pk
+        interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id)
+        print interest
+        return interest.delete()
 
 
 class Invitation(models.Model):
@@ -565,7 +572,7 @@ class Feedback(models.Model):
 
 
 class Company(models.Model):
-    company_picture = models.ImageField(_('Company picture'), upload_to='images/challenge', null=True, blank=True)
+    company_picture = models.ImageField(_('Company picture'), upload_to='images/company')
     name = models.CharField(_('Name'), max_length=200, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
@@ -586,15 +593,6 @@ class Interest(models.Model):
 
     def __unicode__(self):
         return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
-
-
-# class Interested(models.Model):
-#     interest = GenericRelation(Interest)
-#
-#     def get_interested(self):
-#         interested = self.interest.all()
-#         return map(lambda x: x.profile, interested) if len(interested) > 0 else []
-
 
 class Challenge(models.Model):
 

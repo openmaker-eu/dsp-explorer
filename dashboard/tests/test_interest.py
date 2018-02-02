@@ -69,6 +69,18 @@ class ProfileTestCase(TestCase):
 
         self.assertTrue(all(isinstance(x, Profile) for x in profiles), Colorizer.Red('Challenge related interest are not a porofile list'))
 
+    def test6_delete_interest_from_profile(self):
+        print Colorizer.LightPurple('\n[TEST CHALLENGE] should should delete interest(challenge) from profile')
+
+        Challenge.create('test challenge')
+        challenge = Challenge.objects.get(title='test challenge')
+        self.user.profile.add_interest(challenge)
+
+        self.user.profile.delete_interest(Challenge, challenge.id)
+        challenges = self.user.profile.get_interests(Challenge)
+
+        self.assertEqual(len(challenges), 0, Colorizer.Red('User interest(challenge) is not deleted'))
+
 
 
 

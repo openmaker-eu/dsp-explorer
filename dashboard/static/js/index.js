@@ -21,6 +21,10 @@ var app = angular.module('dashboard', [
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
     }])
+    .config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }])
     .config(['$qProvider', function ($qProvider) {$qProvider.errorOnUnhandledRejections(false);}]);
 
 // Require base angular componenets
