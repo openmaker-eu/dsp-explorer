@@ -6,6 +6,8 @@ from froala_editor.widgets import FroalaEditor
 from django.template import Template, Context
 from django.db import models
 
+from django_select2.forms import Select2MultipleWidget
+
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user',)
@@ -18,22 +20,50 @@ class ProfileAdmin(admin.ModelAdmin):
         'types_of_innovation',  'size',
         'technical_expertise', 'technical_expertise_other',
         'sector', 'sector_other', 'role', 'role_other',  'socialLinks',
-         'source_of_inspiration'
+         'source_of_inspiration', 'challenge',
 
     )
     exclude = ('location', 'social_links', 'reset_token', 'update_token_at', 'ask_reset_at', 'place')
     can_delete = False
 
-# class ChallengeAdmin(admin.ModelAdmin):
-#     list_display = ('title',)
-#     list_display_links = ('interested_profiles',)
-#
-#     def interested_profiles(self, obj):
-#         return obj.get_interested()
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': Select2MultipleWidget}
+    }
+    def challenge(self, obj):
+        t = Template(self.template)
+        return t.render(Context({'challenges': obj.get_interests(Challenge)}))
+    challenge.allow_tags = True
+    challenge.short_description = ''
+
+    template = str(
+        '<div class="module">'
+        '<h2>Interested Challenges</h2></br>'
+        '<table style="width:100%">'
+        '   <tr style="font-weight:bold;"> '
+        '       <td>Title</td>'
+        '       <td>Details</td>'
+        '   </tr>'
+        '   {% for challenge in challenges %}'
+        '       <tr>'
+        '           <td>{{challenge.title}}</td>'
+        '           <td>'
+        '               <a href="/admin/dashboard/challenge/{{challenge.pk}}">'
+        '                   <img src="/static/admin/img/icon-changelink.svg" alt="Change">'
+        '               </a>'
+        '           </td>'
+        '       </tr>'
+        '   {% endfor %}'
+        '</table>'
+        '</div>')
 
 
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('name',)
+
+    formfield_overrides = {
+        models.TextField: {'widget': FroalaEditor},
+        models.ManyToManyField: {'widget': Select2MultipleWidget}
+    }
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -60,8 +90,7 @@ class InterestInline(GenericTabularInline):
 
 class ChallengeAdmin(admin.ModelAdmin):
 
-
-    list_display = ('title', 'company', 'challenge_picture', 'profile',  )
+    list_display = ('title', 'company', 'challenge_picture', 'profile',)
     readonly_fields = ('interested',)
     # inlines = (InterestInline,)
 
@@ -74,6 +103,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
+        models.ManyToManyField: {'widget': Select2MultipleWidget}
     }
 
     template = str(

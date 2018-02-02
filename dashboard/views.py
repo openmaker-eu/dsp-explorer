@@ -470,3 +470,8 @@ def feedback(request):
         else:
             messages.error(request, 'Please all the fields are required!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+
+@login_required()
+def challenge(request):
+    return render(request, 'dashboard/challenge.html', {})

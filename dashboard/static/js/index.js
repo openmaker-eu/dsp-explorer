@@ -38,5 +38,6 @@ app.controller('themesController', require('./controllers/themes.controller').de
 app.controller('eventsController', require('./controllers/events.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
+app.directive('challengeList', require('../../../static/js/directives/ChallengeList').default )
 
 

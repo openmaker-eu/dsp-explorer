@@ -24,9 +24,9 @@ from django.http import HttpResponse
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+from dashboard.models import Challenge
 from django.contrib.auth.decorators import login_required
-
-
+import simplejson as simplejson
 def search_members(request, search_string):
 
     members_per_page = 20
@@ -603,6 +603,18 @@ def get_invitation_csv(request):
                 ])
 
             return response
-
     except:
         return bad_request("Error generating invitation csv")
+
+
+@login_required
+def get_challenge(request, challenge_id=None):
+
+    if challenge_id is not None:
+        results = list(Challenge.objects.filter(pk=challenge_id).values())[0]
+    else:
+        results = list(Challenge.objects.all().values())
+
+    return JsonResponse({'results': results})
+
+

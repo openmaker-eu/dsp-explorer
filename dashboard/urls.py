@@ -3,6 +3,7 @@ from django.conf.urls import url
 from . import views, authentication, api, static
 
 app_name = 'dashboard'
+
 urlpatterns = [
 
     # Auth
@@ -56,6 +57,9 @@ urlpatterns = [
     url(r'^feedback/$', views.feedback, name='feedback'),
 
 
+    url(r'^challenge/$', views.challenge, name='challenge'),
+
+
     # API v1.3
     ## AUDIENCES
     url(r'^api/v1.3/audiences/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_audiences, name='api_13_get_audiences'),
@@ -104,5 +108,9 @@ urlpatterns = [
     url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
     url(r'^api/v1.1/get_om_events/$', api.get_om_events, name='get_om_events'),
     url(r'^api/v1.1/invitation/csv$', api.get_invitation_csv, name='get_invitation_csv'),
-]
 
+    url(r'^api/v1.3/challenge/$', api.get_challenge, {'challenge_id': None},  name='get_challenge'),
+    url(r'^api/v1.3/challenge/(?P<challenge_id>[0-9]+)/$', api.get_challenge, name='get_challenge'),
+
+
+]
