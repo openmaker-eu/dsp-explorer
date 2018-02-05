@@ -41,8 +41,14 @@ class ChallengeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only=True)
 
+    interested = serializers.SerializerMethodField()
+
     class Meta:
         model = Challenge
         fields = '__all__'
         # fields = ( 'company', 'tags', 'profile')
+
+
+    def get_interested(self,obj):
+        return ProfileSerializer(obj.interested(), many=True).data
 

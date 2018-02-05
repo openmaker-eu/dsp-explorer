@@ -615,10 +615,17 @@ def get_invitation_csv(request):
 @login_required
 def get_challenge(request, challenge_id=None):
     from dashboard.serializer import ChallengeSerializer
+
     if challenge_id is not None:
-        results = ChallengeSerializer(Challenge.objects.filter(pk=challenge_id), many=True).data[0]
+        results = ChallengeSerializer(
+            Challenge.objects.filter(pk=challenge_id).order_by('-created_at')
+            , many=True
+        ).data[0]
     else:
-        results = ChallengeSerializer(Challenge.objects.all(), many=True).data
+        results = ChallengeSerializer(
+            Challenge.objects.all().order_by('-created_at')
+            , many=True
+        ).data
     return JsonResponse(results, safe=False)
 
 
@@ -626,7 +633,6 @@ def get_challenge(request, challenge_id=None):
 def get_profile_challenge(request, profile_id):
     from dashboard.serializer import ChallengeSerializer
     results = []
-
     try:
         profile = Profile.objects.get(pk=profile_id)
         results = profile.get_interests(Challenge)

@@ -6,7 +6,7 @@ let template = `
     <a  href="{$ '/challenge/'+challenge.id+'/' $}"
         class="col-md-12 col-xs-12"
         ng-repeat="challenge in challenges track by challenge.id"
-        ng-if="challenges.length > 0"
+        ng-if="challenges.length > 0 && challenge.published"
     >
         <img class="col-md-1"
             ng-src="{$ challenge.challenge_picture || challenge.company.company_picture $}"
@@ -44,30 +44,24 @@ export default [function(){
             $scope.challenges = []
             $scope.interested_ids = []
             
-            
             $scope.$watch('profileid', (new_data, old_data) => {
-                
-                console.log(new_data, old_data, $scope.profileid);
-                
                 if(!$scope.profileid){
-                    console.log('all')
                     Promise
                         .all([$http.get('/api/v1.3/challenge/'), $http.get('/api/v1.3/interest_ids/')])
                         .then(
                             res => {
                                 $scope.challenges = res[0].data || []
                                 $scope.interested_ids = res[1].data || []
-                                $scope.$apply()
+                                $scope.$apply(()=>$(window).trigger('resize'))
                             },
                             err => console.log('Error: ', err)
                         )
                 }
                 else {
-                    console.log('filtered')
                     $http.get('/api/v1.3/profile/' + $scope.profileid + '/challenge/').then(res => {
                         console.log(res);
                         $scope.challenges = res.data || []
-
+                        $scope.$apply(()=>$(window).trigger('resize'))
                     })
                 }
             })

@@ -95,7 +95,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     def interested(self, obj):
         t = Template(self.template)
-        return t.render(Context({'interested': obj.get_interested()}))
+        return t.render(Context({'interested': obj.interested()}))
 
     interested.allow_tags = True
     interested.short_description = ''

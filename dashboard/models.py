@@ -149,6 +149,7 @@ class SourceOfInspiration(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
@@ -586,6 +587,7 @@ class Interest(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def get(self):
         return self.content_object
@@ -619,11 +621,12 @@ class Challenge(models.Model):
     les = models.IntegerField(default=0, choices=les_choices)
     company = models.ForeignKey(Company, blank=True, null=True)
     profile = models.ForeignKey(Profile, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    interest = GenericRelation(Interest, )
+    interest = GenericRelation(Interest,)
 
-    def get_interested(self, filter_class=None):
-        interests = self.interest.all()
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
         interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 

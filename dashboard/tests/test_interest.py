@@ -65,7 +65,7 @@ class ProfileTestCase(TestCase):
         challenge = Challenge.objects.get(title='test challenge')
         self.user.profile.add_interest(challenge)
 
-        profiles = challenge.get_interested()
+        profiles = challenge.interested()
 
         self.assertTrue(all(isinstance(x, Profile) for x in profiles), Colorizer.Red('Challenge related interest are not a porofile list'))
 
