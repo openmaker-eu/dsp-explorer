@@ -623,6 +623,23 @@ def get_challenge(request, challenge_id=None):
 
 
 @login_required
+def get_profile_challenge(request, profile_id):
+    from dashboard.serializer import ChallengeSerializer
+    results = []
+
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        results = profile.get_interests(Challenge)
+        results = ChallengeSerializer(results if len(results) > 0 else [], many=True).data
+    except Exception as e:
+        response = JsonResponse({'status': 'error', 'message': ''})
+        response.status_code = 500
+        return response
+
+    return JsonResponse(results, safe=False)
+
+
+@login_required
 def get_interest_ids(request):
     return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(Challenge)), safe=False)
 

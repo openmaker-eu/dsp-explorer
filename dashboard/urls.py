@@ -58,6 +58,8 @@ urlpatterns = [
 
 
     url(r'^challenge/$', views.challenge, name='challenge'),
+    url(r'^challenge/(?P<challenge_id>[0-9]+)/$', views.challenge, name='challenge'),
+
 
 
     # API v1.3
@@ -114,6 +116,7 @@ urlpatterns = [
     url(r'^api/v1.3/interest_ids/', api.get_interest_ids, name='get_interest_ids'),
 
     url(r'^api/v1.3/interest/challenge/(?P<challenge_id>[0-9]+)/$', api.interest_challenge, name='interest_challenge'),
+    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/challenge/$', api.get_profile_challenge, name='get_profile_challenge'),
 
 
 ]

@@ -473,5 +473,7 @@ def feedback(request):
 
 
 @login_required()
-def challenge(request):
-    return render(request, 'dashboard/challenge.html', {})
+def challenge(request, challenge_id=None):
+    print 'challenge_id'
+    print challenge_id
+    return render(request, 'dashboard/challenge.html', {'challenge_id': challenge_id})

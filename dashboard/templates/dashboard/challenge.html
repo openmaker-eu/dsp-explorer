@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block container %}
-    <div
-        ng-init=""
-        class="container-fluid"
-    >
-        <div class="row">
-            <challenge-list></challenge-list>
-        </div>
+    <div class="container">
+        {% if challenge_id is not None  %}
+            <div class="row">
+                <challenge id="{{challenge_id}}"></challenge>
+            </div>
+        {% else %}
+            <div class="row">
+                <challenge-list></challenge-list>
+            </div>
+        {% endif %}
+        <br><br>
     </div>
 {% endblock %}

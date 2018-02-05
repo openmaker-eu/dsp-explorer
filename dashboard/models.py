@@ -426,7 +426,6 @@ class Profile(models.Model):
 
     def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
-
         return ModelHelper.filter_instance_list_by_class(interests, filter_class)
 
     def delete_interest(self, interest_obj, interest_id):
@@ -594,6 +593,7 @@ class Interest(models.Model):
     def __unicode__(self):
         return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
 
+
 class Challenge(models.Model):
 
     les_choices = (
@@ -603,10 +603,11 @@ class Challenge(models.Model):
         (3, 'United Kingdom'),
     )
 
-    challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge', null=True, blank=True)
-    title = models.CharField(_('Title'), max_length=50, null=False, blank=False)
+    challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
+    title = models.CharField(_('Title'), max_length=50)
 
-    description = models.TextField(_('Description'), null=False, blank=False)
+    description = models.CharField(_('Description'), max_length=200)
+    details = models.TextField(_('Details'))
 
     published = models.BooleanField(_('Published'), default=False)
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)

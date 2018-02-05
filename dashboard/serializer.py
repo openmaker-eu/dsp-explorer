@@ -39,9 +39,10 @@ class CompanySerializer(serializers.ModelSerializer):
 class ChallengeSerializer(serializers.ModelSerializer):
     company = CompanySerializer(many=False, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+    profile = ProfileSerializer(read_only=True)
 
     class Meta:
         model = Challenge
         fields = '__all__'
-        # fields = ( 'company', 'tags')
+        # fields = ( 'company', 'tags', 'profile')
 
