@@ -2,28 +2,32 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <style> .liked{color:red;} </style>
     <div class="col-md-12" style="background: #f5f5f5; padding:2% 1%; margin-bottom:2%; border-radius: 3px;">
         <div class="col-md-6">
-            <img style="width:100%;"
-                ng-src="{$ challenge.challenge_picture $}"
-                alt=""
-            >
+            <img style="width:100%;" ng-src="{$ challenge.picture $}" alt="" >
         </div>
         <div class="col-md-6">
             <!--Header-->
             <h2>
-                <span>{$ challenge.title $}</span>
-                &nbsp;
-                <span style="font-size: 120%;"
-                        class="fa fa-star pointer"
-                        ng-class="{ 'text-danger': is_interested(challenge) }"
-                        ng-click="click_interest(challenge)"
-                ></span>
-                <span class="pull-right">
-                        <button class="btn login-button-active no-pointer" ng-if="!challenge.closed">Open</button>
-                        <button class="btn login-button-active disabled" ng-if="challenge.closed">Closed</button>
-                </span>
+                <span>{$ challenge.title $}</span>&nbsp;&nbsp;
+                <small style="font-size:120%; text-align:center;" >
+                        <span
+                            class="fa fa-star"
+                            ng-class="{'text-red':is_interested(challenge), 'text-grey':!is_interested(challenge), 'pointer':!challenge.closed }"
+                            ng-click="challenge.closed || click_interest(challenge)"
+                            uib-tooltip="{$ is_interested(challenge)? 'You are interested in this challenge': 'Click to show interest in this challenge' $}"
+                        ></span>
+                        <span>
+                            <i class="fa fa-unlock-alt text-red"
+                                ng-if="!challenge.closed"
+                                uib-tooltip="Challenge is Open"
+                            ></i>
+                            <i class="fa fa-lock text-grey disabled"
+                                ng-if="challenge.closed"
+                                uib-tooltip="Challenge is Closed"
+                            ></i>
+                        </span>
+                </small>
             </h2>
             <br>
             <!--Description-->
@@ -31,24 +35,35 @@ let template = `
             <br>
             <!--Date-->
             <span>
-                <p ng-if="challenge.start_date"><strong>Start:</strong>&nbsp;&nbsp;{$ challenge.start_date | date:'dd MMMM yyyy' $}</p>
-                <p ng-if="challenge.end_date"><strong>End:</strong>&nbsp;&nbsp;{$ challenge.end_date | date:'dd MMMM yyyy' $}</p>
+                <p ng-if="challenge.start_date">
+                    <strong class="text-danger"><i class="fa fa-calendar-check-o "></i>&nbsp;Start:</strong>&nbsp;&nbsp;
+                    {$ challenge.start_date | date:'dd MMMM yyyy' $}
+                </p>
+                <p ng-if="challenge.end_date">
+                    <strong class="text-danger"><i class="fa fa-calendar-times-o"></i>&nbsp;End:</strong>&nbsp;&nbsp;
+                    {$ challenge.end_date | date:'dd MMMM yyyy' $}</p>
             </span>
+            
             <br>
             <!--Tags-->
             <span>
                 <span
-                    class="btn login-button-active no-pointer"
+                    class="btn tag-button no-pointer"
                     ng-repeat="tag in challenge.tags"
                     style="margin-right: 1%;"
-                >{$ tag.name $}</span>
+                >#{$ tag.name $}</span>
             </span>
         </div>
-
+        
+        <div class="col-md-12" style="margin-top: 1%;">
+            <hr>
+           <div class="row Aligner">
+               <img class="col-md-2 col-xs-4" ng-src="{$ challenge.company.logo $}" alt="">
+               <h3 class="col-md-10 col-xs-8">{$ challenge.company.name $}</h3>
+           </div>
+        </div>
     </div>
-    
-    <!--<div class="col-md-12"><br><br><br></div>-->
-    
+
     <!--Challenge details-->
     <div class="col-md-12">
         <div class="col-md-12">
@@ -59,6 +74,8 @@ let template = `
     
     <div class="col-md-12"><br><br></div>
 
+`
+var template_2 = `
     <!--Interested users-->
     <div class="col-md-12 margin-top-25" ng-if="challenge.interested.length > 0">
         <div class="well-red">{$ challenge.interested.length $} Interested users</div>
@@ -79,13 +96,11 @@ let template = `
         </a>
         
     </div>
-
-    
 `
 
 export default [function(){
     return {
-        template:template,
+        template:template+template_2,
         scope: { id : '=' },
         controller : ['$scope', '$http', function($scope, $http){
             $scope.get_data = ()=> Promise

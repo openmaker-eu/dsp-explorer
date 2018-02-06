@@ -5,7 +5,8 @@ from django import forms
 from froala_editor.widgets import FroalaEditor
 from django.template import Template, Context
 from django.db import models
-from django_select2.forms import Select2MultipleWidget
+from dashboard.serializer import ChallengeSerializer
+from django_select2.forms import Select2MultipleWidget, Select2TagWidget
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user',)
@@ -57,12 +58,41 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'logo')
+    readonly_fields = ('campany_challenges',)
 
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
-        models.ManyToManyField: {'widget': Select2MultipleWidget}
+        models.ManyToManyField: {'widget': Select2TagWidget}
     }
+
+    def campany_challenges(self, obj):
+        t = Template(self.template)
+        print
+        return t.render(Context({'challenges': ChallengeSerializer(obj.challenges, many=True).data}))
+    campany_challenges.allow_tags = True
+    campany_challenges.short_description = ''
+
+    template = str(
+        '<div class="module">'
+        '<h2>Challenges</h2></br>'
+        '<table style="width:100%">'
+        '   <tr style="font-weight:bold;"> '
+        '       <td>Title</td>'
+        '       <td>Details</td>'
+        '   </tr>'
+        '   {% for challenge in challenges %}'
+        '       <tr>'
+        '           <td>{{challenge.title}}</td>'
+        '           <td>'
+        '               <a href="/admin/dashboard/challenge/{{challenge.id}}">'
+        '                   <img src="/static/admin/img/icon-changelink.svg" alt="Change">'
+        '               </a>'
+        '           </td>'
+        '       </tr>'
+        '   {% endfor %}'
+        '</table>'
+        '</div>')
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -80,6 +110,7 @@ class InvitationAdmin(admin.ModelAdmin):
     list_display = ('profile', 'sender_email', 'sender_verified', 'created_at')
     search_fields = ('profile', 'sender_email')
 
+
 class InterestInline(GenericTabularInline):
     model = Interest
     can_delete = False
@@ -89,9 +120,8 @@ class InterestInline(GenericTabularInline):
 
 class ChallengeAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'company', 'challenge_picture', 'profile',)
+    # list_display = ('title', 'company', 'picture', 'profile', 'interested')
     readonly_fields = ('interested',)
-    # inlines = (InterestInline,)
 
     def interested(self, obj):
         t = Template(self.template)
@@ -102,7 +132,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
-        models.ManyToManyField: {'widget': Select2MultipleWidget}
+        models.ManyToManyField: {'widget': Select2TagWidget}
     }
 
     template = str(

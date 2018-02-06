@@ -2,35 +2,44 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <style> .liked{ color:red;} </style>
-    <a  href="{$ '/challenge/'+challenge.id+'/' $}"
-        class="col-md-12 col-xs-12"
-        ng-repeat="challenge in challenges track by challenge.id"
-        ng-if="challenges.length > 0 && challenge.published"
+    <div class="col-md-12 col-xs-12"
+        ng-repeat="challenge in challenges | filter:{published:true} as filtered_challenges"
+        ng-if="filtered_challenges.length > 0"
+        style="margin-bottom:1%; margin-top: 1%;"
     >
-        <img class="col-md-1"
-            ng-src="{$ challenge.challenge_picture || challenge.company.company_picture $}"
-            alt=""
-        >
-        
-        <div class="col-md-1" ng-if="!profileid">
-                <span class="fa fa-star pointer"
-                    style="font-size:300%;"
-                    ng-class="{ 'liked': is_interested(challenge) }"
-                    ng-click="click_interest(challenge)"
-                ></span>
-        </div>
-
-        <div class="col-md-9">
-            <p>{$ challenge.title $}</p>
-        </div>
-
-        <div class="col-md-12">&nbsp;</div>
-    </a>
-    <div class="col-md-12" ng-if="challenges.length == 0">
+        <h4>
+            <a href="{$ '/challenge/'+challenge.id+'/' $}" class="Aligner">
+                <img class="col-md-2 col-xs-3" ng-src="{$ challenge.company.logo $}" alt="">
+                <div class="col-md-2 col-xs-2" ng-if="!profileid">
+                    <small style="font-size:200%; text-align: center;" >
+                        <span
+                            class="fa fa-star"
+                            ng-class="{ 'text-red': is_interested(challenge), 'text-grey': !is_interested(challenge) }"
+                            ng-click="click_interest(challenge)"
+                            uib-tooltip="{$ is_interested(challenge) ? 'You are interested in this challenge': 'Go to the detail page to show interest in this Challenge' $}"
+                        ></span>
+                        <span class="">
+                            <i class="fa fa-unlock-alt text-red"
+                                ng-if="!challenge.closed"
+                                uib-tooltip="Challenge is Open"
+                            ></i>
+                            <i class="fa fa-lock text-grey disabled"
+                                ng-if="challenge.closed"
+                                uib-tooltip="Challenge is Closed"
+                            ></i>
+                        </span>
+                    </small>
+                </div>
+                <span class="col-md-8 col-xs-12">
+                    <span>{$ challenge.title $}</span><br>
+                    <span><small><i>{$ challenge.description $}</i></small></span>
+                </span>
+            </a>
+        </h4>
+    </div>
+    <div class="col-md-12" ng-if="filtered_challenges.length == 0">
         <h3>No challenges</h3>
     </div>
-    <style></style>
 `
 
 export default [function(){

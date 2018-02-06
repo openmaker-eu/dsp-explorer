@@ -572,7 +572,7 @@ class Feedback(models.Model):
 
 
 class Company(models.Model):
-    company_picture = models.ImageField(_('Company picture'), upload_to='images/company')
+    logo = models.ImageField(_('Company picture'), upload_to='images/company')
     name = models.CharField(_('Name'), max_length=200, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
@@ -605,23 +605,25 @@ class Challenge(models.Model):
         (3, 'United Kingdom'),
     )
 
-    challenge_picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
-    title = models.CharField(_('Title'), max_length=50)
+    company = models.ForeignKey(Company, related_name='challenges', blank=True, null=True)
 
+    title = models.CharField(_('Title'), max_length=50)
     description = models.CharField(_('Description'), max_length=200)
+    picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
+
     details = models.TextField(_('Details'))
 
-    published = models.BooleanField(_('Published'), default=False)
+    tags = models.ManyToManyField(Tag, related_name='challenge_tags')
+
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)
-    closed = models.BooleanField(_('Closed'), default=False)
-    tags = models.ManyToManyField(Tag, related_name='challenge_tags')
-    video_link = models.CharField(_('Video link'), max_length=200, null=True, blank=True)
     coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
     les = models.IntegerField(default=0, choices=les_choices)
-    company = models.ForeignKey(Company, blank=True, null=True)
     profile = models.ForeignKey(Profile, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    published = models.BooleanField(_('Published'), default=False)
+    closed = models.BooleanField(_('Closed'), default=False)
 
     interest = GenericRelation(Interest,)
 

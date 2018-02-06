@@ -33,7 +33,6 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = '__all__'
-        # fields = ('name', 'tags')
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
@@ -46,8 +45,6 @@ class ChallengeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Challenge
         fields = '__all__'
-        # fields = ( 'company', 'tags', 'profile')
-
 
     def get_interested(self,obj):
         return ProfileSerializer(obj.interested(), many=True).data
