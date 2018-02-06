@@ -10,25 +10,38 @@ from django_select2.forms import Select2MultipleWidget, Select2TagWidget, ModelS
 from django.utils.encoding import force_text
 
 
-class TagWidget(ModelSelect2TagWidget):
-    model = Tag
-    queryset = Tag.objects.all()
-    search_fields = ['name',]
+# class OmTagWidget(ModelSelect2TagWidget):
+#
+#     model = Tag
+#     queryset = Tag.objects.all()
+#     search_fields = ('name', 'pk__startswith')
+#
+#     def create_value(self, value):
+#         self.get_queryset().create(name=value)
+#
+#     def value_from_datadict(self, data, files, name):
+#         values = super(OmTagWidget, self).value_from_datadict(data, files, name)
+#         qs = self.queryset.filter(**{'pk__in': [l for l in values if isinstance(l, int)]})
+#         names = [k.name for k in self.queryset.filter(**{'name__in': values})]
+#         pks = set(force_text(getattr(o, 'pk')) for o in qs)
+#         cleaned_values = []
+#         for val in values:
+#             if force_text(val) not in pks and force_text(val) not in names:
+#                 val = self.queryset.create(name=val).pk
+#             cleaned_values.append(val)
+#         return cleaned_values
 
-    def create_value(self, value):
-        self.get_queryset().create(name=value)
 
-    def value_from_datadict(self, data, files, name):
-        values = super(TagWidget, self).value_from_datadict(data, files, name)
-        qs = self.queryset.filter(**{'pk__in': list(values)})
-        names = set(force_text(o.name) for o in qs)
-        cleaned_values = []
-        for val in values:
-            if force_text(val) not in names:
-                name = self.queryset.create(name=val).name
-            name = force_text(val)
-            cleaned_values.append(name)
-        return cleaned_values
+# class MyWidget(Select2TagWidget):
+#
+#     def value_from_datadict(self, data, files, name):
+#         values = super(MyWidget, self).value_from_datadict(data, files, name)
+#         return ",".join(values)
+    # def optgroups(self, name, value, attrs=None):
+    #     values = value[0].split(',') if value[0] else []
+    #     selected = set(values)
+    #     subgroup = [self.create_option(name, v, v, selected, i) for i, v in enumerate(values)]
+    #     return [(None, subgroup, 0)]
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -43,7 +56,6 @@ class ProfileAdmin(admin.ModelAdmin):
         'technical_expertise', 'technical_expertise_other',
         'sector', 'sector_other', 'role', 'role_other',  'socialLinks',
          'source_of_inspiration', 'challenge',
-
     )
     exclude = ('location', 'social_links', 'reset_token', 'update_token_at', 'ask_reset_at', 'place')
     can_delete = False
@@ -87,7 +99,7 @@ class CompanyAdmin(admin.ModelAdmin):
 
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
-        models.ManyToManyField: {'widget': Select2TagWidget}
+        models.ManyToManyField: {'widget': Select2MultipleWidget}
     }
 
     def campany_challenges(self, obj):
@@ -170,7 +182,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
-        models.ManyToManyField: {'widget': Select2TagWidget}
+        models.ManyToManyField: {'widget': Select2MultipleWidget}
     }
 
     template = str(
@@ -199,13 +211,11 @@ class ChallengeAdmin(admin.ModelAdmin):
         '</table>'
     )
 
-
-
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Challenge, ChallengeAdmin)
 admin.site.register(Company, CompanyAdmin)
 
 
 # admin.site.register(Feedback, FeedbackAdmin)
-# admin.site.register(Tag, TagAdmin)
+admin.site.register(Tag, TagAdmin)
 # admin.site.register(Invitation, InvitationAdmin)

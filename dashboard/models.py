@@ -26,7 +26,7 @@ class ModelHelper:
 
 
 class Tag(models.Model):
-    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    name = models.CharField(_('Name'), max_length=50, null=False, blank=False)
 
     @classmethod
     def create(cls, name):
