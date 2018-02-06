@@ -102,7 +102,7 @@ export default [function(){
     return {
         template:template+template_2,
         scope: { id : '=' },
-        controller : ['$scope', '$http', function($scope, $http){
+        controller : ['$scope', '$http', '$sce', function($scope, $http, $sce){
             $scope.get_data = ()=> Promise
                     .all([
                         $http.get('/api/v1.3/challenge/'+$scope.id+'/'),
@@ -110,6 +110,7 @@ export default [function(){
                     ])
                     .then(
                         res=>{
+                            res[0].data.details = res[0].data.details && $sce.trustAsHtml(res[0].data.details)
                             $scope.challenge = res[0].data || {}
                             $scope.interested_ids = res[1].data || []
                             $scope.$apply(()=>$(window).trigger('resize'))

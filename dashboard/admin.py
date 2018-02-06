@@ -6,7 +6,30 @@ from froala_editor.widgets import FroalaEditor
 from django.template import Template, Context
 from django.db import models
 from dashboard.serializer import ChallengeSerializer
-from django_select2.forms import Select2MultipleWidget, Select2TagWidget
+from django_select2.forms import Select2MultipleWidget, Select2TagWidget, ModelSelect2TagWidget
+from django.utils.encoding import force_text
+
+
+class TagWidget(ModelSelect2TagWidget):
+    model = Tag
+    queryset = Tag.objects.all()
+    search_fields = ['name',]
+
+    def create_value(self, value):
+        self.get_queryset().create(name=value)
+
+    def value_from_datadict(self, data, files, name):
+        values = super(TagWidget, self).value_from_datadict(data, files, name)
+        qs = self.queryset.filter(**{'pk__in': list(values)})
+        names = set(force_text(o.name) for o in qs)
+        cleaned_values = []
+        for val in values:
+            if force_text(val) not in names:
+                name = self.queryset.create(name=val).name
+            name = force_text(val)
+            cleaned_values.append(name)
+        return cleaned_values
+
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user',)
@@ -54,6 +77,7 @@ class ProfileAdmin(admin.ModelAdmin):
         '       </tr>'
         '   {% endfor %}'
         '</table>'
+        '   <style>.challenge label{display:none;}</style>'
         '</div>')
 
 
@@ -92,6 +116,7 @@ class CompanyAdmin(admin.ModelAdmin):
         '       </tr>'
         '   {% endfor %}'
         '</table>'
+        '   <style>.campany_challenges label{display:none;}</style>'
         '</div>')
 
 
@@ -114,13 +139,11 @@ class InvitationAdmin(admin.ModelAdmin):
 class InterestInline(GenericTabularInline):
     model = Interest
     can_delete = False
-    # verbose_name_plural = 'Interests'
     fk_name = 'profile'
 
 
 class ChallengeAdmin(admin.ModelAdmin):
 
-    # list_display = ('title', 'company', 'picture', 'profile', 'interested')
     readonly_fields = ('interested',)
 
     def interested(self, obj):
@@ -130,14 +153,27 @@ class ChallengeAdmin(admin.ModelAdmin):
     interested.allow_tags = True
     interested.short_description = ''
 
+    fieldsets = (
+        ('Base info', {
+            'fields': ('company', 'title', 'description', 'picture', 'details', 'tags', 'les',),
+        }),
+        ('Email', {
+            'fields': ('coordinator_email', 'notify_admin', 'notify_user',),
+        }),
+        ('Status', {
+            'fields': ('start_date', 'end_date', 'published', 'closed',),
+        }),
+        ('Interested Profiles', {
+            'fields': ('interested',),
+        }),
+    )
+
     formfield_overrides = {
         models.TextField: {'widget': FroalaEditor},
         models.ManyToManyField: {'widget': Select2TagWidget}
     }
 
     template = str(
-        '<div class="module">'
-        '<h2>Interested Profiles</h2></br>'
         '<table style="width:100%">'
         '   <tr style="font-weight:bold;"> '
         '       <td>First Name</td>'
@@ -159,8 +195,8 @@ class ChallengeAdmin(admin.ModelAdmin):
         '           </td>'
         '       </tr>'
         '   {% endfor %}'
+        '   <style>.field-interested label{display:none;}</style>'
         '</table>'
-        '</div>'
     )
 
 

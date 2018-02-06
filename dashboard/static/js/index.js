@@ -15,7 +15,7 @@ require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validat
 
 // Init Angular APP
 var app = angular.module('dashboard', [
-    'ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
+    'ui.bootstrap', 'toastr', 'ui.select', 'ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
