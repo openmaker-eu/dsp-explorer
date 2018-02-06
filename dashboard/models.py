@@ -421,18 +421,24 @@ class Profile(models.Model):
             print e
 
     def add_interest(self, interest_obj):
-        interest = Interest(content_object=interest_obj)
-        interest.profile = self
-        interest.save()
+        # Check existing realation between same interest related model and same profile
+        ct_id = ContentType.objects.get_for_model(interest_obj).pk
+        existing_interest = Interest.objects.filter(content_type_id=ct_id, profile_id=self.pk, object_id=interest_obj.pk)
+        # If doesnt exist create interest and relations
+        if len(existing_interest) == 0:
+            interest = Interest(content_object=interest_obj)
+            interest.profile = self
+            interest.save()
 
     def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
         return ModelHelper.filter_instance_list_by_class(interests, filter_class)
 
     def delete_interest(self, interest_obj, interest_id):
+        # Get interest-related-model class type id
         ct_id = ContentType.objects.get_for_model(interest_obj).pk
+        # Get Interest record
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id)
-        print interest
         return interest.delete()
 
 
