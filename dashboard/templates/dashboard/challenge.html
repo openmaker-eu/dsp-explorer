@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="row">
-                <challenge-list></challenge-list>
+                <challenge-list profileid="{{request.user.profile.id}}" all="true"></challenge-list>
             </div>
         {% endif %}
         <br><br>

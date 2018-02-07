@@ -368,7 +368,7 @@ def profile(request, profile_id=None, action=None):
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
     
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
-    
+    print user_profile.pk
     context = {
         'profile': user_profile,
         'profile_action': action,

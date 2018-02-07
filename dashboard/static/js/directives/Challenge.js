@@ -14,7 +14,7 @@ let template = `
                          ng-click="challenge.closed || click_interest(challenge)"
                          uib-tooltip="{$ is_interested(challenge)? 'You are interested in this challenge': 'Click to show interest in this challenge' $}"
                      ></span>
-                     <small><span>{$ challenge.interested.length $}</span></small>
+                     <small><span>{$ challenge.interested.length $}&nbsp;Interested</span></small>
                 </small>
             </h1>
             <br>
@@ -26,7 +26,7 @@ let template = `
                 ng-repeat="tag in challenge.tags"
                 style="margin-right: 1%;"
             >#{$ tag.name $}</span>
-            <br>
+            <br><br>
         </div>
         
         </div>
@@ -59,7 +59,7 @@ let template = `
                 </p>
             </div>
             <!--Tags-->
-            <div class="col-md-12 .hidden-sm-down">
+            <div class="col-md-12 visible-md visible-lg">
                 <br>
                 <span
                     class="btn tag-button no-pointer"

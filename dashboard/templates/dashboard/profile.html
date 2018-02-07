@@ -225,19 +225,14 @@
                                 {$ type $}{$ $last ? '&nbsp;' : ',&nbsp;' $}
                             </span>
                         </p>
-
-
                     </div>
-
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="well-red">Interested challenge</div>
-                        <challenge-list profileid="{{request.user.profile.id}}"></challenge-list>
+                        <challenge-list profileid="{{profile.id}}" all="false"></challenge-list>
                     </div>
                 </div>
-
 
             </div>
 
