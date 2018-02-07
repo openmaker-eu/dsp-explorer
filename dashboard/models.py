@@ -26,7 +26,7 @@ class ModelHelper:
 
 
 class Tag(models.Model):
-    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    name = models.CharField(_('Name'), max_length=50, null=False, blank=False)
 
     @classmethod
     def create(cls, name):
@@ -578,7 +578,7 @@ class Feedback(models.Model):
 
 
 class Company(models.Model):
-    logo = models.ImageField(_('Company picture'), upload_to='images/company')
+    logo = models.ImageField(_('Logo'), upload_to='images/company')
     name = models.CharField(_('Name'), max_length=200, null=False, blank=False)
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
@@ -623,7 +623,11 @@ class Challenge(models.Model):
 
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)
+
     coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
+    notify_admin = models.BooleanField(_('Notifiy Coordinator when user add/remove interest'), default=True)
+    notify_user = models.BooleanField(_('Notifiy User when removes interest'), default=True)
+
     les = models.IntegerField(default=0, choices=les_choices)
     profile = models.ForeignKey(Profile, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
