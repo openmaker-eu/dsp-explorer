@@ -34,7 +34,7 @@ let template = `
                             Interested: {$ challenge.interested.length $}<br>
                         </p>
                         <p ng-if="!challenge.closed">
-                            <i class="fa fa-unlock-alt" uib-tooltip="Challenge is Open" tooltip-placement="right"></i> Status:
+                            <i class="fa fa-unlock-alt text-red" uib-tooltip="Challenge is Open" tooltip-placement="right"></i> Status:
                             Open<br>
                         </p>
                         <p ng-if="challenge.closed">
