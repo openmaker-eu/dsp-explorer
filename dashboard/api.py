@@ -30,6 +30,7 @@ import simplejson as simplejson
 
 from rest_framework import generics
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 
 def search_members(request, search_string):
@@ -653,15 +654,50 @@ def get_interest_ids(request):
 @login_required
 def interest_challenge(request, challenge_id):
     try:
-        if request.method == 'POST':
-            challenge = Challenge.objects.get(pk=challenge_id)
-            request.user.profile.add_interest(challenge)
-        if request.method == 'DELETE':
-            request.user.profile.delete_interest(Challenge, challenge_id)
+        challenge = Challenge.objects.get(pk=challenge_id)
+        email_context = {
+            'USER_NAME': request.user.first_name+' '+request.user.last_name,
+            'USER_EMAIL': request.user.email,
+            'USER_URL': request.build_absolute_uri(reverse('dashboard:profile', kwargs={'profile_id': request.user.profile.pk})),
+            'CHALLENGE_TITLE': challenge.title,
+            'CHALLENGE_URL': request.build_absolute_uri(reverse('dashboard:challenge', kwargs={'challenge_id': challenge.pk})),
+            'COORDINATOR_EMAIL': challenge.coordinator_email
+        }
 
+        print email_context
+
+        if request.method == 'POST':
+            # Add interest
+            request.user.profile.add_interest(challenge)
+            # Email Coordinator
+            challenge.notify_admin and EmailHelper.email(
+                template_name='challenge/challenge_coordinator_interest_added',
+                title='Openmaker Explorer - Challenge interest ADDED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
+        if request.method == 'DELETE':
+            # Remove interest
+            request.user.profile.delete_interest(Challenge, challenge_id)
+            # Email Coordinator
+            challenge.notify_admin and EmailHelper.email(
+                template_name='challenge/challenge_coordinator_interest_removed',
+                title='Openmaker Explorer - Challenge interest REMOVED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
+            # Email User
+            challenge.notify_user and EmailHelper.email(
+                template_name='challenge/challenge_user_interest_removed',
+                title='Openmaker Explorer - Challenge interest REMOVED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
         return JsonResponse({'status': 'success'})
-    except:
-        response = JsonResponse({'status': 'error', 'message': ''})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
         response.status_code = 500
         return response
 
