@@ -16,7 +16,9 @@ from django.db.models import Q
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-
+from django.conf import settings
+from django.urls import reverse
+from utils.mailer import EmailHelper
 
 class ModelHelper:
     @classmethod
@@ -421,6 +423,8 @@ class Profile(models.Model):
             print e
 
     def add_interest(self, interest_obj):
+        from utils.mailer import EmailHelper
+
         # Check existing realation between same interest related model and same profile
         ct_id = ContentType.objects.get_for_model(interest_obj).pk
         existing_interest = Interest.objects.filter(content_type_id=ct_id, profile_id=self.pk, object_id=interest_obj.pk)
@@ -429,6 +433,7 @@ class Profile(models.Model):
             interest = Interest(content_object=interest_obj)
             interest.profile = self
             interest.save()
+            print 'saving'
 
     def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
@@ -439,7 +444,7 @@ class Profile(models.Model):
         ct_id = ContentType.objects.get_for_model(interest_obj).pk
         # Get Interest record
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id)
-        return interest.delete()
+        interest.delete()
 
 
 class Invitation(models.Model):
@@ -536,7 +541,6 @@ class Invitation(models.Model):
             'receiver_last_name': last_name
         }
         cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.iteritems() if v is not None})
-        cls.objects.filter(receiver_email=hashed).update(**{k: v for k, v in receiver_dict.iteritems() if v is not None})
 
     @classmethod
     def confirm_sender(cls, sender_email, receiver_email):

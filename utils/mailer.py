@@ -78,7 +78,8 @@ class EmailHelper(object):
     def render_email(template_name, vars={}):
         base_template_path = os.path.join(settings.BASE_DIR, 'templates/email/base.html')
         body_template_path = os.path.join(settings.BASE_DIR, 'templates/email/'+template_name+'.html')
-
+        print 'body_template_path'
+        print body_template_path
         base_template = open(base_template_path).read()\
             .replace('{', '{{')\
             .replace('}', '}}')\
