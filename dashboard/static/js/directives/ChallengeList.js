@@ -20,10 +20,12 @@ let template = `
             <div class="card-action" style="height: auto;">
                 <div class="row">
                     <div class="col-md-12">
-                        <p>{$ challenge.description | limitTo: 50 $}{$ challenge.description > 50 ? '...' : '' $}</p>
-                        <p>
+                        <!-- <p>{$ challenge.description | limitTo: 50 $}{$ challenge.description > 50 ? '...' : '' $}</p> -->
+
+                        <!--<p>
                             <i class="glyphicon glyphicon-time"></i> Dates: <br> {$ challenge.start_date | date:'dd MMMM yyyy' $} - {$ challenge.end_date | date:'dd MMMM yyyy' $}<br>
-                        </p>
+                        </p>-->
+
                         <p>
                             <i class="glyphicon glyphicon-thumbs-up pointer"
                                 ng-class="{ 'text-red': is_interested(challenge), 'text-grey': !is_interested(challenge) }"
@@ -33,20 +35,21 @@ let template = `
                             ></i>
                             Interested: {$ challenge.interested.length $}<br>
                         </p>
+
                         <p ng-if="!challenge.closed">
-                            <i class="fa fa-unlock-alt" uib-tooltip="Challenge is Open" tooltip-placement="right"></i> Status:
+                            <i class="fa fa-unlock-alt text-red" uib-tooltip="Challenge is Open" tooltip-placement="right"></i> Status:
                             Open<br>
                         </p>
                         <p ng-if="challenge.closed">
                             <i class="fa fa-lock text-grey disabled" uib-tooltip="Challenge is Closed" tooltip-placement="right"></i> Status:<br>
                             Closed<br>
                         </p>
-                        <p>
+                        <!-- <p>
                             <i ng-repeat="tag in challenge.tags">
                                 <strong>#</strong>
                                 <span>{$ tag.name $}</span>
                             </i>
-                        </p>
+                        </p> -->
 
                         <p>Sponsor by: <strong>{$ challenge.company.name $}</strong></p>
                     </div>
