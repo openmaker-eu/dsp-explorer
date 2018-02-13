@@ -638,6 +638,7 @@ class Challenge(models.Model):
 
     published = models.BooleanField(_('Published'), default=False)
     closed = models.BooleanField(_('Closed'), default=False)
+    restricted_to = models.CharField(_('Restricted to area of'), max_length=100, blank=True)
 
     interest = GenericRelation(Interest,)
 

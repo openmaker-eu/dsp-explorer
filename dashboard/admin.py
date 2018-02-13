@@ -173,7 +173,7 @@ class ChallengeAdmin(admin.ModelAdmin):
             'fields': ('coordinator_email', 'notify_admin', 'notify_user',),
         }),
         ('Status', {
-            'fields': ('start_date', 'end_date', 'published', 'closed',),
+            'fields': ('start_date', 'end_date', 'published', 'closed', 'restricted_to'),
         }),
         ('Interested Profiles', {
             'fields': ('interested',),

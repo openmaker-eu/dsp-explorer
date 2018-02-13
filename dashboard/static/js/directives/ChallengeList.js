@@ -13,9 +13,9 @@ let template = `
         style="margin-bottom:1%; margin-top: 1%;"
     >
         <div class="card margin-bottom-20">
-            <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+            <a href="{$ '/challenge/'+challenge.id+'/' $}" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                 <img style="min-width:100%;" ng-src="{$ challenge.company.logo $}" class="img-responsive">
-            </div>
+            </a>
             <div class="card-content"><h5>{$ challenge.title $}</h5></div>
             <div class="card-action" style="height: auto;">
                 <div class="row">
