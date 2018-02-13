@@ -443,7 +443,7 @@ class Profile(models.Model):
         # Get interest-related-model class type id
         ct_id = ContentType.objects.get_for_model(interest_obj).pk
         # Get Interest record
-        interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id)
+        interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
 
 
