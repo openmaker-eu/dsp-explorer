@@ -123,7 +123,7 @@ class Party(object):
         CRMConnector.update_party(self.__capsule_party['id'], {'party': self.as_dict()})
 
     def create(self):
-        CRMConnector.add_party({'party': self.as_dict()})
+        return CRMConnector.add_party({'party': self.as_dict()})
 
     def get(self):
         remote_party = CRMConnector.search_party_by_email(self.emailAddresses[0]['address'])

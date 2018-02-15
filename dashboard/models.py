@@ -153,6 +153,7 @@ class SourceOfInspiration(models.Model):
 
 
 class Profile(models.Model):
+    crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
@@ -445,6 +446,10 @@ class Profile(models.Model):
         # Get Interest record
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
+
+    def set_crm_id(self, crm_id):
+        self.crm_id = crm_id
+        self.save()
 
 
 class Invitation(models.Model):

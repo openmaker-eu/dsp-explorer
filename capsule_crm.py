@@ -84,7 +84,24 @@ def get_test_user(user_email):
     user = User.objects.filter(email=user_email)
     return user if len(user) > 0 else User.objects.filter(email='massimo.santoli@top-ix.org')
 
+
+def pair_crm_ids():
+    users = User.objects.all()
+    for u in users:
+        try:
+            party = Party(u)
+            party_crm_id = party.get()['id']
+            profile = Profile.get_by_email(u)
+            profile.set_crm_id(party_crm_id)
+        except Exception as e:
+            print 'PAIR CRM IDs %s' % u
+            print 'PAIR CRM IDs %s' % e
+
+    sys.exit("Paring finished")
+
+
 if __name__ == "__main__":
+    pair_crm_ids() if len(sys.argv) > 1 and sys.argv[1] == 'pair_crm_ids' else None
     user = get_test_user(sys.argv[1]) if len(sys.argv) > 1 else None
     if len(user) > 0:
         errored, partially_updated = update_crm(user)
