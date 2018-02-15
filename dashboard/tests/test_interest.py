@@ -11,7 +11,7 @@ import pytz
 from django.utils import timezone
 
 
-class ProfileTestCase(TestCase):
+class InterestTestCase(TestCase):
 
     user = None
 

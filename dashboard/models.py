@@ -640,7 +640,7 @@ class Challenge(models.Model):
     closed = models.BooleanField(_('Closed'), default=False)
     restricted_to = models.CharField(_('Restricted to area of'), max_length=100, blank=True)
 
-    interest = GenericRelation(Interest,)
+    interest = GenericRelation(Interest)
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')
@@ -669,3 +669,22 @@ class Challenge(models.Model):
         elif self.profile and self.company:
             raise ValidationError('You can choose a profile OR a company as promoter of this challenge no both of them')
 
+
+class Project(models.Model):
+
+    profile = models.ForeignKey(Profile)
+    contributors = models.ManyToManyField(Profile, related_name='contributors')
+
+    title = models.CharField(_('Title'), max_length=50)
+    picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
+
+    details = models.TextField(_('Details'))
+
+    tags = models.ManyToManyField(Tag, related_name='tags', blank=True, null=True)
+
+    start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
+    end_date = models.DateTimeField(_('End date'), blank=True, null=True)
+
+    project_url = models.CharField(_('Title'), max_length=50, blank=True, null=True)
+
+    interest = GenericRelation(Interest)
