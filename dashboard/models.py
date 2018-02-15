@@ -434,7 +434,6 @@ class Profile(models.Model):
             interest = Interest(content_object=interest_obj)
             interest.profile = self
             interest.save()
-            print 'saving'
 
     def get_interests(self, filter_class=None):
         interests = map(lambda x: x.get(), self.profile_interest.all())
@@ -693,3 +692,8 @@ class Project(models.Model):
     project_url = models.CharField(_('Title'), max_length=50, blank=True, null=True)
 
     interest = GenericRelation(Interest)
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
