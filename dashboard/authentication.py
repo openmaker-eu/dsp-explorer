@@ -264,7 +264,8 @@ def onboarding_confirmation(request, token):
     # update on crm
     try:
         party = Party(profile.user)
-        crm_id = party.create_or_update()['id']
+        result = party.create_or_update()
+        party_crm_id = result['party']['id']
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
         logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
@@ -274,7 +275,7 @@ def onboarding_confirmation(request, token):
         return HttpResponseRedirect(reverse('dashboard:profile'))
 
     profile.user.is_active = True
-    profile.set_crm_id(crm_id)
+    profile.set_crm_id(party_crm_id)
     profile.user.save()
     profile.update_reset_token()
     login(request, profile.user)
