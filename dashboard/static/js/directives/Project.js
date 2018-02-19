@@ -3,93 +3,71 @@ import * as d3 from 'd3';
 
 let template = `
     <div class="col-md-12">
-        <div class="form-group">
-            <div class="col-md-12">
-                <label style="width:100%; text-align: center;">Project Image</label>
-            </div>
-            <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3 text-center" >
+        <div class="col-md-6 col-md-offset-3">
+            <div class="form-group">
+                <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3 text-center" >
 
-                <button class="btn custom-button margin-bottom-10" ng-click="profileImageUpload();">Image</button>
+                    <button class="btn custom-button margin-bottom-10" ng-click="profileImageUpload();">Choose Image</button>
 
-                <div ng-if="image_model.src" class="thumbnail" id="profile-image-div" >
-                    <img ng-src="{$ image_model.src $}"/>
+                    <div ng-if="image_model.src" class="thumbnail" id="profile-image-div" >
+                        <img ng-src="{$ image_model.src $}"/>
+                    </div>
+
+                    <input id="profile-image-input"
+                            class="hidden"
+                            input_file_model="image_model.src"
+                            type="file"
+                            name="profile_img"/>
                 </div>
-
-                <input
-                        id="profile-image-input"
-                        class="hidden"
-                        input_file_model="image_model.src"
-                        type="file"
-                        name="profile_img"/>
             </div>
+        <div class="form-group">
+            <input type="text" class="form-control" id="project_name" placeholder="Insert project name">
         </div>
         <div class="form-group">
-            <div class="col-md-12">
-                <label>Project name</label>
-                <input type="text" class="form-control" id="project_name" placeholder="Insert project name">
-            </div>
+            <textarea type="text" rows="10" class="form-control" id="description" placeholder="Insert a description"></textarea>
         </div>
         <div class="form-group">
-            <div class="col-md-12">
-                <label>Description</label>
-                <textarea type="text" rows="10" class="form-control" id="description" placeholder="Insert a description"></textarea>
+            <p>Start date</p>
+            <input type="date" ng-model="start_date" />
+            <div ng-if="!ongoing">
+                <p class="margin-top-10">End date</p>
+                <input type="date" ng-model="end_date" />
             </div>
+            <p class="margin-top-10">Ongoing?</p>
+            <input type="checkbox" aria-label="Ongoing" ng-model="ongoing" ng-click="push_bottom();">
         </div>
         <div class="form-group">
-            <div class="col-md-6">
-                <label>Start date</label>
-                <input type="date"/ ng-model="start_date">
-            </div>
-            <div ng-if="!ongoing" class="col-md-6">
-                <label>Start date</label>
-                <input type="date"/ ng-model="end_date">
-            </div>
-            <div class="col-md-12">
-                <label>Ongoing</label>
-                <input type="checkbox" aria-label="Ongoing" ng-model="ongoing">
-            </div>
+            <input type="text" class="form-control" id="role" placeholder="Insert your role"/>
         </div>
         <div class="form-group">
-            <div class="col-md-12">
-                <label>Your role</label>
-                <input type="text" class="form-control" id="role" placeholder="Insert your role"/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-12">
-                <label>Project url</label>
-                <input type="text" class="form-control" id="project_url" placeholder="Insert your project url"/>
-            </div>
+            <input type="text" class="form-control" id="project_url" placeholder="Insert your project url"/>
         </div>
         <div class="form-group">
-            <div class="col-md-12">
-                <label>Tags</label>
-                <div>
-                <ui-select
-                           multiple tagging
-                           tagging-label="" tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
-                           sortable="true"
-                           spinner-enabled="true"
-                           ng-class="{'form-control':true}"
-                           ng-model="av_tags.selected"
-                           title="Choose a tag *" limit="5"
-                >
+            <p>Enter up to 5 keywords about your project</p>
+            <ui-select
+                       multiple tagging
+                       tagging-label="" tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
+                       sortable="true"
+                       spinner-enabled="true"
+                       ng-class="{'form-control':true}"
+                       ng-model="av_tags.selected"
+                       title="Choose a tag *" limit="5"
+            >
 
-                    <ui-select-match placeholder="Type a tag and press enter *">
-                        {$ $item $}
-                    </ui-select-match>
+                <ui-select-match placeholder="Type a tag and press enter">
+                    {$ $item $}
+                </ui-select-match>
 
-                    <ui-select-choices repeat="tag in av_tags.available | filter:$select.search track by $index">
-                        <div ng-bind-html="tag | highlight: $select.search"></div>
-                    </ui-select-choices>
+                <ui-select-choices repeat="tag in av_tags.available | filter:$select.search track by $index">
+                    <div ng-bind-html="tag | highlight: $select.search"></div>
+                </ui-select-choices>
 
-                </ui-select><br/>
-
-                <input type="hidden" name="tags" ng-value="av_tags.selected" required/>
-
-            </div>
+            </ui-select><br/>
+            <input type="hidden" name="tags" ng-value="av_tags.selected" required/>
         </div>
+        <p class="small">* All the fields are required</p>
+        <button class="btn custom-button margin-bottom-10 pull-right margin-left-10" ng-click="create_project();">Create</button>
+        <a class="btn custom-button margin-bottom-10 pull-right" href="/profile">Back</a>
     </div>
 `
 
@@ -98,9 +76,25 @@ export default [function(){
         template:template,
         scope: { projectid : '=', tags: '=' },
         controller : ['$scope', '$http', '$sce', function($scope, $http, $sce){
-        console.log("project controller")
+
+        // project image
         $scope.profileImageUpload = n=>$('#profile-image-input').trigger('click')
+
+        // tags
         $scope.av_tags={ available:  $scope.tags  }
+
+        // keep pushed
+        $scope.push_bottom = () => {
+            console.log("push")
+            $scope.re_render
+            console.log(start_date)
+        }
+
+        // create
+        $scope.create_project = (data) => {
+            console.log("create project");
+        }
+
             /*$scope.get_data = ()=> Promise
                     .all([
                         $http.get('/api/v1.3/challenge/'+$scope.id+'/'),

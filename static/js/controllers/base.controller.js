@@ -81,7 +81,10 @@ export default
         }
     }
     
-    $scope.re_render =()=>{push_footer()}
+    $scope.re_render =()=>{
+        console.log("re_render")
+        push_footer()
+    }
     
     $(window).on('resize', $scope.re_render);
     $(document ).ready($scope.re_render)
