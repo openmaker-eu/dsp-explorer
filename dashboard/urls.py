@@ -29,9 +29,12 @@ urlpatterns = [
     url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
 
     # Profiles
+    url(r'^profile/project/(?P<project_id>[0-9]+)/$', views.project, name='project'),
+    url(r'^profile/project/$', views.project, name='project'),
+
+
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
-
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
 

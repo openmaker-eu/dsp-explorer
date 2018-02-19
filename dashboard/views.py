@@ -456,6 +456,7 @@ def invite(request):
 
     return render(request, 'dashboard/invite.html', {})
 
+
 @login_required()
 def feedback(request):
     if request.method == 'POST':
@@ -477,3 +478,9 @@ def challenge(request, challenge_id=None):
     print 'challenge_id'
     print challenge_id
     return render(request, 'dashboard/challenge.html', {'challenge_id': challenge_id})
+
+
+@login_required()
+def project(request, project_id=None):
+    print(project_id)
+    return render(request, 'dashboard/project.html', {'project_id': project_id, 'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))})

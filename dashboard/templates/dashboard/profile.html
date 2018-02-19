@@ -132,7 +132,7 @@
                 <h1>
                     <span>{$  is_edit ? 'Edit Profile' : '{{profile.user.first_name}} {{profile.user.last_name}}' $}</span>
                     {% if is_my_profile %}
-                    <button class="btn btn-default pull-right" ng-click="is_edit=!is_edit" >
+                    <button class="btn custom-button pull-right" ng-click="is_edit=!is_edit" >
                         {$  is_edit ? 'Return to profile' : 'Edit' $}
                     </button>
                     {% endif %}
@@ -231,6 +231,18 @@
                     <div class="col-md-12">
                         <div class="well-red">Interested challenge</div>
                         <challenge-list profileid="{{profile.id}}" all="false"></challenge-list>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="well-red">Your projects</div>
+                        <div class="col-md-12"> <h2>No Projects</h2> </div>
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn custom-button pull-right" href="{% url 'dashboard:project' %}">
+                            Add a Project
+                        </a>
                     </div>
                 </div>
 

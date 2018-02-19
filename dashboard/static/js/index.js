@@ -46,4 +46,7 @@ app.directive('userStories', require('./directives/UserStories.directive').defau
 app.directive('challengeList', require('./directives/ChallengeList').default )
 app.directive('challenge', require('./directives/Challenge').default )
 
+app.directive('projectList', require('./directives/ProjectList').default )
+app.directive('project', require('./directives/Project').default )
+
 
