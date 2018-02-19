@@ -359,6 +359,23 @@ class v13:
     # def get_themes(request):
     #     return v13.__wrap_response(v13.get_themes)
 
+    @staticmethod
+    def project(request, project_id=None):
+        print request
+        # if GET and project_id == none return all the projects of the user
+        if request.method == 'GET' and project_id is None:
+            pass
+        # if GET and project_id == SOMETHING return the single project of the user
+        if request.method == 'GET' and project_id is not None:
+            pass
+        # if POST and project_id == none update single project
+        if request.method == 'POST' and project_id is not None:
+            pass
+        # if POST and project_id == SOMETHING update a single project of the user
+        if request.method == 'PUT' and project_id is not None:
+            pass
+        pass
+
 
 ###########
 # API V 1.2
@@ -700,9 +717,3 @@ def interest_challenge(request, challenge_id):
         response = JsonResponse({'status': 'error', 'message': e})
         response.status_code = 500
         return response
-
-
-
-
-
-

@@ -21,26 +21,26 @@ let template = `
                 </div>
             </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="project_name" placeholder="Insert project name">
+            <input type="text" class="form-control" id="project_name" placeholder="Insert project name" ng-model="data.project_name" required>
         </div>
         <div class="form-group">
-            <textarea type="text" rows="10" class="form-control" id="description" placeholder="Insert a description"></textarea>
+            <textarea type="text" rows="10" class="form-control" id="description" placeholder="Insert a description" ng-model="data.project_description" required></textarea>
         </div>
         <div class="form-group">
             <p>Start date</p>
-            <input type="date" ng-model="start_date" />
-            <div ng-if="!ongoing">
+            <input type="date" ng-model="data.project_start_date" required/>
+            <div ng-if="!data.project_ongoing">
                 <p class="margin-top-10">End date</p>
-                <input type="date" ng-model="end_date" />
+                <input type="date" ng-model="data.project_end_date" required/>
             </div>
             <p class="margin-top-10">Ongoing?</p>
-            <input type="checkbox" aria-label="Ongoing" ng-model="ongoing" ng-click="push_bottom();">
+            <input type="checkbox" aria-label="Ongoing" ng-model="data.project_ongoing" ng-click="push_bottom();">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="role" placeholder="Insert your role"/>
+            <input type="text" class="form-control" id="role" placeholder="Insert your role" ng-model="data.project_creator_role" required/>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="project_url" placeholder="Insert your project url"/>
+            <input type="text" class="form-control" id="project_url" placeholder="Insert your project url" ng-model="data.project_url" required/>
         </div>
         <div class="form-group">
             <p>Enter up to 5 keywords about your project</p>
@@ -77,6 +77,8 @@ export default [function(){
         scope: { projectid : '=', tags: '=' },
         controller : ['$scope', '$http', '$sce', function($scope, $http, $sce){
 
+        $scope.data = {}
+
         // project image
         $scope.profileImageUpload = n=>$('#profile-image-input').trigger('click')
 
@@ -91,8 +93,9 @@ export default [function(){
         }
 
         // create
-        $scope.create_project = (data) => {
+        $scope.create_project = () => {
             console.log("create project");
+            console.log($scope.data)
         }
 
             /*$scope.get_data = ()=> Promise

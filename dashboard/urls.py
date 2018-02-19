@@ -80,6 +80,9 @@ urlpatterns = [
 
     url(r'^api/v1.3/news/(?P<topic_id>.+)/(?P<date_string>.+)/(?P<cursor>.+)/$', api.v13.get_news, name='api_13_news'),
 
+    url(r'^api/v1.3/project/(?P<project_id>.+)/$', api.v13.project, name='api_13_project'),
+    url(r'^api/v1.3/project/$', api.v13.project, {'project_id': None}, name='api_13_project'),
+
     # API v1.2
     # NEWS (Ex Feeds)
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),

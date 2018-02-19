@@ -82,7 +82,6 @@ export default
     }
     
     $scope.re_render =()=>{
-        console.log("re_render")
         push_footer()
     }
     
