@@ -24,13 +24,14 @@ from django.http import HttpResponse
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
-from dashboard.models import Challenge
+from dashboard.models import Challenge, Project
 from django.contrib.auth.decorators import login_required
 import simplejson as simplejson
 
 from rest_framework import generics
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+import os
 
 
 def search_members(request, search_string):
@@ -368,12 +369,68 @@ class v13:
         # if GET and project_id == SOMETHING return the single project of the user
         if request.method == 'GET' and project_id is not None:
             pass
-        # if POST and project_id == none update single project
-        if request.method == 'POST' and project_id is not None:
-            pass
-        # if POST and project_id == SOMETHING update a single project of the user
-        if request.method == 'PUT' and project_id is not None:
-            pass
+
+        # if POST and project_id != NONE update single project
+        if request.method == 'POST':
+            if project_id is None:
+                return bad_request('project_id missing')
+            # get info and update
+
+        # if PUT and project_id == NONE create a single project of the user
+        if request.method == 'PUT':
+            if project_id is not None:
+                return bad_request('project_id is not required')
+            # check if fields are filled
+            try:
+                project_image = request.FILES['project_image']
+                # check image is an image and has a proper dimension
+                try:
+                    filename, file_extension = os.path.splitext(project_image.name)
+
+                    allowed_extensions = ['.jpg', '.jpeg', '.png']
+                    if not (file_extension in allowed_extensions):
+                        raise ValueError('nonvalid')
+
+                    # limit to 1MB
+                    if project_image.size > 1048576:
+                        raise ValueError('sizelimit')
+                        project_image.name = str(datetime.now().microsecond) + '_' + str(project_image._size) + file_extension
+                except ValueError as exc:
+                    if str(exc) == 'sizelimit':
+                        return bad_request('project_image size must be less than 1MB')
+                    if str(exc) == 'nonvalid':
+                        return bad_request('project_image is not an image file')
+                except Exception as e:
+                        return bad_request(e)
+                project_name = request.PUT['project_name']
+                project_description = request.PUT['project_description']
+                project_start_date = request.PUT['project_start_date']
+                project_creator_role = request.PUT['project_creator_role']
+                project_url = request.PUT['project_url']
+                project_av_tags = request.PUT['project_av_tags']
+            except KeyError:
+                return bad_request("please fill al the fields")
+            # check if is or not an ongoing project
+            try:
+                project_end_date = request.PUT['project_end_date']
+            except KeyError:
+                project_end_date = None
+            # if it is not an ongoing project check dates
+            if project_end_date is not None:
+                if project_end_date > date.now():
+                    return bad_request('the project_end_date cannot be in the future')
+                if project_end_date > project_start_date:
+                    return bad_request('the project_end_date cannot be before the project_start_date')
+            profile = request.user.profile
+            project = Project.create(profile,
+                           project_name,
+                           project_image,
+                           project_description,
+                           project_av_tags,
+                           project_start_date,
+                           project_end_date,
+                           project_url)
+            return success('ok', 'project created', project)
         pass
 
 

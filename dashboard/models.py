@@ -679,10 +679,10 @@ class Project(models.Model):
     profile = models.ForeignKey(Profile)
     contributors = models.ManyToManyField(Profile, related_name='contributors')
 
-    title = models.CharField(_('Title'), max_length=50)
+    name = models.CharField(_('Name'), max_length=50, default='')
     picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
 
-    details = models.TextField(_('Details'))
+    description = models.TextField(_('Description'), default='')
 
     tags = models.ManyToManyField(Tag, related_name='tags', blank=True, null=True)
 
@@ -692,6 +692,19 @@ class Project(models.Model):
     project_url = models.CharField(_('Title'), max_length=50, blank=True, null=True)
 
     interest = GenericRelation(Interest)
+
+    @classmethod
+    def create(cls, profile, name, picture, description, tags, start_date, end_date=None, project_url=project_url):
+        project = cls(profile=profile,
+                      name=name,
+                      picture=picture,
+                      description=description,
+                      tags=tags,
+                      start_date=start_date,
+                      end_date=end_date,
+                      project_url=project_url)
+        project.save()
+        return project
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')

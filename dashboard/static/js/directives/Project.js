@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="col-md-12">
+    <form class="col-md-12">
         <div class="col-md-6 col-md-offset-3">
             <div class="form-group">
                 <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3 text-center" >
@@ -17,7 +17,9 @@ let template = `
                             class="hidden"
                             input_file_model="image_model.src"
                             type="file"
-                            name="profile_img"/>
+                            name="profile_img"
+                            onchange="angular.element(this).scope().load_file_data(this.files)"
+                            ng-model="data.project_image"/>
                 </div>
             </div>
         <div class="form-group">
@@ -50,7 +52,7 @@ let template = `
                        sortable="true"
                        spinner-enabled="true"
                        ng-class="{'form-control':true}"
-                       ng-model="av_tags.selected"
+                       ng-model="data.project_av_tags"
                        title="Choose a tag *" limit="5"
             >
 
@@ -63,12 +65,15 @@ let template = `
                 </ui-select-choices>
 
             </ui-select><br/>
-            <input type="hidden" name="tags" ng-value="av_tags.selected" required/>
+            <input type="hidden" name="tags" ng-value="data.project_av_tags" required/>
         </div>
         <p class="small">* All the fields are required</p>
-        <button class="btn custom-button margin-bottom-10 pull-right margin-left-10" ng-click="create_project();">Create</button>
+        <button type="submit" class="btn custom-button margin-bottom-10 pull-right margin-left-10" ng-click="create_or_update_project()">
+            <span ng-if="method == 'PUT'">Create</span>
+            <span ng-if="method == 'POST'">Update</span>
+        </button>
         <a class="btn custom-button margin-bottom-10 pull-right" href="/profile">Back</a>
-    </div>
+    </form>
 `
 
 export default [function(){
@@ -77,7 +82,31 @@ export default [function(){
         scope: { projectid : '=', tags: '=' },
         controller : ['$scope', '$http', '$sce', function($scope, $http, $sce){
 
+        // form data
         $scope.data = {}
+
+        // action based on create or update
+        if ($scope.projectid) {
+            $scope.method = 'POST'
+            $scope.url = '/api/v1.3/project/' + $scope.projectid
+            // fill the template form with project information
+        } else {
+            $scope.method = 'PUT'
+            $scope.url = '/api/v1.3/project/'
+            // new project insert
+        }
+
+        $scope.load_file_data = function (files) {
+            $scope.data.project_image = files
+        };
+
+        $scope.create_or_update_project = () => {
+            $http({method: $scope.method, url: $scope.url, data: $scope.data}).then(function(response) {
+                //
+            }, function(response) {
+                //
+            });
+        }
 
         // project image
         $scope.profileImageUpload = n=>$('#profile-image-input').trigger('click')
@@ -87,43 +116,8 @@ export default [function(){
 
         // keep pushed
         $scope.push_bottom = () => {
-            console.log("push")
             $scope.re_render
-            console.log(start_date)
         }
-
-        // create
-        $scope.create_project = () => {
-            console.log("create project");
-            console.log($scope.data)
-        }
-
-            /*$scope.get_data = ()=> Promise
-                    .all([
-                        $http.get('/api/v1.3/challenge/'+$scope.id+'/'),
-                        $http.get('/api/v1.3/interest_ids/')
-                    ])
-                    .then(
-                        res=>{
-                            res[0].data.details = res[0].data.details && $sce.trustAsHtml(res[0].data.details)
-                            $scope.challenge = res[0].data || {}
-                            $scope.interested_ids = res[1].data || []
-                            $scope.$apply(()=>$(window).trigger('resize'))
-                        },
-                        err=>console.log('Error: ', err)
-                    )
-    
-            $scope.get_data()
-            
-            $scope.click_interest = (challenge) =>
-                ($scope.is_interested(challenge) ?
-                    $http.delete('/api/v1.3/interest/challenge/'+challenge.id+'/') :
-                    $http.post('/api/v1.3/interest/challenge/'+challenge.id+'/')
-                )
-                .then(res=>$scope.get_data(),err=>console.log(err))
-            
-            $scope.is_interested = (challenge)=>$scope.interested_ids && $scope.interested_ids.indexOf(challenge.id) > -1
-            */
  
         }]
     }
