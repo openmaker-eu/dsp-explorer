@@ -24,14 +24,16 @@ from django.http import HttpResponse
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
-from dashboard.models import Challenge, Project
+from dashboard.models import Challenge, Project, Tag
 from django.contrib.auth.decorators import login_required
+from datetime import datetime as dt
 import simplejson as simplejson
 
 from rest_framework import generics
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
-import os
+import os, re
+from django.core import serializers
 
 
 def search_members(request, search_string):
@@ -362,7 +364,7 @@ class v13:
 
     @staticmethod
     def project(request, project_id=None):
-        print request
+        print 'method'
         # if GET and project_id == none return all the projects of the user
         if request.method == 'GET' and project_id is None:
             pass
@@ -371,18 +373,16 @@ class v13:
             pass
 
         # if POST and project_id != NONE update single project
-        if request.method == 'POST':
-            if project_id is None:
-                return bad_request('project_id missing')
+            if request.method == 'POST' and project_id is not None:
+                pass
             # get info and update
 
         # if PUT and project_id == NONE create a single project of the user
-        if request.method == 'PUT':
-            if project_id is not None:
-                return bad_request('project_id is not required')
+        if request.method == 'POST' and project_id is None:
             # check if fields are filled
             try:
-                project_image = request.FILES['project_image']
+                project_image = request.FILES.get('project_image')
+                print project_image
                 # check image is an image and has a proper dimension
                 try:
                     filename, file_extension = os.path.splitext(project_image.name)
@@ -401,36 +401,51 @@ class v13:
                     if str(exc) == 'nonvalid':
                         return bad_request('project_image is not an image file')
                 except Exception as e:
-                        return bad_request(e)
-                project_name = request.PUT['project_name']
-                project_description = request.PUT['project_description']
-                project_start_date = request.PUT['project_start_date']
-                project_creator_role = request.PUT['project_creator_role']
-                project_url = request.PUT['project_url']
-                project_av_tags = request.PUT['project_av_tags']
-            except KeyError:
-                return bad_request("please fill al the fields")
+                        print e
+                        return bad_request('error')
+                print request.POST
+                project_name = request.POST['project_name']
+                project_description = request.POST['project_description']
+                project_start_date = dt.strptime(request.POST['project_start_date'], '%Y-%m-%d')
+                project_creator_role = request.POST['project_creator_role']
+                project_url = request.POST['project_url']
+                project_tags = request.POST['project_tags']
+            except KeyError as k:
+                print k
+                return bad_request("please fill all the fields")
             # check if is or not an ongoing project
             try:
-                project_end_date = request.PUT['project_end_date']
+                project_end_date = dt.strptime(request.POST['project_end_date'], '%Y-%m-%d')
             except KeyError:
                 project_end_date = None
             # if it is not an ongoing project check dates
+
             if project_end_date is not None:
-                if project_end_date > date.now():
+                if project_end_date > dt.now():
                     return bad_request('the project_end_date cannot be in the future')
-                if project_end_date > project_start_date:
+                if project_end_date < project_start_date:
                     return bad_request('the project_end_date cannot be before the project_start_date')
+
+            # check user has not project with that name
             profile = request.user.profile
-            project = Project.create(profile,
-                           project_name,
-                           project_image,
-                           project_description,
-                           project_av_tags,
-                           project_start_date,
-                           project_end_date,
-                           project_url)
-            return success('ok', 'project created', project)
+            projects = Project.objects.filter(profile=profile, name=project_name)
+            if len(projects) > 0:
+                return bad_request('project_name already exist')
+
+            project = Project(profile=profile,
+                              name= project_name,
+                              picture=project_image,
+                              description=project_description,
+                              start_date=project_start_date,
+                              end_date=project_end_date,
+                              creator_role=project_creator_role,
+                              project_url=project_url)
+            project.save()
+            project.tags.clear()
+            for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
+                project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+            project.save()
+            return success('ok', 'project created', {})
         pass
 
 
