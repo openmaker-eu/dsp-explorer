@@ -33,7 +33,6 @@ from rest_framework import generics
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 import os, re
-from django.core import serializers
 
 
 def search_members(request, search_string):
@@ -364,7 +363,6 @@ class v13:
 
     @staticmethod
     def project(request, project_id=None):
-        print 'method'
         # if GET and project_id == none return all the projects of the user
         if request.method == 'GET' and project_id is None:
             pass
@@ -382,11 +380,10 @@ class v13:
             # check if fields are filled
             try:
                 project_image = request.FILES.get('project_image')
-                print project_image
                 # check image is an image and has a proper dimension
                 try:
+                    # TODO check image is saved in the project tree
                     filename, file_extension = os.path.splitext(project_image.name)
-
                     allowed_extensions = ['.jpg', '.jpeg', '.png']
                     if not (file_extension in allowed_extensions):
                         raise ValueError('nonvalid')
@@ -400,10 +397,12 @@ class v13:
                         return bad_request('project_image size must be less than 1MB')
                     if str(exc) == 'nonvalid':
                         return bad_request('project_image is not an image file')
+                except KeyError as k:
+                    print k
+                    return bad_request("please fill all the fields")
                 except Exception as e:
                         print e
-                        return bad_request('error')
-                print request.POST
+                        return bad_request('some error in the image upload')
                 project_name = request.POST['project_name']
                 project_description = request.POST['project_description']
                 project_start_date = dt.strptime(request.POST['project_start_date'], '%Y-%m-%d')
@@ -445,6 +444,11 @@ class v13:
             for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
+
+            # TODO fix serializer for object model return
+            # from dashboard.serializer import ProjectSerializer
+            # serialized = ProjectSerializer(project, many=True)
+
             return success('ok', 'project created', {})
         pass
 

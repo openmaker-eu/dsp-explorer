@@ -80,7 +80,7 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', tags: '=' },
-        controller : ['$scope', '$http', '$sce', function($scope, $http, $sce){
+        controller : ['$scope', '$http', '$sce', function($scope, $http, $sce, $location, $window){
 
         // form data
         $scope.data = {}
@@ -97,21 +97,18 @@ export default [function(){
             $scope.data.project_image = files[0]
         };
 
+        // TODO send empty end date if ongoing is flagged
+
         $scope.create_or_update_project = () => {
             console.log('Sending this data')
-
             var fd = new FormData( document.getElementById('project_form'));
-
-            console.log(fd.values())
-            fd.forEach(function(el, key){
-                console.log('el ', el)
-                console.log('key', key)
-            })
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {
                     console.log(response)
+                    // move to profile page
                 }, function(response) {
                     console.log(response)
+                    // display error with
                 });
         }
 
