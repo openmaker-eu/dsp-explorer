@@ -12,7 +12,7 @@ let template = `
         ng-repeat="project in projects"
         style="margin-bottom:1%; margin-top: 1%;">
         <div class="card margin-bottom-20">
-            <a href="{$ '/project/'+project.id+'/' $}" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+            <a href="{$ '/profile/project/'+project.id+'/detail' $}" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                 <img style="min-width:100%;" ng-src="{$ project.picture $}" class="img-responsive">
             </a>
             <div class="card-content"><h5>{$ project.name $}</h5></div>
@@ -31,7 +31,7 @@ let template = `
                         <hr>
                     </div>
                     <div class="col-md-12 text-right">
-                        <a href="{$ '/project/'+project.id+'/' $}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
+                        <a href="{$ '/profile/project/'+project.id+'/detail' $}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
                     </div>
                 </div>
             </div>

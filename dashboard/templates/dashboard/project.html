@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block container %}
-<div class="row">
-    <project projectid="{{ project_id }}" tags=" {{ tags }} "></project>
+<div class="container-fluid">
+    <div class="row">
+        <!-- TODO directive for detail check action param status -->
+        {% if action == "detail" %}
+            <project-detail projectid="{{ project_id }}" profileid=" {{ request.user.profile.id }} "></project-detail>
+        {% else %}
+            <project projectid="{{ project_id }}" tags="{{ tags }}"></project>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

@@ -13,33 +13,37 @@ let template = `
                         <img ng-src="{$ image_model.src $}"/>
                     </div>
 
+                    <div ng-if="data.picture" class="thumbnail" id="profile-image-div" >
+                        <img ng-src="{$ data.picture $}"/>
+                    </div>
+
                     <input id="profile-image-input"
                             class="hidden"
                             input_file_model="image_model.src"
                             type="file"
-                            name="project_image"
+                            name="picture"
                             onchange="angular.element(this).scope().load_file_data(this.files)"
-                            ng-model="data.project_image"/>
+                            ng-model="data.picture"/>
                 </div>
             </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="project_name" placeholder="Insert project name" ng-model="data.project_name" name="project_name" required>
+            <input type="text" class="form-control" id="project_name" placeholder="Insert project name" ng-model="data.name" name="name" required>
         </div>
         <div class="form-group">
-            <textarea type="text" rows="10" class="form-control" id="description" name="project_description" placeholder="Insert a description" ng-model="data.project_description" required></textarea>
+            <textarea type="text" rows="10" class="form-control" id="description" name="description" placeholder="Insert a description" ng-model="data.description" required></textarea>
         </div>
         <div class="form-group">
             <p>Start date</p>
-            <input type="date" ng-model="data.project_start_date" name="project_start_date" required/>
+            <input type="date" ng-model="data.start_date" name="start_date" required/>
             <div ng-if="!data.project_ongoing">
                 <p class="margin-top-10">End date</p>
-                <input type="date" ng-model="data.project_end_date" name="project_end_date" required/>
+                <input type="date" ng-model="data.end_date" name="end_date" required/>
             </div>
             <p class="margin-top-10">Ongoing?</p>
             <input type="checkbox" aria-label="Ongoing" ng-model="data.project_ongoing" ng-click="push_bottom();">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="role" placeholder="Insert your role" ng-model="data.project_creator_role" name="project_creator_role" required/>
+            <input type="text" class="form-control" id="role" placeholder="Insert your role" ng-model="data.creator_role" name="creator_role" required/>
         </div>
         <div class="form-group">
             <input type="text" class="form-control" id="project_url" placeholder="Insert your project url" ng-model="data.project_url" name="project_url" required/>
@@ -52,7 +56,7 @@ let template = `
                        sortable="true"
                        spinner-enabled="true"
                        ng-class="{'form-control':true}"
-                       ng-model="data.project_av_tags"
+                       ng-model="data.tags"
                        title="Choose a tag *" limit="5"
             >
 
@@ -65,7 +69,7 @@ let template = `
                 </ui-select-choices>
 
             </ui-select><br/>
-            <input type="hidden" name="project_tags" ng-value="data.project_av_tags" required/>
+            <input type="hidden" name="tags" ng-value="data.tags" required/>
         </div>
         <p class="small">* All the fields are required</p>
         <button type="submit" class="btn custom-button margin-bottom-10 pull-right margin-left-10">
@@ -85,15 +89,8 @@ export default [function(){
         // form data
         $scope.data = {}
 
-        // action based on create or update
-        if ($scope.projectid) {
-            $scope.url = '/api/v1.3/project/' + $scope.projectid
-            // fill the template form with project information
-        } else {
-            $scope.url = '/api/v1.3/project/'
-        }
-
         $scope.load_file_data = function (files) {
+            $scope.data.picture = ''
             $scope.data.project_image = files[0]
         };
 
@@ -102,6 +99,7 @@ export default [function(){
         $scope.create_or_update_project = () => {
             console.log('Sending this data')
             var fd = new FormData( document.getElementById('project_form'));
+            console.log(`url ${$scope.url}`)
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {
                     console.log(response)
@@ -110,6 +108,20 @@ export default [function(){
                     console.log(response)
                     // display error with
                 });
+        }
+
+        $scope.get_data = (url) => {
+            $http.get(url).then(res => {
+                $scope.data = res.data.result[0] || {}
+                $scope.data.start_date = new Date(res.data.result[0].start_date)
+                if ($scope.data.end_date == '') {
+                    $scope.data.project_ongoing = true
+                } else {
+                    $scope.data.end_date = new Date(res.data.result[0].end_date)
+                }
+                console.log($scope.data)
+                $scope.$apply(()=>$(window).trigger('resize'))
+            })
         }
 
         // project image
@@ -122,7 +134,16 @@ export default [function(){
         $scope.push_bottom = () => {
             $scope.re_render
         }
- 
+
+        // action based on create or update
+        if ($scope.projectid) {
+            $scope.url = '/api/v1.3/project/' + $scope.projectid + '/'
+            // fill the template form with project information
+            $scope.get_data($scope.url)
+        } else {
+            $scope.url = '/api/v1.3/project/'
+        }
+
         }]
     }
 }]

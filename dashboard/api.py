@@ -385,50 +385,71 @@ class v13:
                 return not_found()
 
         # if POST and project_id != NONE update single project
-            if request.method == 'POST' and project_id is not None:
-                # TODO check the ID belongs to the logged user
-                pass
+        if request.method == 'POST' and project_id is not None:
+            # TODO check the ID belongs to the logged user
+
+            print 'EDIIIIT'
+            print request.POST
+            print request.FILES.get('project_image')
+
+            data_to_update = dict(request.POST.lists())
+            # data_to_update = request.POST
+
+            # get the model object
+            try:
+                profile = request.user.profile
+                project = Project.objects.filter(id=project_id, profile=profile)[0]
+            except Exception as e:
+                print e
+                not_authorized()
+
+            # check image
+            if request.FILES.get('project_image') is not None:
+                print 'IMAGE WILL BE UPDATED'
+                # image needs to be updated
+                project_image = request.FILES.get('project_image')
+                v13.check_image(project_image)
+                data_to_update['project_image'] = project_image
+
+            try:
+                print 'UPDATING'
+                print 'data'
+                print data_to_update
+
+                project.tags.clear()
+                for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE),
+                                   data_to_update['tags'][0].split(",")):
+                    project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+                project.update(**data_to_update)
+                project.save()
+                return success('ok', 'project updated', {})
+            except Exception as e:
+                print e
+                return error()
             # get info and update
 
         # if PUT and project_id == NONE create a single project of the user
         if request.method == 'POST' and project_id is None:
+
+            print 'CREATEEEEEE'
+            print request.POST
+
             # check if fields are filled
             try:
-                project_image = request.FILES.get('project_image')
-                # check image is an image and has a proper dimension
-                try:
-                    filename, file_extension = os.path.splitext(project_image.name)
-                    allowed_extensions = ['.jpg', '.jpeg', '.png']
-                    if not (file_extension in allowed_extensions):
-                        raise ValueError('nonvalid')
-
-                    # limit to 1MB
-                    if project_image.size > 1048576:
-                        raise ValueError('sizelimit')
-                        project_image.name = str(datetime.now().microsecond) + '_' + str(project_image._size) + file_extension
-                except ValueError as exc:
-                    if str(exc) == 'sizelimit':
-                        return bad_request('project_image size must be less than 1MB')
-                    if str(exc) == 'nonvalid':
-                        return bad_request('project_image is not an image file')
-                except KeyError as k:
-                    print k
-                    return bad_request("please fill all the fields")
-                except Exception as e:
-                        print e
-                        return bad_request('some error in the image upload')
-                project_name = request.POST['project_name']
-                project_description = request.POST['project_description']
-                project_start_date = dt.strptime(request.POST['project_start_date'], '%Y-%m-%d')
-                project_creator_role = request.POST['project_creator_role']
+                project_image = request.FILES.get('picture')
+                v13.check_image(project_image)
+                project_name = request.POST['name']
+                project_description = request.POST['description']
+                project_start_date = dt.strptime(request.POST['start_date'], '%Y-%m-%d')
+                project_creator_role = request.POST['creator_role']
                 project_url = request.POST['project_url']
-                project_tags = request.POST['project_tags']
+                project_tags = request.POST['tags']
             except KeyError as k:
                 print k
                 return bad_request("please fill all the fields")
             # check if is or not an ongoing project
             try:
-                project_end_date = dt.strptime(request.POST['project_end_date'], '%Y-%m-%d')
+                project_end_date = dt.strptime(request.POST['end_date'], '%Y-%m-%d')
             except KeyError:
                 project_end_date = None
             # if it is not an ongoing project check dates
@@ -458,11 +479,35 @@ class v13:
             for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
-            serialized = ProjectSerializer(project, many=True)
 
-            return success('ok', 'project created', serialized.data)
-        pass
+            # serialized = ProjectSerializer(project, many=True)
 
+            return success('ok', 'project created', {})
+
+    @staticmethod
+    def check_image(project_image):
+        # check image is an image and has a proper dimension
+        try:
+            filename, file_extension = os.path.splitext(project_image.name)
+            allowed_extensions = ['.jpg', '.jpeg', '.png']
+            if not (file_extension in allowed_extensions):
+                raise ValueError('nonvalid')
+
+            # limit to 1MB
+            if project_image.size > 1048576:
+                raise ValueError('sizelimit')
+                project_image.name = str(datetime.now().microsecond) + '_' + str(project_image._size) + file_extension
+        except ValueError as exc:
+            if str(exc) == 'sizelimit':
+                return bad_request('project_image size must be less than 1MB')
+            if str(exc) == 'nonvalid':
+                return bad_request('project_image is not an image file')
+        except KeyError as k:
+            print k
+            return bad_request("please fill all the fields")
+        except Exception as e:
+            print e
+            return bad_request('some error in the image upload')
 
 ###########
 # API V 1.2
