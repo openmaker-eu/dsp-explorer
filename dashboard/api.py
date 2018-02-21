@@ -366,7 +366,6 @@ class v13:
         from dashboard.serializer import ProjectSerializer
         # if GET and project_id == none return all the projects of the user
         if request.method == 'GET' and project_id is None:
-            print 'GET ALL PROJECTS'
             try:
                 profile = request.user.profile
                 projects = Project.objects.filter(profile=profile)
@@ -377,7 +376,13 @@ class v13:
                 return not_found()
         # if GET and project_id == SOMETHING return the single project of the user
         if request.method == 'GET' and project_id is not None:
-            pass
+            try:
+                project = Project.objects.filter(id=project_id)
+                serialized = ProjectSerializer(project, many=True)
+                return success('ok', 'single project', serialized.data)
+            except Exception as e:
+                print e
+                return not_found()
 
         # if POST and project_id != NONE update single project
             if request.method == 'POST' and project_id is not None:
