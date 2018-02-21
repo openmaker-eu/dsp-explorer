@@ -680,7 +680,7 @@ class Project(models.Model):
     contributors = models.ManyToManyField(Profile, related_name='contributors')
 
     name = models.CharField(_('Name'), max_length=50, default='')
-    picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
+    picture = models.ImageField(_('Challenge picture'), upload_to='images/projects')
     description = models.TextField(_('Description'), default='')
     tags = models.ManyToManyField(Tag, related_name='tags', blank=True, null=True)
 

@@ -53,6 +53,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only=True)
+    contributors = ProfileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project

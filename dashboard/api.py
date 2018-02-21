@@ -363,15 +363,25 @@ class v13:
 
     @staticmethod
     def project(request, project_id=None):
+        from dashboard.serializer import ProjectSerializer
         # if GET and project_id == none return all the projects of the user
         if request.method == 'GET' and project_id is None:
-            pass
+            print 'GET ALL PROJECTS'
+            try:
+                profile = request.user.profile
+                projects = Project.objects.filter(profile=profile)
+                serialized = ProjectSerializer(projects, many=True)
+                return success('ok', 'user projects', serialized.data)
+            except Exception as e:
+                print e
+                return not_found()
         # if GET and project_id == SOMETHING return the single project of the user
         if request.method == 'GET' and project_id is not None:
             pass
 
         # if POST and project_id != NONE update single project
             if request.method == 'POST' and project_id is not None:
+                # TODO check the ID belongs to the logged user
                 pass
             # get info and update
 
@@ -382,7 +392,6 @@ class v13:
                 project_image = request.FILES.get('project_image')
                 # check image is an image and has a proper dimension
                 try:
-                    # TODO check image is saved in the project tree
                     filename, file_extension = os.path.splitext(project_image.name)
                     allowed_extensions = ['.jpg', '.jpeg', '.png']
                     if not (file_extension in allowed_extensions):
@@ -444,12 +453,9 @@ class v13:
             for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
+            serialized = ProjectSerializer(project, many=True)
 
-            # TODO fix serializer for object model return
-            # from dashboard.serializer import ProjectSerializer
-            # serialized = ProjectSerializer(project, many=True)
-
-            return success('ok', 'project created', {})
+            return success('ok', 'project created', serialized.data)
         pass
 
 
