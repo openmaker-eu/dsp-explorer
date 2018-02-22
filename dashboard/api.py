@@ -2,6 +2,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from .models import Profile, Invitation, User
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
@@ -364,6 +365,17 @@ class v13:
     @staticmethod
     def project(request, project_id=None):
         from dashboard.serializer import ProjectSerializer
+        # DELETE PROJECT
+        if request.method == 'DELETE' and project_id is not None:
+            try:
+                profile = request.user.profile
+                projects = Project.objects.get(id=project_id, profile=profile)
+                projects.delete()
+            except ObjectDoesNotExist as e:
+                print e
+                print not_authorized()
+            return success('ok', 'project deleted', {})
+
         # GET ALL
         if request.method == 'GET' and project_id is None:
             try:
@@ -417,7 +429,6 @@ class v13:
                 profile = request.user.profile
                 project = Project.objects.filter(id=project_id, profile=profile).first()
                 # clear and update tag
-                print request.POST.get('tags', '')
                 project.set_tags(request.POST.get('tags', ''))
                 # remove tag from data_to_update
                 project.__dict__.update(data_to_update)
@@ -428,7 +439,9 @@ class v13:
             except Exception as e:
                 print e
                 return error()
-            return success('ok', 'project updated', {})
+            print project
+            result = ProjectSerializer(project).data
+            return success('ok', 'project updated', result)
         # CREATE
         if request.method == 'POST' and project_id is None:
             # check if fields are filled
@@ -476,8 +489,8 @@ class v13:
             for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
-            # serialized = ProjectSerializer(project, many=True)
-            return success('ok', 'project created', {})
+            result = ProjectSerializer(project).data
+            return success('ok', 'project created', result)
 
     @staticmethod
     def check_image(project_image):

@@ -1,7 +1,5 @@
 import * as _ from 'lodash'
 import * as d3 from 'd3';
-
-
 let template = `
     <div class="col-md-12" ng-if="projects.length == 0">
         <h2>

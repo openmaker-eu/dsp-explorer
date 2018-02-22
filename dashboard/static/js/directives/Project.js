@@ -76,7 +76,8 @@ let template = `
             <span ng-if="!projectid">Create</span>
             <span ng-if="projectid">Update</span>
         </button>
-        <a class="btn custom-button margin-bottom-10 pull-right" href="/profile">Back</a>
+        <a ng-if="!projectid" class="btn custom-button margin-bottom-10 pull-right" href="/profile/">Back</a>
+        <a ng-if="projectid" class="btn custom-button margin-bottom-10 pull-right" href="{$ '/profile/project/'+projectid+'/detail' $}">Back</a>
     </form>
 `
 
@@ -84,7 +85,7 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', tags: '=' },
-        controller : ['$scope', '$http', '$sce', function($scope, $http, $sce, $location, $window){
+        controller : ['$scope', '$http', '$sce', '$window', function($scope, $http, $sce, $window){
 
         // form data
         $scope.data = {}
@@ -94,8 +95,6 @@ export default [function(){
             $scope.data.project_image = files[0]
         };
 
-        // TODO send empty end date if ongoing is flagged
-
         $scope.create_or_update_project = () => {
             console.log('Sending this data')
             var fd = new FormData( document.getElementById('project_form'));
@@ -103,7 +102,7 @@ export default [function(){
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {
                     console.log(response)
-                    // move to profile page
+                    $scope.projectid ? $window.location.href = '/profile/project/' + $scope.projectid + '/detail': $window.location.href = '/profile'
                 }, function(response) {
                     console.log(response)
                     // display error with
