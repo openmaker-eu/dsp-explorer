@@ -6,9 +6,8 @@ let template = `
     <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
         <h1>
             {$ project.name $}
-            <button class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
-            <!-- ToDo check edit is available only on your projects -->
-            <a href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
+            <button ng-if="profileid == project.profile.id" class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
+            <a ng-if="profileid == project.profile.id" href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
             <a href="/profile" class="btn custom-button pull-right">Back</a>
         </h1>
         <div class="row Aligner">
@@ -19,7 +18,6 @@ let template = `
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div style="padding-left:5%;">
-                    <!-- ToDo check url is valid -->
                     <p><i class="glyphicon glyphicon-globe"></i>&nbsp;<a ng-href="https://{$ project.project_url $}" target="_blank">{{ project.project_url }}</a></p>
                     <p><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.start_date | date:'yyyy-MM-dd' }}</p>
                     <p ng-if="project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.end_date | date:'yyyy-MM-dd' }}</p>
@@ -65,7 +63,7 @@ let template = `
                     </div>
                     <div class="modal-body">
                        <p>This operation cannot be reverted, You will permanenlty loose all your project data saved to OpenMaker Explorer</p>
-                       <p>Are you sure do you want to delete your account?</p>
+                       <p>Are you sure do you want to delete your project?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">No, Close</button>
@@ -85,6 +83,8 @@ export default [function(){
 
             $scope.url = '/api/v1.3/project/' + $scope.projectid
             $scope.projects = []
+
+            console.log($scope.profileid)
             
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
@@ -97,7 +97,6 @@ export default [function(){
             console.log(url)
                 $http.delete(url).then(res => {
                     console.log(res)
-                    // Todo move to profile page
                     $window.location.href = '/profile';
                     $scope.$apply(()=>$(window).trigger('resize'))
                 })

@@ -417,9 +417,9 @@ class v13:
                 if end_date != '':
                     end_date = dt.strptime(end_date, '%Y-%m-%d')
                     if end_date > dt.now():
-                        return bad_request('the project_end_date cannot be in the future')
+                        return bad_request('The project end_date cannot be in the future')
                     if end_date < data_to_update['start_date']:
-                        return bad_request('the project_end_date cannot be before the project_start_date')
+                        return bad_request('The project end date cannot be before the project start date')
                     data_to_update['end_date'] = end_date
             except Exception as e:
                 print e
@@ -443,7 +443,6 @@ class v13:
             result = ProjectSerializer(project).data
             return success('ok', 'project updated', result)
         # CREATE
-        # TODO check url validation
         if request.method == 'POST' and project_id is None:
             # check if fields are filled
             try:
@@ -457,7 +456,7 @@ class v13:
                 project_tags = request.POST['tags']
             except KeyError as k:
                 print k
-                return bad_request("please fill all the fields")
+                return bad_request("Please fill all the fields")
             # check if is or not an ongoing project
             try:
                 project_end_date = dt.strptime(request.POST['end_date'], '%Y-%m-%d')
@@ -467,15 +466,15 @@ class v13:
 
             if project_end_date is not None:
                 if project_end_date > dt.now():
-                    return bad_request('the project_end_date cannot be in the future')
+                    return bad_request('The project end date cannot be in the future')
                 if project_end_date < project_start_date:
-                    return bad_request('the project_end_date cannot be before the project_start_date')
+                    return bad_request('The project end date cannot be before the project start date')
 
             # check user has not project with that name
             profile = request.user.profile
             projects = Project.objects.filter(profile=profile, name=project_name)
             if len(projects) > 0:
-                return bad_request('project_name already exist')
+                return bad_request('Project name already exist')
 
             project = Project(profile=profile,
                               name= project_name,

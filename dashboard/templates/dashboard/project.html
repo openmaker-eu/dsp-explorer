@@ -2,7 +2,6 @@
 {% block container %}
 <div class="container-fluid">
     <div class="row">
-        <!-- TODO directive for detail check action param status -->
         {% if action == "detail" %}
             <project-detail projectid="{{ project_id }}" profileid=" {{ request.user.profile.id }} "></project-detail>
         {% else %}

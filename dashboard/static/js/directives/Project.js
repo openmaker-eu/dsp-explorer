@@ -58,6 +58,7 @@ let template = `
                        ng-class="{'form-control':true}"
                        ng-model="data.tags_string"
                        title="Choose a tag *" limit="5"
+                       required
             >
 
                 <ui-select-match placeholder="Type a tag and press enter">
@@ -85,7 +86,7 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', tags: '=' },
-        controller : ['$scope', '$http', '$sce', '$window', function($scope, $http, $sce, $window){
+        controller : ['$scope', '$http', '$sce', '$window', 'toastr', function($scope, $http, $sce, $window, toastr){
 
         // form data
         $scope.data = {}
@@ -98,15 +99,12 @@ export default [function(){
         $scope.create_or_update_project = () => {
             console.log('Sending this data')
             var fd = new FormData( document.getElementById('project_form'));
-            console.log(`url ${$scope.url}`)
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {
-                    console.log(response)
-                    // TODO use toastr for success or fail messaging
                     $scope.projectid ? $window.location.href = '/profile/project/' + $scope.projectid + '/detail': $window.location.href = '/profile'
                 }, function(response) {
                     console.log(response)
-                    // display error with
+                    toastr.error('Error', response.data.message);
                 });
         }
 
@@ -119,7 +117,6 @@ export default [function(){
                 } else {
                     $scope.data.end_date = new Date(res.data.result[0].end_date)
                 }
-                console.log($scope.data)
                 $scope.$apply(()=>$(window).trigger('resize'))
             })
         }

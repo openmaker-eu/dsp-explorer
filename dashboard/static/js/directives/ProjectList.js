@@ -29,7 +29,7 @@ let template = `
                     <div class="col-md-12">
                         <hr>
                     </div>
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-6">
                         <a href="{$ '/profile/project/'+project.id+'/detail' $}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
                     </div>
                 </div>
@@ -41,7 +41,8 @@ let template = `
 export default [function(){
     return {
         template:template,
-        controller : ['$scope', '$http', function($scope, $http ) {
+        scope: {profileid: '='},
+        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
 
             let url = '/api/v1.3/project/'
             $scope.projects = []
