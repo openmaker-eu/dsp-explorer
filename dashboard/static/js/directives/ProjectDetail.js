@@ -3,13 +3,55 @@ import * as d3 from 'd3';
 
 
 let template = `
-    <div class="col-md-12">
+    <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
         <h1>
             {$ project.name $}
             <button class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
             <a href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
             <a href="/profile" class="btn custom-button pull-right">Back</a>
         </h1>
+        <div class="row Aligner">
+            <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
+                <div class="col-md-8 col-md-offset-4">
+                <circle-image src="{$ project.picture $}"></circle-image>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div style="padding-left:5%;">
+                    <p><i class="glyphicon glyphicon-globe"></i>&nbsp;website</p>
+                    <p><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.start_date | date:'yyyy-MM-dd' }}</p>
+                    <p ng-if="project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.end_date | date:'yyyy-MM-dd' }}</p>
+                    <p ng-if="!project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;Ongoing project</p>
+                    <p>
+                        <i class="fa fa-fw fa-hashtag"></i>&nbsp;
+                        <i ng-repeat="tag in project.tags"><span>{{ tag.name }}</span>&nbsp;&nbsp;</i>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-top-30">
+            <div class="col-md-12">
+                <div class="well-red">Description</div>
+            </div>
+            <div class="col-md-12">
+                <p style="margin-bottom:20px;">{{ project.description }}</p>
+            </div>
+            <div class="col-md-6">
+                <div class="well-red">Owner</div>
+            </div>
+            <div class="col-md-6">
+                <div class="well-red">Collaborators</div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-6">
+                    <circle-image src="{$ project.profile.picture $}" style="width:40%;"></circle-image>
+                </div>
+                <div class="col-md-6">
+                    <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
+                    <p class=""> as: {{project.creator_role}} </p>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModal">
         <div class="modal-dialog" role="document">
