@@ -102,6 +102,7 @@ export default [function(){
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {
                     console.log(response)
+                    // TODO use toastr for success or fail messaging
                     $scope.projectid ? $window.location.href = '/profile/project/' + $scope.projectid + '/detail': $window.location.href = '/profile'
                 }, function(response) {
                     console.log(response)

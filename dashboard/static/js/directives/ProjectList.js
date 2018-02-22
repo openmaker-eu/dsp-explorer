@@ -9,6 +9,7 @@ let template = `
     <div class="col-md-3 col-sm-3 col-xs-12"
         ng-repeat="project in projects"
         style="margin-bottom:1%; margin-top: 1%;">
+        <!-- ToDo fix card height -->
         <div class="card margin-bottom-20">
             <a href="{$ '/profile/project/'+project.id+'/detail' $}" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                 <img style="min-width:100%;" ng-src="{$ project.picture $}" class="img-responsive">

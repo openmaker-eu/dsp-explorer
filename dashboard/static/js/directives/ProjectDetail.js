@@ -7,6 +7,7 @@ let template = `
         <h1>
             {$ project.name $}
             <button class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
+            <!-- ToDo check edit is available only on your projects -->
             <a href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
             <a href="/profile" class="btn custom-button pull-right">Back</a>
         </h1>
@@ -18,7 +19,8 @@ let template = `
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div style="padding-left:5%;">
-                    <p><i class="glyphicon glyphicon-globe"></i>&nbsp;website</p>
+                    <!-- ToDo check url is valid -->
+                    <p><i class="glyphicon glyphicon-globe"></i>&nbsp;<a ng-href="https://{$ project.project_url $}" target="_blank">{{ project.project_url }}</a></p>
                     <p><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.start_date | date:'yyyy-MM-dd' }}</p>
                     <p ng-if="project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.end_date | date:'yyyy-MM-dd' }}</p>
                     <p ng-if="!project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;Ongoing project</p>

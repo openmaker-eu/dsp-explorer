@@ -443,6 +443,7 @@ class v13:
             result = ProjectSerializer(project).data
             return success('ok', 'project updated', result)
         # CREATE
+        # TODO check url validation
         if request.method == 'POST' and project_id is None:
             # check if fields are filled
             try:
