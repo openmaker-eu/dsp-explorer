@@ -56,7 +56,7 @@ let template = `
                        sortable="true"
                        spinner-enabled="true"
                        ng-class="{'form-control':true}"
-                       ng-model="data.tags"
+                       ng-model="data.tags_string"
                        title="Choose a tag *" limit="5"
             >
 
@@ -69,7 +69,7 @@ let template = `
                 </ui-select-choices>
 
             </ui-select><br/>
-            <input type="hidden" name="tags" ng-value="data.tags" required/>
+            <input type="hidden" name="tags" ng-value="data.tags_string" required/>
         </div>
         <p class="small">* All the fields are required</p>
         <button type="submit" class="btn custom-button margin-bottom-10 pull-right margin-left-10">
@@ -114,7 +114,7 @@ export default [function(){
             $http.get(url).then(res => {
                 $scope.data = res.data.result[0] || {}
                 $scope.data.start_date = new Date(res.data.result[0].start_date)
-                if ($scope.data.end_date == '') {
+                if ($scope.data.end_date == '' || $scope.data.end_date == null) {
                     $scope.data.project_ongoing = true
                 } else {
                     $scope.data.end_date = new Date(res.data.result[0].end_date)

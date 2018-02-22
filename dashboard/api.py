@@ -364,7 +364,7 @@ class v13:
     @staticmethod
     def project(request, project_id=None):
         from dashboard.serializer import ProjectSerializer
-        # if GET and project_id == none return all the projects of the user
+        # GET ALL
         if request.method == 'GET' and project_id is None:
             try:
                 profile = request.user.profile
@@ -374,66 +374,63 @@ class v13:
             except Exception as e:
                 print e
                 return not_found()
-        # if GET and project_id == SOMETHING return the single project of the user
+        # GET SINGLE
         if request.method == 'GET' and project_id is not None:
             try:
                 project = Project.objects.filter(id=project_id)
-                serialized = ProjectSerializer(project, many=True)
-                return success('ok', 'single project', serialized.data)
+                serialized = ProjectSerializer(project, many=True).data
+                print serialized
+                return success('ok', 'single project', serialized)
             except Exception as e:
                 print e
                 return not_found()
-
-        # if POST and project_id != NONE update single project
+        # UPDATE
         if request.method == 'POST' and project_id is not None:
-            # TODO check the ID belongs to the logged user
+            data_to_update = {}
+            data_to_update['name'] = request.POST.get('name', '')
+            data_to_update['description'] = request.POST.get('description', '')
+            data_to_update['start_date'] = request.POST.get('start_date', '')
+            data_to_update['creator_role'] = request.POST.get('creator_role', '')
+            data_to_update['project_url'] = request.POST.get('project_url', '')
+            end_date = request.POST.get('end_date', '')
 
-            print 'EDIIIIT'
-            print request.POST
-            print request.FILES.get('project_image')
-
-            data_to_update = dict(request.POST.lists())
-            # data_to_update = request.POST
-
-            # get the model object
+            # check if the image needs to be updated
+            if request.POST.get('picture', None) != '':
+                # image to be updated
+                picture = request.FILES.get('picture')
+                v13.check_image(picture)
+                data_to_update['picture'] = picture
+            # check if is or not an ongoing project
             try:
-                profile = request.user.profile
-                project = Project.objects.filter(id=project_id, profile=profile)[0]
-            except Exception as e:
-                print e
-                not_authorized()
-
-            # check image
-            if request.FILES.get('project_image') is not None:
-                print 'IMAGE WILL BE UPDATED'
-                # image needs to be updated
-                project_image = request.FILES.get('project_image')
-                v13.check_image(project_image)
-                data_to_update['project_image'] = project_image
-
-            try:
-                print 'UPDATING'
-                print 'data'
-                print data_to_update
-
-                project.tags.clear()
-                for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE),
-                                   data_to_update['tags'][0].split(",")):
-                    project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
-                project.update(**data_to_update)
-                project.save()
-                return success('ok', 'project updated', {})
+                if end_date != '':
+                    end_date = dt.strptime(end_date, '%Y-%m-%d')
+                    if end_date > dt.now():
+                        return bad_request('the project_end_date cannot be in the future')
+                    if end_date < data_to_update['start_date']:
+                        return bad_request('the project_end_date cannot be before the project_start_date')
+                    data_to_update['end_date'] = end_date
             except Exception as e:
                 print e
                 return error()
-            # get info and update
-
-        # if PUT and project_id == NONE create a single project of the user
+            # get the model object and check the profile owns that project
+            try:
+                profile = request.user.profile
+                project = Project.objects.filter(id=project_id, profile=profile).first()
+                # clear and update tag
+                print request.POST.get('tags', '')
+                project.set_tags(request.POST.get('tags', ''))
+                # remove tag from data_to_update
+                project.__dict__.update(data_to_update)
+                project.save()
+            except Project.DoesNotExist as e:
+                print e
+                return not_authorized()
+            except Exception as e:
+                print e
+                return error()
+            return success('ok', 'project updated', {})
+        # CREATE
         if request.method == 'POST' and project_id is None:
-
-            print 'CREATEEEEEE'
-            print request.POST
-
             # check if fields are filled
             try:
                 project_image = request.FILES.get('picture')
@@ -479,9 +476,7 @@ class v13:
             for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
-
             # serialized = ProjectSerializer(project, many=True)
-
             return success('ok', 'project created', {})
 
     @staticmethod

@@ -3,6 +3,7 @@ from .models import Profile
 from django.contrib.auth.models import User
 from dashboard.models import Challenge, Company, Project
 from .models import Tag
+import json
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,7 +56,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
     contributors = ProfileSerializer(many=True, read_only=True)
 
+    tags_string =  serializers.SerializerMethodField()
+
     class Meta:
         model = Project
         fields = '__all__'
+
+    def get_tags_string(self, obj):
+        print 'GET TAAAAGS'
+        return obj.get_tags()
 

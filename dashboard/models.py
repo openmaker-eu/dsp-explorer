@@ -10,7 +10,7 @@ import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
 from opendataconnector.odconnector import OpenDataConnector
 from restcountriesconnector.rcconnector import RestCountriesConnector
-import json
+import json, re
 from utils.GoogleHelper import GoogleHelper
 from django.db.models import Q
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -697,3 +697,12 @@ class Project(models.Model):
         interests = self.interest.all().order_by('-created_at')
         interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+    def get_tags(self):
+        return map(lambda x: x.name, self.tags.all())
+
+    def set_tags(self, tags):
+        self.tags.clear()
+        for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
+            self.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+
