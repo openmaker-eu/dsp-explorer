@@ -22,6 +22,7 @@ from utils.Colorizer import Colorizer
 logger = logging.getLogger(__name__)
 
 from django.http import HttpResponse
+from django.apps import apps
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
@@ -391,7 +392,6 @@ class v13:
             try:
                 project = Project.objects.filter(id=project_id)
                 serialized = ProjectSerializer(project, many=True).data
-                print serialized
                 return success('ok', 'single project', serialized)
             except Exception as e:
                 print e
@@ -809,6 +809,22 @@ def get_interest_ids(request):
 
 
 @login_required
+def get_interest_object_ids(request, model_object=None):
+    if model_object is None:
+        return bad_request('model missing')
+    else:
+        try:
+            model = apps.get_model(app_label='dashboard', model_name=model_object.title())
+            return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(model)), safe=False)
+        except ObjectDoesNotExist as e:
+            print e
+            error('model not found')
+        except Exception as e:
+            print e
+            error()
+
+
+@login_required
 def interest_challenge(request, challenge_id):
     try:
         challenge = Challenge.objects.get(pk=challenge_id)
@@ -851,6 +867,31 @@ def interest_challenge(request, challenge_id):
                 receiver_email=email_context['COORDINATOR_EMAIL']
             )
         return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def interest_project(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+
+        if request.method == 'POST':
+            print 'add interest'
+            # Add interest
+            request.user.profile.add_interest(project)
+            message = 'interest in project added'
+        if request.method == 'DELETE':
+            print 'remove interest'
+            # Remove interest
+            request.user.profile.delete_interest(Project, project_id)
+            message = 'interest in project removed'
+        print 'success'
+        return success('ok', message, {})
 
     except Exception as e:
         print e

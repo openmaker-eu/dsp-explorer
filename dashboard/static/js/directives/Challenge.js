@@ -15,6 +15,7 @@ export default [function(){
                     ])
                     .then(
                         res=>{
+                            console.log(res)
                             res[0].data.details = res[0].data.details && $sce.trustAsHtml(res[0].data.details)
                             $scope.challenge = res[0].data || {}
                             $scope.interested_ids = res[1].data || []

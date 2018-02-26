@@ -58,10 +58,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     tags_string = serializers.SerializerMethodField()
 
+    interested = serializers.SerializerMethodField()
+
     class Meta:
         model = Project
         fields = '__all__'
 
     def get_tags_string(self, obj):
         return obj.get_tags()
+
+    def get_interested(self, obj):
+        return ProfileSerializer(obj.interested(), many=True).data
 

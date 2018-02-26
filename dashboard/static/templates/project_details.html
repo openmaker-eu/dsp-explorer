@@ -1,0 +1,104 @@
+<div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
+    <h1>
+        {$ project.name $}
+        <button ng-if="profileid == project.profile.id" class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
+        <a ng-if="profileid == project.profile.id" href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
+        <a href="/profile" class="btn custom-button pull-right">Back</a>
+    </h1>
+    <div class="row Aligner">
+        <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
+            <div class="col-md-8 col-md-offset-4">
+            <circle-image src="{$ project.picture $}"></circle-image>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div style="padding-left:5%;">
+                <p><i class="glyphicon glyphicon-globe"></i>&nbsp;<a ng-href="https://{$ project.project_url $}" target="_blank">{{ project.project_url }}</a></p>
+                <p><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.start_date | date:'yyyy-MM-dd' }}</p>
+                <p ng-if="project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.end_date | date:'yyyy-MM-dd' }}</p>
+                <p ng-if="!project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;Ongoing project</p>
+                <p>
+                    <i class="fa fa-fw fa-hashtag"></i>&nbsp;
+                    <i ng-repeat="tag in project.tags"><span>{{ tag.name }}</span>&nbsp;&nbsp;</i>
+                </p>
+                <p><hr></p>
+                <p>
+                    <span
+                        class="fa fa-thumbs-up pointer"
+                        ng-class="{'text-red':is_interested(project), 'text-grey':!is_interested(project)}"
+                        ng-click="click_interest(project)"
+                        style="font-size:40px;"></span>
+                    &nbsp;click and thumbs up if you <strong>Like</strong> this project!
+                </p>
+                <p class="small">{$ project.interested.length $} &nbsp;Thumbs up received</p>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-top-30">
+        <div class="col-md-12">
+            <div class="well-red">Description</div>
+        </div>
+        <div class="col-md-12">
+            <p style="margin-bottom:20px;">{{ project.description }}</p>
+        </div>
+        <div class="col-md-6">
+            <div class="well-red">Owner</div>
+        </div>
+        <div class="col-md-6">
+            <div class="well-red">Collaborators</div>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-6">
+                <circle-image src="{$ project.profile.picture $}" style="width:40%;"></circle-image>
+            </div>
+            <div class="col-md-6">
+                <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
+                <p class=""> as: {{project.creator_role}} </p>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-top-20">
+        <!-- is it been liked? -->
+        <div>
+            <div class="col-md-12">
+                <div class="well-red">{$ project.interested.length $} Thumbs up for the project</div>
+            </div>
+            <div class="col-md-12">
+                <a href="/profile/{$ profile.id $}" ng-repeat="profile in project.interested | limitTo:20">
+                    <div class="row">
+                        <div class="col-md-1 col-xs-4">
+                            <circle-image src="{$ profile.picture $}"
+                                          href="/profile/{$ profile.id $}"
+                            ></circle-image>
+                        </div>
+                        <div class="col-md-10 col-xs-8">
+                            <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                            <br><span>{$ profile.city $}</span><br>
+                            <span ng-repeat="profile_tag in profile.tags">{$ profile_tag.name $}&nbsp;&nbsp;</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form ng-submit="delete_project(url)">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Project deletion</h4>
+                </div>
+                <div class="modal-body">
+                   <p>This operation cannot be reverted, You will permanenlty loose all your project data saved to OpenMaker Explorer</p>
+                   <p>Are you sure do you want to delete your project?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, Close</button>
+                    <input type="submit" class="btn btn-default" value="Yes, delete my project">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

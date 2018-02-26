@@ -85,6 +85,15 @@ urlpatterns = [
     url(r'^api/v1.3/project/(?P<project_id>.+)/$', api.v13.project, name='api_13_project'),
     url(r'^api/v1.3/project/$', api.v13.project, {'project_id': None}, name='api_13_project'),
 
+    url(r'^api/v1.3/challenge/$', api.get_challenge, {'challenge_id': None},  name='get_challenge'),
+    url(r'^api/v1.3/challenge/(?P<challenge_id>[0-9]+)/$', api.get_challenge, name='get_challenge'),
+    url(r'^api/v1.3/interest_ids/', api.get_interest_ids, name='get_interest_ids'),
+
+    url(r'^api/v1.3/interest/ids/(?P<model_object>.*)/$', api.get_interest_object_ids, name='get_interest_object_ids'),
+    url(r'^api/v1.3/interest/challenge/(?P<challenge_id>[0-9]+)/$', api.interest_challenge, name='interest_challenge'),
+    url(r'^api/v1.3/interest/project/(?P<project_id>[0-9]+)/$', api.interest_project, name='interest_project'),
+    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/challenge/$', api.get_profile_challenge, name='get_profile_challenge'),
+
     # API v1.2
     # NEWS (Ex Feeds)
     url(r'^api/v1.2/news/(?P<topic_ids>.+)/(?P<date_name>.+)/(?P<cursor>.+)/$', api.get_news, name='api_get_news'),
@@ -118,13 +127,5 @@ urlpatterns = [
     url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
     url(r'^api/v1.1/get_om_events/$', api.get_om_events, name='get_om_events'),
     url(r'^api/v1.1/invitation/csv$', api.get_invitation_csv, name='get_invitation_csv'),
-
-    url(r'^api/v1.3/challenge/$', api.get_challenge, {'challenge_id': None},  name='get_challenge'),
-    url(r'^api/v1.3/challenge/(?P<challenge_id>[0-9]+)/$', api.get_challenge, name='get_challenge'),
-    url(r'^api/v1.3/interest_ids/', api.get_interest_ids, name='get_interest_ids'),
-
-    url(r'^api/v1.3/interest/challenge/(?P<challenge_id>[0-9]+)/$', api.interest_challenge, name='interest_challenge'),
-    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/challenge/$', api.get_profile_challenge, name='get_profile_challenge'),
-
 
 ]
