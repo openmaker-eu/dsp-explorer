@@ -59,17 +59,12 @@ export default [function(){
 
             console.log('profileid: ' + $scope.profileid)
 
-            $scope.$watch('profileid', (new_data, old_data) => {
-                console.log('new data: ' + new_data);
-                url = '/api/v1.3/profile/' + new_data + '/projects/'
-                $scope.get_data(url)
-            })
-            
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
 
                     $scope.projects = res.data.result || []
 
+                    console.log('projects')
                     console.log($scope.projects)
 
                     $scope.projects = _.map($scope.projects, el =>{
@@ -80,6 +75,14 @@ export default [function(){
                     $scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
+
+            $scope.$watch('profileid', (new_data, old_data) => {
+                console.log('new data: ' + new_data);
+                $scope.profileid = new_data
+                url = '/api/v1.3/profile/' + $scope.profileid + '/projects/'
+                $scope.get_data(url)
+            })
+
             $scope.is_interested = (project)=>$scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
         }]
     }

@@ -3,7 +3,7 @@
         {$ project.name $}
         <button ng-if="profileid == project.profile.id" class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
         <a ng-if="profileid == project.profile.id" href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
-        <a href="/profile" class="btn custom-button pull-right">Back</a>
+        <a href="{$ '/profile/'+project.profile.id $}" class="btn custom-button pull-right">Back</a>
     </h1>
     <div class="row Aligner">
         <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
