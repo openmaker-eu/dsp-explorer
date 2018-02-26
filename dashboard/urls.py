@@ -84,6 +84,7 @@ urlpatterns = [
 
     url(r'^api/v1.3/project/(?P<project_id>.+)/$', api.v13.project, name='api_13_project'),
     url(r'^api/v1.3/project/$', api.v13.project, {'project_id': None}, name='api_13_project'),
+    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/projects/$', api.get_profile_projects, name='get_profile_projects'),
 
     url(r'^api/v1.3/challenge/$', api.get_challenge, {'challenge_id': None},  name='get_challenge'),
     url(r'^api/v1.3/challenge/(?P<challenge_id>[0-9]+)/$', api.get_challenge, name='get_challenge'),

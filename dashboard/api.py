@@ -788,7 +788,21 @@ def get_challenge(request, challenge_id=None):
 
 
 @login_required
-def get_profile_challenge(request, profile_id):
+def get_profile_projects(request, profile_id):
+    from dashboard.serializer import ProjectSerializer
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        projects = Project.objects.get(profile=profile)
+        serialized = ProjectSerializer(projects, many=True)
+        return success('ok', 'user projects', serialized.data)
+    except Exception as e:
+        response = JsonResponse({'status': 'error', 'message': ''})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def get_profile_project(request, profile_id):
     from dashboard.serializer import ChallengeSerializer
     results = []
     try:
