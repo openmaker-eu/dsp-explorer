@@ -44,8 +44,23 @@
         <div class="col-md-6">
             <div class="well-red">Owner</div>
         </div>
-        <div class="col-md-6">
-            <div class="well-red">Collaborators</div>
+        <div class="col-md-6" ng-if="profileid != project.profile.id">
+                <div class="well-red">Collaborators</div>
+            </div>
+        <div ng-if="profileid == project.profile.id">
+            <div class="col-md-4">
+                <div class="well-red">Collaborators</div>
+            </div>
+            <div class="col-md-1">
+                <button class="btn custom-button pull-right" ng-click="open_close_form(true)">
+                    Add
+                </button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn custom-button pull-right" ng-click="open_close_form(false)">
+                    Close
+                </button>
+            </div>
         </div>
         <div class="col-md-6">
             <div class="col-md-6">
@@ -54,6 +69,21 @@
             <div class="col-md-6">
                 <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
                 <p class=""> as: {{project.creator_role}} </p>
+            </div>
+        </div>
+        <div class="col-md-6" ng-if="show_form">
+            <form class="row">
+                <div class="group-form col-md-10">
+                    <input class="form-control" type="text">
+                </div>
+                <div class="group-form col-md-2">
+                    <button type="submit" class="btn btn-default" type="text">Search</button>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                </div>
             </div>
         </div>
     </div>

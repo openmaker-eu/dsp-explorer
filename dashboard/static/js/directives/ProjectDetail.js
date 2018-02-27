@@ -13,8 +13,13 @@ export default [function(){
             let model_object = 'project'
             $scope.url = '/api/v1.3/project/' + $scope.projectid
             $scope.projects = []
+            $scope.show_form = false
 
             console.log('profileid: ' + $scope.profileid)
+
+            $scope.open_close_form = (open_close) => {
+                $scope.show_form = open_close
+            }
 
             $scope.get_data = (url)=> Promise
                     .all([
@@ -57,6 +62,8 @@ export default [function(){
                 console.log('result: ' + result)
                 return result
             }
+
+
         }]
     }
 }]
