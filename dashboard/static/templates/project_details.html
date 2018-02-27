@@ -45,10 +45,11 @@
             <div class="well-red">Owner</div>
         </div>
         <div class="col-md-6" ng-if="profileid != project.profile.id">
-                <div class="well-red">Collaborators</div>
-            </div>
+            <div class="well-red">Collaborators</div>
+        </div>
         <div ng-if="profileid == project.profile.id">
             <div class="col-md-4">
+                <!-- ToDo Show collaborators len -->
                 <div class="well-red">Collaborators</div>
             </div>
             <div class="col-md-1">
@@ -73,16 +74,40 @@
         </div>
         <div class="col-md-6" ng-if="show_form">
             <form class="row">
-                <div class="group-form col-md-10">
+                <div class="group-form col-md-8">
                     <input class="form-control" type="text">
                 </div>
-                <div class="group-form col-md-2">
-                    <button type="submit" class="btn btn-default" type="text">Search</button>
+                <div class="group-form col-md-4">
+                    <button type="submit" class="btn btn-default pull-right" type="text">Search</button>
                 </div>
             </form>
+            <!-- SEARCHED NG REPEAT -->
+            <div class="row margin-top-20">
+                <div class="col-md-4" ng-repeat="profile in project.interested | limitTo:20">
+                    <a href="/profile/{$ profile.id $}" target="_blank">
+                        <div class="col-md-12">
+                            <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                            <br><span>{$ profile.city $}</span><br>
+                        </div>
+                    </a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <hr>
+                </div>
+            </div>
+        </div>
+        <!-- ALREADY COLLABORATORS -->
+        <div ng-class="show_form ? 'col-md-6 col-md-offset-6' : 'col-md-6'">
+            <div class="row">
+                <div class="col-md-4" ng-repeat="profile in project.interested | limitTo:20">
+                    <a href="/profile/{$ profile.id $}" target="_blank">
+                        <div class="col-md-12">
+                            <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                            <br><span>{$ profile.city $}</span><br>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -95,18 +120,16 @@
             </div>
             <div class="col-md-3" ng-repeat="profile in project.interested | limitTo:20">
                 <a href="/profile/{$ profile.id $}">
-
-                        <div class="col-md-4 col-xs-4">
-                            <circle-image src="{$ profile.picture $}"
-                                          href="/profile/{$ profile.id $}"
-                            ></circle-image>
-                        </div>
-                        <div class="col-md-10 col-xs-8">
-                            <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
-                            <br><span>{$ profile.city $}</span><br>
-                            <span ng-repeat="profile_tag in profile.tags">{$ profile_tag.name $}&nbsp;&nbsp;</span>
-                        </div>
-
+                    <div class="col-md-4 col-xs-4">
+                        <circle-image src="{$ profile.picture $}"
+                                      href="/profile/{$ profile.id $}"
+                        ></circle-image>
+                    </div>
+                    <div class="col-md-10 col-xs-8">
+                        <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                        <br><span>{$ profile.city $}</span><br>
+                        <span ng-repeat="profile_tag in profile.tags">{$ profile_tag.name $}&nbsp;&nbsp;</span>
+                    </div>
                 </a>
             </div>
         </div>
