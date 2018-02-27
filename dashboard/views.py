@@ -481,7 +481,8 @@ def challenge(request, challenge_id=None):
 
 
 @login_required()
-def project(request, project_id=None, action=None):
+def project(request, project_id=None, action=None, profile_id=None):
     print(project_id)
     print(action)
+    print(profile_id)
     return render(request, 'dashboard/project.html', {'project_id': project_id, 'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())), 'action': action})

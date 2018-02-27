@@ -51,13 +51,14 @@ let template = `
 export default [function(){
     return {
         template:template,
-        scope: {profileid: '='},
+        scope: {profileid: '=',requestprofileid: '='},
         controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
 
             let url = ''
             $scope.projects = []
 
             console.log('profileid: ' + $scope.profileid)
+            console.log('requestprofileid: ' + $scope.requestprofileid)
 
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
@@ -68,7 +69,7 @@ export default [function(){
                     console.log($scope.projects)
 
                     $scope.projects = _.map($scope.projects, el =>{
-                        el.is_interested = _.filter(el.interested, {id:$scope.profileid}).length > 0
+                        el.is_interested = _.filter(el.interested, {id:$scope.requestprofileid}).length > 0
                         return el
                     })
 
@@ -83,7 +84,7 @@ export default [function(){
                 $scope.get_data(url)
             })
 
-            $scope.is_interested = (project)=>$scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
+            $scope.is_interested = (project) => $scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
         }]
     }
 }]

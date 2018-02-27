@@ -3,7 +3,7 @@
         {$ project.name $}
         <button ng-if="profileid == project.profile.id" class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
         <a ng-if="profileid == project.profile.id" href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
-        <a href="{$ '/profile/'+project.profile.id $}" class="btn custom-button pull-right">Back</a>
+        <a ng-href="{$ profileid == project.profile.id ? '/profile/' : '/profile/'+project.profile.id $}" class="btn custom-button pull-right">Back</a>
     </h1>
     <div class="row Aligner">
         <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
@@ -63,10 +63,10 @@
             <div class="col-md-12">
                 <div class="well-red">{$ project.interested.length $} Thumbs up for the project</div>
             </div>
-            <div class="col-md-12">
-                <a href="/profile/{$ profile.id $}" ng-repeat="profile in project.interested | limitTo:20">
-                    <div class="row">
-                        <div class="col-md-1 col-xs-4">
+            <div class="col-md-3" ng-repeat="profile in project.interested | limitTo:20">
+                <a href="/profile/{$ profile.id $}">
+
+                        <div class="col-md-4 col-xs-4">
                             <circle-image src="{$ profile.picture $}"
                                           href="/profile/{$ profile.id $}"
                             ></circle-image>
@@ -76,7 +76,7 @@
                             <br><span>{$ profile.city $}</span><br>
                             <span ng-repeat="profile_tag in profile.tags">{$ profile_tag.name $}&nbsp;&nbsp;</span>
                         </div>
-                    </div>
+
                 </a>
             </div>
         </div>
@@ -91,7 +91,7 @@
                     <h4 class="modal-title" id="myModalLabel">Project deletion</h4>
                 </div>
                 <div class="modal-body">
-                   <p>This operation cannot be reverted, You will permanenlty loose all your project data saved to OpenMaker Explorer</p>
+                   <p>This operation cannot be reverted, you will permanenlty loose all your project data saved to OpenMaker Explorer</p>
                    <p>Are you sure do you want to delete your project?</p>
                 </div>
                 <div class="modal-footer">

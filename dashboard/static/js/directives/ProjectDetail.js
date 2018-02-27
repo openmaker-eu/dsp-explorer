@@ -14,6 +14,8 @@ export default [function(){
             $scope.url = '/api/v1.3/project/' + $scope.projectid
             $scope.projects = []
 
+            console.log('profileid: ' + $scope.profileid)
+
             $scope.get_data = (url)=> Promise
                     .all([
                         $http.get(url),
