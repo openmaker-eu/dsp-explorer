@@ -39,6 +39,7 @@ export default [function(){
                             $scope.project = res[0].data.result[0] || []
                             $scope.interested_ids = res[1].data || []
                             $scope.$apply(()=>$(window).trigger('resize'))
+                            console.log('PROFILE ID: ' + $scope.profileid)
                             console.log($scope.project)
                         },
                         err=>console.log('Error: ', err)
