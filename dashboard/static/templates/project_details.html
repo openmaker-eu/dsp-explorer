@@ -84,12 +84,15 @@
             <!-- SEARCHED NG REPEAT -->
             <div class="row margin-top-20">
                 <div class="col-md-4" ng-repeat="profile in project.interested | limitTo:20">
-                    <a href="/profile/{$ profile.id $}" target="_blank">
-                        <div class="col-md-12">
-                            <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
-                            <br><span>{$ profile.city $}</span><br>
-                        </div>
-                    </a>
+                    <div class="col-md-12">
+                        <a href="/profile/{$ profile.id $}" target="_blank"><strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                        <br><span>{$ profile.city $}</span><br></a>
+                        <p>
+                            <i ng-click="send_invitation(project.id, profile.id)" class="glyphicon glyphicon-envelope pointer"></i>
+                            <i></i>
+                            <i></i>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="row">

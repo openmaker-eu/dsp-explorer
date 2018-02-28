@@ -82,6 +82,7 @@ urlpatterns = [
 
     url(r'^api/v1.3/news/(?P<topic_id>.+)/(?P<date_string>.+)/(?P<cursor>.+)/$', api.v13.get_news, name='api_13_news'),
 
+    url(r'^api/v1.3/project/invitation/$', api.v13.project_invitation, name='api_13_project_invitation'),
     url(r'^api/v1.3/project/(?P<project_id>.+)/$', api.v13.project, name='api_13_project'),
     url(r'^api/v1.3/project/$', api.v13.project, {'project_id': None}, name='api_13_project'),
     url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/projects/$', api.get_profile_projects, name='get_profile_projects'),

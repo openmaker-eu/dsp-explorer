@@ -677,8 +677,8 @@ class Challenge(models.Model):
 class Project(models.Model):
 
     profile = models.ForeignKey(Profile)
-    contributors = models.ManyToManyField(Profile, related_name='contributors')
-
+    project_contributors = models.ManyToManyField(Profile, related_name='project_contributors',
+                                                  through='ProjectContributor')
     name = models.CharField(_('Name'), max_length=50, default='')
     picture = models.ImageField(_('Challenge picture'), upload_to='images/projects')
     description = models.TextField(_('Description'), default='')
@@ -706,3 +706,8 @@ class Project(models.Model):
         for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
             self.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
 
+
+class ProjectContributor(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    contributor = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    status = models.CharField(_('Status'), max_length=50, default='pending')

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
-from dashboard.models import Challenge, Company, Project
+from dashboard.models import Challenge, Company, Project, ProjectContributor
 from .models import Tag
 import json
 
@@ -70,3 +70,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_interested(self, obj):
         return ProfileSerializer(obj.interested(), many=True).data
 
+
+class ProjectContributorSerializer(serializers.ModelSerializer):
+    contributor = ProfileSerializer(many=True, read_only=True)
+    project = ProjectSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProjectContributor
+        fields = '__all__'

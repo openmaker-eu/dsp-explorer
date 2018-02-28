@@ -15,7 +15,15 @@ export default [function(){
             $scope.projects = []
             $scope.show_form = false
 
-            console.log('profileid: ' + $scope.profileid)
+
+            $scope.send_invitation = (project_id, profile_id) => {
+                console.log('SEND INVITATION WITH DATA: ')
+                console.log('project_id: ' + project_id)
+                console.log('profile_id: ' + profile_id)
+                // send invitation
+                let data = { 'project_id': project_id, 'profile_id': profile_id }
+                $http.post('/api/v1.3/project/invitation/', data).then( res => console.log(res),err=>console.log(err))
+            }
 
             $scope.open_close_form = (open_close) => {
                 $scope.show_form = open_close
@@ -28,11 +36,8 @@ export default [function(){
                     ])
                     .then(
                         res=>{
-                            console.log(res[0].data)
                             $scope.project = res[0].data.result[0] || []
-
                             $scope.interested_ids = res[1].data || []
-                            console.log( $scope.interested_ids)
                             $scope.$apply(()=>$(window).trigger('resize'))
                         },
                         err=>console.log('Error: ', err)
@@ -59,7 +64,6 @@ export default [function(){
             // check if logged user is interested or not
             $scope.is_interested = (project) => {
                 let result = $scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
-                console.log('result: ' + result)
                 return result
             }
 

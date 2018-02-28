@@ -3,10 +3,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Profile, Invitation, User
+from .models import Profile, Invitation, User, ProjectContributor
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
-from .serializer import ProfileSerializer
+from .serializer import ProfileSerializer, ProjectContributorSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
@@ -362,6 +362,36 @@ class v13:
     # @staticmethod
     # def get_themes(request):
     #     return v13.__wrap_response(v13.get_themes)
+
+    @staticmethod
+    def project_invitation(request):
+        if request.method == 'POST':
+            try:
+                body = json.loads(request.body)
+                project_id = body['project_id']
+                profile_id = body['profile_id']
+                profile = Profile.objects.get(id=profile_id)
+                project = Project.objects.get(id=project_id)
+
+                contribution = ProjectContributor.objects.filter(project=project, contributor=profile)
+
+                if len(contribution):
+                    return success('ok', 'invitation already sent', {})
+                else:
+                    # invitation not exist --> create and send e-mail
+                    contribution = ProjectContributor(project=project, contributor=profile)
+                    contribution.save()
+
+                return success('ok', 'invitation sent', {})
+
+            except KeyError as k:
+                print k
+                return bad_request('field missing')
+            except ObjectDoesNotExist as e:
+                print e
+                return error()
+        else:
+            bad_request('only post for now')
 
     @staticmethod
     def project(request, project_id=None):
