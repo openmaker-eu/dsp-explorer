@@ -370,8 +370,13 @@ class v13:
                 body = json.loads(request.body)
                 project_id = body['project_id']
                 profile_id = body['profile_id']
+
                 profile = Profile.objects.get(id=profile_id)
                 project = Project.objects.get(id=project_id)
+
+                # can not invite yourself
+                if profile == request.user.profile:
+                    return bad_request('you are the owner of the project')
 
                 contribution = ProjectContributor.objects.filter(project=project, contributor=profile)
 

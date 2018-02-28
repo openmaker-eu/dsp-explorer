@@ -87,7 +87,8 @@
                     <div class="col-md-12">
                         <a href="/profile/{$ profile.id $}" target="_blank"><strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
                         <br><span>{$ profile.city $}</span><br></a>
-                        <p>
+                        <!-- avoid auto-invitation -->
+                        <p ng-if="profile.id != project.profile.id">
                             <i ng-click="send_invitation(project.id, profile.id)" class="glyphicon glyphicon-envelope pointer"></i>
                             <i></i>
                             <i></i>
