@@ -51,11 +51,18 @@ class ChallengeSerializer(serializers.ModelSerializer):
         return ProfileSerializer(obj.interested(), many=True).data
 
 
+class ProjectContributorSerializer(serializers.ModelSerializer):
+    contributor = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ProjectContributor
+        fields = ('contributor', 'status')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only=True)
-    contributors = ProfileSerializer(many=True, read_only=True)
-
+    project_contributors = serializers.SerializerMethodField()
     tags_string = serializers.SerializerMethodField()
 
     interested = serializers.SerializerMethodField()
@@ -70,11 +77,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_interested(self, obj):
         return ProfileSerializer(obj.interested(), many=True).data
 
+    def get_project_contributors(self, obj):
+        contrib_rel = ProjectContributor.objects.filter(project=obj)
+        return ProjectContributorSerializer(contrib_rel, many=True).data
 
-class ProjectContributorSerializer(serializers.ModelSerializer):
-    contributor = ProfileSerializer(many=True, read_only=True)
-    project = ProjectSerializer(many=True, read_only=True)
 
-    class Meta:
-        model = ProjectContributor
-        fields = '__all__'

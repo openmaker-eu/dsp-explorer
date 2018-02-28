@@ -426,11 +426,14 @@ class v13:
         if request.method == 'GET' and project_id is not None:
             try:
                 project = Project.objects.filter(id=project_id)
-                serialized = ProjectSerializer(project, many=True).data
-                return success('ok', 'single project', serialized)
+                serialized = ProjectSerializer(project, many=True)
+                return success('ok', 'single project', serialized.data)
+            except ObjectDoesNotExist as o:
+                print o
+                return not_found()
             except Exception as e:
                 print e
-                return not_found()
+                return error()
         # UPDATE
         if request.method == 'POST' and project_id is not None:
             data_to_update = {}
