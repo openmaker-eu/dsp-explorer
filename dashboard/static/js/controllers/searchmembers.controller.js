@@ -11,7 +11,7 @@ export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', funct
     $scope.results = [];
     
     $scope.search_debounced = debounce($scope.search_factory.search.bind($scope.search_factory.search), 500)
-    
+
     $rootScope.$on('user.search.results', (event, results)=>{
         $scope.results = results['data']['result']
         $scope.results_count = results['data']['results_count']
@@ -27,5 +27,7 @@ export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', funct
         if (!search) {return $sce.trustAsHtml(text);}
         return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red bold">$&</span>'));
     };
+
+    $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''}
     
 }]

@@ -8,13 +8,43 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', profileid : '=' },
-        controller : ['$scope', '$http', '$window', function($scope, $http, $window) {
+        controller : ['$scope', '$http', '$window', '$rootScope', '$sce', 'UserSearchFactory', function($scope, $http, $window, $rootScope, $sce, UserSearchFactory) {
 
+            $scope.search_factory = UserSearchFactory
             let model_object = 'project'
             $scope.url = '/api/v1.3/project/' + $scope.projectid
             $scope.projects = []
+            $scope.results = [];
             $scope.show_form = false
 
+
+            $scope.search_debounced = () => {
+                console.log('debounced')
+                if ($scope.search_factory.search_filter.length < 3 )
+                    $scope.results = []
+                else
+                    _.debounce($scope.search_factory.search.bind($scope.search_factory.search), 500)()
+            }
+
+            $rootScope.$on('user.search.results', (event, results)=>{
+                $scope.results = results['data']['result']
+                console.log('SEARCH RESULTS')
+                console.log($scope.results)
+                $scope.results_count = results['data']['results_count']
+                $scope.is_last_members_label = $scope.search_factory.search_filter === ''
+            })
+
+            $rootScope.$on('user.search.error', (event,data)=>{
+                $scope.is_last_members_label = false;
+                $scope.results = []
+            })
+
+            $scope.highlight = function(text, search) {
+                if (!search) {return $sce.trustAsHtml(text);}
+                return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red bold">$&</span>'));
+            };
+
+            $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''}
 
             $scope.send_invitation = (project_id, profile_id) => {
                 console.log('SEND INVITATION WITH DATA: ')
@@ -68,6 +98,8 @@ export default [function(){
                 let result = $scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
                 return result
             }
+
+
 
 
         }]

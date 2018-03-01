@@ -43,6 +43,15 @@
         </div>
         <div class="col-md-6">
             <div class="well-red">Owner</div>
+            <div class="col-md-6">
+                <div class="col-md-6">
+                    <circle-image src="{$ project.profile.picture $}" style="width:40%;"></circle-image>
+                </div>
+                <div class="col-md-6">
+                    <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
+                    <p class=""> as: {{project.creator_role}} </p>
+                </div>
+            </div>
         </div>
         <div class="col-md-6" ng-if="profileid != project.profile.id">
             <div class="well-red">Collaborators</div>
@@ -63,33 +72,37 @@
                 </button>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="col-md-6">
-                <circle-image src="{$ project.profile.picture $}" style="width:40%;"></circle-image>
-            </div>
-            <div class="col-md-6">
-                <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
-                <p class=""> as: {{project.creator_role}} </p>
-            </div>
-        </div>
         <div class="col-md-6" ng-if="show_form && profileid == project.profile.id">
             <form class="row">
-                <div class="group-form col-md-8">
-                    <input class="form-control" type="text">
-                </div>
-                <div class="group-form col-md-4">
-                    <button type="submit" class="btn btn-default pull-right" type="text">Search</button>
+                <div class="group-form col-md-12">
+                    <div class="has-feedback has-feedback-left" style="width:100%">
+                        <input class="form-control"
+                               ng-change="search_debounced()"
+                               ng-model-options="{allowInvalid: true}"
+                               ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
+                               placeholder="Search members for name or e-mail" value=""
+                        >
+                        <i ng-if="search_factory.is_search_all()" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                        <i
+                                ng-if="!search_factory.is_search_all()"
+                                ng-click="clearAll()"
+                                class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
+                                style="pointer-events:initial;"
+                        ></i>
+                    </div>
                 </div>
             </form>
             <!-- SEARCHED NG REPEAT -->
             <div class="row margin-top-20">
-                <div class="col-md-4" ng-repeat="profile in project.interested | limitTo:20">
-                    <div class="col-md-12">
-                        <a href="/profile/{$ profile.id $}" target="_blank"><strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
-                        <br><span>{$ profile.city $}</span><br></a>
+                <div class="col-md-4" ng-repeat="data in results">
+                    <div class="">
+                        <a href="/profile/{$data['id']$}" target="_blank">
+                            <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_factory.search_filter)"></span></strong>
+                        <br><span ng-bind-html="highlight((data.city), search_factory.search_filter)"></span>
+                        </a>
                         <!-- avoid auto-invitation -->
-                        <p ng-if="profile.id != project.profile.id">
-                            <i ng-click="send_invitation(project.id, profile.id)" class="glyphicon glyphicon-envelope pointer"></i>
+                        <p ng-if="data.id != project.profile.id">
+                            <i ng-click="send_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
                             <i></i>
                             <i></i>
                         </p>
@@ -106,7 +119,7 @@
         <div ng-class="show_form ? 'col-md-6 col-md-offset-6' : 'col-md-6'">
             <div class="row">
                 <div class="col-md-4" ng-repeat="profile in project.project_contributors | limitTo:20" ng-hide="profile.status == 'pending' && profileid != project.profile.id">
-                    <div class="col-md-12">
+                    <div class="">
                         <a href="/profile/{$ profile.contributor.id $}" target="_blank">
                             <strong>{$ profile.contributor.user.first_name+' '+profile.contributor.user.last_name $}</strong>
                         </a>

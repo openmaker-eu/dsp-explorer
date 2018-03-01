@@ -336,6 +336,13 @@ class Profile(models.Model):
             return cls.objects \
                 .filter(Q(sector=search_string)) \
                 .distinct()
+        if restrict_to == 'basic':
+            return cls.objects \
+                .filter(
+                    Q(user__email__icontains=search_string) |
+                    Q(user__first_name__icontains=search_string) |
+                    Q(user__last_name__icontains=search_string))\
+                .distinct()
 
         return cls.objects\
             .filter(
