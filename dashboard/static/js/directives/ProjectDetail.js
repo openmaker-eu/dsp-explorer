@@ -19,7 +19,6 @@ export default [function(){
 
 
             $scope.search_debounced = () => {
-                console.log('debounced')
                 if ($scope.search_factory.search_filter.length < 3 )
                     $scope.results = []
                 else
@@ -28,8 +27,17 @@ export default [function(){
 
             $rootScope.$on('user.search.results', (event, results)=>{
                 $scope.results = results['data']['result']
-                console.log('SEARCH RESULTS')
-                console.log($scope.results)
+
+                // ToDo go to invite members if api result is empty (with a simple sentence and link)
+
+                // setting button invitation type to search result
+                // ToDo take care of pagination
+                if(!_.isEmpty($scope.results))
+                    _.forEach($scope.results, (item) => {
+                        let match = _.find($scope.project.project_contributors, function(o) { return o.id == item.id; })
+                        if (match) item.status = match.status
+                    })
+
                 $scope.results_count = results['data']['results_count']
                 $scope.is_last_members_label = $scope.search_factory.search_filter === ''
             })
@@ -47,9 +55,6 @@ export default [function(){
             $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''}
 
             $scope.send_invitation = (project_id, profile_id) => {
-                console.log('SEND INVITATION WITH DATA: ')
-                console.log('project_id: ' + project_id)
-                console.log('profile_id: ' + profile_id)
                 // send invitation
                 let data = { 'project_id': project_id, 'profile_id': profile_id }
                 $http.post('/api/v1.3/project/invitation/', data).then( res => console.log(res),err=>console.log(err))
@@ -69,8 +74,12 @@ export default [function(){
                             $scope.project = res[0].data.result[0] || []
                             $scope.interested_ids = res[1].data || []
                             $scope.$apply(()=>$(window).trigger('resize'))
-                            console.log('PROFILE ID: ' + $scope.profileid)
-                            console.log($scope.project)
+                            // flatting contributors
+                            // ToDo improve performance
+                            if (!_.isEmpty($scope.project.project_contributors))
+                                _.forEach($scope.project.project_contributors, function(item) {
+                                    _.merge(item, item.contributor);
+                                })
                         },
                         err=>console.log('Error: ', err)
                     )

@@ -102,9 +102,10 @@
                         </a>
                         <!-- avoid auto-invitation -->
                         <p ng-if="data.id != project.profile.id">
-                            <i ng-click="send_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
-                            <i></i>
-                            <i></i>
+                            <!-- ng-click="send_invitation(project.id, data.id)" -->
+                            <i ng-if="!data.status"  class="glyphicon glyphicon-envelope pointer"></i>
+                            <i ng-if="data.status == 'pending'" class="glyphicon glyphicon-refresh pointer"></i>
+                            <i ng-if="data.status && data.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
                         </p>
                     </div>
                 </div>
