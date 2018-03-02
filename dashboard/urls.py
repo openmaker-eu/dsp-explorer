@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
+    url(r'^profile/(?P<profile_id>[0-9]+)/invitation/(?P<project_id>[0-9]+)/(?P<status>.+)/$', views.collaborator_invitation, name='profile'),
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
 
     # Search

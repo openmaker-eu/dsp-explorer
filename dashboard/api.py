@@ -362,6 +362,9 @@ class v13:
     # @staticmethod
     # def get_themes(request):
     #     return v13.__wrap_response(v13.get_themes)
+    @staticmethod
+    def project_invitation_confirmation(request, status=None, project_id=None, profile_id=None):
+        pass
 
     @staticmethod
     def project_invitation(request, status=None):
@@ -391,19 +394,69 @@ class v13:
                         return success('ok', 'invitation updated', serialized)
                     else:
                         # ToDo send e-mail
+                        email_context = {
+                            'FIRST_NAME': profile.user.first_name,
+                            'LAST_NAME': profile.user.last_name,
+                            'PROJECT_OWNER_FIRST_NAME': request.user.first_name,
+                            'PROJECT_OWNER_LAST_NAME': request.user.last_name,
+                            'PROJECT_NAME': project.name,
+                            'CONFIRMATION_LINK': 'http://{}/profile/{}/invitation/{}/accepted/'.format(
+                                get_current_site(request),
+                                profile.id,
+                                project.id,
+                            ),
+                            'DECLINE_LINK': 'http://{}/profile/{}/invitation/{}/declined/'.format(
+                                get_current_site(request),
+                                profile.id,
+                                project.id,
+                            ),
+                        }
+
                         if contribution.first().status == 'pending':
-                            serialized = ProjectContributorSerializer(contribution).data
-                            return success('ok', 'invitation re-sent', serialized)
+                            message = 'invitation re-sent'
                         else:
                             contribution.update(status='pending')
-                            serialized = ProjectContributorSerializer(contribution).data
-                            return success('ok', 'invitation sent', serialized)
+                            message = 'invitation sent'
+
+                        EmailHelper.email(
+                            template_name='collaborator_invitation',
+                            title='Openmaker Explorer - Project nomination',
+                            vars=email_context,
+                            receiver_email=profile.user.email
+                        )
+
+                        serialized = ProjectContributorSerializer(contribution).data
+                        return success('ok', message, serialized)
                 else:
-                    # ToDo send e-mail
                     'CREATING NEW INVITATION'
                     # invitation not exist --> create and send e-mail
                     contribution = ProjectContributor(project=project, contributor=profile)
                     contribution.save()
+                    email_context = {
+                        'FIRST_NAME': profile.user.first_name,
+                        'LAST_NAME': profile.user.last_name,
+                        'PROJECT_OWNER_FIRST_NAME': request.user.first_name,
+                        'PROJECT_OWNER_LAST_NAME': request.user.last_name,
+                        'PROJECT_NAME': project.name,
+                        'CONFIRMATION_LINK': 'http://{}/profile/{}/invitation/{}/accepted/'.format(
+                            get_current_site(request),
+                            profile.id,
+                            project.id,
+                        ),
+                        'DECLINE_LINK': 'http://{}/profile/{}/invitation/{}/declined/'.format(
+                            get_current_site(request),
+                            profile.id,
+                            project.id,
+                        ),
+                    }
+
+                    EmailHelper.email(
+                        template_name='collaborator_invitation',
+                        title='Openmaker Explorer - Project nomination',
+                        vars=email_context,
+                        receiver_email=profile.user.email
+                    )
+
                     serialized = ProjectContributorSerializer(contribution).data
                     return success('ok', 'invitation sent', serialized)
             except ObjectDoesNotExist as o:

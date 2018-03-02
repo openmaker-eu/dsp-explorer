@@ -102,8 +102,7 @@
                         </a>
                         <!-- avoid auto-invitation -->
                         <p ng-if="data.id != project.profile.id">
-                            <!-- ng-click="send_collaborator_invitation(project.id, data.id)" -->
-                            <i ng-if="!data.status || data.status == 'removed'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
+                            <i ng-if="!data.status || data.status == 'removed' || data.status == 'declined'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
                             <i ng-if="data.status == 'pending'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-refresh pointer"></i>
                             <i ng-if="data.status && data.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
                         </p>
@@ -126,7 +125,7 @@
         <!-- ALREADY COLLABORATORS -->
         <div ng-class="show_form ? 'col-md-6 col-md-offset-6' : 'col-md-6'">
             <div class="row">
-                <div class="col-md-4" ng-repeat="contributor in project.project_contributors | limitTo:20" ng-hide="(contributor.status == 'pending' && profileid != project.profile.id) || contributor.status == 'removed'">
+                <div class="col-md-4" ng-repeat="contributor in project.project_contributors | limitTo:20" ng-hide="(contributor.status == 'pending' && profileid != project.profile.id) || contributor.status == 'removed' || contributor.status == 'declined'">
                     <div class="">
                         <a href="/profile/{$ contributor.contributor.id $}" target="_blank">
                             <strong>{$ contributor.contributor.user.first_name+' '+contributor.contributor.user.last_name $}</strong>

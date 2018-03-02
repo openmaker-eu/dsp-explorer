@@ -78,6 +78,7 @@ export default [function(){
 
             $scope.open_close_form = (open_close) => {
                 $scope.show_form = open_close
+                $scope.clearAll()
             }
 
             $scope.get_data = (url)=> Promise
