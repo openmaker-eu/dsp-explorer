@@ -364,7 +364,9 @@ class v13:
     #     return v13.__wrap_response(v13.get_themes)
 
     @staticmethod
-    def project_invitation(request):
+    def project_invitation(request, status=None):
+        print 'COLLABORATOR API'
+        from dashboard.serializer import ProjectContributorSerializer
         if request.method == 'POST':
             try:
                 body = json.loads(request.body)
@@ -372,7 +374,7 @@ class v13:
                 profile_id = body['profile_id']
 
                 profile = Profile.objects.get(id=profile_id)
-                project = Project.objects.get(id=project_id)
+                project = Project.objects.get(id=project_id, profile=request.user.profile)
 
                 # can not invite yourself
                 if profile == request.user.profile:
@@ -381,18 +383,35 @@ class v13:
                 contribution = ProjectContributor.objects.filter(project=project, contributor=profile)
 
                 if len(contribution):
-                    return success('ok', 'invitation already sent', {})
+                    if status is not None:
+                        print 'UPDATING'
+                        # update the status of the invitation / collaboration
+                        contribution.update(status=status)
+                        serialized = ProjectContributorSerializer(contribution).data
+                        return success('ok', 'invitation updated', serialized)
+                    else:
+                        # ToDo send e-mail
+                        if contribution.first().status == 'pending':
+                            serialized = ProjectContributorSerializer(contribution).data
+                            return success('ok', 'invitation re-sent', serialized)
+                        else:
+                            contribution.update(status='pending')
+                            serialized = ProjectContributorSerializer(contribution).data
+                            return success('ok', 'invitation sent', serialized)
                 else:
+                    # ToDo send e-mail
+                    'CREATING NEW INVITATION'
                     # invitation not exist --> create and send e-mail
                     contribution = ProjectContributor(project=project, contributor=profile)
                     contribution.save()
-
-                return success('ok', 'invitation sent', {})
-
-            except KeyError as k:
-                print k
-                return bad_request('field missing')
-            except ObjectDoesNotExist as e:
+                    serialized = ProjectContributorSerializer(contribution).data
+                    return success('ok', 'invitation sent', serialized)
+            except ObjectDoesNotExist as o:
+                print 'ERROR ObjectDoesNotExist'
+                print o
+                return error()
+            except Exception as e:
+                print 'ERROR Exception'
                 print e
                 return error()
         else:

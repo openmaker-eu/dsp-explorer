@@ -8,7 +8,7 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', profileid : '=' },
-        controller : ['$scope', '$http', '$window', '$rootScope', '$sce', 'UserSearchFactory', function($scope, $http, $window, $rootScope, $sce, UserSearchFactory) {
+        controller : ['$scope', '$http', '$window', '$rootScope', '$sce', 'toastr','UserSearchFactory', function($scope, $http, $window, $rootScope, $sce, toastr, UserSearchFactory) {
 
             $scope.search_factory = UserSearchFactory
             let model_object = 'project'
@@ -16,6 +16,7 @@ export default [function(){
             $scope.projects = []
             $scope.results = [];
             $scope.show_form = false
+            $scope.show_invite = false
 
 
             $scope.search_debounced = () => {
@@ -28,8 +29,6 @@ export default [function(){
             $rootScope.$on('user.search.results', (event, results)=>{
                 $scope.results = results['data']['result']
 
-                // ToDo go to invite members if api result is empty (with a simple sentence and link)
-
                 // setting button invitation type to search result
                 // ToDo take care of pagination
                 if(!_.isEmpty($scope.results))
@@ -39,6 +38,7 @@ export default [function(){
                     })
 
                 $scope.results_count = results['data']['results_count']
+                if ($scope.results_count == 0) $scope.show_invite = true
                 $scope.is_last_members_label = $scope.search_factory.search_filter === ''
             })
 
@@ -52,12 +52,28 @@ export default [function(){
                 return $sce.trustAsHtml(text.replace(new RegExp(search, 'gi'), '<span class="text-red bold">$&</span>'));
             };
 
-            $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''}
+            $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''; $scope.show_invite = false }
 
-            $scope.send_invitation = (project_id, profile_id) => {
+            $scope.send_collaborator_invitation = (project_id, profile_id) => {
                 // send invitation
                 let data = { 'project_id': project_id, 'profile_id': profile_id }
-                $http.post('/api/v1.3/project/invitation/', data).then( res => console.log(res),err=>console.log(err))
+                $http.post('/api/v1.3/project/invitation/', data).then( res => {
+                    console.log(res)
+                    toastr.success('Success',res.data.message)
+                    $scope.search_debounced()
+                    $scope.get_data($scope.url)
+                },err=>console.log(err))
+            }
+
+            $scope.remove_collaborator = (project_id, profile_id) => {
+                // remove collaborator
+                let status = 'removed'
+                let data = { 'project_id': project_id, 'profile_id': profile_id }
+                $http.post('/api/v1.3/project/invitation/' + status + '/', data).then(res => {
+                    toastr.success('Success',res.data.message)
+                    $scope.get_data($scope.url)
+                    $scope.$apply(()=>$(window).trigger('resize'))
+                },err=>console.log(err))
             }
 
             $scope.open_close_form = (open_close) => {

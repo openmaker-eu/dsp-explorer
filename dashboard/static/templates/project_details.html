@@ -102,12 +102,19 @@
                         </a>
                         <!-- avoid auto-invitation -->
                         <p ng-if="data.id != project.profile.id">
-                            <!-- ng-click="send_invitation(project.id, data.id)" -->
-                            <i ng-if="!data.status"  class="glyphicon glyphicon-envelope pointer"></i>
-                            <i ng-if="data.status == 'pending'" class="glyphicon glyphicon-refresh pointer"></i>
+                            <!-- ng-click="send_collaborator_invitation(project.id, data.id)" -->
+                            <i ng-if="!data.status || data.status == 'removed'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
+                            <i ng-if="data.status == 'pending'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-refresh pointer"></i>
                             <i ng-if="data.status && data.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
                         </p>
                     </div>
+                </div>
+            </div>
+            <div class="row" ng-if="show_invite">
+                <div class="col-md-12">
+                    <p class="small text-grey" style="margin: 0;">
+                        <i>Hey it seems the user is not registered yet, invite your friend from <strong><a href="/invite" class="text-red" target="_blank">here</a></strong></i>
+                    </p>
                 </div>
             </div>
             <div class="row">
@@ -119,15 +126,15 @@
         <!-- ALREADY COLLABORATORS -->
         <div ng-class="show_form ? 'col-md-6 col-md-offset-6' : 'col-md-6'">
             <div class="row">
-                <div class="col-md-4" ng-repeat="profile in project.project_contributors | limitTo:20" ng-hide="profile.status == 'pending' && profileid != project.profile.id">
+                <div class="col-md-4" ng-repeat="contributor in project.project_contributors | limitTo:20" ng-hide="(contributor.status == 'pending' && profileid != project.profile.id) || contributor.status == 'removed'">
                     <div class="">
-                        <a href="/profile/{$ profile.contributor.id $}" target="_blank">
-                            <strong>{$ profile.contributor.user.first_name+' '+profile.contributor.user.last_name $}</strong>
+                        <a href="/profile/{$ contributor.contributor.id $}" target="_blank">
+                            <strong>{$ contributor.contributor.user.first_name+' '+contributor.contributor.user.last_name $}</strong>
                         </a>
-                        <br><span>{$ profile.contributor.city $}</span><br>
+                        <br><span>{$ contributor.contributor.city $}</span><br>
                         <p ng-if="profileid == project.profile.id">
-                            <i ng-if="profile.status == 'pending'" class="glyphicon glyphicon-refresh pointer"></i>
-                            <i ng-if="profile.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
+                            <i ng-if="contributor.status == 'pending'" ng-click="send_collaborator_invitation(project.id, contributor.id)" class="glyphicon glyphicon-refresh pointer"></i>
+                            <i ng-click="remove_collaborator(project.id, contributor.id)" ng-if="contributor.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
                         </p>
                     </div>
                 </div>
