@@ -715,6 +715,7 @@ class Project(models.Model):
 
 
 class ProjectContributor(models.Model):
+    # ToDo add token to avoid actions not allowed
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     contributor = models.ForeignKey(Profile, on_delete=models.CASCADE)
     status = models.CharField(_('Status'), max_length=50, default='pending')

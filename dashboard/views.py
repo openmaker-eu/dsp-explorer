@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.conf import settings
 from crmconnector import capsule
@@ -490,8 +491,15 @@ def project(request, project_id=None, action=None, profile_id=None):
 
 @login_required()
 def collaborator_invitation(request, profile_id=None, project_id=None, status=None):
-    this_project = Project.objects.get(id=project_id)
-    contributor_profile = Profile.objects.get(id=profile_id)
-    contribution = ProjectContributor.objects.filter(project=this_project, contributor=contributor_profile)
-    contribution.update(status=status)
+    try:
+        this_project = Project.objects.get(id=project_id)
+        contributor_profile = Profile.objects.get(id=profile_id)
+        contribution = ProjectContributor.objects.filter(project=this_project, contributor=contributor_profile)
+        if contribution.first().status != 'pending':
+            messages.warning(request, 'Collaboration expired.')
+        else:
+            messages.success(request, 'Collaboration updated!')
+            contribution.update(status=status)
+    except ObjectDoesNotExist as o:
+        print o
     return HttpResponseRedirect('/profile/project/%s/detail' % this_project.id)

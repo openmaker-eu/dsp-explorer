@@ -368,6 +368,9 @@ class v13:
 
     @staticmethod
     def project_invitation(request, status=None):
+
+        # ToDo add token to avoid actions not allowed
+
         print 'COLLABORATOR API'
         from dashboard.serializer import ProjectContributorSerializer
         if request.method == 'POST':
