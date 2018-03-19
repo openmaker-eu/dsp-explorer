@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block container %}
+<div class="container-fluid">
+    <div class="row">
+        {% if action == "detail" %}
+            <project-detail projectid="{{ project_id }}" profileid="{{ request.user.profile.id }}"></project-detail>
+        {% else %}
+            <project projectid="{{ project_id }}" tags="{{ tags }}"></project>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

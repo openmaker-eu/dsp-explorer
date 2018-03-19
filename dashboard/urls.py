@@ -1,8 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from . import views, authentication, api, static
 
 app_name = 'dashboard'
+
 urlpatterns = [
 
     # Auth
@@ -28,10 +29,16 @@ urlpatterns = [
     url(r'^dashboard', views.dashboard, {'topic_id': None}, name='dashboard'),
 
     # Profiles
+    url(r'^profile/project/$', views.project, name='project'),
+    url(r'^profile/project/(?P<project_id>[0-9]+)/$', views.project, name='project'),
+    url(r'^profile/project/(?P<project_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.project, name='project'),
+
+
+
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
-
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
+    url(r'^profile/(?P<profile_id>[0-9]+)/invitation/(?P<project_id>[0-9]+)/(?P<status>.+)/$', views.collaborator_invitation, name='profile'),
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
 
     # Search
@@ -56,6 +63,11 @@ urlpatterns = [
     url(r'^feedback/$', views.feedback, name='feedback'),
 
 
+    url(r'^challenge/$', views.challenge, name='challenge'),
+    url(r'^challenge/(?P<challenge_id>[0-9]+)/$', views.challenge, name='challenge'),
+
+
+
     # API v1.3
     ## AUDIENCES
     url(r'^api/v1.3/audiences/(?P<topic_id>.+)/(?P<location>.+)/$', api.v13.get_audiences, name='api_13_get_audiences'),
@@ -70,6 +82,21 @@ urlpatterns = [
     url(r'^api/v1.3/hashtags/(?P<topic_id>.+)/(?P<date_string>.+)', api.v13.get_hashtags, name='api_13_hashtags'),
 
     url(r'^api/v1.3/news/(?P<topic_id>.+)/(?P<date_string>.+)/(?P<cursor>.+)/$', api.v13.get_news, name='api_13_news'),
+
+    url(r'^api/v1.3/project/invitation/(?P<status>.+)/$', api.v13.project_invitation, name='api_13_project_invitation'),
+    url(r'^api/v1.3/project/invitation/$', api.v13.project_invitation, name='api_13_project_invitation'),
+    url(r'^api/v1.3/project/(?P<project_id>.+)/$', api.v13.project, name='api_13_project'),
+    url(r'^api/v1.3/project/$', api.v13.project, {'project_id': None}, name='api_13_project'),
+    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/projects/$', api.get_profile_projects, name='get_profile_projects'),
+
+    url(r'^api/v1.3/challenge/$', api.get_challenge, {'challenge_id': None},  name='get_challenge'),
+    url(r'^api/v1.3/challenge/(?P<challenge_id>[0-9]+)/$', api.get_challenge, name='get_challenge'),
+    url(r'^api/v1.3/interest_ids/', api.get_interest_ids, name='get_interest_ids'),
+
+    url(r'^api/v1.3/interest/ids/(?P<model_object>.*)/$', api.get_interest_object_ids, name='get_interest_object_ids'),
+    url(r'^api/v1.3/interest/challenge/(?P<challenge_id>[0-9]+)/$', api.interest_challenge, name='interest_challenge'),
+    url(r'^api/v1.3/interest/project/(?P<project_id>[0-9]+)/$', api.interest_project, name='interest_project'),
+    url(r'^api/v1.3/profile/(?P<profile_id>[0-9]+)/challenge/$', api.get_profile_challenge, name='get_profile_challenge'),
 
     # API v1.2
     # NEWS (Ex Feeds)
@@ -104,5 +131,5 @@ urlpatterns = [
     url(r'^api/v1.1/get_places/$', api.get_places, name='get_places'),
     url(r'^api/v1.1/get_om_events/$', api.get_om_events, name='get_om_events'),
     url(r'^api/v1.1/invitation/csv$', api.get_invitation_csv, name='get_invitation_csv'),
-]
 
+]

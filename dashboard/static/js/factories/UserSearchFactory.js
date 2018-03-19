@@ -32,7 +32,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         },
         
         update_context:(results)=>{
-            
             factory.old_restrict_to = factory.restrict_to
             factory.old_search = factory.search_filter
     

@@ -17,10 +17,9 @@ export default [function(){
     return {
         template:template,
         scope : {
-            src : '='
+            src : '@'
         },
         link : function($scope, element, attrs){
-            
             $(element).css({display:'block'})
             
             $scope.fitImageToCircle = (image)=> {

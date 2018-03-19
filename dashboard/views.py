@@ -5,13 +5,14 @@ from django.contrib.auth import logout
 from datetime import datetime
 from django.shortcuts import render, reverse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.conf import settings
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnectorException, DSPConnectorV12, DSPConnectorV13
-from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration
+from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration, Project, ProjectContributor
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
 from django.http import HttpResponseRedirect
 # from form import FeedbackForm
@@ -368,7 +369,7 @@ def profile(request, profile_id=None, action=None):
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
     
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
-    
+    print user_profile.pk
     context = {
         'profile': user_profile,
         'profile_action': action,
@@ -456,6 +457,7 @@ def invite(request):
 
     return render(request, 'dashboard/invite.html', {})
 
+
 @login_required()
 def feedback(request):
     if request.method == 'POST':
@@ -470,3 +472,34 @@ def feedback(request):
         else:
             messages.error(request, 'Please all the fields are required!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+
+@login_required()
+def challenge(request, challenge_id=None):
+    print 'challenge_id'
+    print challenge_id
+    return render(request, 'dashboard/challenge.html', {'challenge_id': challenge_id})
+
+
+@login_required()
+def project(request, project_id=None, action=None, profile_id=None):
+    print(project_id)
+    print(action)
+    print(profile_id)
+    return render(request, 'dashboard/project.html', {'project_id': project_id, 'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())), 'action': action})
+
+
+@login_required()
+def collaborator_invitation(request, profile_id=None, project_id=None, status=None):
+    try:
+        this_project = Project.objects.get(id=project_id)
+        contributor_profile = Profile.objects.get(id=profile_id)
+        contribution = ProjectContributor.objects.filter(project=this_project, contributor=contributor_profile)
+        if contribution.first().status != 'pending':
+            messages.warning(request, 'Collaboration expired.')
+        else:
+            messages.success(request, 'Collaboration updated!')
+            contribution.update(status=status)
+    except ObjectDoesNotExist as o:
+        print o
+    return HttpResponseRedirect('/profile/project/%s/detail' % this_project.id)

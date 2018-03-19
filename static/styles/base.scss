@@ -248,16 +248,23 @@ a, a:hover {
 	border: solid 1px;
 	font-weight: 300;
 
-}
+	&:hover, &:focus, &:active {
+		background: #db4348!important;
+		color: #fff!important;
+	}
 
-.login-button:hover, .login-button:focus, .login-button:active {
-	background: #db4348!important;
-	color: #fff!important;
 }
 
 .login-button-active {
 	background: #db4348!important;
 	color: #fff!important;
+}
+
+.tag-button {
+	@extend .login-button-active;
+	@extend .no-pointer;
+	padding:6px;
+	font-size:90%;
 }
 
 .close-button {
@@ -288,3 +295,9 @@ a, a:hover {
 .container-fluid.ng-scope{
 	max-width: 1550px;
 }
+
+.no-pointer{cursor:default;}
+//.tooltip .tooltip-inner{background: $dsp-red; color: #fff;}
+.tooltip .tooltip-inner{background: #333; color: #fff;}
+
+blockquote { border-color: $dsp-red;}

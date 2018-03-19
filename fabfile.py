@@ -96,3 +96,6 @@ def test_e2e():
     # local('webdriver-manager start')
     local('protractor protractor-conf.js')
 
+
+def pair_crm_ids():
+    local('python ./capsule_crm.py pair_crm_ids')

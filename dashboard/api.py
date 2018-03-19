@@ -2,10 +2,11 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
-from .models import Profile, Invitation, User
+from django.core.exceptions import ObjectDoesNotExist
+from .models import Profile, Invitation, User, ProjectContributor
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
-from .serializer import ProfileSerializer
+from .serializer import ProfileSerializer, ProjectContributorSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
@@ -21,10 +22,19 @@ from utils.Colorizer import Colorizer
 logger = logging.getLogger(__name__)
 
 from django.http import HttpResponse
+from django.apps import apps
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+from dashboard.models import Challenge, Project, Tag
 from django.contrib.auth.decorators import login_required
+from datetime import datetime as dt
+import simplejson as simplejson
+
+from rest_framework import generics
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+import os, re
 
 
 def search_members(request, search_string):
@@ -352,7 +362,273 @@ class v13:
     # @staticmethod
     # def get_themes(request):
     #     return v13.__wrap_response(v13.get_themes)
+    @staticmethod
+    def project_invitation_confirmation(request, status=None, project_id=None, profile_id=None):
+        pass
 
+    @staticmethod
+    def project_invitation(request, status=None):
+
+        # ToDo add token to avoid actions not allowed
+
+        print 'COLLABORATOR API'
+        from dashboard.serializer import ProjectContributorSerializer
+        if request.method == 'POST':
+            try:
+                body = json.loads(request.body)
+                project_id = body['project_id']
+                profile_id = body['profile_id']
+
+                profile = Profile.objects.get(id=profile_id)
+                project = Project.objects.get(id=project_id, profile=request.user.profile)
+
+                # can not invite yourself
+                if profile == request.user.profile:
+                    return bad_request('you are the owner of the project')
+
+                contribution = ProjectContributor.objects.filter(project=project, contributor=profile)
+
+                if len(contribution):
+                    if status is not None:
+                        print 'UPDATING'
+                        # update the status of the invitation / collaboration
+                        contribution.update(status=status)
+                        serialized = ProjectContributorSerializer(contribution).data
+                        return success('ok', 'invitation updated', serialized)
+                    else:
+                        # ToDo send e-mail
+                        email_context = {
+                            'FIRST_NAME': profile.user.first_name,
+                            'LAST_NAME': profile.user.last_name,
+                            'PROJECT_OWNER_FIRST_NAME': request.user.first_name,
+                            'PROJECT_OWNER_LAST_NAME': request.user.last_name,
+                            'PROJECT_NAME': project.name,
+                            'CONFIRMATION_LINK': 'http://{}/profile/{}/invitation/{}/accepted/'.format(
+                                get_current_site(request),
+                                profile.id,
+                                project.id,
+                            ),
+                            'DECLINE_LINK': 'http://{}/profile/{}/invitation/{}/declined/'.format(
+                                get_current_site(request),
+                                profile.id,
+                                project.id,
+                            ),
+                        }
+
+                        if contribution.first().status == 'pending':
+                            message = 'invitation re-sent'
+                        else:
+                            contribution.update(status='pending')
+                            message = 'invitation sent'
+
+                        EmailHelper.email(
+                            template_name='collaborator_invitation',
+                            title='Openmaker Explorer - Project nomination',
+                            vars=email_context,
+                            receiver_email=profile.user.email
+                        )
+
+                        serialized = ProjectContributorSerializer(contribution).data
+                        return success('ok', message, serialized)
+                else:
+                    'CREATING NEW INVITATION'
+                    # invitation not exist --> create and send e-mail
+                    contribution = ProjectContributor(project=project, contributor=profile)
+                    contribution.save()
+                    email_context = {
+                        'FIRST_NAME': profile.user.first_name,
+                        'LAST_NAME': profile.user.last_name,
+                        'PROJECT_OWNER_FIRST_NAME': request.user.first_name,
+                        'PROJECT_OWNER_LAST_NAME': request.user.last_name,
+                        'PROJECT_NAME': project.name,
+                        'CONFIRMATION_LINK': 'http://{}/profile/{}/invitation/{}/accepted/'.format(
+                            get_current_site(request),
+                            profile.id,
+                            project.id,
+                        ),
+                        'DECLINE_LINK': 'http://{}/profile/{}/invitation/{}/declined/'.format(
+                            get_current_site(request),
+                            profile.id,
+                            project.id,
+                        ),
+                    }
+
+                    EmailHelper.email(
+                        template_name='collaborator_invitation',
+                        title='Openmaker Explorer - Project nomination',
+                        vars=email_context,
+                        receiver_email=profile.user.email
+                    )
+
+                    serialized = ProjectContributorSerializer(contribution).data
+                    return success('ok', 'invitation sent', serialized)
+            except ObjectDoesNotExist as o:
+                print 'ERROR ObjectDoesNotExist'
+                print o
+                return error()
+            except Exception as e:
+                print 'ERROR Exception'
+                print e
+                return error()
+        else:
+            bad_request('only post for now')
+
+    @staticmethod
+    def project(request, project_id=None):
+        from dashboard.serializer import ProjectSerializer
+        # DELETE PROJECT
+        if request.method == 'DELETE' and project_id is not None:
+            try:
+                profile = request.user.profile
+                projects = Project.objects.get(id=project_id, profile=profile)
+                projects.delete()
+            except ObjectDoesNotExist as e:
+                print e
+                print not_authorized()
+            return success('ok', 'project deleted', {})
+
+        # GET ALL
+        if request.method == 'GET' and project_id is None:
+            try:
+                profile = request.user.profile
+                projects = Project.objects.filter(profile=profile)
+                serialized = ProjectSerializer(projects, many=True)
+                return success('ok', 'user projects', serialized.data)
+            except Exception as e:
+                print e
+                return not_found()
+        # GET SINGLE
+        if request.method == 'GET' and project_id is not None:
+            try:
+                project = Project.objects.filter(id=project_id)
+                serialized = ProjectSerializer(project, many=True)
+                return success('ok', 'single project', serialized.data)
+            except ObjectDoesNotExist as o:
+                print o
+                return not_found()
+            except Exception as e:
+                print e
+                return error()
+        # UPDATE
+        if request.method == 'POST' and project_id is not None:
+            data_to_update = {}
+            data_to_update['name'] = request.POST.get('name', '')
+            data_to_update['description'] = request.POST.get('description', '')
+            data_to_update['start_date'] = request.POST.get('start_date', '')
+            data_to_update['creator_role'] = request.POST.get('creator_role', '')
+            data_to_update['project_url'] = request.POST.get('project_url', '')
+            end_date = request.POST.get('end_date', '')
+
+            # check if the image needs to be updated
+            if request.POST.get('picture', None) != '':
+                # image to be updated
+                picture = request.FILES.get('picture')
+                v13.check_image(picture)
+                data_to_update['picture'] = picture
+            # check if is or not an ongoing project
+            try:
+                if end_date != '':
+                    end_date = dt.strptime(end_date, '%Y-%m-%d')
+                    if end_date > dt.now():
+                        return bad_request('The project end_date cannot be in the future')
+                    if end_date < data_to_update['start_date']:
+                        return bad_request('The project end date cannot be before the project start date')
+                    data_to_update['end_date'] = end_date
+            except Exception as e:
+                print e
+                return error()
+            # get the model object and check the profile owns that project
+            try:
+                profile = request.user.profile
+                project = Project.objects.filter(id=project_id, profile=profile).first()
+                # clear and update tag
+                project.set_tags(request.POST.get('tags', ''))
+                # remove tag from data_to_update
+                project.__dict__.update(data_to_update)
+                project.save()
+            except Project.DoesNotExist as e:
+                print e
+                return not_authorized()
+            except Exception as e:
+                print e
+                return error()
+            print project
+            result = ProjectSerializer(project).data
+            return success('ok', 'project updated', result)
+        # CREATE
+        if request.method == 'POST' and project_id is None:
+            # check if fields are filled
+            try:
+                project_image = request.FILES.get('picture')
+                v13.check_image(project_image)
+                project_name = request.POST['name']
+                project_description = request.POST['description']
+                project_start_date = dt.strptime(request.POST['start_date'], '%Y-%m-%d')
+                project_creator_role = request.POST['creator_role']
+                project_url = request.POST['project_url']
+                project_tags = request.POST['tags']
+            except KeyError as k:
+                print k
+                return bad_request("Please fill all the fields")
+            # check if is or not an ongoing project
+            try:
+                project_end_date = dt.strptime(request.POST['end_date'], '%Y-%m-%d')
+            except KeyError:
+                project_end_date = None
+            # if it is not an ongoing project check dates
+
+            if project_end_date is not None:
+                if project_end_date > dt.now():
+                    return bad_request('The project end date cannot be in the future')
+                if project_end_date < project_start_date:
+                    return bad_request('The project end date cannot be before the project start date')
+
+            # check user has not project with that name
+            profile = request.user.profile
+            projects = Project.objects.filter(profile=profile, name=project_name)
+            if len(projects) > 0:
+                return bad_request('Project name already exist')
+
+            project = Project(profile=profile,
+                              name= project_name,
+                              picture=project_image,
+                              description=project_description,
+                              start_date=project_start_date,
+                              end_date=project_end_date,
+                              creator_role=project_creator_role,
+                              project_url=project_url)
+            project.save()
+            project.tags.clear()
+            for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
+                project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+            project.save()
+            result = ProjectSerializer(project).data
+            return success('ok', 'project created', result)
+
+    @staticmethod
+    def check_image(project_image):
+        # check image is an image and has a proper dimension
+        try:
+            filename, file_extension = os.path.splitext(project_image.name)
+            allowed_extensions = ['.jpg', '.jpeg', '.png']
+            if not (file_extension in allowed_extensions):
+                raise ValueError('nonvalid')
+
+            # limit to 1MB
+            if project_image.size > 1048576:
+                raise ValueError('sizelimit')
+                project_image.name = str(datetime.now().microsecond) + '_' + str(project_image._size) + file_extension
+        except ValueError as exc:
+            if str(exc) == 'sizelimit':
+                return bad_request('project_image size must be less than 1MB')
+            if str(exc) == 'nonvalid':
+                return bad_request('project_image is not an image file')
+        except KeyError as k:
+            print k
+            return bad_request("please fill all the fields")
+        except Exception as e:
+            print e
+            return bad_request('some error in the image upload')
 
 ###########
 # API V 1.2
@@ -603,6 +879,150 @@ def get_invitation_csv(request):
                 ])
 
             return response
-
     except:
         return bad_request("Error generating invitation csv")
+
+
+@login_required
+def get_challenge(request, challenge_id=None):
+    from dashboard.serializer import ChallengeSerializer
+
+    if challenge_id is not None:
+        results = ChallengeSerializer(
+            Challenge.objects.filter(pk=challenge_id).order_by('-created_at')
+            , many=True
+        ).data[0]
+    else:
+        results = ChallengeSerializer(
+            Challenge.objects.all().order_by('-created_at')
+            , many=True
+        ).data
+    return JsonResponse(results, safe=False)
+
+
+@login_required
+def get_profile_challenge(request, profile_id):
+    from dashboard.serializer import ChallengeSerializer
+    results = []
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        results = profile.get_interests(Challenge)
+        results = ChallengeSerializer(results if len(results) > 0 else [], many=True).data
+    except Exception as e:
+        response = JsonResponse({'status': 'error', 'message': ''})
+        response.status_code = 500
+        return response
+
+    return JsonResponse(results, safe=False)
+
+
+@login_required
+def get_profile_projects(request, profile_id):
+    from dashboard.serializer import ProjectSerializer
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        projects = Project.objects.filter(profile=profile)
+        serialized = ProjectSerializer(projects, many=True)
+        return success('ok', 'user projects', serialized.data)
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': ''})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def get_interest_ids(request):
+    return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(Challenge)), safe=False)
+
+
+@login_required
+def get_interest_object_ids(request, model_object=None):
+    if model_object is None:
+        return bad_request('model missing')
+    else:
+        try:
+            model = apps.get_model(app_label='dashboard', model_name=model_object.title())
+            return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(model)), safe=False)
+        except ObjectDoesNotExist as e:
+            print e
+            error('model not found')
+        except Exception as e:
+            print e
+            error()
+
+
+@login_required
+def interest_challenge(request, challenge_id):
+    try:
+        challenge = Challenge.objects.get(pk=challenge_id)
+        email_context = {
+            'USER_NAME': request.user.first_name+' '+request.user.last_name,
+            'USER_EMAIL': request.user.email,
+            'USER_URL': request.build_absolute_uri(reverse('dashboard:profile', kwargs={'profile_id': request.user.profile.pk})),
+            'CHALLENGE_TITLE': challenge.title,
+            'CHALLENGE_URL': request.build_absolute_uri(reverse('dashboard:challenge', kwargs={'challenge_id': challenge.pk})),
+            'COORDINATOR_EMAIL': challenge.coordinator_email
+        }
+
+        print email_context
+
+        if request.method == 'POST':
+            # Add interest
+            request.user.profile.add_interest(challenge)
+            # Email Coordinator
+            challenge.notify_admin and EmailHelper.email(
+                template_name='challenge/challenge_coordinator_interest_added',
+                title='Openmaker Explorer - Challenge interest ADDED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
+        if request.method == 'DELETE':
+            # Remove interest
+            request.user.profile.delete_interest(Challenge, challenge_id)
+            # Email Coordinator
+            challenge.notify_admin and EmailHelper.email(
+                template_name='challenge/challenge_coordinator_interest_removed',
+                title='Openmaker Explorer - Challenge interest REMOVED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
+            # Email User
+            challenge.notify_user and EmailHelper.email(
+                template_name='challenge/challenge_user_interest_removed',
+                title='Openmaker Explorer - Challenge interest REMOVED',
+                vars=email_context,
+                receiver_email=email_context['COORDINATOR_EMAIL']
+            )
+        return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def interest_project(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+
+        if request.method == 'POST':
+            print 'add interest'
+            # Add interest
+            request.user.profile.add_interest(project)
+            message = 'interest in project added'
+        if request.method == 'DELETE':
+            print 'remove interest'
+            # Remove interest
+            request.user.profile.delete_interest(Project, project_id)
+            message = 'interest in project removed'
+        print 'success'
+        return success('ok', message, {})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
+        response.status_code = 500
+        return response

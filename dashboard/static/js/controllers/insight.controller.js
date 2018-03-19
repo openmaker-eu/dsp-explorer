@@ -21,8 +21,6 @@ export default [ '$scope', '$http', '$sce', function ($scope, $http, $sce) {
                 $scope.canvas_info.user_profile_twitter_username = username
                 $scope.canvas_info.url = $sce.trustAsResourceUrl(canvas_url+username)
             }, function(err) {
-                console.log("error")
-                console.log(err)
                 $scope.show_canvas = false
             });
     }

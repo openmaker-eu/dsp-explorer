@@ -20,6 +20,7 @@ export default [ '$scope', function ($scope) {
     $scope.datePopup = {opened: false};
 
     $scope.openDatePopUp = () => $scope.datePopup.opened = true
+
     $scope.profileImageUpload = n=>$('#profile-image-input').trigger('click')
     
     $scope.checkSocialUrl=(social)=>{

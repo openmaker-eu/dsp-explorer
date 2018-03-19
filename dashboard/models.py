@@ -10,19 +10,34 @@ import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
 from opendataconnector.odconnector import OpenDataConnector
 from restcountriesconnector.rcconnector import RestCountriesConnector
-import json
+import json, re
 from utils.GoogleHelper import GoogleHelper
 from django.db.models import Q
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.urls import reverse
+from utils.mailer import EmailHelper
+
+class ModelHelper:
+    @classmethod
+    def filter_instance_list_by_class(cls, list_to_filter, filter_class=None):
+        return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
+            if filter_class is not None else list_to_filter
 
 
 class Tag(models.Model):
-    name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
+    name = models.CharField(_('Name'), max_length=50, null=False, blank=False)
 
     @classmethod
     def create(cls, name):
         tag = Tag(name=name)
         tag.save()
         return tag
+
+    def __unicode__(self):
+        return self.name
 
 
 class Country(models.Model):
@@ -39,7 +54,6 @@ class Country(models.Model):
         new_country = cls(code=code, alias=alias)
         new_country.save()
         return new_country
-
 
     class Meta:
         ordering = ('code',)
@@ -60,7 +74,6 @@ class Location(models.Model):
     post_code = models.CharField(max_length=200, null=True, blank=True)
     city_alias = models.TextField(null=True, blank=True, default=None)
     country_alias = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True, default=None)
-
 
     @classmethod
     def create(cls, lat, lng, city, state=None, country=None, country_short=None, post_code=None, city_alias=None):
@@ -125,6 +138,7 @@ class Location(models.Model):
     def __str__(self):
         return self.city+', '+self.state+' '+self.country+' '+self.country_short
 
+
 class SourceOfInspiration(models.Model):
     name = models.TextField(_('Name'), max_length=200, null=False, blank=False)
 
@@ -134,8 +148,12 @@ class SourceOfInspiration(models.Model):
         source.save()
         return source
 
+    def __unicode__(self):
+        return self.name
+
 
 class Profile(models.Model):
+    crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
@@ -172,7 +190,6 @@ class Profile(models.Model):
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
 
-
     def set_location(self):
         return None
 
@@ -181,11 +198,17 @@ class Profile(models.Model):
     update_token_at = models.DateTimeField(default=None, null=True, blank=True)
     ask_reset_at = models.DateTimeField(default=dt.now, null=True, blank=True)
 
-    def __str__(self):
-        return "%s %s" % (self.get_name(), self.get_last_name())
-    
-    def __repr__(self):
-        return self.__str__()
+    # def __str__(self):
+    #     return "%s %s" % (self.get_name(), self.get_last_name())
+
+    def __unicode__(self):
+        try:
+            return self.user.email
+        except:
+            return 'Error'
+
+    # def __repr__(self):
+    #     return self.__str__()
 
     class Meta:
         ordering = ('user',)
@@ -313,6 +336,13 @@ class Profile(models.Model):
             return cls.objects \
                 .filter(Q(sector=search_string)) \
                 .distinct()
+        if restrict_to == 'basic':
+            return cls.objects \
+                .filter(
+                    Q(user__email__icontains=search_string) |
+                    Q(user__first_name__icontains=search_string) |
+                    Q(user__last_name__icontains=search_string))\
+                .distinct()
 
         return cls.objects\
             .filter(
@@ -399,6 +429,33 @@ class Profile(models.Model):
                 self.save()
         except Exception as e:
             print e
+
+    def add_interest(self, interest_obj):
+        from utils.mailer import EmailHelper
+
+        # Check existing realation between same interest related model and same profile
+        ct_id = ContentType.objects.get_for_model(interest_obj).pk
+        existing_interest = Interest.objects.filter(content_type_id=ct_id, profile_id=self.pk, object_id=interest_obj.pk)
+        # If doesnt exist create interest and relations
+        if len(existing_interest) == 0:
+            interest = Interest(content_object=interest_obj)
+            interest.profile = self
+            interest.save()
+
+    def get_interests(self, filter_class=None):
+        interests = map(lambda x: x.get(), self.profile_interest.all())
+        return ModelHelper.filter_instance_list_by_class(interests, filter_class)
+
+    def delete_interest(self, interest_obj, interest_id):
+        # Get interest-related-model class type id
+        ct_id = ContentType.objects.get_for_model(interest_obj).pk
+        # Get Interest record
+        interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
+        interest.delete()
+
+    def set_crm_id(self, crm_id):
+        self.crm_id = crm_id
+        self.save()
 
 
 class Invitation(models.Model):
@@ -495,7 +552,6 @@ class Invitation(models.Model):
             'receiver_last_name': last_name
         }
         cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.iteritems() if v is not None})
-        cls.objects.filter(receiver_email=hashed).update(**{k: v for k, v in receiver_dict.iteritems() if v is not None})
 
     @classmethod
     def confirm_sender(cls, sender_email, receiver_email):
@@ -535,3 +591,131 @@ class Feedback(models.Model):
     def __str__(self):
         return self.message_text
 
+
+class Company(models.Model):
+    logo = models.ImageField(_('Logo'), upload_to='images/company')
+    name = models.CharField(_('Name'), max_length=200, null=False, blank=False)
+    description = models.TextField(_('Description'), null=False, blank=False)
+    tags = models.ManyToManyField(Tag, related_name='company_tags')
+
+    def __unicode__(self):
+        return self.name
+
+
+class Interest(models.Model):
+    profile = models.ForeignKey(Profile, related_name='profile_interest')
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get(self):
+        return self.content_object
+
+    def __unicode__(self):
+        return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
+
+
+class Challenge(models.Model):
+
+    les_choices = (
+        (0, 'Spain'),
+        (1, 'Italy'),
+        (2, 'Slovakia'),
+        (3, 'United Kingdom'),
+    )
+
+    company = models.ForeignKey(Company, related_name='challenges', blank=True, null=True)
+
+    title = models.CharField(_('Title'), max_length=50)
+    description = models.CharField(_('Description'), max_length=200)
+    picture = models.ImageField(_('Challenge picture'), upload_to='images/challenge')
+
+    details = models.TextField(_('Details'))
+
+    tags = models.ManyToManyField(Tag, related_name='challenge_tags')
+
+    start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
+    end_date = models.DateTimeField(_('End date'), blank=True, null=True)
+
+    coordinator_email = models.EmailField(_('Coordinator email address'), max_length=254)
+    notify_admin = models.BooleanField(_('Notifiy Coordinator when user add/remove interest'), default=True)
+    notify_user = models.BooleanField(_('Notifiy User when removes interest'), default=True)
+
+    les = models.IntegerField(default=0, choices=les_choices)
+    profile = models.ForeignKey(Profile, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    published = models.BooleanField(_('Published'), default=False)
+    closed = models.BooleanField(_('Closed'), default=False)
+    restricted_to = models.CharField(_('Restricted to area of'), max_length=100, blank=True)
+
+    interest = GenericRelation(Interest)
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+    @classmethod
+    def create(cls, title):
+        model = cls(title=title)
+        model.save()
+        return model
+
+    @staticmethod
+    def retrieve_les_label(code):
+        for les in Challenge.les_choices:
+            if code == les[0]:
+                return les[1]
+        return 'less found undefined'
+
+    def __unicode__(self):
+        return self.title.encode('utf-8')
+
+    def clean(self):
+        if not self.profile and not self.company:
+            raise ValidationError('Provide a company or a profile as promoter of this challenge')
+        elif self.profile and self.company:
+            raise ValidationError('You can choose a profile OR a company as promoter of this challenge no both of them')
+
+
+class Project(models.Model):
+
+    profile = models.ForeignKey(Profile)
+    project_contributors = models.ManyToManyField(Profile, related_name='project_contributors',
+                                                  through='ProjectContributor')
+    name = models.CharField(_('Name'), max_length=50, default='')
+    picture = models.ImageField(_('Challenge picture'), upload_to='images/projects')
+    description = models.TextField(_('Description'), default='')
+    tags = models.ManyToManyField(Tag, related_name='tags', blank=True, null=True)
+
+    start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
+    end_date = models.DateTimeField(_('End date'), blank=True, null=True)
+
+    project_url = models.CharField(_('Title'), max_length=50, blank=True, null=True)
+
+    creator_role = models.TextField(_('Creator Role'), blank=True, null=True)
+
+    interest = GenericRelation(Interest)
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+    def get_tags(self):
+        return map(lambda x: x.name, self.tags.all())
+
+    def set_tags(self, tags):
+        self.tags.clear()
+        for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
+            self.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+
+
+class ProjectContributor(models.Model):
+    # ToDo add token to avoid actions not allowed
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    contributor = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    status = models.CharField(_('Status'), max_length=50, default='pending')

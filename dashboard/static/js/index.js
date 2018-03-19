@@ -15,11 +15,15 @@ require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validat
 
 // Init Angular APP
 var app = angular.module('dashboard', [
-    'ui.bootstrap', 'toastr', 'ui.select','ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
+    'ui.bootstrap', 'toastr', 'ui.select', 'ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
             $interpolateProvider.endSymbol('$}');
+    }])
+    .config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     }])
     .config(['$qProvider', function ($qProvider) {$qProvider.errorOnUnhandledRejections(false);}]);
 
@@ -38,5 +42,12 @@ app.controller('themesController', require('./controllers/themes.controller').de
 app.controller('eventsController', require('./controllers/events.controller').default )
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
+
+app.directive('challengeList', require('./directives/ChallengeList').default )
+app.directive('challenge', require('./directives/Challenge').default )
+
+app.directive('projectDetail', require('./directives/ProjectDetail').default )
+app.directive('projectList', require('./directives/ProjectList').default )
+app.directive('project', require('./directives/Project').default )
 
 
