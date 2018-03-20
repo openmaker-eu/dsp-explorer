@@ -73,7 +73,6 @@ export default [function(){
             $scope.interested_ids = []
             
             $scope.$watch('[profileid, all]', (new_data, old_data) => {
-                console.log(new_data);
                 if($scope.profileid){
                     
                     let url = new_data[1]? '/api/v1.3/challenge/': '/api/v1.3/profile/' + $scope.profileid + '/challenge/'

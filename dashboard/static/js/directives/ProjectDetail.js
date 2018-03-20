@@ -58,7 +58,6 @@ export default [function(){
                 // send invitation
                 let data = { 'project_id': project_id, 'profile_id': profile_id }
                 $http.post('/api/v1.3/project/invitation/', data).then( res => {
-                    console.log(res)
                     toastr.success('Success',res.data.message)
                     $scope.search_debounced()
                     $scope.get_data($scope.url)
@@ -124,10 +123,6 @@ export default [function(){
                 let result = $scope.interested_ids && $scope.interested_ids.indexOf(project.id) > -1
                 return result
             }
-
-
-
-
         }]
     }
 }]
