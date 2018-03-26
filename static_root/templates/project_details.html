@@ -1,0 +1,185 @@
+<div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-12 margin-top-20 margin-bottom-30">
+    <h1>
+        {$ project.name $}
+        <button ng-if="profileid == project.profile.id" class="btn custom-button pull-right margin-left-10" data-toggle="modal" data-target="#deleteProjectModal">Delete</button>
+        <a ng-if="profileid == project.profile.id" href="{$ '/profile/project/'+project.id $}" class="btn custom-button pull-right margin-left-10">Edit</a>
+        <a ng-href="{$ profileid == project.profile.id ? '/profile/' : '/profile/'+project.profile.id $}" class="btn custom-button pull-right">Back</a>
+    </h1>
+    <div class="row Aligner">
+        <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
+            <div class="col-md-8 col-md-offset-4">
+            <circle-image src="{$ project.picture $}"></circle-image>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div style="padding-left:5%;">
+                <p><i class="glyphicon glyphicon-globe"></i>&nbsp;<a ng-href="https://{$ project.project_url $}" target="_blank">{{ project.project_url }}</a></p>
+                <p><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.start_date | date:'yyyy-MM-dd' }}</p>
+                <p ng-if="project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;{{ project.end_date | date:'yyyy-MM-dd' }}</p>
+                <p ng-if="!project.end_date"><i class="glyphicon glyphicon-time"></i>&nbsp;Ongoing project</p>
+                <p>
+                    <i class="fa fa-fw fa-hashtag"></i>&nbsp;
+                    <i ng-repeat="tag in project.tags"><span>{{ tag.name }}</span>&nbsp;&nbsp;</i>
+                </p>
+                <p><hr></p>
+                <p>
+                    <span
+                        class="fa fa-thumbs-up pointer"
+                        ng-class="{'text-red':is_interested(project), 'text-grey':!is_interested(project)}"
+                        ng-click="click_interest(project)"
+                        style="font-size:40px;"></span>
+                    &nbsp;click and thumbs up if you <strong>Like</strong> this project!
+                </p>
+                <p class="small">{$ project.interested.length $} &nbsp;Thumbs up received</p>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-top-30">
+        <div class="col-md-12">
+            <div class="well-red">Description</div>
+        </div>
+        <div class="col-md-12">
+            <p style="margin-bottom:20px;">{{ project.description }}</p>
+        </div>
+        <div class="col-md-6">
+            <div class="well-red">Owner</div>
+            <div class="col-md-6">
+                <div class="col-md-6">
+                    <circle-image src="{$ project.profile.picture $}" style="width:40%;"></circle-image>
+                </div>
+                <div class="col-md-6">
+                    <h4 class=""> {$ project.profile.user.first_name $} {$ project.profile.user.last_name $}</h4>
+                    <p class=""> as: {{project.creator_role}} </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" ng-if="profileid != project.profile.id">
+            <div class="well-red">Collaborators</div>
+        </div>
+        <div ng-if="profileid == project.profile.id">
+            <div class="col-md-4">
+                <!-- ToDo Show collaborators len -->
+                <div class="well-red">Collaborators</div>
+            </div>
+            <div class="col-md-1">
+                <button class="btn custom-button pull-right" ng-click="open_close_form(true)">
+                    Add
+                </button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn custom-button pull-right" ng-click="open_close_form(false)">
+                    Close
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6" ng-if="show_form && profileid == project.profile.id">
+            <form class="row">
+                <div class="group-form col-md-12">
+                    <div class="has-feedback has-feedback-left" style="width:100%">
+                        <input class="form-control"
+                               ng-change="search_debounced()"
+                               ng-model-options="{allowInvalid: true}"
+                               ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
+                               placeholder="Search members for name or e-mail" value=""
+                        >
+                        <i ng-if="search_factory.is_search_all()" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
+                        <i
+                                ng-if="!search_factory.is_search_all()"
+                                ng-click="clearAll()"
+                                class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
+                                style="pointer-events:initial;"
+                        ></i>
+                    </div>
+                </div>
+            </form>
+            <!-- SEARCHED NG REPEAT -->
+            <div class="row margin-top-20">
+                <div class="col-md-4" ng-repeat="data in results">
+                    <div class="">
+                        <a href="/profile/{$data['id']$}" target="_blank">
+                            <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_factory.search_filter)"></span></strong>
+                        <br><span ng-bind-html="highlight((data.city), search_factory.search_filter)"></span>
+                        </a>
+                        <!-- avoid auto-invitation -->
+                        <p ng-if="data.id != project.profile.id">
+                            <i ng-if="!data.status || data.status == 'removed' || data.status == 'declined'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-envelope pointer"></i>
+                            <i ng-if="data.status == 'pending'" ng-click="send_collaborator_invitation(project.id, data.id)" class="glyphicon glyphicon-refresh pointer"></i>
+                            <i ng-if="data.status && data.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-if="show_invite">
+                <div class="col-md-12">
+                    <p class="small text-grey" style="margin: 0;">
+                        <i>Hey it seems the user is not registered yet, invite your friend from <strong><a href="/invite" class="text-red" target="_blank">here</a></strong></i>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <!-- ALREADY COLLABORATORS -->
+        <div ng-class="show_form ? 'col-md-6 col-md-offset-6' : 'col-md-6'">
+            <div class="row">
+                <div class="col-md-4" ng-repeat="contributor in project.project_contributors | limitTo:20" ng-hide="(contributor.status == 'pending' && profileid != project.profile.id) || contributor.status == 'removed' || contributor.status == 'declined'">
+                    <div class="">
+                        <a href="/profile/{$ contributor.contributor.id $}" target="_blank">
+                            <strong>{$ contributor.contributor.user.first_name+' '+contributor.contributor.user.last_name $}</strong>
+                        </a>
+                        <br><span>{$ contributor.contributor.city $}</span><br>
+                        <p ng-if="profileid == project.profile.id">
+                            <i ng-if="contributor.status == 'pending'" ng-click="send_collaborator_invitation(project.id, contributor.id)" class="glyphicon glyphicon-refresh pointer"></i>
+                            <i ng-click="remove_collaborator(project.id, contributor.id)" ng-if="contributor.status == 'accepted'" class="glyphicon glyphicon-remove pointer"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-top-20">
+        <!-- is it been liked? -->
+        <div>
+            <div class="col-md-12">
+                <div class="well-red">{$ project.interested.length $} Thumbs up for the project</div>
+            </div>
+            <div class="col-md-3" ng-repeat="profile in project.interested | limitTo:20">
+                <a href="/profile/{$ profile.id $}">
+                    <div class="col-md-4 col-xs-4">
+                        <circle-image src="{$ profile.picture $}"
+                                      href="/profile/{$ profile.id $}"
+                        ></circle-image>
+                    </div>
+                    <div class="col-md-10 col-xs-8">
+                        <strong>{$ profile.user.first_name+' '+profile.user.last_name $}</strong>
+                        <br><span>{$ profile.city $}</span><br>
+                        <span ng-repeat="profile_tag in profile.tags">{$ profile_tag.name $}&nbsp;&nbsp;</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form ng-submit="delete_project(url)">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Project deletion</h4>
+                </div>
+                <div class="modal-body">
+                   <p>This operation cannot be reverted, you will permanenlty loose all your project data saved to OpenMaker Explorer</p>
+                   <p>Are you sure do you want to delete your project?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No, Close</button>
+                    <input type="submit" class="btn btn-default" value="Yes, delete my project">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
