@@ -17,7 +17,7 @@ export default [function(){
     return {
         template:template,
         scope : {
-            src : '@'
+            src : '='
         },
         link : function($scope, element, attrs){
             $(element).css({display:'block'})
@@ -38,6 +38,8 @@ export default [function(){
             
             let img = element.find('img');
             img.bind('load', n=>$scope.fitImageToCircle($(img)))
+            
+            $scope.$watch('src', console.log)
             
         }
     }
