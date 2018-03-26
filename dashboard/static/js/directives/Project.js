@@ -97,7 +97,6 @@ export default [function(){
         };
 
         $scope.create_or_update_project = () => {
-            console.log('Sending this data')
             var fd = new FormData( document.getElementById('project_form'));
             $http({method: 'POST', url: $scope.url, data: fd, headers: {'Content-Type': undefined }, transformRequest: angular.identity})
                 .then(function(response) {

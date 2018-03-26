@@ -57,28 +57,18 @@ export default [function(){
             let url = ''
             $scope.projects = []
 
-            console.log('profileid: ' + $scope.profileid)
-            console.log('requestprofileid: ' + $scope.requestprofileid)
-
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
-
                     $scope.projects = res.data.result || []
-
-                    console.log('projects')
-                    console.log($scope.projects)
-
                     $scope.projects = _.map($scope.projects, el =>{
                         el.is_interested = _.filter(el.interested, {id:$scope.requestprofileid}).length > 0
                         return el
                     })
-
                     $scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
 
             $scope.$watch('profileid', (new_data, old_data) => {
-                console.log('new data: ' + new_data);
                 $scope.profileid = new_data
                 url = '/api/v1.3/profile/' + $scope.profileid + '/projects/'
                 $scope.get_data(url)

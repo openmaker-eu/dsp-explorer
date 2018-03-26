@@ -54,7 +54,6 @@ export default [function(){
             $http.get(url).then(
                 res => {
                     $scope.stories = res.data.slice(0,4).map(story=>{
-                        console.log('image', story)
                         story.image = _.get(story, "['_embedded']['wp:featuredmedia'][0].source_url") || '/static/images/openmaker-logo-final.svg'
                         return story
                     })
