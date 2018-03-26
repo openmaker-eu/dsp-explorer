@@ -164,3 +164,14 @@ SETTINGS_EXPORT = [
 UPDATE_TOKEN = ''
 OPENDATA_API_KEY = ''
 GOOGLE_API_KEY = ''
+
+# FROALA EDITOR
+FROALA_EDITOR_OPTIONS = {
+    'key': '',
+    'allowStyle': 'true',
+    'inlineStyles': {
+        'OM Red': 'color: #db4348;',
+        'OM Dark': 'color:#333;',
+        'OM Light': 'color:#ccc'
+    }
+}
