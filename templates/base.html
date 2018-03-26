@@ -7,7 +7,6 @@
     <title>Open Maker Explorer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
-
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
 
     <!-- WEBPACK BUNDLES -->
@@ -20,7 +19,6 @@
         {% include "./analytics/analytics.html" %}
     {% else %}
     {% endif %}
-
 
 </head>
 
@@ -114,13 +112,13 @@
                                 <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
                                     <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
                                 </li>
-
-                                <!--Challenge-->
-                                <li class="{% if current_url == 'dashboard:challenge' %}liactive{% endif %}" >
-                                    <a href="{% url 'dashboard:challenge' %}">Challenge</a>
-                                </li>
-
                             {% endif %}
+
+                            <!--Challenge-->
+                            <li class="{% if current_url == 'dashboard:challenge' %}liactive{% endif %}" >
+                                <a href="{% url 'dashboard:challenge' %}">Challenge</a>
+                            </li>
+
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle"
                                    data-toggle="dropdown" role="button"
