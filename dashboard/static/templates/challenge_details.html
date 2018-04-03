@@ -107,8 +107,8 @@
     <a href="/profile/{$ profile.id $}" ng-repeat="profile in challenge.interested | limitTo:20">
         <div class="row">
             <div class="col-md-1 col-xs-4">
-                <circle-image src="{$ profile.picture $}"
-                              href="/profile/{$ profile.id $}"
+                <circle-image ng-init="circle_profile = { src: '/media/'+profile.picture, href: profile.id};" src="circle_profile.src"
+                              href="circle_profile.url"
                 ></circle-image>
             </div>
             <div class="col-md-10 col-xs-8">
