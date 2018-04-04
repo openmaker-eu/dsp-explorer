@@ -13,7 +13,6 @@ let template = `
 `
 
 export default [function(){
-    
     return {
         template:template,
         scope : {
@@ -23,7 +22,6 @@ export default [function(){
             $(element).css({display:'block'})
             
             $scope.fitImageToCircle = (image)=> {
-        
                 if( !image || !image.get(0) ) return
                 image.removeAttr('style')
         
@@ -35,7 +33,6 @@ export default [function(){
                 image.css(css)
         
             }
-            
             let img = element.find('img');
             img.bind('load', n=>$scope.fitImageToCircle($(img)))
             
