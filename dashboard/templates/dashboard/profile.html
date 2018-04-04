@@ -238,11 +238,13 @@
                     <div class="col-md-10">
                         <div class="well-red">Your projects</div>
                     </div>
+                    {% if is_my_profile %}
                     <div class="col-md-2">
                         <a class="btn custom-button pull-right" href="{% url 'dashboard:project' %}">
                             Add a Project
                         </a>
                     </div>
+                    {% endif %}
                     <div class="col-md-12">
                         <project-list profileid=" {{ profile.id }} " requestprofileid="{{ request.user.profile.id }}"></project-list>
                     </div>
