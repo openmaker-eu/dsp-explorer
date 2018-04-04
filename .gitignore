@@ -17,6 +17,7 @@ backup
 # MAC stuff
 .DS_Store
 .idea
+.vscode
 
 # Created by https://www.gitignore.io/api/django
 

@@ -275,3 +275,21 @@ a {
     }
 
 }
+
+challenge-list {
+    .card > a {
+        display:block;
+        padding-bottom:100%;
+        max-height:none!important;
+    }
+    .card > a > * {
+        position: absolute!important;
+        display: flex;
+        height: 100%;
+        width: 100%;
+        max-height:none!important;
+        flex-direction: column;
+        justify-content: center;
+        align-items:center;
+    }
+}
