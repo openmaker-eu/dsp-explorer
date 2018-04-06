@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="container-fluid">
+        {{is_user_logged}}
+        {% if is_user_logged  %}
+            <div class="row">
+                you are logged
+            </div>
+        {% else %}
+            <div class="row">
+                you are not logged
+            </div>
+        {% endif %}
+        <br><br>
+    </div>
+{% endblock %}

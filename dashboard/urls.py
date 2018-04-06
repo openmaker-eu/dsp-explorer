@@ -14,6 +14,14 @@ urlpatterns = [
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
 
+    ###################################### MDP ROUTES
+    # Article list
+
+    url(r'^article_list/$', views.article_list, name='article_list'),
+    url(r'^event_list/$', views.event_list, name='event_list'),
+    url(r'^project_list/$', views.project_list, name='prj_list'),
+
+    ###################################### MDP ROUTES
     # Explore
     url(r'^dashboard/theme/(?P<topic_id>[0-9]+)/$', views.theme, name='theme'),
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
