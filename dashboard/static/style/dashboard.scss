@@ -275,7 +275,17 @@ a {
     }
 
 }
-
+.card-body{
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.card-img {
+  width: 100%;
+  }
+.card-title{
+}
 challenge-list {
     .card > a {
         display:block;
