@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% block container %}
     <div class="container-fluid">
-        {{is_user_logged}}
-        {% if is_user_logged  %}
-            <div class="row">
-                you are logged
-            </div>
-        {% else %}
-            <div class="row">
-                you are not logged
-            </div>
-        {% endif %}
+        <entity-list
+                profileid="{{request.user.profile.id}}"
+                entity="news"
+                slider="events-projects">
+        </entity-list>
+
         <br><br>
     </div>
 {% endblock %}

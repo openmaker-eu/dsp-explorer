@@ -262,6 +262,48 @@ def get_om_events(request):
             status=500)
 
 ###########
+# API V 1.4
+###########
+
+class v14:
+    @staticmethod
+    def __wrap_response(*args, **kwargs):
+        try:
+            results = args[0](args[1:])
+        except DSPConnectorException:
+            return JsonResponse({
+                'status': 'error',
+                'result': {}
+            }, status=400)
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+    @staticmethod
+    def get_entity(request, entity = 'news', user_id=None):
+
+        news = []
+
+        #TODO make cursor
+        resp = {}
+
+        try:
+            topics_list = DSPConnectorV12.get_topics()['topics']
+            selected_topic = random.choice(topics_list)['topic_id']
+            method_to_call = 'get_'+entity
+            # Below function let me to call static fuction to get differrent entity based on string
+            results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
+            if not user_id:
+                results = results[:5]
+        except DSPConnectorException:
+            pass
+        return JsonResponse({
+            'status': 'ok',
+            'result': results,
+        }, status=200)
+
+###########
 # API V 1.3
 ###########
 

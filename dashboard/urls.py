@@ -75,6 +75,12 @@ urlpatterns = [
     url(r'^challenge/(?P<challenge_id>[0-9]+)/$', views.challenge, name='challenge'),
 
 
+    # API v1.4
+    ## MDP
+
+    url(r'^api/v1.4/(?P<entity>.+)/(?P<user_id>.+)/$', api.v14.get_entity, name='api_13_entity'),
+
+
 
     # API v1.3
     ## AUDIENCES
