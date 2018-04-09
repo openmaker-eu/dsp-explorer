@@ -77,8 +77,8 @@ urlpatterns = [
 
     # API v1.4
     ## MDP
-
-    url(r'^api/v1.4/(?P<entity>.+)/(?P<user_id>.+)/$', api.v14.get_entity, name='api_13_entity'),
+    url(r'^api/v1.4/(?P<entity>\w+)/$', api.v14.get_entity, name='api_13_entity'),
+    url(r'^api/v1.4/(?P<entity>\w+)/(?P<user_id>\w+)/$', api.v14.get_entity, name='api_13_entity'),
 
 
 

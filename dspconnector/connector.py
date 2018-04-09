@@ -60,6 +60,13 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
+    def get_new(new_id):
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+            endpoint='/search_news',
+            parameter='?news_ids={new_id}'.format(new_id=new_id))
+        )
+
+    @staticmethod
     def __get_parameters(topic_id, date=None, location="", cursor=0):
         location_id = DSPConnectorV13._get_location_filter(location)
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)

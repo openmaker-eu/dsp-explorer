@@ -91,65 +91,23 @@ def dashboard(request, topic_id=None):
 
 
 def article_list(request):
-    return render(request, 'dashboard/articles_list.html')
+    context = {
+        'entity': 'news',
+        'slider': 'events-projects'
+    }
+    return render(request, 'dashboard/entity_list.html', context)
 
 
 def event_list(request):
-    try:
-        topics_list = DSPConnectorV12.get_topics()['topics']
-        selected_topic = random.choice(topics_list)
-        hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
-        is_user_logged = True
-
-    except DSPConnectorException as e:
-        messages.error(request, e.message)
-        topics_list = {}
-        selected_topic = 'No themes'
-        context = {'selected_topic': selected_topic, 'topics': topics_list}
-        return render(request, 'dashboard/theme.html', context)
-    except Exception as e:
-        print 'Exception -- '
-        print e
-
-    if not request.user:
-        hot_news = hot_news[:5]
-        is_user_logged = False
-
     context = {
-        'articles': hot_news,
-        'is_user_logged': is_user_logged
+        'entity': 'events',
+        'slider': 'news-projects'
     }
-
-    return render(request, 'dashboard/articles_list.html', context)
+    return render(request, 'dashboard/entity_list.html', context)
 
 
 def project_list(request):
-    try:
-        topics_list = DSPConnectorV12.get_topics()['topics']
-        selected_topic = random.choice(topics_list)
-        hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
-        is_user_logged = True
-
-    except DSPConnectorException as e:
-        messages.error(request, e.message)
-        topics_list = {}
-        selected_topic = 'No themes'
-        context = {'selected_topic': selected_topic, 'topics': topics_list}
-        return render(request, 'dashboard/theme.html', context)
-    except Exception as e:
-        print 'Exception -- '
-        print e
-
-    if not request.user:
-        hot_news = hot_news[:5]
-        is_user_logged = False
-
-    context = {
-        'articles': hot_news,
-        'is_user_logged': is_user_logged
-    }
-
-    return render(request, 'dashboard/articles_list.html', context)
+    return render(request, 'dashboard/entity_list.html')
 
 @login_required()
 def insight(request, user_twitter_username=None):

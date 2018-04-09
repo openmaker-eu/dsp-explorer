@@ -58,7 +58,7 @@ export default [function(){
                 $http.get(url).then(res => {
                     $scope.entities = res.data.result || []
                     console.log($scope.entities)
-                    $scope.$apply(()=>$(window).trigger('resize'))
+                    //$scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'

@@ -453,6 +453,28 @@ class Profile(models.Model):
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
 
+
+    def add_bookmark(self, bookmark_obj):
+        ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
+        existing_interest = Bookmark.objects.filter(content_type_id=ct_id, profile_id=self.pk,
+                                                    object_id=bookmark_obj.pk)
+        # If doesnt exist create interest and relations
+        if len(existing_interest) == 0:
+            bookmark = Bookmark(content_object=bookmark_obj)
+            bookmark.profile = self
+            bookmark.save()
+
+    def get_bookmarks(self, filter_class=None):
+        bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
+        return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
+
+    def delete_bookmark(self, bookmark_obj, bookmark_id):
+        # Get interest-related-model class type id
+        ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
+        # Get Interest record
+        bookmark = Bookmark.objects.filter(content_type_id=ct_id, object_id=bookmark_id, profile_id=self.pk)
+        bookmark.delete()
+
     def set_crm_id(self, crm_id):
         self.crm_id = crm_id
         self.save()
@@ -602,6 +624,13 @@ class Company(models.Model):
         return self.name
 
 
+class Bookmark(models.Model):
+    profile = models.ForeignKey(Profile, related_name='profile_bookmark')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
 class Interest(models.Model):
     profile = models.ForeignKey(Profile, related_name='profile_interest')
 
@@ -719,3 +748,20 @@ class ProjectContributor(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     contributor = models.ForeignKey(Profile, on_delete=models.CASCADE)
     status = models.CharField(_('Status'), max_length=50, default='pending')
+
+
+class EntityProxy(models.Model):
+    externalId = models.IntegerField(default=0)
+    # NB type can be:
+    # - article
+    # - event
+    type = models.CharField(_('Type'), max_length=50, default='article')
+
+    def get_real_object(self):
+        if self.type == 'article':
+            pass
+        elif self.type == 'evet':
+            pass
+        else:
+            # error condiction
+            pass

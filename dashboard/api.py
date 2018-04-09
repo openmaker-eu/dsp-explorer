@@ -26,7 +26,7 @@ from django.apps import apps
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
-from dashboard.models import Challenge, Project, Tag
+from dashboard.models import Challenge, Project, Tag, EntityProxy
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as dt
 import simplejson as simplejson
@@ -292,6 +292,7 @@ class v14:
             topics_list = DSPConnectorV12.get_topics()['topics']
             selected_topic = random.choice(topics_list)['topic_id']
             method_to_call = 'get_'+entity
+
             # Below function let me to call static fuction to get differrent entity based on string
             results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
             if not user_id:
@@ -1007,7 +1008,6 @@ def interest_challenge(request, challenge_id):
             'COORDINATOR_EMAIL': challenge.coordinator_email
         }
 
-        print email_context
 
         if request.method == 'POST':
             # Add interest
@@ -1060,6 +1060,35 @@ def interest_project(request, project_id):
             # Remove interest
             request.user.profile.delete_interest(Project, project_id)
             message = 'interest in project removed'
+        print 'success'
+        return success('ok', message, {})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def interest_entity(request, entity_type='article', entity_external_id=None):
+    try:
+        entity = EntityProxy.objects.filter(externalId=entity_external_id, entity_type=entity_type)
+
+        if not entity:
+            entity = EntityProxy(externalId=entity_external_id, entity_type=entity_type)
+            entity.save()
+
+        if request.method == 'POST':
+            print 'add interest'
+            # Add interest
+            request.user.profile.add_interest(entity)
+            message = 'interest in entity added'
+        if request.method == 'DELETE':
+            print 'remove interest'
+            # Remove interest
+            request.user.profile.delete_interest(EntityProxy, entity.pk)
+            message = 'interest in entity removed'
         print 'success'
         return success('ok', message, {})
 
