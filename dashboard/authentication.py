@@ -20,7 +20,7 @@ from utils.emailtemplate import invitation_base_template_header, invitation_base
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
 import re
 from django.utils.encoding import force_unicode
-
+from crmconnector.capsule import CRMConnector
 from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
 
@@ -46,6 +46,11 @@ def login_page(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                profile = Profile.objects.get(user_id=user.id)
+                crm_user = CRMConnector.search_party_by_email(profile.user.email)
+                if not profile.crm_id:
+                    profile.crm_id = crm_user['id']
+                    profile.save()
                 messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
                 return HttpResponseRedirect(reverse('dashboard:dashboard'))
             else:

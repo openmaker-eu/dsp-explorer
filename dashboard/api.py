@@ -18,7 +18,7 @@ from crmconnector.models import Party
 from json_tricks.np import dump, dumps, load, loads, strip_comments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from utils.Colorizer import Colorizer
-
+from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
 from django.http import HttpResponse
@@ -289,6 +289,7 @@ class v14:
         resp = {}
 
         try:
+
             topics_list = DSPConnectorV12.get_topics()['topics']
             selected_topic = random.choice(topics_list)['topic_id']
             method_to_call = 'get_'+entity
@@ -297,6 +298,13 @@ class v14:
             results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
             if not user_id:
                 results = results[:5]
+            else:
+                profile = Profile.objects.get(pk=user_id)
+                crm_user = CRMConnector.search_party_by_email(profile.user.email)
+                if not profile.crm_id:
+                    profile.crm_id = crm_user['id']
+                    profile.save()
+
         except DSPConnectorException:
             pass
         return JsonResponse({
