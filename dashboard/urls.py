@@ -17,7 +17,8 @@ urlpatterns = [
     ###################################### MDP ROUTES
     # Article list
 
-    url(r'^article_list/$', views.article_list, name='article_list'),
+    url(r'^news_list/$', views.news_list, name='news_list'),
+    url(r'^news/(?P<news_id>[0-9]+)/$', views.news_detail, name='news_detail'),
     url(r'^event_list/$', views.event_list, name='event_list'),
     url(r'^project_list/$', views.project_list, name='prj_list'),
 

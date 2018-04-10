@@ -760,7 +760,7 @@ class EntityProxy(models.Model):
     def get_real_object(self):
         if self.type == 'article':
             pass
-        elif self.type == 'evet':
+        elif self.type == 'event':
             pass
         else:
             # error condiction

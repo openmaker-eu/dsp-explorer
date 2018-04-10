@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 let template = `
     <div class="col-md-12" ng-if="entities.length == 0">
         <h2>
-            No Projects
+            No Entities
         </h2>
     </div>
     <div class="col-md-8 col-md-offset-1 mycontent-left">
@@ -11,7 +11,8 @@ let template = `
             ng-repeat="entity in entities"
             style="margin-bottom:1%; margin-top: 1%;">
             <div class="card margin-bottom-20">
-                <a href="" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
+
+                <a href="/news/{$entity.link_id$}" class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                     <div class="card-image" style="border-bottom:solid 1px rgba(160, 160, 160, 0.2);">
                         <img style="min-width:100%;" ng-src="" class="img-responsive">
                     </div>
@@ -25,7 +26,7 @@ let template = `
                             <hr>
                         </div>
                         <div class="col-md-12 text-right">
-                            <a href=""><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
+                            <a href="/news/{$entity.link_id$}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
                         </div>
                     </div>
                 </div>
@@ -57,7 +58,6 @@ export default [function(){
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
                     $scope.entities = res.data.result || []
-                    console.log($scope.entities)
                     //$scope.$apply(()=>$(window).trigger('resize'))
                 })
             }

@@ -90,12 +90,21 @@ def dashboard(request, topic_id=None):
     return render(request, 'dashboard/dashboard.html', context)
 
 
-def article_list(request):
+def news_list(request):
     context = {
         'entity': 'news',
         'slider': 'events-projects'
     }
     return render(request, 'dashboard/entity_list.html', context)
+
+
+def news_detail(request, news_id):
+
+    context = {
+        'entity': 'news',
+        'slider': 'events-projects'
+    }
+    return render(request, 'dashboard/news_detail.html', context)
 
 
 def event_list(request):
