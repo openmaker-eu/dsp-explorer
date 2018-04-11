@@ -60,10 +60,10 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
-    def get_new(new_id):
+    def get_news_detail(entity_id):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/search_news',
-            parameter='?news_ids={new_id}'.format(new_id=new_id))
+            parameter='?news_ids={news_id}'.format(news_id=entity_id))
         )
 
     @staticmethod
