@@ -35,12 +35,7 @@ let template = `
     </div>
 
     <div class="col-md-3">
-        <div class="col-md-12">
-            slider 1
-        </div>
-        <div class="col-md-12">
-            slider 2
-        </div>
+        <entity-carousel ng-repeat="slider_name in slider_list" entity="{$ slider_name $}"></entity-carousel>
     </div>
 `
 
@@ -55,6 +50,8 @@ export default [function(){
         controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
             let url = ''
             $scope.entities = []
+            $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
+            console.log($scope.slider_list);
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
                     $scope.entities = res.data.result || []

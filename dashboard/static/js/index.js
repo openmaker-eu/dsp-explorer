@@ -1,4 +1,6 @@
-import * as angular from 'angular';
+
+var jQuery = window.$ = window.jQuery = require('jquery');
+require('angular');
 require('../../../node_modules/ngmap')
 
 // Import this app style
@@ -13,9 +15,24 @@ require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validator");
 
+require("../../../node_modules/slick-carousel/slick/slick.css");
+require("../../../node_modules/slick-carousel/slick/slick-theme.css");
+require("../../../node_modules/slick-carousel");
+require("../../../node_modules/angular-slick-carousel/");
+
+
 // Init Angular APP
 var app = angular.module('dashboard', [
-    'ui.bootstrap', 'toastr', 'ui.select', 'ngSanitize', 'ngAnimate','mgcrea.ngStrap', 'infinite-scroll', 'vsGoogleAutocomplete', 'ngMap'
+    'ui.bootstrap',
+    'toastr',
+    'ui.select',
+    'ngSanitize',
+    'ngAnimate',
+    'mgcrea.ngStrap',
+    'infinite-scroll',
+    'vsGoogleAutocomplete',
+    'ngMap',
+    'slickCarousel'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
@@ -46,6 +63,7 @@ app.directive('userStories', require('./directives/UserStories.directive').defau
 app.directive('challengeList', require('./directives/ChallengeList').default )
 app.directive('challenge', require('./directives/Challenge').default )
 app.directive('entityList', require('./directives/EntityList').default )
+app.directive('entityCarousel', require('./directives/EntityCarousel').default )
 
 app.directive('projectDetail', require('./directives/ProjectDetail').default )
 app.directive('projectList', require('./directives/ProjectList').default )

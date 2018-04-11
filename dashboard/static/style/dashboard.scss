@@ -306,3 +306,22 @@ challenge-list {
         align-items:center;
     }
 }
+
+.entity-carousel{
+
+    &__item {
+        position: relative;
+    }
+
+    .slick-arrow--custom {
+        display: none!important;
+        z-index: 10000; position: absolute; top: 50%;
+        cursor: pointer; font-size: 200%;
+        color: $dsp-red;
+        &.prev { left: 1%; }
+        &.next { right: 1%; }
+    }
+
+    &:hover .slick-arrow--custom {display: inline!important;}
+
+}
