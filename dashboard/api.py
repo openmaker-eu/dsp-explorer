@@ -284,9 +284,8 @@ class v14:
 
     @staticmethod
     def get_entity(request, entity = 'news', user_id=None):
-        #TODO make cursor
+        #TODO make cursor works
         try:
-
             topics_list = DSPConnectorV12.get_topics()['topics']
             topics_id_list = [x['topic_id'] for x in topics_list]
             method_to_call = 'get_' + entity
@@ -298,10 +297,7 @@ class v14:
             else:
                 for index,topic_id in enumerate(topics_id_list):
                     results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
-
                 results = mix_result_round_robin(*results)
-                
-
         except DSPConnectorException:
             pass
 
