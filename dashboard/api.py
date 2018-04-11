@@ -21,6 +21,7 @@ from utils.Colorizer import Colorizer
 from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
+from .helpers import mix_result_round_robin
 from django.http import HttpResponse
 from django.apps import apps
 from django.views import View
@@ -280,33 +281,30 @@ class v14:
             'result': results
         }, status=200)
 
+
     @staticmethod
     def get_entity(request, entity = 'news', user_id=None):
-
-        news = []
-
         #TODO make cursor
-        resp = {}
-
         try:
 
             topics_list = DSPConnectorV12.get_topics()['topics']
-            selected_topic = random.choice(topics_list)['topic_id']
-            method_to_call = 'get_'+entity
-
-            # Below function let me to call static fuction to get differrent entity based on string
-            results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
+            topics_id_list = [x['topic_id'] for x in topics_list]
+            method_to_call = 'get_' + entity
+            results = []
             if not user_id:
+                selected_topic = random.choice(topics_id_list)
+                results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
                 results = results[:5]
             else:
-                profile = Profile.objects.get(pk=user_id)
-                crm_user = CRMConnector.search_party_by_email(profile.user.email)
-                if not profile.crm_id:
-                    profile.crm_id = crm_user['id']
-                    profile.save()
+                for index,topic_id in enumerate(topics_id_list):
+                    results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
+
+                results = mix_result_round_robin(*results)
+                
 
         except DSPConnectorException:
             pass
+
         return JsonResponse({
             'status': 'ok',
             'result': results,
