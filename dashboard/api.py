@@ -283,6 +283,14 @@ class v14:
 
 
     @staticmethod
+    def get_entity_details(request, entity= 'news', entity_id = None):
+        results = []
+        return JsonResponse({
+            'status': 'ok',
+            'result': results,
+        }, status=200)
+
+    @staticmethod
     def get_entity(request, entity = 'news', user_id=None):
         #TODO make cursor works
         try:
