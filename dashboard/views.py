@@ -28,7 +28,7 @@ from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
-
+    '''
     top_influencers_by_user_location = None
     events_by_topic_and_location = None
     audiences = None
@@ -88,6 +88,8 @@ def dashboard(request, topic_id=None):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
+    '''
+    return HttpResponseRedirect(reverse('dashboard:login'))
 
 
 def news_list(request):
