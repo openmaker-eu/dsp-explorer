@@ -19,6 +19,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.urls import reverse
 from utils.mailer import EmailHelper
+from dspconnector.connector import DSPConnectorV13
 
 class ModelHelper:
     @classmethod
@@ -752,16 +753,16 @@ class ProjectContributor(models.Model):
 
 class EntityProxy(models.Model):
     externalId = models.IntegerField(default=0)
-    # NB type can be:
-    # - article
-    # - event
-    type = models.CharField(_('Type'), max_length=50, default='article')
+    # NB type MUST be:
+    # - news
+    # - events
+    type = models.CharField(_('Type'), max_length=50, default='news')
 
     def get_real_object(self):
-        if self.type == 'article':
-            pass
-        elif self.type == 'event':
-            pass
-        else:
-            # error condiction
-            pass
+        '''
+        You should be able to return a complete object frlom proxy using the external_id
+        :return: complete object parsed by Watchtower
+        '''
+        method_to_call = 'get_' + self.type + '_detail'
+        results = getattr(DSPConnectorV13, method_to_call)(entity_id=self.externalId)[self.type]
+        return results
