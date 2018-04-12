@@ -309,19 +309,83 @@ challenge-list {
 
 .entity-carousel{
 
-    &__item {
-        position: relative;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+
+    // border:solid 3px #bbb;
+
+    & * { z-index: 1000;}
+    &__header {
+        border-radius: 5px 5px 0 0;
+        text-align: center;
+        h3 { 
+            margin:0; padding: 20px 0; 
+            text-transform: uppercase;
+        }       
+    }
+    &__body {
+        position:relative; z-index:0; 
+        padding-bottom:80%; overflow: hidden;
+        background: #fff;
+        & > slick {
+            position:absolute; top:0; left:0; bottom:0; right:0;
+            width:100%; height: 100%; max-height: 100%;
+        }
+        img {
+            width:100%;
+            height:100%; min-height: 100%;
+        }
     }
 
     .slick-arrow--custom {
-        display: none!important;
-        z-index: 10000; position: absolute; top: 50%;
-        cursor: pointer; font-size: 200%;
+        //display: none!important;
+        z-index: 10000; position: absolute; top: 60%;
+        cursor: pointer; font-size: 250%;
         color: $dsp-red;
-        &.prev { left: 1%; }
-        &.next { right: 1%; }
+        &.prev { left: 35%; }
+        &.next { right: 35%; }
     }
 
     &:hover .slick-arrow--custom {display: inline!important;}
 
+    // TEMPLATING
+    &--events{
+        .entity-carousel__header {
+            background: rgb(102, 165, 1)!important;   
+            color:#fff!important;  
+        }  
+        color:rgb(102, 165, 1)!important;
+    }
+    &--projects{
+        .entity-carousel__header {
+            background: rgb(213, 75, 33)!important;   
+            color:#fff!important;  
+        }  
+        color:rgb(213, 75, 33)!important;
+    }
+    &--news{
+        .entity-carousel__header {
+            background: rgb(14, 117, 148)!important;   
+            color:#fff!important;  
+        }  
+        color:rgb(14, 117, 148)!important;
+    }
+
+}
+
+.entity-sidebar{
+
+    background: #bbb;
+
+    &:before {
+        background: #bbb;
+        content: ' ';
+        height: 100%;
+        margin-left: -15px; /* compensates column's padding */
+        position: fixed;
+        width: inherit; /* bootstrap column's width */
+        z-index: 0; /* puts behind content */
+    }
 }

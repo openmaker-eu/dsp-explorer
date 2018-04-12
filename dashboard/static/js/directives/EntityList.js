@@ -34,8 +34,13 @@ let template = `
         </div>
     </div>
 
-    <div class="col-md-3">
-        <entity-carousel ng-repeat="slider_name in slider_list" entity="{$ slider_name $}"></entity-carousel>
+    <div class="col-md-3 entity-sidebar" style="background:#bbb;">
+        <entity-carousel 
+            ng-repeat="slider_name in slider_list" 
+            entityname="{$ slider_name $}"
+            class=""
+        >
+        </entity-carousel>
     </div>
 `
 

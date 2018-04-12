@@ -3,15 +3,19 @@ import * as d3 from 'd3';
 
 let template = `
     <div class="col-md-12" ng-if="entities.length > 0">
-       <slick
-            class="entity-carousel"
-            settings="slickConfig"
-       >
-          <div ng-repeat="entity in entities" class="entity-slider__item">
-             <img src="{$ entity.im $}" ng-if="entity.im" alt="" style="width:100%;">
-             <img src="{$ entity.cover $}" ng-if="entity.cover" style="width:100%;">
-          </div>
-       </slick>
+        <div class="entity-carousel entity-carousel--{$ entityname $}">
+            <div class="entity-carousel__header">
+                <h3 class="">{$ entityname $}</h3>
+            </div>
+            <div class="entity-carousel__body">
+                <slick settings="slickConfig">
+                    <div ng-repeat="entity in entities">
+                        <img class="" src="{$ entity.im $}" ng-if="entity.im" alt="" >
+                        <img class="" src="{$ entity.cover $}" ng-if="entity.cover" alt="">
+                    </div>
+                </slick>  
+            <div>
+        </div>
     </div>
 `
 
@@ -20,7 +24,7 @@ export default [function(){
         template:template,
         scope: {
             profileid : '=',
-            entity : '@',
+            entityname : '@',
             slider : '@'
         },
         controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
@@ -35,24 +39,24 @@ export default [function(){
                 })
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'
-            $scope.get_data('/api/v1.4/' + $scope.entity + id)
+            $scope.get_data('/api/v1.4/' + $scope.entityname + id)
     
     
             $scope.slickConfig ={
                 slidesToShow: 1,
                 slidesToScroll: 1,
-                prevArrow: '<i class="fa fa-arrow-circle-left slick-arrow--custom prev"></i>',
-                nextArrow: '<i class="fa fa-arrow-circle-right slick-arrow--custom next"></i>',
+                prevArrow: '<i class="glyphicon glyphicon-menu-left slick-arrow--custom prev"></i>',
+                nextArrow: '<i class="glyphicon glyphicon-menu-right slick-arrow--custom next"></i>',
     
-                focusOnSelect: false,
+                //focusOnSelect: false,
                 autoplay: false,
                 draggable: true,
                 infinite: true,
                 pauseOnHover: true,
                 swipeToSlide: true,
                 arrows: true,
-                accessibility: true,
-                adaptiveHeight: true
+                //accessibility: true,
+                adaptiveHeight: false
             }
 
 
