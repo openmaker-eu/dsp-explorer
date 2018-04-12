@@ -36,8 +36,8 @@ def logout_page(request):
 
 
 def login_page(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    #if request.user.is_authenticated:
+    #    return HttpResponseRedirect(reverse('dashboard:login'))
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
@@ -52,7 +52,7 @@ def login_page(request):
                     profile.crm_id = crm_user['id']
                     profile.save()
                 messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
-                return HttpResponseRedirect(reverse('dashboard:dashboard'))
+                return HttpResponseRedirect(reverse('dashboard:login'))
             else:
                 messages.error(request, 'User Invalid')
         else:
