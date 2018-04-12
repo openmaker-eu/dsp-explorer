@@ -324,12 +324,13 @@ class v14:
     @staticmethod
     def bookmark(request, entity=None, entity_id=None):
         # GET return status of a bookmark
-        # POST change status of a bookmark
+        # POST toggle status of a bookmark an return it
 
-        # @TODO Subsitute mock with real logic
-        # MOCK http response status (200 or any for error)
+        # @TODO:MOCK Subsitute mock with real logic
+        # MOCK http response status (200 for succes or anything else for error)
         status = 200 if entity and entity_id else 0000000
 
+        # @TODO:MOCK Subsitute mock with real logic
         # MOCK results return entity bookmarked status
         results = {'bookmarked': True} or {'bookmarked': False}
 
