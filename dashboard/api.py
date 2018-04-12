@@ -321,6 +321,23 @@ class v14:
             'result': results,
         }, status=200)
 
+    @staticmethod
+    def bookmark(request, entity=None, entity_id=None):
+        # GET return status of a bookmark
+        # POST change status of a bookmark
+
+        # @TODO Subsitute mock with real logic
+        # MOCK http response status (200 or any for error)
+        status = 200 if entity and entity_id else 0000000
+
+        # MOCK results return entity bookmarked status
+        results = {'bookmarked': True} or {'bookmarked': False}
+
+        return JsonResponse({
+            'status': 'ok',
+            'result': results,
+        }, status=status)
+
 ###########
 # API V 1.3
 ###########

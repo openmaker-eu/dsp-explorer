@@ -68,5 +68,6 @@ app.directive('entityCarousel', require('./directives/EntityCarousel').default )
 app.directive('projectDetail', require('./directives/ProjectDetail').default )
 app.directive('projectList', require('./directives/ProjectList').default )
 app.directive('project', require('./directives/Project').default )
+app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 
 
