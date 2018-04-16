@@ -64,6 +64,7 @@ export default [function(){
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
+                    console.log('res',res);
                     $scope.entities = res.data.result || []
                     //$scope.$apply(()=>$(window).trigger('resize'))
                 })
