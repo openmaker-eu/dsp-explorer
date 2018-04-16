@@ -6,16 +6,16 @@ export default [function(){
             entityid : '@'
         },
         controller : ['$scope', '$http', function($scope, $http){
-        
-            $scope.bookmarked = false;
             
-            const change_status = res => {
-                //Mock results
-                res.status && res.status === 200 && ($scope.bookmarked = !$scope.bookmarked)
-            }
-    
+            // Default bookmarked status
+            $scope.bookmarked = false;
             // Build url
             let url = `/api/v1.4/bookmark/${$scope.entity}/${$scope.entityid}/`
+            
+            // Change bookmarked button color
+            const change_status = res => {
+                res.status === 200 && ($scope.bookmarked = _.get(res, 'data.result.bookmarked', $scope.bookmarked))
+            }
             
             // First check if is bookmarked
             $http.get(url).then(change_status)
