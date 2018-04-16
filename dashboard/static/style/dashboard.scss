@@ -307,6 +307,22 @@ challenge-list {
     }
 }
 
+
+$color-news : rgb(14, 117, 148);
+$color-projects : rgb(213, 75, 33);
+$color-events : rgb(102, 165, 1);
+
+.text--news {
+    color :$color-news!important;
+    & * {color :$color-news!important;}
+}
+.text--projects {
+    color :$color-projects;
+}
+.text--events{
+    color :$color-events;
+}
+
 .entity-carousel{
 
     // display: flex;
@@ -353,24 +369,24 @@ challenge-list {
     // TEMPLATING
     &--events{
         .entity-carousel__header {
-            background: rgb(102, 165, 1)!important;   
-            color:#fff!important;  
-        }  
-        color:rgb(102, 165, 1)!important;
+            background: $color-events!important;
+            color:#fff!important;
+        }
+        color:$color-events!important;
     }
     &--projects{
         .entity-carousel__header {
-            background: rgb(213, 75, 33)!important;   
-            color:#fff!important;  
-        }  
-        color:rgb(213, 75, 33)!important;
+            background: $color-projects!important;
+            color:#fff!important;
+        }
+        color:$color-projects!important;
     }
     &--news{
         .entity-carousel__header {
-            background: rgb(14, 117, 148)!important;   
-            color:#fff!important;  
-        }  
-        color:rgb(14, 117, 148)!important;
+            background: rgb(14, 117, 148)!important;
+            color:#fff!important;
+        }
+        color:$color-events!important;
     }
 
 }
