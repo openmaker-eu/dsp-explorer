@@ -454,7 +454,6 @@ class Profile(models.Model):
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
 
-
     def add_bookmark(self, bookmark_obj):
         ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
         existing_interest = Bookmark.objects.filter(content_type_id=ct_id, profile_id=self.pk,
@@ -644,6 +643,8 @@ class Bookmark(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    def get(self):
+        return self.content_object
 
 class Interest(models.Model):
     profile = models.ForeignKey(Profile, related_name='profile_interest')

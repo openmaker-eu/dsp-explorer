@@ -21,6 +21,8 @@ from utils.Colorizer import Colorizer
 from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
+from dashboard.serializer import BookmarkSerializer
+
 from .helpers import mix_result_round_robin
 from django.http import HttpResponse
 from django.apps import apps
@@ -351,6 +353,23 @@ class v14:
                 'result': results,
             }, status=200)
         except:
+            return JsonResponse({
+                'status': 'ko',
+                'result': 'Unhautorized',
+            }, status=403)
+
+    @staticmethod
+    def get_bookmarks(request):
+        try:
+            profile = request.user.profile
+            results = profile.get_bookmarks()
+            serialized = BookmarkSerializer(results, many=True).data
+            return JsonResponse({
+                'status': 'ok',
+                'result': serialized,
+            }, status=200)
+        except Exception as e:
+            print e
             return JsonResponse({
                 'status': 'ko',
                 'result': 'Unhautorized',
