@@ -101,9 +101,9 @@ def news_list(request):
 
 
 def news_detail(request, news_id):
-
     context = {
         'entity': 'news',
+        'entity_id': news_id,
         'slider': 'events-projects'
     }
     return render(request, 'dashboard/news_detail.html', context)

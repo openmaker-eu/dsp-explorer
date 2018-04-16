@@ -36,7 +36,7 @@ let template = `
                                 <hr>
                             </div>
                             <div class="col-md-12 text-right">
-                                <a href="/news/{$entity.link_id$}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
+                                <a href="/{$ entityname $}/{$entity.link_id$}"><p>Read more <i class="glyphicon glyphicon-new-window"></i></p></a>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@ export default [function(){
         template:template,
         scope: {
             profileid : '=',
-            entity : '@',
+            entityname : '@',
             slider : '@'
         },
         controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
@@ -72,7 +72,7 @@ export default [function(){
                 })
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'
-            $scope.get_data('/api/v1.4/' + $scope.entity + id)
+            $scope.get_data('/api/v1.4/' + $scope.entityname + id)
 
 
         }]
