@@ -99,16 +99,6 @@ def news_list(request):
     }
     return render(request, 'dashboard/entity_list.html', context)
 
-
-def news_detail(request, news_id):
-    context = {
-        'entity': 'news',
-        'entity_id': news_id,
-        'slider': 'events-projects'
-    }
-    return render(request, 'dashboard/news_detail.html', context)
-
-
 def event_list(request):
     context = {
         'entity': 'events',
@@ -118,7 +108,39 @@ def event_list(request):
 
 
 def project_list(request):
+    context = {
+        'entity': 'project',
+        'slider': 'news-events'
+    }
     return render(request, 'dashboard/entity_list.html')
+
+
+def news_detail(request, entity_id):
+    context = {
+        'entity': 'news',
+        'entity_id': entity_id,
+        'slider': 'events-projects'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
+
+def project_detail(request, entity_id):
+    context = {
+        'entity': 'news',
+        'entity_id': entity_id,
+        'slider': 'news-events'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
+
+def event_detail(request, entity_id):
+    context = {
+        'entity': 'event',
+        'entity_id': entity_id,
+        'slider': 'news-projects'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
 
 @login_required()
 def insight(request, user_twitter_username=None):

@@ -8,15 +8,15 @@ let template = `
                 <h1 style="text-transform: uppercase">
                     <span>{$ entityname $}</span>
                     <span class="pull-right">
-                        <bookmark-button entity="{$ entity $}" entityid="{$ entityid $}"></bookmark-button>
+                        <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
                     </span>
                 <h1>
-                <h2><span>test</span></h2>
+                <h2></h2>
             </div>
             
             <div class="col-md-3 col-sm-3 col-xs-12" style="margin-bottom:1%; margin-top: 1%;">
                 <!--detail here-->
-                
+                <p>No data</p>
                 
                 
             </div>
@@ -39,7 +39,7 @@ export default [function(){
             entityid : '@',
             slider: '@'
         },
-        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
+        controller : ['$scope', '$http', 'toastr', '$rootScope', function($scope, $http, toastr, $rootScope) {
             let url = ''
             $scope.entities = []
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []

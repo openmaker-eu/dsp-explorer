@@ -1,16 +1,23 @@
 export default [function(){
     return {
-        template:`<i ng-click="bookmark()" class="fa fa-bookmark-o pointer" ng-class="{'text-red': bookmarked}"></i> `,
+        template:`
+        <i
+            ng-click="bookmark()"
+            ng-if="$root.authorization > 0"
+            class="fa fa-bookmark-o pointer"
+            ng-class="{'text-red': bookmarked}"
+        ></i>
+`,
         scope: {
-            entity : '@',
+            entityname : '@',
             entityid : '@'
         },
         controller : ['$scope', '$http', function($scope, $http){
-            
             // Default bookmarked status
             $scope.bookmarked = false;
+            
             // Build url
-            let url = `/api/v1.4/bookmark/${$scope.entity}/${$scope.entityid}/`
+            let url = `/api/v1.4/bookmark/${$scope.entityname}/${$scope.entityid}/`
             
             // Change bookmarked button color
             const change_status = res => {
@@ -22,6 +29,7 @@ export default [function(){
             
             // Change bookmark on BE
             $scope.bookmark = () =>{ $http.post(url).then(change_status) }
+
             
         }]
     }

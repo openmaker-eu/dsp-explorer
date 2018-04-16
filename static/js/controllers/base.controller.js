@@ -1,9 +1,12 @@
 import * as _ from 'lodash'
 export default
     ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory',
-    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory) {
+    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactoryl) {
     
     $scope.rootScope = $rootScope;
+    
+    // Make authorization level Global
+    $scope.$watch('om_authorization', (n, o)=>$rootScope.authorization=n)
     
     $scope.openModal = (m) => {
         let modal = $(m);
@@ -89,6 +92,7 @@ export default
     $(document ).ready($scope.re_render)
     
     $scope.$watch(()=>$scope.$$postDigest(()=>$scope.re_render()))
+
 
 }]
 
