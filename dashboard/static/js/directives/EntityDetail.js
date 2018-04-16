@@ -39,7 +39,7 @@ export default [function(){
             entityid : '@',
             slider: '@'
         },
-        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
+        controller : ['$scope', '$http', 'toastr', '$rootScope', function($scope, $http, toastr, $rootScope) {
             let url = ''
             $scope.entities = []
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []

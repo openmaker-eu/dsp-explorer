@@ -11,10 +11,8 @@ let template = `
             
             <div class="col-md-12">
                 <h1 style="text-transform: uppercase">
-                    <span>{{ entity }}</span>
-                    <span class="pull-right">
-                        <bookmark-button entity="{{entity}}" entityid="1"></bookmark-button>
-                    </span>
+                    <span>{$ entityname $}</span>
+                    <span class="pull-right"></span>
                 <h1>
             </div>
             <div class="col-md-3 col-sm-3 col-xs-12"
@@ -73,7 +71,6 @@ export default [function(){
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'
             $scope.get_data('/api/v1.4/' + $scope.entityname + id)
-
 
         }]
     }

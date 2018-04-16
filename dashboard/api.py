@@ -288,9 +288,8 @@ class v14:
         try:
             method_to_call = 'get_' + entity+'_detail'
             results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
-        except DSPConnectorException as e:
-            print e
-
+        except DSPConnectorException:
+            pass
 
         return JsonResponse({
             'status': 'ok',
