@@ -9,16 +9,15 @@ export default [function(){
         ></i>
 `,
         scope: {
-            entity : '@',
+            entityname : '@',
             entityid : '@'
         },
         controller : ['$scope', '$http', function($scope, $http){
-            // $scope.OMGlobal = OMGlobal
             // Default bookmarked status
-            // $scope.bookmarked = false;
+            $scope.bookmarked = false;
             
             // Build url
-            let url = `/api/v1.4/bookmark/${$scope.entity}/${$scope.entityid}/`
+            let url = `/api/v1.4/bookmark/${$scope.entityname}/${$scope.entityid}/`
             
             // Change bookmarked button color
             const change_status = res => {

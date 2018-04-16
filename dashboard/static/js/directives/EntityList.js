@@ -62,7 +62,6 @@ export default [function(){
             let url = ''
             $scope.entities = []
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            console.log($scope.slider_list);
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
                     $scope.entities = res.data.result || []

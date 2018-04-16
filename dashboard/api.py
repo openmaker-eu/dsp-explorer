@@ -323,8 +323,10 @@ class v14:
 
     @staticmethod
     def bookmark(request, entity='news', entity_id=None):
-        # GET return status of a bookmark
-        # POST toggle status of a bookmark an return it
+        # GET return status of a bookmark (ES: {bookmarked:true|false})
+        # POST toggle status of a bookmark an return it (ES: {bookmarked:true|false})
+
+        results = {}
 
         try:
             profile = request.user.profile
@@ -341,9 +343,8 @@ class v14:
                 pass
                 #TODO complete with projects and challenge
             if request.method == 'POST':
-                results = profile.bookmark_this(local_entity)
+                results['bookmarked'] = profile.bookmark_this(local_entity)
             else:
-                results = {}
                 results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
             return JsonResponse({
                 'status': 'ok',
