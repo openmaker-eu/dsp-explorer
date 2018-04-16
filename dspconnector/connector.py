@@ -60,7 +60,6 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_news(topic_id, date='yesterday', cursor=0):
-
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_news',
             parameter='?topic_ids={topic_id}&date={date}&cursor={cursor}'.format(topic_id=topic_id, date=date, cursor=cursor))
@@ -68,9 +67,10 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_news_detail(entity_id):
-        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+        url = DSPConnectorV13.generate_url(
             endpoint='/search_news',
             parameter='?news_ids={news_id}'.format(news_id=entity_id))
+        return DSPConnectorV13._get(url
         )
 
     @staticmethod
