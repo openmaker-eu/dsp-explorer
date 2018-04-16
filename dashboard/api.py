@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Profile, Invitation, User, ProjectContributor
+from .models import Profile, Invitation, User, ProjectContributor, Bookmark
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer, ProjectContributorSerializer
@@ -320,23 +320,40 @@ class v14:
             'result': results,
         }, status=200)
 
+
     @staticmethod
-    def bookmark(request, entity=None, entity_id=None):
+    def bookmark(request, entity='news', entity_id=None):
         # GET return status of a bookmark
         # POST toggle status of a bookmark an return it
 
-        # @TODO:MOCK Subsitute mock with real logic
-        # MOCK http response status (200 for succes or anything else for error)
-        status = 200 if entity and entity_id else 0000000
-
-        # @TODO:MOCK Subsitute mock with real logic
-        # MOCK results return entity bookmarked status
-        results = {'bookmarked': True} or {'bookmarked': False}
-
-        return JsonResponse({
-            'status': 'ok',
-            'result': results,
-        }, status=status)
+        try:
+            profile = request.user.profile
+            if entity == 'news' or entity == 'events':
+                local_entity = None
+                try:
+                    local_entity = EntityProxy.objects.get(externalId=entity_id)
+                except EntityProxy.DoesNotExist:
+                    local_entity = EntityProxy()
+                    local_entity.externalId = entity_id
+                    local_entity.type = entity
+                    local_entity.save()
+            else:
+                pass
+                #TODO complete with projects and challenge
+            if request.method == 'POST':
+                results = profile.bookmark_this(local_entity)
+            else:
+                results = {}
+                results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
+            return JsonResponse({
+                'status': 'ok',
+                'result': results,
+            }, status=200)
+        except:
+            return JsonResponse({
+                'status': 'ko',
+                'result': 'Unhautorized',
+            }, status=403)
 
 ###########
 # API V 1.3

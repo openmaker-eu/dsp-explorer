@@ -469,6 +469,19 @@ class Profile(models.Model):
         bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
         return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
 
+    def is_this_bookmarked_by_me(self, entity):
+        return len(self.profile_bookmark.filter(object_id=entity.id)) == 1
+
+    def bookmark_this(self, entity):
+        if self.is_this_bookmarked_by_me(entity):
+            # remove bookmark
+            self.delete_bookmark(entity, entity.id)
+        else:
+            # add bookmark
+            self.add_bookmark(entity)
+
+        return len(self.profile_bookmark.filter(object_id=entity.id)) == 1
+
     def delete_bookmark(self, bookmark_obj, bookmark_id):
         # Get interest-related-model class type id
         ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
@@ -634,7 +647,6 @@ class Bookmark(models.Model):
 
 class Interest(models.Model):
     profile = models.ForeignKey(Profile, related_name='profile_interest')
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
