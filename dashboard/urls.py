@@ -42,8 +42,6 @@ urlpatterns = [
     url(r'^profile/project/(?P<project_id>[0-9]+)/$', views.project, name='project'),
     url(r'^profile/project/(?P<project_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.project, name='project'),
 
-
-
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
@@ -71,7 +69,6 @@ urlpatterns = [
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
-
     url(r'^challenge/$', views.challenge, name='challenge'),
     url(r'^challenge/(?P<challenge_id>[0-9]+)/$', views.challenge, name='challenge'),
 
@@ -83,7 +80,6 @@ urlpatterns = [
     url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api.v14.get_entity_details, name='get_entity_details'),
 
     url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.bookmark, name='bookmark'),
-
 
 
     # API v1.3

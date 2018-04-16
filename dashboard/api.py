@@ -283,13 +283,13 @@ class v14:
 
 
     @staticmethod
-    def get_entity_details(request, entity= 'news', entity_id = None):
+    def get_entity_details(request, entity='news', entity_id=None):
         results = []
         try:
             method_to_call = 'get_' + entity+'_detail'
             results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
-        except DSPConnectorException:
-            pass
+        except DSPConnectorException as e:
+            print e
 
 
         return JsonResponse({
