@@ -80,6 +80,7 @@ urlpatterns = [
     url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api.v14.get_entity_details, name='get_entity_details'),
 
     url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.bookmark, name='bookmark'),
+    url(r'^api/v1.4/bookmarks/$', api.v14.get_bookmarks, name='get_bookmark'),
 
 
     # API v1.3

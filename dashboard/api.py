@@ -356,6 +356,22 @@ class v14:
                 'result': 'Unhautorized',
             }, status=403)
 
+    @staticmethod
+    def get_bookmarks(request):
+        try:
+            profile = request.user.profile
+            results = []
+            
+            return JsonResponse({
+                'status': 'ok',
+                'result': results,
+            }, status=200)
+        except:
+            return JsonResponse({
+                'status': 'ko',
+                'result': 'Unhautorized',
+            }, status=403)
+
 ###########
 # API V 1.3
 ###########
