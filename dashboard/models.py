@@ -20,12 +20,35 @@ from django.conf import settings
 from django.urls import reverse
 from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnectorV13
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class ModelHelper:
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None):
         return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
             if filter_class is not None else list_to_filter
+
+    @staticmethod
+    def find_this_entity(entity, entity_id):
+        local_entity = None
+        if entity == 'news' or entity == 'events':
+            try:
+                local_entity = EntityProxy.objects.get(externalId=entity_id)
+            except EntityProxy.DoesNotExist:
+                local_entity = EntityProxy()
+                local_entity.externalId = entity_id
+                local_entity.type = entity
+                local_entity.save()
+        else:
+            try:
+                local_entity = Project.objects.get(pk=entity_id)
+            except Project.DoesNotExist as e:
+                try:
+                    local_entity = Challenge.objects.get(pk=entity_id)
+                except Challenge.DoesNotExist as e:
+                    raise ObjectDoesNotExist
+        return local_entity
 
 
 class Tag(models.Model):
@@ -454,6 +477,18 @@ class Profile(models.Model):
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
 
+    def is_this_interested_by_me(self, entity):
+        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+
+    def interest_this(self, entity):
+        if self.is_this_interested_by_me(entity):
+            # remove interest
+            self.delete_interest(entity, entity.id)
+        else:
+            # add interest
+            self.add_interest(entity)
+        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+
     def add_bookmark(self, bookmark_obj):
         ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
         existing_interest = Bookmark.objects.filter(content_type_id=ct_id, profile_id=self.pk,
@@ -646,6 +681,7 @@ class Bookmark(models.Model):
     def get(self):
         return self.content_object
 
+
 class Interest(models.Model):
     profile = models.ForeignKey(Profile, related_name='profile_interest')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -770,6 +806,13 @@ class EntityProxy(models.Model):
     # - news
     # - events
     type = models.CharField(_('Type'), max_length=50, default='news')
+
+    interest = GenericRelation(Interest)
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def get_real_object(self):
         '''
