@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
-from dashboard.models import Challenge, Company, Project, ProjectContributor, EntityProxy, Bookmark
+from dashboard.models import Challenge, Company, Project, ProjectContributor, EntityProxy, Bookmark, Interest
 from .models import Tag
 import json
 
@@ -83,16 +83,17 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class EntityProxySerializer(serializers.ModelSerializer):
-    interested = serializers.SerializerMethodField()
+    #interested = serializers.SerializerMethodField()
 
     class Meta:
         model = EntityProxy
         fields = '__all__'
 
 
+
+
 class BookmarkSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
-
     class Meta:
         model = Bookmark
         fields = ('profile',)
@@ -101,9 +102,26 @@ class BookmarkSerializer(serializers.ModelSerializer):
         """
         Because Bookmark is Polymorphic
         """
-        print "TO REPDDSSSSS    "
         if isinstance(obj, EntityProxy):
             return EntityProxySerializer(obj).to_representation(obj)
         elif isinstance(obj, Project):
             return ProjectSerializer(obj).to_representation(obj)
         return super(BookmarkSerializer, self).to_representation(obj)
+
+
+class InterestSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Interest
+        fields = ('profile',)
+
+    def to_representation(self, obj):
+        """
+        Because Interest is Polymorphic
+        """
+        if isinstance(obj, EntityProxy):
+            return EntityProxySerializer(obj).to_representation(obj)
+        elif isinstance(obj, Project):
+            return ProjectSerializer(obj).to_representation(obj)
+        return super(InterestSerializer, self).to_representation(obj)
