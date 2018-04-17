@@ -83,6 +83,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class EntityProxySerializer(serializers.ModelSerializer):
+    interested = serializers.SerializerMethodField()
 
     class Meta:
         model = EntityProxy
@@ -90,7 +91,7 @@ class EntityProxySerializer(serializers.ModelSerializer):
 
 
 class BookmarkSerializer(serializers.ModelSerializer):
-    profile = ProjectSerializer(read_only=True)
+    profile = ProfileSerializer(read_only=True)
 
     class Meta:
         model = Bookmark

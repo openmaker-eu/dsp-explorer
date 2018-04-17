@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Profile, Invitation, User, ProjectContributor, Bookmark
+from .models import Profile, Invitation, User, ProjectContributor, Bookmark, ModelHelper
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer, ProjectContributorSerializer
@@ -374,6 +374,62 @@ class v14:
                 'status': 'ko',
                 'result': 'Unhautorized',
             }, status=403)
+
+    @staticmethod
+    def interest(request, entity='news', entity_id=None):
+        '''
+        :param request:
+        :param entity:
+        :param entity_id:
+        :return:
+            GET mode
+                If request's user exists, the api will return all user interested in the entity specified
+                If request is from an anonymous users, just the number of interested people is will be returned
+            POST mode(only for logged)
+                Toggle the interest for the specified entity for the logged user
+        '''
+        results = {}
+        try:
+            #logged user
+            profile = request.user.profile
+            try:
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+            except ObjectDoesNotExist as odne:
+                return JsonResponse({
+                    'status': 'ko'
+                }, status=404)
+            if request.method == 'GET':
+                results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
+                results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
+                results['interested_counter'] = len(local_entity.interested())
+            else:
+                # Toggle interest
+                results['iaminterested'] = profile.interest_this(local_entity)
+                results['interested'] = ProfileSerializer(local_entity.interested(), many=True).data
+                results['interested_counter'] = len(local_entity.interested())
+            return JsonResponse({
+                'status': 'ok',
+                'result': results,
+            }, status=200)
+        except Exception as e:
+            print e
+            #Anonymous user
+            if request.method == 'GET':
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+                results['interested_counter'] = len(local_entity.interested())
+                return JsonResponse({
+                    'status': 'ok',
+                    'result': results,
+                }, status=202)
+            else:
+                return JsonResponse({
+                    'status': 'ko',
+                    'result': 'Unhautorized',
+                }, status=403)
+
+    @staticmethod
+    def get_interests(request):
+        pass
 
 ###########
 # API V 1.3
