@@ -345,7 +345,7 @@ $color-events : rgb(102, 165, 1);
 
     .slick-arrow--custom {
         //display: none!important;
-        z-index: 10000; position: absolute; top: 60%;
+        z-index: 10000; position: absolute; top: 80%;
         cursor: pointer; font-size: 250%;
         color: $dsp-red;
         &.prev { left: 35%; }
@@ -360,21 +360,18 @@ $color-events : rgb(102, 165, 1);
             background: $color-events!important;
             color:#fff!important;
         }
-        color:$color-events!important;
     }
     &--projects{
         .entity-carousel__header {
             background: $color-projects!important;
             color:#fff!important;
         }
-        color:$color-projects!important;
     }
     &--news{
         .entity-carousel__header {
             background: rgb(14, 117, 148)!important;
             color:#fff!important;
         }
-        color:$color-events!important;
     }
 
 }

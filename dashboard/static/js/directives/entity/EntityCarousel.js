@@ -5,12 +5,12 @@ let template = `
     <div class="col-md-12" ng-if="entities.length > 0">
         <div class="entity-carousel entity-carousel--{$ entityname $}">
             <div class="entity-carousel__header">
-                <h3 class="">{$ entityname $}</h3>
+                <h3>{$ entityname $}</h3>
             </div>
             <div class="entity-carousel__body">
                 <slick settings="slickConfig">
                     <div ng-repeat="entity in entities">
-                        <entity-preview entity="entity" entitiyname="{$ entityname $}" ></entity-preview>
+                        <entity-preview entity="entity" entityname="{$ entityname $}" ></entity-preview>
                     </div>
                 </slick>  
             <div>
@@ -33,8 +33,6 @@ export default [function(){
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
                     $scope.entities = res.data.result || []
-                    console.log(res.data.result);
-                    //$scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'

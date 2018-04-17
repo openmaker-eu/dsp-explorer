@@ -65,6 +65,7 @@ app.directive('challenge', require('./directives/Challenge').default )
 app.directive('entityList', require('./directives/entity/EntityList').default )
 app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
 app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
+app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
 
 app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
 
@@ -75,5 +76,6 @@ app.directive('project', require('./directives/Project').default )
 // Partials
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
+app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
 
 

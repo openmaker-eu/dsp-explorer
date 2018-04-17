@@ -12,10 +12,15 @@ let template = `
         <div class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0 entity-content" >
 
             <div class="row">
-                <!--Loading Data-->
-                <div class="col-md-12" ng-if="entities.length == 0 && !nodata"><h2>Loading {$ entityname $}...</h2></div>
-                <!--No data-->
-                <div class="col-md-12" ng-if="nodata"><h2>There are no {$ entityname $} available</h2></div>
+                <div class="col-md-12">
+                    <entity-loading
+                        loading="entities.length==0 && !nodata"
+                        loaded="entities.length>0"
+                        nodata="nodata"
+                        entityname="{$ entityname $}"
+                    ></entity-loading>
+                </div>
+            
 
                 <div ng-if="entities.length > 0">
 

@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import * as d3 from 'd3';
 let template = `
-    <div class="entity--{$ entityname $} entity-preview " style="padding:4%;">
+    <div class="entity--{$ entityname $} entity-preview" style="padding:4%;">
         <h3 class="text--{$ entityname $}">
             <span>{$ entity.title || entity.name | limitTo: 20 $}</span>
             <span ng-if="entity.title.length > 20">...</span>
@@ -13,17 +13,14 @@ let template = `
             <div class="fade">
                 <!--EVENT ONLY: Event details with icons-->
                 <div ng-if="entityname == 'events'" style="z-index:10000;">
-                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;{$ entity.start_time |  date : 'd MMMM yyyy,EEEE'  $}</p>
+                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</p>
                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$ entity.place $}</p>
-                    <a href="{$ entity.link $}" target="_blank">
-                        <p><i class="fa fa-plus-square"></i>&nbsp;&nbsp;REGISTER</p>
-                    </a>
+                    <p><a href="{$ entity.link $}" target="_blank"><i class="fa fa-plus-square"></i>&nbsp;&nbsp;REGISTER</a></p>
                 </div>
                 <!--Read more-->
                 <a ng-if="entityid" href="/{$ entityname $}/{$ entityid $}" class="read-more"><h4>READ MORE </h4></a>
             </div>
         </div>
-
     </div>
 `
 export default [function(){

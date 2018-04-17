@@ -27,7 +27,7 @@ $dsp-grey :#333;
 .text-red{
 	color: $dsp-red;
 }
-
+.capitalize { text-transform: capitalize; }
 html {
 	width: 100vw;
 	overflow-x: hidden;
