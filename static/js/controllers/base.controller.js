@@ -88,10 +88,10 @@ export default
     //     push_footer()
     // }
     
-    $(window).on('resize', $scope.re_render);
-    $(document ).ready($scope.re_render)
+    // $(window).on('resize', $scope.re_render);
+    // $(document ).ready($scope.re_render)
     
-    $scope.$watch(()=>$scope.$$postDigest(()=>$scope.re_render()))
+    // $scope.$watch(()=>$scope.$$postDigest(()=>$scope.re_render()))
 
 
 }]

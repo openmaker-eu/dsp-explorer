@@ -395,10 +395,11 @@ $color-events : rgb(102, 165, 1);
     &.background--projects:before { @extend .background--projects }
     &.background--events:before { @extend .background--events }
     
-    &:before {
+    &::before {
         background: #bbb;
         content: ' ';
-        height: 100%;
+        height: 150%;
+        margin-top:-25%;
         margin-left: -15px; /* compensates column's padding */
         position: fixed;
         width: inherit; /* bootstrap column's width */

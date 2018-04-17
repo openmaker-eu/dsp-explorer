@@ -111,7 +111,11 @@ textarea.form-control:focus{
 	//background-color: #fff!important;
 	padding: 15px 10px 15px 10px;
 	background-color: #333!important;
-	* {color:#fff!important;}
+	color:#fff!important;
+	* {
+		color:#fff!important;
+		background-color: #333!important;
+	}
 	margin-bottom:0;
 
 }
@@ -316,5 +320,6 @@ blockquote { border-color: $dsp-red;}
 	justify-content:space-between;
 	align-items: center;
 }
-header, footer, main { width:100%;}
+header, footer, main { width:100%; z-index:999;}
+header { z-index:1000000;}
 main { flex-grow: 1;}

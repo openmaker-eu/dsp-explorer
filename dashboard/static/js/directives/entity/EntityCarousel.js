@@ -10,7 +10,7 @@ let template = `
             <div class="entity-carousel__body">
                 <slick settings="slickConfig">
                     <div ng-repeat="entity in entities">
-                        <entity-preview entity="entity" entitiyname="entityname" ></entity-preview>
+                        <entity-preview entity="entity" entitiyname="{$ entityname $}" ></entity-preview>
                     </div>
                 </slick>  
             <div>

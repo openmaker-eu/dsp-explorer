@@ -352,7 +352,8 @@ class v14:
                 'status': 'ok',
                 'result': results,
             }, status=200)
-        except:
+        except Exception as e:
+            print e
             return JsonResponse({
                 'status': 'ko',
                 'result': 'Unhautorized',
