@@ -10,8 +10,7 @@ let template = `
             <div class="entity-carousel__body">
                 <slick settings="slickConfig">
                     <div ng-repeat="entity in entities">
-                        <img class="" src="{$ entity.im $}" ng-if="entity.im" alt="" >
-                        <img class="" src="{$ entity.cover $}" ng-if="entity.cover" alt="">
+                        <entity-preview entity="entity" entitiyname="entityname" ></entity-preview>
                     </div>
                 </slick>  
             <div>

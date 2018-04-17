@@ -9,6 +9,7 @@ let template = `
                     <span>{$ entityname $}</span>
                     <span class="pull-right">
                         <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                        <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                     </span>
                 <h1>
             </div>
@@ -19,6 +20,7 @@ let template = `
                 <p ng-if="entity.lenght == 0">Loading data</p>
                 <p style="font-size:150%;">{$ entity.full_text $}</p>
             </div>
+            
         </div>
     
         <div class="col-md-3 entity-sidebar" style="background:#bbb;">
@@ -30,7 +32,6 @@ let template = `
     </div>
 `
 
-
 export default [function(){
     return {
         template:template,
@@ -41,7 +42,10 @@ export default [function(){
         },
         controller : ['$scope', '$http', 'toastr', '$rootScope', function($scope, $http, toastr, $rootScope) {
             let url = ''
-            $scope.entity = []
+            $scope.entity = {
+                title: 'asdasd',
+                full_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis et gravida libero, ut sagittis erat. Nulla ornare velit in ante tempus, in faucibus purus ornare. In et purus tincidunt, venenatis felis at, molestie urna. Mauris ornare dignissim libero at ornare. Proin ligula massa, rutrum quis arcu a, sodales porta nulla. Aliquam mauris odio, blandit ut lacus non, lobortis posuere elit. Proin varius urna ac nunc venenatis, quis lobortis turpis blandit. Suspendisse vel massa ornare, tempor lacus tincidunt, bibendum lorem. Curabitur lacinia, erat vitae luctus tempor, velit mi venenatis nunc, a auctor odio purus ac dolor. Vestibulum at lacus leo. Morbi purus ligula, suscipit non vestibulum et, semper ac eros. Suspendisse mollis justo in nisi mattis molestie. Ut ut turpis et sapien dictum bibendum ut ut lorem. In id mollis ligula, eu rutrum nibh. Donec quis diam sed mi pretium varius. Aenean varius erat libero, id auctor magna efficitur et.\n'
+            }
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             
             $scope.get_data = (url) => {
@@ -50,8 +54,8 @@ export default [function(){
                     $scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
-            $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
-            
+            //$scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
+    
         }]
     }
 }]

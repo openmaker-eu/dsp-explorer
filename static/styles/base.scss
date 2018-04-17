@@ -1,4 +1,5 @@
 $icon-font-path : '../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+
 @import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
 @import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/_variables';
 @import '../../../node_modules/bootstrap-additions/dist/bootstrap-additions.min.css';
@@ -107,8 +108,12 @@ textarea.form-control:focus{
 
 .navbar-default {
 	background-image: none!important;
-	background-color: #fff!important;
+	//background-color: #fff!important;
 	padding: 15px 10px 15px 10px;
+	background-color: #333!important;
+	* {color:#fff!important;}
+	margin-bottom:0;
+
 }
 
 .logo{
@@ -301,3 +306,15 @@ a, a:hover {
 .tooltip .tooltip-inner{background: #333; color: #fff;}
 
 blockquote { border-color: $dsp-red;}
+
+
+.om-main-wrapper {
+	min-width:100vw;
+	min-height:100vh;
+	display: flex;
+	flex-direction:column;
+	justify-content:space-between;
+	align-items: center;
+}
+header, footer, main { width:100%;}
+main { flex-grow: 1;}
