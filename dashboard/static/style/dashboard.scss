@@ -286,9 +286,7 @@ a {
   }
 .card-title{
 }
-.mycontent-left {
-  border-right: 1px dashed #333;
-}
+
 challenge-list {
     .card > a {
         display:block;
@@ -312,29 +310,19 @@ $color-news : rgb(14, 117, 148);
 $color-projects : rgb(213, 75, 33);
 $color-events : rgb(102, 165, 1);
 
-.text--news {
-    color :$color-news!important;
-    & * {color :$color-news!important;}
-}
-.text--projects {
-    color :$color-projects;
-}
-.text--events{
-    color :$color-events;
-}
+.text--news { color :$color-news }
+.text--projects { color :$color-projects; }
+.text--events{ color :$color-events; }
+
+.background--news {background-color:$color-news ;  }
+.background--projects {background-color:$color-projects ;  }
+.background--events {background-color:$color-events ;  }
 
 .entity-carousel{
 
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
-
-    // border:solid 3px #bbb;
-
     & * { z-index: 1000;}
     &__header {
-        border-radius: 5px 5px 0 0;
+        border-radius: 8px 8px 0 0;
         text-align: center;
         h3 { 
             margin:0; padding: 20px 0; 
@@ -391,10 +379,22 @@ $color-events : rgb(102, 165, 1);
 
 }
 
+.entity-list{
+    &__box {
+        border: solid 3px #eee;
+    }
+}
+.entity-preview {
+    width:100%;
+    height:100%
+}
+
 .entity-sidebar{
 
-    background: #bbb;
-
+    &.background--news:before { @extend .background--news }
+    &.background--projects:before { @extend .background--projects }
+    &.background--events:before { @extend .background--events }
+    
     &:before {
         background: #bbb;
         content: ' ';
@@ -404,4 +404,35 @@ $color-events : rgb(102, 165, 1);
         width: inherit; /* bootstrap column's width */
         z-index: 0; /* puts behind content */
     }
+}
+
+$max-line-hight: 1.5;
+.limit-line {
+    line-height: $max-line-hight+rem;
+    height: $max-line-hight*9+rem;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    word-wrap: break-word;
+}
+
+.fade-container { overflow: hidden; position: relative; }
+.fade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index:1000;
+    opacity:1;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+
+    & > .read-more {
+        position:absolute;
+        bottom:1%;
+        left:1%;
+        font-weight: bold;
+        * { color:#f00;}
+    }
+
 }

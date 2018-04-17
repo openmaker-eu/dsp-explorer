@@ -1,6 +1,6 @@
 
-var jQuery = window.$ = window.jQuery = require('jquery');
-require('angular');
+let jQuery = window.$ = window.jQuery = require('jquery');
+require('../../../node_modules/angular/angular');
 require('../../../node_modules/ngmap')
 
 // Import this app style
@@ -49,7 +49,6 @@ baseImports.angularBase(app)
     .directives(app)
     .dataVizDirectives(app)
 
-
 app.factory('UserSearchFactory', require('./factories/UserSearchFactory').default )
 app.controller('landingController', require('./controllers/landing.controller').default )
 app.controller('dashboardController', require('./controllers/dashboard.controller').default )
@@ -63,13 +62,18 @@ app.directive('userStories', require('./directives/UserStories.directive').defau
 app.directive('challengeList', require('./directives/ChallengeList').default )
 app.directive('challenge', require('./directives/Challenge').default )
 
-app.directive('entityList', require('./directives/EntityList').default )
-app.directive('entityCarousel', require('./directives/EntityCarousel').default )
-app.directive('entityDetail', require('./directives/EntityDetail').default )
+app.directive('entityList', require('./directives/entity/EntityList').default )
+app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
+app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
+
+app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
 
 app.directive('projectDetail', require('./directives/ProjectDetail').default )
 app.directive('projectList', require('./directives/ProjectList').default )
 app.directive('project', require('./directives/Project').default )
+
+// Partials
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
+app.directive('interestButton', require('./directives/partials/InterestButton').default )
 
 

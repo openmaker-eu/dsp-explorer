@@ -1,4 +1,4 @@
-    {% load render_bundle from webpack_loader %}
+{% load render_bundle from webpack_loader %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -35,13 +35,15 @@
                 {% endfor %}
           ];
           om_authorization = {{om_authorization}};
-
-      ">
+      "
+>
 
 <div id="cover-filter"></div>
-<div id="top-div">
-    {% with current_url=request.resolver_match.view_name  %}
-        <nav class="navbar navbar-default navbar-fixed-top">
+<!--<div id="top-div">-->
+<div class="om-main-wrapper">
+    <header>
+        {% with current_url=request.resolver_match.view_name  %}
+        <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -61,110 +63,111 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         {% if not user.is_anonymous %}
-                            <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:dashboard' %}">Home</a>
-                            </li>
-                            <li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{% url 'dashboard:theme' %}">Feeds</a>
-                                    </li>
-                                    <li role="separator" class="divider"></li>
-                                    <li>
-                                        <a href="{% url 'dashboard:events' %}">Events</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            {% if request.user.is_superuser %}
-                            <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:insight' %}">Insight</a>
-                            </li>
-                            {% endif %}
-                            <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:community' %}">Community</a>
-                            </li>
-
-                            {% if request.user.is_superuser %}
-                            <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Invitation<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                            {% endif %}
-                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
-                                        <a href="{% url 'dashboard:invite' %}">Invite new members</a>
-                                    </li>
-                            {% if request.user.is_superuser %}
-                                    <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
-                                        <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            {% endif %}
-
-                            {% if request.user.is_superuser %}
-                                {# TODO check permission super admin and isstaff #}
-                                <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="{% url 'pss:application_result' %}">Results</a>
-                                        </li>
-                                    </ul>
+                        <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:dashboard' %}">Home</a>
+                        </li>
+                        <li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'dashboard:theme' %}">Feeds</a>
                                 </li>
-                                <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
-                                    <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a href="{% url 'dashboard:events' %}">Events</a>
                                 </li>
-                            {% endif %}
-                        
-                            <!--Challenge-->
-                            <li class="{% if current_url == 'dashboard:challenge' %}liactive{% endif %}" >
-                                <a href="{% url 'dashboard:challenge' %}">Challenge</a>
-                            </li>
+                            </ul>
+                        </li>
+                        {% if request.user.is_superuser %}
+                        <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:insight' %}">Insight</a>
+                        </li>
+                        {% endif %}
+                        <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:community' %}">Community</a>
+                        </li>
 
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle"
-                                   data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false"  style="{% if current_url == 'dashboard:profile' %}color:#db4348;{% endif %}">
-                                    <span class="glyphicon glyphicon-user"></span>
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a>
-                                    </li>
-                                    <li role="separator" class="divider"></li>
-                                    <li>
-                                        <a href="{% url 'dashboard:logout' %}">Logout</a>
-                                    </li>
-                                </ul>
-                            </li>
+                        {% if request.user.is_superuser %}
+                        <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Invitation<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% endif %}
+                                <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
+                                    <a href="{% url 'dashboard:invite' %}">Invite new members</a>
+                                </li>
+                                {% if request.user.is_superuser %}
+                                <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
+                                    <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+                        {% if request.user.is_superuser %}
+                        {# TODO check permission super admin and isstaff #}
+                        <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'pss:application_result' %}">Results</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
+                            <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
+                        </li>
+                        {% endif %}
+
+                        <!--Challenge-->
+                        <li class="{% if current_url == 'dashboard:challenge' %}liactive{% endif %}" >
+                            <a href="{% url 'dashboard:challenge' %}">Challenge</a>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"
+                               data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false"  style="{% if current_url == 'dashboard:profile' %}color:#db4348;{% endif %}">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a href="{% url 'dashboard:logout' %}">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
                         {% else %}
-                            <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
-                                <a href="{% url 'dashboard:onboarding' %}">Onboard</a>
-                            </li>
-                            <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+                        <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
+                            <a href="{% url 'dashboard:onboarding' %}">Onboard</a>
+                        </li>
+                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
 
                         {% endif %}
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-    {% endwith %}
+        {% endwith %}
+    </header>
 
-    <!-- base container goes here -->
+    <main>
+        {% block container %}
+        {% endblock %}
+    </main>
 
-    {% block container %}
-
-
-    {% endblock %}
     <!-- end base container -->
-    {% if not user.is_anonymous %}
-        <div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">
-            <p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>
-        </div>
-    {% endif %}
-</div>
-    <div class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+    <!--{% if not user.is_anonymous %}-->
+    <!--<div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">-->
+    <!--<p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>-->
+    <!--</div>-->
+    <!--{% endif %}-->
+
+    <!--</div>-->
+    <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
 
         <div class="row back padding-bottom-20">
             {% if user.is_anonymous %}
@@ -188,18 +191,19 @@
 
             <div class="container">
                 <div class="row margin-top-20">
-                        <div class="col-md-12 pull-right">
-                            <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
-                            <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
-                            <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
-                            <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
-                        </div>
+                    <div class="col-md-12 pull-right">
+                        <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
+                        <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
+                        <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
+                        <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
+</div>
 
+</div>
 </div>
 
 {% include "./modals/login.html" %}
