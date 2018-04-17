@@ -21,7 +21,7 @@ from utils.Colorizer import Colorizer
 from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
-from dashboard.serializer import BookmarkSerializer
+from dashboard.serializer import BookmarkSerializer, InterestSerializer
 
 from .helpers import mix_result_round_robin
 from django.http import HttpResponse
@@ -369,7 +369,6 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            print e
             return JsonResponse({
                 'status': 'ko',
                 'result': 'Unhautorized',
@@ -412,7 +411,6 @@ class v14:
                 'result': results,
             }, status=200)
         except Exception as e:
-            print e
             #Anonymous user
             if request.method == 'GET':
                 local_entity = ModelHelper.find_this_entity(entity, entity_id)
@@ -429,7 +427,20 @@ class v14:
 
     @staticmethod
     def get_interests(request):
-        pass
+        try:
+            profile = request.user.profile
+            results = profile.get_interests()
+            serialized = InterestSerializer(results, many=True).data
+            return JsonResponse({
+                'status': 'ok',
+                'result': serialized,
+            }, status=200)
+        except Exception as e:
+            print e
+            return JsonResponse({
+                'status': 'ko',
+                'result': 'Unhautorized',
+            }, status=403)
 
 ###########
 # API V 1.3
