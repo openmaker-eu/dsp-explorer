@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Profile, Invitation, User, ProjectContributor, Bookmark, ModelHelper
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
-from .serializer import ProfileSerializer, ProjectContributorSerializer
+from .serializer import ProfileSerializer, ProjectSerializer, ChallengeSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
@@ -299,14 +299,21 @@ class v14:
         }, status=200)
 
     @staticmethod
-    def get_entity(request, entity = 'news', user_id=None):
+    def get_entity(request, entity = 'news'):
         #TODO make cursor works
+        profile = None
+        try:
+            profile = request.user.profile
+        except:
+            # NOt logged user
+            profile = None
+
         try:
             topics_list = DSPConnectorV12.get_topics()['topics']
             topics_id_list = [x['topic_id'] for x in topics_list]
             method_to_call = 'get_' + entity
             results = []
-            if not user_id:
+            if not profile:
                 selected_topic = random.choice(topics_id_list)
                 results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
                 results = results[:5]
@@ -316,11 +323,19 @@ class v14:
                 results = mix_result_round_robin(*results)
         except DSPConnectorException:
             pass
+        except AttributeError as a:
+            if entity == 'projects':
+                local_entities = Project.objects.all()
+                if not profile:
+                    local_entities = local_entities[:5]
+                results = ProjectSerializer(local_entities, many=True).data
+            else:
+                local_entities = Challenge.objects.all()
+                if not profile:
+                    local_entities = local_entities[:5]
+                results = ChallengeSerializer(local_entities, many=True).data
 
-        return JsonResponse({
-            'status': 'ok',
-            'result': results,
-        }, status=200)
+        return success('ok','entity list',results)
 
 
     @staticmethod
@@ -335,29 +350,16 @@ class v14:
             if entity == 'news' or entity == 'events':
                 local_entity = None
                 try:
-                    local_entity = EntityProxy.objects.get(externalId=entity_id)
-                except EntityProxy.DoesNotExist:
-                    local_entity = EntityProxy()
-                    local_entity.externalId = entity_id
-                    local_entity.type = entity
-                    local_entity.save()
-            else:
-                pass
-                #TODO complete with projects and challenge
+                    local_entity = ModelHelper.find_this_entity(entity, entity_id)
+                except ObjectDoesNotExist as odne:
+                    return not_found()
             if request.method == 'POST':
                 results['bookmarked'] = profile.bookmark_this(local_entity)
             else:
                 results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
-            return JsonResponse({
-                'status': 'ok',
-                'result': results,
-            }, status=200)
+            return success('ok','bookmark',results)
         except Exception as e:
-            print e
-            return JsonResponse({
-                'status': 'ko',
-                'result': 'Unhautorized',
-            }, status=403)
+            return not_authorized()
 
     @staticmethod
     def get_bookmarks(request):
@@ -370,10 +372,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            return JsonResponse({
-                'status': 'ko',
-                'result': 'Unhautorized',
-            }, status=403)
+            return not_authorized()
 
     @staticmethod
     def interest(request, entity='news', entity_id=None):
@@ -395,9 +394,7 @@ class v14:
             try:
                 local_entity = ModelHelper.find_this_entity(entity, entity_id)
             except ObjectDoesNotExist as odne:
-                return JsonResponse({
-                    'status': 'ko'
-                }, status=404)
+                return not_found()
             if request.method == 'GET':
                 results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
                 results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
@@ -437,7 +434,6 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            print e
             return JsonResponse({
                 'status': 'ko',
                 'result': 'Unhautorized',
@@ -464,9 +460,6 @@ class v13:
 
     @staticmethod
     def get_influencers(request, topic_id=1, location=None):
-
-        print location
-
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']

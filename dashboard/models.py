@@ -40,14 +40,13 @@ class ModelHelper:
                 local_entity.externalId = entity_id
                 local_entity.type = entity
                 local_entity.save()
+        elif entity == 'projects':
+            local_entity = Project.objects.get(pk=entity_id)
         else:
             try:
-                local_entity = Project.objects.get(pk=entity_id)
-            except Project.DoesNotExist as e:
-                try:
-                    local_entity = Challenge.objects.get(pk=entity_id)
-                except Challenge.DoesNotExist as e:
-                    raise ObjectDoesNotExist
+                local_entity = Challenge.objects.get(pk=entity_id)
+            except Challenge.DoesNotExist as e:
+                raise ObjectDoesNotExist
         return local_entity
 
 
@@ -785,7 +784,8 @@ class Project(models.Model):
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def get_tags(self):
-        return map(lambda x: x.name, self.tags.all())
+        return self.tags.all()
+        #return map(lambda x: x.name, self.tags.all())
 
     def set_tags(self, tags):
         self.tags.clear()
@@ -801,7 +801,7 @@ class ProjectContributor(models.Model):
 
 
 class EntityProxy(models.Model):
-    externalId = models.IntegerField(default=0)
+    externalId = models.CharField(default='0', max_length=50)
     # NB type MUST be:
     # - news
     # - events
