@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name',)
+        fields = '__all__'
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -72,7 +72,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_tags_string(self, obj):
-        return obj.get_tags()
+        return TagSerializer(obj.get_tags(), many=True).data
 
     def get_interested(self, obj):
         return ProfileSerializer(obj.interested(), many=True).data

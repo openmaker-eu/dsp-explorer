@@ -785,7 +785,8 @@ class Project(models.Model):
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def get_tags(self):
-        return map(lambda x: x.name, self.tags.all())
+        return self.tags.all()
+        #return map(lambda x: x.name, self.tags.all())
 
     def set_tags(self, tags):
         self.tags.clear()
