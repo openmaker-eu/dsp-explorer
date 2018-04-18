@@ -40,14 +40,13 @@ class ModelHelper:
                 local_entity.externalId = entity_id
                 local_entity.type = entity
                 local_entity.save()
+        elif entity == 'projects':
+            local_entity = Project.objects.get(pk=entity_id)
         else:
             try:
-                local_entity = Project.objects.get(pk=entity_id)
-            except Project.DoesNotExist as e:
-                try:
-                    local_entity = Challenge.objects.get(pk=entity_id)
-                except Challenge.DoesNotExist as e:
-                    raise ObjectDoesNotExist
+                local_entity = Challenge.objects.get(pk=entity_id)
+            except Challenge.DoesNotExist as e:
+                raise ObjectDoesNotExist
         return local_entity
 
 

@@ -350,25 +350,15 @@ class v14:
             if entity == 'news' or entity == 'events':
                 local_entity = None
                 try:
-                    local_entity = EntityProxy.objects.get(externalId=entity_id)
-                except EntityProxy.DoesNotExist:
-                    local_entity = EntityProxy()
-                    local_entity.externalId = entity_id
-                    local_entity.type = entity
-                    local_entity.save()
-            else:
-                pass
-                #TODO complete with projects and challenge
+                    local_entity = ModelHelper.find_this_entity(entity, entity_id)
+                except ObjectDoesNotExist as odne:
+                    return not_found()
             if request.method == 'POST':
                 results['bookmarked'] = profile.bookmark_this(local_entity)
             else:
                 results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
-            return JsonResponse({
-                'status': 'ok',
-                'result': results,
-            }, status=200)
+            return success('ok','bookmark',results)
         except Exception as e:
-            print e
             return not_authorized()
 
     @staticmethod
@@ -382,10 +372,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            return JsonResponse({
-                'status': 'ko',
-                'result': 'Unhautorized',
-            }, status=403)
+            return not_authorized()
 
     @staticmethod
     def interest(request, entity='news', entity_id=None):
@@ -407,9 +394,7 @@ class v14:
             try:
                 local_entity = ModelHelper.find_this_entity(entity, entity_id)
             except ObjectDoesNotExist as odne:
-                return JsonResponse({
-                    'status': 'ko'
-                }, status=404)
+                return not_found()
             if request.method == 'GET':
                 results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
                 results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
