@@ -15,15 +15,14 @@ $color-black: #000000;
 
 $color-news : #009999;
 $color-news--light : #5cbdbd;
+
 $color-projects : #ff6600;
 $color-projects--light : #ffb685;
+
 $color-events : #669900;
 $color-events--light : #9dbd5c;
 
 $entity_list : (
-
-
-
         'news': $color-news,
         'news--light': $color-news--light,
 
@@ -46,7 +45,6 @@ $entity_list : (
   .text-#{$entity_name} { color : $entity_color; }
   .background-#{$entity_name} {
       background-color: $entity_color ;
-      &--light { background-color : lighten($entity_color, 20%) }
   }
 
 }
@@ -120,7 +118,6 @@ $entity_list : (
       &:before {
         @extend .background-#{$entity_name};
       }
-      &--light:before { @extend .background-#{$entity_name}--light; }
     }
   }
   &::before {
@@ -183,7 +180,6 @@ $entity_list : (
 
 }
 
-
 /*
 * TYPHOGRAPHY
 */
@@ -192,8 +188,8 @@ $entity_list : (
 // regular : 400
 // bold : 700
 
-
+body{ font-size:18px;  }
 .cairo { font-family: 'Cairo', sans-serif; }
 .zilla { font-family: 'Zilla Slab', serif; }
 
-h1 { font-weight: 300; }
+h1 {  font-weight: 300; }

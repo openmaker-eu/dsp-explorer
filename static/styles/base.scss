@@ -17,7 +17,7 @@ $fa-font-path : '../../../node_modules/font-awesome/fonts/';
 
 @import "../../../node_modules/ui-select/dist/select.css";
 
-@import "./colors.scss";
+
 @import "./material.scss";
 @import "./card.scss";
 
@@ -324,3 +324,6 @@ blockquote { border-color: $dsp-red;}
 header, footer, main { width:100%; z-index:999;}
 header { z-index:1000000;}
 main { flex-grow: 1;}
+
+
+@import "./mdp.scss";
