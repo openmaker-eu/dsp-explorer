@@ -324,7 +324,7 @@ $color-events : rgb(102, 165, 1);
     &__header {
         border-radius: 8px 8px 0 0;
         text-align: center;
-        h3 { 
+        h3 {
             margin:0; padding: 20px 0; 
             text-transform: uppercase;
         }       
@@ -359,18 +359,21 @@ $color-events : rgb(102, 165, 1);
         .entity-carousel__header {
             background: $color-events!important;
             color:#fff!important;
+            * { color:#fff!important; }
         }
     }
     &--projects{
         .entity-carousel__header {
             background: $color-projects!important;
             color:#fff!important;
+            * { color:#fff!important; }
         }
     }
     &--news{
         .entity-carousel__header {
             background: rgb(14, 117, 148)!important;
             color:#fff!important;
+            * { color:#fff!important; }
         }
     }
 
@@ -404,33 +407,50 @@ $color-events : rgb(102, 165, 1);
     }
 }
 
-$max-line-hight: 1.5;
-.limit-line {
-    line-height: $max-line-hight+rem;
-    height: $max-line-hight*9+rem;
-    -ms-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-    word-wrap: break-word;
-}
 
-.fade-container { overflow: hidden; position: relative; }
-.fade {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    z-index:1000;
-    opacity:1;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+.entity-preview{
 
-    & > .read-more {
+    .fade {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        z-index:1000;
+        opacity:1;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    }
+
+    &__events-detail{
+        position: relative;
+        z-index:1001;
+    }
+
+    .read-more {
         position:absolute;
         bottom:1%;
         left:1%;
+        z-index:1001;
         font-weight: bold;
         * { color:#f00;}
+    }
+
+}
+
+.force-square {
+    position: relative;
+    width:100%;
+    padding-bottom:100%;
+    overflow:hidden;
+
+    & > * {
+        position: absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        width:100%;
+        height:100%;
     }
 
 }

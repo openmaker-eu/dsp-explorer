@@ -67,6 +67,8 @@ app.directive('entityCarousel', require('./directives/entity/EntityCarousel').de
 app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
 app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
 
+app.directive('homePage', require('./directives/HomePage').default )
+
 app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
 
 app.directive('projectDetail', require('./directives/ProjectDetail').default )

@@ -3,51 +3,9 @@
 
 <div class="container-fluid" ng-controller="landingController">
     <div class="row">
-
-        <div class="col-xs-12 col-sm-6 col-md-4">
-            <a href="{% url 'dashboard:news_list' %}">
-                <div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Articles</h4>
-                            <img class="card-img" src="http://via.placeholder.com/350x150">
-                        </div>
-                    </div>
-
-                </div>
-            </a>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4">
-            <a href="{% url 'dashboard:event_list' %}">
-                <div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Events</h4>
-                            <img class="card-img" src="http://via.placeholder.com/350x150">
-                        </div>
-                    </div>
-
-                </div>
-            </a>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-4">
-            <a href="{% url 'dashboard:prj_list' %}">
-                <div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Projects/Challenges</h4>
-                            <img class="card-img" src="http://via.placeholder.com/350x150">
-                        </div>
-                    </div>
-
-                </div>
-            </a>
-        </div>
-
-
+        <br>
+        <home-page></home-page>
     </div>
 </div>
-
-
 
 {% endblock %}

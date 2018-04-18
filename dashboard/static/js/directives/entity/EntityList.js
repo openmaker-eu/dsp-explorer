@@ -10,7 +10,6 @@ let template = `
     
         <!--Left content-->
         <div class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0 entity-content" >
-
             <div class="row">
                 <div class="col-md-12">
                     <entity-loading
@@ -20,13 +19,11 @@ let template = `
                         entityname="{$ entityname $}"
                     ></entity-loading>
                 </div>
-            
 
                 <div ng-if="entities.length > 0">
-
                     <!--Entity list-->
                     <div
-                        class="col-md-3 col-sm-3 col-xs-12 "
+                        class="col-lg-3 col-md-4 col-sm-6 col-xs-12 "
                         ng-repeat="entity in entities"
                         style="margin-bottom:1%; margin-top: 1%;"
                     >

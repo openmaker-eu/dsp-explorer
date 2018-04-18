@@ -5,11 +5,11 @@ let template = `
     <div class="col-md-12" ng-if="entities.length > 0">
         <div class="entity-carousel entity-carousel--{$ entityname $}">
             <div class="entity-carousel__header">
-                <h3>{$ entityname $}</h3>
+                <h3><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
             </div>
             <div class="entity-carousel__body">
                 <slick settings="slickConfig">
-                    <div ng-repeat="entity in entities">
+                    <div ng-repeat="entity in entities | limitTo: limit || undefined ">
                         <entity-preview entity="entity" entityname="{$ entityname $}" ></entity-preview>
                     </div>
                 </slick>  
@@ -24,7 +24,8 @@ export default [function(){
         scope: {
             profileid : '=',
             entityname : '@',
-            slider : '@'
+            slider : '@',
+            limit: '='
         },
         controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
             let url = ''
