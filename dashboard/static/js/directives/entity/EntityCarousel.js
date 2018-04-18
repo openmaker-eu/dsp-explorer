@@ -3,14 +3,14 @@ import * as d3 from 'd3';
 
 let template = `
     <div class="col-md-12"  >
-        <div class="entity-carousel entity-carousel--{$ entityname $}">
+        <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
             <div class="entity-carousel__header">
                 <h3><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
             </div>
             
             <entity-loading
                 class="text--{$ entityname $} text-center"
-                loading="entities.length == 0"
+                loading="entities.length == 0 "
                 entityname="{$ entityname $}"
              ></entity-loading>
             

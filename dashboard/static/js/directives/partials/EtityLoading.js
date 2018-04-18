@@ -3,10 +3,11 @@ export default [function(){
         template:`
             <div>
                 <!--Loading Data-->
-                <div ng-if="loading">
+                <div ng-if="loading" class="text-center">
                     <h2>
                         <span>Loading <span class="capitalize">{$ entityname $}</span></span>
-                        <!--<om-spinner></om-spinner>-->
+                        <br><br>
+                        <om-spinner></om-spinner>
                     </h2>
                     <br>
                 </div>

@@ -37,8 +37,9 @@ let template = `
                     </div>
                     <br>
                     <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
+                    
                 </div>
-                
+                <br>
             </div>
         </div>
 
