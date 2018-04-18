@@ -27,7 +27,11 @@ let template = `
                         style="margin-bottom:1%; margin-top: 1%;"
                     >
                         <div class="col-md-12 entity-list__box">
-                            <entity-preview entity="entity" entityname="{$ entityname $}" entityid="{$ entity.link_id || entity.id $}"></entity-preview>
+                            <entity-preview
+                                entity="entity"
+                                entityname="{$ entityname $}"
+                                entityid="{$ entity.link_id || entity.id $}"
+                            ></entity-preview>
                         </div>
                     </div>
                 </div>
@@ -62,7 +66,6 @@ export default [function(){
                     $scope.nodata = _.get(res , 'data.result', []).length === 0
                 })
             }
-            let id = $scope.profileid? '/'+$scope.profileid : '/'
             $scope.get_data('/api/v1.4/' + $scope.entityname)
 
         }]

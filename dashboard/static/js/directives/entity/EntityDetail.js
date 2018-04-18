@@ -30,10 +30,10 @@ let template = `
                 <!-- Enitiy details -->
                 <div  ng-if="entity !== null">
                     <div>
-                        <h2 class="text--{$ entityname $}">{$ entity.title $}</h2>
+                        <h2 class="text--{$ entityname $}">{$ entity.title || entity.name $}</h2>
                         <br>
                         <p ng-if="entity.lenght == 0">Loading data</p>
-                        <p style="font-size:150%;">{$ entity.full_text $}</p>
+                        <p style="font-size:150%;">{$ entity.full_text || entity.description $}</p>
                     </div>
                     <br>
                     <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
@@ -72,17 +72,6 @@ export default [function(){
                     $scope.nodata = $scope.entity.length === 0
                 })
             }
-            
-            // MOCK
-            // $scope.get_data = (url)=>{
-            //     $timeout(1500).then(()=>{
-            //         $scope.entity = {
-            //             title: 'asdasd',
-            //             full_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis et gravida libero, ut sagittis erat. Nulla ornare velit in ante tempus, in faucibus purus ornare. In et purus tincidunt, venenatis felis at, molestie urna. Mauris ornare dignissim libero at ornare. Proin ligula massa, rutrum quis arcu a, sodales porta nulla. Aliquam mauris odio, blandit ut lacus non, lobortis posuere elit. Proin varius urna ac nunc venenatis, quis lobortis turpis blandit. Suspendisse vel massa ornare, tempor lacus tincidunt, bibendum lorem. Curabitur lacinia, erat vitae luctus tempor, velit mi venenatis nunc, a auctor odio purus ac dolor. Vestibulum at lacus leo. Morbi purus ligula, suscipit non vestibulum et, semper ac eros. Suspendisse mollis justo in nisi mattis molestie. Ut ut turpis et sapien dictum bibendum ut ut lorem. In id mollis ligula, eu rutrum nibh. Donec quis diam sed mi pretium varius. Aenean varius erat libero, id auctor magna efficitur et.\n'
-            //         }
-            //     })
-            // }
-            // ENDMOCK
             
             $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
     

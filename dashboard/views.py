@@ -112,7 +112,7 @@ def project_list(request):
         'entity': 'projects',
         'slider': 'news-events'
     }
-    return render(request, 'dashboard/entity_list.html')
+    return render(request, 'dashboard/entity_list.html', context)
 
 
 def news_detail(request, entity_id):
