@@ -35,10 +35,8 @@ let template = `
         </div>
     
         <!--Right sidebar-->
-        <div class="col-md-3 entity-sidebar background--{$ entityname $}" >
-            <div ng-repeat="slider_name in slider_list">
-                <entity-carousel entityname="{$ slider_name $}" class="col-md-9 col-sm-12 margin-top-5-per margin-bottom-5-perc"></entity-carousel>
-            </div>
+        <div class="col-md-3 " >
+            <entity-sidebar slider="{$ slider $}" entityname="{$ entityname $}"></entity-sidebar>
         </div>
         
     </div>
@@ -57,7 +55,6 @@ export default [function(){
             $scope.entities = []
             $scope.nodata = false;
             
-            $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.get_data = (url) => {
                 $http.get(url).then(res => {
                     console.log(res);

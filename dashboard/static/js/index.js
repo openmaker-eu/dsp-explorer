@@ -66,6 +66,7 @@ app.directive('entityList', require('./directives/entity/EntityList').default )
 app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
 app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
 app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
+app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
 
 app.directive('homePage', require('./directives/HomePage').default )
 

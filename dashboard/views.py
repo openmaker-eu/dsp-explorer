@@ -109,7 +109,7 @@ def event_list(request):
 
 def project_list(request):
     context = {
-        'entity': 'project',
+        'entity': 'projects',
         'slider': 'news-events'
     }
     return render(request, 'dashboard/entity_list.html')
@@ -126,7 +126,7 @@ def news_detail(request, entity_id):
 
 def project_detail(request, entity_id):
     context = {
-        'entity': 'news',
+        'entity': 'project',
         'entity_id': entity_id,
         'slider': 'news-events'
     }

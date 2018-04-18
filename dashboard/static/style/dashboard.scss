@@ -405,7 +405,7 @@ $color-events : rgb(102, 165, 1);
         margin-top:-25%;
         margin-left: -15px; /* compensates column's padding */
         position: fixed;
-        width: inherit; /* bootstrap column's width */
+        width: 100%;
         z-index: 0; /* puts behind content */
     }
 }

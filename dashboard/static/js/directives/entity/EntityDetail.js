@@ -2,21 +2,21 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="entity--{$ entity $}">
-   
-        <div class="col-md-8 col-md-offset-1 entity-content">
+    <div class="entity--{$ entityname $}">
+    
+       <!--Header With title and actions-->
+       <div class="col-md-8 col-md-offset-1 margin-bottom-1-perc">
+           <h1 style="text-transform: uppercase">
+               <span>{$ entityname $}</span>
+               <span class="pull-right">
+                   <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                   <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+               </span>
+           <h1>
+       </div>
 
-            <!--Header With title and actions-->
-            <div class="col-md-12 margin-bottom-1-perc">
-                <h1 style="text-transform: uppercase">
-                    <span>{$ entityname $}</span>
-                    <span class="pull-right">
-                        <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
-                        <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
-                    </span>
-                <h1>
-            </div>
-            
+
+        <div class="col-md-8 col-md-offset-1 entity-content">
             <!--Content-->
             <div class="col-md-12">
             
@@ -40,14 +40,11 @@ let template = `
                 </div>
                 
             </div>
-
         </div>
 
-        <!--Sidebar-->
-        <div class="col-md-3 entity-sidebar" style="background:#bbb;">
-            <div ng-repeat="slider_name in slider_list" style="margin-top:5%;">
-                <entity-carousel entityname="{$ slider_name $}"></entity-carousel>
-            </div>
+        <!--Right sidebar-->
+        <div class="col-md-3">
+            <entity-sidebar slider="{$ slider $}" entityname="{$ entityname $}"></entity-sidebar>
         </div>
         
     </div>
@@ -77,14 +74,14 @@ export default [function(){
             }
             
             // MOCK
-            $scope.get_data = (url)=>{
-                $timeout(1500).then(()=>{
-                    $scope.entity = {
-                        title: 'asdasd',
-                        full_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis et gravida libero, ut sagittis erat. Nulla ornare velit in ante tempus, in faucibus purus ornare. In et purus tincidunt, venenatis felis at, molestie urna. Mauris ornare dignissim libero at ornare. Proin ligula massa, rutrum quis arcu a, sodales porta nulla. Aliquam mauris odio, blandit ut lacus non, lobortis posuere elit. Proin varius urna ac nunc venenatis, quis lobortis turpis blandit. Suspendisse vel massa ornare, tempor lacus tincidunt, bibendum lorem. Curabitur lacinia, erat vitae luctus tempor, velit mi venenatis nunc, a auctor odio purus ac dolor. Vestibulum at lacus leo. Morbi purus ligula, suscipit non vestibulum et, semper ac eros. Suspendisse mollis justo in nisi mattis molestie. Ut ut turpis et sapien dictum bibendum ut ut lorem. In id mollis ligula, eu rutrum nibh. Donec quis diam sed mi pretium varius. Aenean varius erat libero, id auctor magna efficitur et.\n'
-                    }
-                })
-            }
+            // $scope.get_data = (url)=>{
+            //     $timeout(1500).then(()=>{
+            //         $scope.entity = {
+            //             title: 'asdasd',
+            //             full_text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis et gravida libero, ut sagittis erat. Nulla ornare velit in ante tempus, in faucibus purus ornare. In et purus tincidunt, venenatis felis at, molestie urna. Mauris ornare dignissim libero at ornare. Proin ligula massa, rutrum quis arcu a, sodales porta nulla. Aliquam mauris odio, blandit ut lacus non, lobortis posuere elit. Proin varius urna ac nunc venenatis, quis lobortis turpis blandit. Suspendisse vel massa ornare, tempor lacus tincidunt, bibendum lorem. Curabitur lacinia, erat vitae luctus tempor, velit mi venenatis nunc, a auctor odio purus ac dolor. Vestibulum at lacus leo. Morbi purus ligula, suscipit non vestibulum et, semper ac eros. Suspendisse mollis justo in nisi mattis molestie. Ut ut turpis et sapien dictum bibendum ut ut lorem. In id mollis ligula, eu rutrum nibh. Donec quis diam sed mi pretium varius. Aenean varius erat libero, id auctor magna efficitur et.\n'
+            //         }
+            //     })
+            // }
             // ENDMOCK
             
             $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
