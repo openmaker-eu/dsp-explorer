@@ -299,7 +299,7 @@ class v14:
         }, status=200)
 
     @staticmethod
-    def get_entity(request, entity = 'news'):
+    def get_entity(request, entity= 'news'):
         #TODO make cursor works
         profile = None
         try:

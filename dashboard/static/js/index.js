@@ -79,5 +79,6 @@ app.directive('project', require('./directives/Project').default )
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
+app.directive('omSpinner', require('./directives/partials/OmSpinner').default )
 
 

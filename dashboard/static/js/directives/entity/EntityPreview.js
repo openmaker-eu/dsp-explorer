@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import * as d3 from 'd3';
 let template = `
-    <div class="entity--{$ entityname $} entity-preview " style="padding:4%;">
+    <div class="entity--{$ entityname $} entity-preview" style="padding:4%;">
         <div class="force-square">
             <div class="do-not-remove-me-please">
                 
@@ -25,7 +25,7 @@ let template = `
                 <div class="fade"></div>
 
                 <!-- Show Full text if exist-->
-                <div ng-if="entity.full_text">{$ entity.full_text $}</div>
+                <div>{$ entity.full_text || entity.description $}</div>
                 
             </div>
         </div>

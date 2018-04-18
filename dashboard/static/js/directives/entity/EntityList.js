@@ -14,7 +14,6 @@ let template = `
                 <div class="col-md-12">
                     <entity-loading
                         loading="entities.length==0 && !nodata"
-                        loaded="entities.length>0"
                         nodata="nodata"
                         entityname="{$ entityname $}"
                     ></entity-loading>
@@ -36,9 +35,9 @@ let template = `
         </div>
     
         <!--Right sidebar-->
-        <div class="col-md-3 entity-sidebar background--{$ entityname $}">
-            <div class="col-md-9 col-sm-12" ng-repeat="slider_name in slider_list" style="margin-top:5%;">
-                <entity-carousel entityname="{$ slider_name $}"></entity-carousel>
+        <div class="col-md-3 entity-sidebar background--{$ entityname $}" >
+            <div ng-repeat="slider_name in slider_list">
+                <entity-carousel entityname="{$ slider_name $}" class="col-md-9 col-sm-12 margin-top-5-per margin-bottom-5-perc"></entity-carousel>
             </div>
         </div>
         
@@ -67,7 +66,7 @@ export default [function(){
                 })
             }
             let id = $scope.profileid? '/'+$scope.profileid : '/'
-            $scope.get_data('/api/v1.4/' + $scope.entityname + id)
+            $scope.get_data('/api/v1.4/' + $scope.entityname)
 
         }]
     }

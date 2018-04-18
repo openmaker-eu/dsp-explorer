@@ -2,12 +2,19 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="col-md-12" ng-if="entities.length > 0">
+    <div class="col-md-12"  >
         <div class="entity-carousel entity-carousel--{$ entityname $}">
             <div class="entity-carousel__header">
                 <h3><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
             </div>
-            <div class="entity-carousel__body">
+            
+            <entity-loading
+                class="text--{$ entityname $} text-center"
+                loading="entities.length == 0"
+                entityname="{$ entityname $}"
+             ></entity-loading>
+            
+            <div class="entity-carousel__body" ng-if="entities.length > 0">
                 <slick settings="slickConfig">
                     <div ng-repeat="entity in entities | limitTo: limit || undefined ">
                         <entity-preview entity="entity" entityname="{$ entityname $}" ></entity-preview>
@@ -21,6 +28,7 @@ let template = `
 export default [function(){
     return {
         template:template,
+        transclude:false,
         scope: {
             profileid : '=',
             entityname : '@',

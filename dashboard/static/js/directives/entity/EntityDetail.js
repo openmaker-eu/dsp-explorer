@@ -23,7 +23,6 @@ let template = `
                 <!--Loader-->
                 <entity-loading
                     loading="!entity && !nodata"
-                    loaded="entity"
                     nodata="nodata"
                     entityname="{$ entityname $}"
                 ></entity-loading>
