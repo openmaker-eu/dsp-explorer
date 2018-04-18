@@ -119,7 +119,7 @@ def news_detail(request, entity_id):
     context = {
         'entity': 'news',
         'entity_id': entity_id,
-        'slider': 'events-projects'
+        'slider': 'news-events-projects'
     }
     return render(request, 'dashboard/event_detail.html', context)
 
@@ -128,7 +128,7 @@ def project_detail(request, entity_id):
     context = {
         'entity': 'project',
         'entity_id': entity_id,
-        'slider': 'news-events'
+        'slider': 'projects-news-events'
     }
     return render(request, 'dashboard/event_detail.html', context)
 
@@ -137,7 +137,7 @@ def event_detail(request, entity_id):
     context = {
         'entity': 'event',
         'entity_id': entity_id,
-        'slider': 'news-projects'
+        'slider': 'events-news-projects'
     }
     return render(request, 'dashboard/event_detail.html', context)
 

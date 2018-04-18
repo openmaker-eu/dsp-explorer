@@ -1,25 +1,53 @@
 
-$color-news : rgb(14, 117, 148);
-$color-projects : rgb(213, 75, 33);
-$color-events : rgb(102, 165, 1);
+$color-red : #ff3333;
+$color-red--dark : #bf2626;
+$color-red--light : #ffd6d6;
+
+$color-brown: #9d9d9d;
+$color-brown--dark: #330000;
+$color-brown--light: #d6cccc;
+
+$color-grey : #cbcbcb ;
+$color-grey--dark : #808080 ;
+$color-grey--light : #f2f2f2 ;
+
+$color-black: #000000;
+
+$color-news : #009999;
+$color-news--light : #5cbdbd;
+$color-projects : #ff6600;
+$color-projects--light : #ffb685;
+$color-events : #669900;
+$color-events--light : #9dbd5c;
 
 $entity_list : (
+
+
+
         'news': $color-news,
+        'news--light': $color-news--light,
+
         'projects': $color-projects,
+        'projects--light': $color-projects--light,
+        'project--light': $color-projects--light,
         'project': $color-projects,
+
         'events': $color-events,
+        'events--light': $color-events--light,
+        'event--light': $color-events--light,
         'event': $color-events
 );
 
 @each $entity_name, $entity_color in $entity_list {
 
-
-
   .entity--#{$entity_name} {
-    .om-spinner__bounce {background-color: #{$entity_color};}
+    .om-spinner__bounce {background-color: $entity_color;}
   }
-  .text--#{$entity_name} { color : #{$entity_color} }
-  .background--#{$entity_name} {background-color: #{$entity_color} ;  }
+  .text-#{$entity_name} { color : $entity_color; }
+  .background-#{$entity_name} {
+      background-color: $entity_color ;
+      &--light { background-color : lighten($entity_color, 20%) }
+  }
 
 }
 
@@ -88,7 +116,12 @@ $entity_list : (
 .entity-sidebar{
 
   @each $entity_name, $entity_color in $entity_list {
-    &.background--#{$entity_name}:before { @extend .background--#{$entity_name} }
+    &.background-#{$entity_name} {
+      &:before {
+        @extend .background-#{$entity_name};
+      }
+      &--light:before { @extend .background-#{$entity_name}--light; }
+    }
   }
   &::before {
     background: #bbb;
@@ -149,3 +182,18 @@ $entity_list : (
   }
 
 }
+
+
+/*
+* TYPHOGRAPHY
+*/
+
+// light : 300
+// regular : 400
+// bold : 700
+
+
+.cairo { font-family: 'Cairo', sans-serif; }
+.zilla { font-family: 'Zilla Slab', serif; }
+
+h1 { font-weight: 300; }

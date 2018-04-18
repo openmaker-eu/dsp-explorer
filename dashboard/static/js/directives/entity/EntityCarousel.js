@@ -9,7 +9,7 @@ let template = `
             </div>
             
             <entity-loading
-                class="text--{$ entityname $} text-center"
+                class="text-{$ entityname $} text-center"
                 loading="entities.length == 0 "
                 entityname="{$ entityname $}"
              ></entity-loading>

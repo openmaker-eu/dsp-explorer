@@ -2,8 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="entity--{$ entityname $}">
-    
+    <div>
        <!--Header With title and actions-->
        <div class="col-md-8 col-md-offset-1 margin-bottom-1-perc">
            <h1 style="text-transform: uppercase">
@@ -30,7 +29,7 @@ let template = `
                 <!-- Enitiy details -->
                 <div  ng-if="entity !== null">
                     <div>
-                        <h2 class="text--{$ entityname $}">{$ entity.title || entity.name $}</h2>
+                        <h2 class="text-{$ entityname $}">{$ entity.title || entity.name $}</h2>
                         <br>
                         <p ng-if="entity.lenght == 0">Loading data</p>
                         <p style="font-size:150%;">{$ entity.full_text || entity.description $}</p>

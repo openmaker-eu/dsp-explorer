@@ -5,7 +5,7 @@ let template = `
         <div class="force-square">
             <div class="do-not-remove-me-please">
                 
-                <h3 class="text--{$ entityname $}">
+                <h3 class="text-{$ entityname $}">
                     <span>{$ entity.title || entity.name | limitTo: 20 $}</span>
                     <span ng-if="entity.title.length > 20">...</span>
                 </h3>

@@ -17,6 +17,7 @@ $fa-font-path : '../../../node_modules/font-awesome/fonts/';
 
 @import "../../../node_modules/ui-select/dist/select.css";
 
+@import "./colors.scss";
 @import "./material.scss";
 @import "./card.scss";
 
@@ -202,7 +203,7 @@ body {
 html, body {
 	height: 100%;
 	width: 100%;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Cairo', sans-serif;
 	font-size: 14px;
 	color: #333;
 	font-weight: 400;
