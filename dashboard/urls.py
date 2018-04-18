@@ -20,6 +20,9 @@ urlpatterns = [
     url(r'^news_list/$', views.news_list, name='news_list'),
     url(r'^news/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
 
+    url(r'^articles_list/$', views.news_list, name='news_list'),
+    url(r'^article/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
+
     url(r'^events_list/$', views.event_list, name='event_list'),
     url(r'^events/(?P<entity_id>[0-9]+)$', views.event_detail, name='event_detail'),
 

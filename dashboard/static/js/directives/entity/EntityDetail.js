@@ -2,11 +2,11 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div>
+    <div class="entity-detail">
        <!--Header With title and actions-->
-       <div class="col-md-8 col-md-offset-1 margin-bottom-1-perc">
-           <h1 style="text-transform: uppercase">
-               <span>{$ entityname $}</span>
+       <div class="col-md-11 col-md-offset-1 margin-bottom-1-perc">
+           <h1 >
+               <span class=" entity-detail__title">{$ entityname $}</span>
                <span class="pull-right">
                    <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
                    <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
@@ -17,7 +17,7 @@ let template = `
 
         <div class="col-md-8 col-md-offset-1 entity-content">
             <!--Content-->
-            <div class="col-md-12">
+            <div class="col-md-8">
             
                 <!--Loader-->
                 <entity-loading
@@ -32,13 +32,25 @@ let template = `
                         <h2 class="text-{$ entityname $}">{$ entity.title || entity.name $}</h2>
                         <br>
                         <p ng-if="entity.lenght == 0">Loading data</p>
-                        <p style="font-size:150%;">{$ entity.full_text || entity.description $}</p>
+                        <p>{$ entity.full_text || entity.description $}</p>
                     </div>
                     <br>
                     <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                     
                 </div>
                 <br>
+            </div>
+            <div class="col-md-4">
+            
+                <!--EVENT ONLY: Event details with icons-->
+                <div ng-if="entityname == 'challenge'">
+                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;
+                        <span>{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</span>
+                        <span>{$ entity.end_time | date:'d MMMM yyyy,EEEE' $}</span>
+                    </p>
+                </div>
+            
+                <img src="{$ entity.im $}" class="col-md-12" alt="">
             </div>
         </div>
 

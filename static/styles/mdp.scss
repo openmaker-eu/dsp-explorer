@@ -22,7 +22,7 @@ $color-projects--light : #ffb685;
 $color-events : #669900;
 $color-events--light : #9dbd5c;
 
-$entity_list : (
+$color_list : (
         'news': $color-news,
         'news--light': $color-news--light,
 
@@ -34,10 +34,25 @@ $entity_list : (
         'events': $color-events,
         'events--light': $color-events--light,
         'event--light': $color-events--light,
-        'event': $color-events
+        'event': $color-events,
+
+        'color-red':$color-red,
+        'color-red--dark':$color-red--dark,
+        'color-red--light':$color-red--light,
+        
+        'color-brown':$color-brown,
+        'color-brown--dark':$color-brown--dark,
+        'color-brown--light':$color-brown--light,
+        
+        'color-grey':$color-grey,
+        'color-grey--dark':$color-grey--dark,
+        'color-grey--light':$color-grey--light,
+        
+        'color-black':$color-black
+        
 );
 
-@each $entity_name, $entity_color in $entity_list {
+@each $entity_name, $entity_color in $color_list {
 
   .entity--#{$entity_name} {
     .om-spinner__bounce {background-color: $entity_color;}
@@ -89,7 +104,7 @@ $entity_list : (
   &:hover .slick-arrow--custom {display: inline!important;}
 
   // TEMPLATING
-  @each $entity_name, $entity_color in $entity_list {
+  @each $entity_name, $entity_color in $color_list {
     &--#{$entity_name}{
       .entity-carousel__header {
         background: #{$entity_color}!important;
@@ -113,7 +128,7 @@ $entity_list : (
 
 .entity-sidebar{
 
-  @each $entity_name, $entity_color in $entity_list {
+  @each $entity_name, $entity_color in $color_list {
     &.background-#{$entity_name} {
       &:before {
         @extend .background-#{$entity_name};
@@ -184,12 +199,41 @@ $entity_list : (
 * TYPHOGRAPHY
 */
 
-// light : 300
-// regular : 400
-// bold : 700
+.light { font-weight: 300!important; }
+.regular { font-weight: 400; }
+.semi-bold { font-weight: 700; }
+.bold { font-weight: 700; }
 
-body{ font-size:18px;  }
-.cairo { font-family: 'Cairo', sans-serif; }
+.cairo { font-family: 'Cairo', sans-serif!important; }
 .zilla { font-family: 'Zilla Slab', serif; }
 
-h1 {  font-weight: 300; }
+body{
+  @extend .zilla;
+  font-size:18px;
+}
+
+header .navbar.navbar-default{
+  &, & *:not(.glyphicon) { @extend .cairo; }
+}
+
+.entity-carousel {
+  .entity-carousel__header {
+    @extend .cairo;
+    @extend .regular;
+  }
+
+}
+.home-page{
+  .entity-carousel__header a {  @extend .light; font-size:150%;  }
+  p { font-size:1.71rem; }
+}
+
+
+.entity-list, .entity-detail{
+  &__title, &__title *{
+    text-transform: uppercase;
+    @extend .cairo;
+    @extend .light;
+  }
+}
+

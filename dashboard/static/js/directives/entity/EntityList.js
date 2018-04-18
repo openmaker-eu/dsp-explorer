@@ -1,10 +1,10 @@
 import * as _ from 'lodash'
 import * as d3 from 'd3';
 let template = `
-    <div class="row">
+    <div class="row entity-list">
     
         <!--Entity title-->
-        <div class="col-md-11 col-md-offset-1 col-sm-12 col-sm-offest-0">
+        <div class="entity-list__title col-md-11 col-md-offset-1 col-sm-12 col-sm-offest-0">
             <h1 style="text-transform: uppercase; margin:3% 0 2% 0;"><span>{$ entityname $}</span><h1>
         </div>
     

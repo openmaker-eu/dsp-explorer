@@ -12,7 +12,7 @@ let template = `
                 <br>
                 
                 <!--Read more-->
-                <a ng-if="entityid" href="/{$ entityname $}/{$ entityid $}" class="read-more"><h4>READ MORE </h4></a>
+                <a ng-if="entityid" href="/{$ entityname $}/{$ entityid $}" class="read-more"><h3>READ MORE </h3></a>
 
                 <!--EVENT ONLY: Event details with icons-->
                 <div ng-if="entityname == 'events'" class="entity-preview__events-detail">
@@ -25,7 +25,7 @@ let template = `
                 <div class="fade"></div>
 
                 <!-- Show Full text if exist-->
-                <div>{$ entity.full_text || entity.description $}</div>
+                <div><p>{$ entity.full_text || entity.description $}</p></div>
                 
             </div>
         </div>
