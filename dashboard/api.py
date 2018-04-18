@@ -451,7 +451,6 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            print e
             return JsonResponse({
                 'status': 'ko',
                 'result': 'Unhautorized',
@@ -478,9 +477,6 @@ class v13:
 
     @staticmethod
     def get_influencers(request, topic_id=1, location=None):
-
-        print location
-
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']
