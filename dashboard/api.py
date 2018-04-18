@@ -368,10 +368,8 @@ class v14:
                 'result': results,
             }, status=200)
         except Exception as e:
-            return JsonResponse({
-                'status': 'ko',
-                'result': 'Unhautorized',
-            }, status=403)
+            print e
+            return not_authorized()
 
     @staticmethod
     def get_bookmarks(request):

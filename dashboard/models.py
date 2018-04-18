@@ -802,7 +802,7 @@ class ProjectContributor(models.Model):
 
 
 class EntityProxy(models.Model):
-    externalId = models.IntegerField(default=0)
+    externalId = models.CharField(default='0', max_length=50)
     # NB type MUST be:
     # - news
     # - events
