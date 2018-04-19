@@ -308,6 +308,8 @@ class v14:
     def get_entity(request, entity= 'news'):
         #TODO make cursor works
         profile = None
+        results = []
+        local_entities = None
         try:
             profile = request.user.profile
         except:
@@ -318,7 +320,6 @@ class v14:
             topics_list = DSPConnectorV12.get_topics()['topics']
             topics_id_list = [x['topic_id'] for x in topics_list]
             method_to_call = 'get_' + entity
-            results = []
             if not profile:
                 selected_topic = random.choice(topics_id_list)
                 results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
@@ -346,23 +347,23 @@ class v14:
     def bookmark(request, entity='news', entity_id=None):
         # GET return status of a bookmark (ES: {bookmarked:true|false})
         # POST toggle status of a bookmark an return it (ES: {bookmarked:true|false})
-
         results = {}
-
         try:
+            local_entity = None
             profile = request.user.profile
-            if entity == 'news' or entity == 'events':
-                local_entity = None
-                try:
-                    local_entity = ModelHelper.find_this_entity(entity, entity_id)
-                except ObjectDoesNotExist as odne:
-                    return not_found()
+            try:
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+            except ObjectDoesNotExist as odne:
+                return not_found()
             if request.method == 'POST':
                 results['bookmarked'] = profile.bookmark_this(local_entity)
             else:
                 results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
             return success('ok','bookmark',results)
+        except AttributeError as a:
+            return not_authorized()
         except Exception as e:
+            print e
             return not_authorized()
 
     @staticmethod
@@ -392,6 +393,7 @@ class v14:
                 Toggle the interest for the specified entity for the logged user
         '''
         results = {}
+        local_entity = None
         try:
             #logged user
             profile = request.user.profile
@@ -423,10 +425,7 @@ class v14:
                     'result': results,
                 }, status=202)
             else:
-                return JsonResponse({
-                    'status': 'ko',
-                    'result': 'Unhautorized',
-                }, status=403)
+                return not_authorized()
 
     @staticmethod
     def get_interests(request):

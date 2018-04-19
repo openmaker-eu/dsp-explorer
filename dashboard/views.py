@@ -126,7 +126,7 @@ def news_detail(request, entity_id):
 
 def project_detail(request, entity_id):
     context = {
-        'entity': 'project',
+        'entity': 'projects',
         'entity_id': entity_id,
         'slider': 'projects-news-events'
     }
@@ -135,7 +135,7 @@ def project_detail(request, entity_id):
 
 def event_detail(request, entity_id):
     context = {
-        'entity': 'event',
+        'entity': 'events',
         'entity_id': entity_id,
         'slider': 'events-news-projects'
     }
