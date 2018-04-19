@@ -308,8 +308,6 @@ class v14:
     def get_entity(request, entity= 'news'):
         #TODO make cursor works
         profile = None
-        results = []
-
         try:
             profile = request.user.profile
         except:
@@ -320,7 +318,7 @@ class v14:
             topics_list = DSPConnectorV12.get_topics()['topics']
             topics_id_list = [x['topic_id'] for x in topics_list]
             method_to_call = 'get_' + entity
-
+            results = []
             if not profile:
                 selected_topic = random.choice(topics_id_list)
                 results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]

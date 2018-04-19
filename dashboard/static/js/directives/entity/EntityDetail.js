@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 let template = `
     <div class="entity-detail">
        <!--Header With title and actions-->
-       <div class="col-md-11 col-md-offset-1 margin-bottom-1-perc">
-           <h1 >
+       <div class="col-md-12  margin-bottom-1-perc">
+           <h1 class="col-md-8 col-md-offset-1">
                <span class=" entity-detail__title">{$ entityname $}</span>
                <span class="pull-right">
                    <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
