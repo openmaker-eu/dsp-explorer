@@ -330,16 +330,14 @@ class v14:
         except DSPConnectorException:
             pass
         except AttributeError as a:
-            if entity == 'projects':
-                local_entities = Project.objects.all()
-                if not profile:
-                    local_entities = local_entities[:5]
-                results = ProjectSerializer(local_entities, many=True).data
-            else:
-                local_entities = Challenge.objects.all()
-                if not profile:
-                    local_entities = local_entities[:5]
-                results = ChallengeSerializer(local_entities, many=True).data
+            local_entities = Project.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ProjectSerializer(local_entities, many=True).data)
+            local_entities = Challenge.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ChallengeSerializer(local_entities, many=True).data)
 
         return success('ok','entity list',results)
 
