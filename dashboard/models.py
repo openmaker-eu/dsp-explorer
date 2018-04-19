@@ -21,6 +21,8 @@ from django.urls import reverse
 from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnectorV13
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+
 
 
 class ModelHelper:
@@ -33,19 +35,24 @@ class ModelHelper:
     def find_this_entity(entity, entity_id):
         local_entity = None
         if entity == 'news' or entity == 'events':
-            try:
-                local_entity = EntityProxy.objects.get(externalId=entity_id)
-            except EntityProxy.DoesNotExist:
-                local_entity = EntityProxy()
-                local_entity.externalId = entity_id
-                local_entity.type = entity
-                local_entity.save()
+            with transaction.atomic():
+                try:
+                    local_entity = EntityProxy.objects.select_for_update().get(type=entity,externalId=entity_id)
+                except EntityProxy.DoesNotExist:
+                    print "CREATE THE ENTITY [TYPE]:{} --- [ID]:{}".format(entity, entity_id)
+                    local_entity = EntityProxy()
+                    local_entity.externalId = entity_id
+                    local_entity.type = entity
+                    local_entity.save()
+
         elif entity == 'projects':
             local_entity = Project.objects.get(pk=entity_id)
         else:
             try:
                 local_entity = Challenge.objects.get(pk=entity_id)
             except Challenge.DoesNotExist as e:
+                raise ObjectDoesNotExist
+            except Exception as e:
                 raise ObjectDoesNotExist
         return local_entity
 
@@ -808,6 +815,9 @@ class EntityProxy(models.Model):
     type = models.CharField(_('Type'), max_length=50, default='news')
 
     interest = GenericRelation(Interest)
+
+    class Meta:
+        unique_together = ('externalId', 'type',)
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')

@@ -405,6 +405,7 @@ class v14:
                 results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
                 results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
                 results['interested_counter'] = len(local_entity.interested())
+
             else:
                 # Toggle interest
                 results['iaminterested'] = profile.interest_this(local_entity)
