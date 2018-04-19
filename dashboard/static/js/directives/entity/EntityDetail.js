@@ -4,18 +4,20 @@ import * as d3 from 'd3';
 let template = `
     <div class="entity-detail">
        <!--Header With title and actions-->
-       <div class="col-md-12  margin-bottom-1-perc">
-           <h1 class="col-md-8 col-md-offset-1">
+       <div class="col-md-12 margin-bottom-1-perc">
+           <h1 class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0">
                <span class=" entity-detail__title">{$ entityname $}</span>
+               
                <span class="pull-right">
                    <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
                    <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                </span>
+               
            <h1>
        </div>
 
 
-        <div class="col-md-8 col-md-offset-1 entity-content">
+       <div class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-01 entity-content">
             <!--Content-->
             <div class="col-md-8">
             
