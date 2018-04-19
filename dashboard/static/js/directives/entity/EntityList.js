@@ -4,8 +4,16 @@ let template = `
     <div class="row entity-list">
     
         <!--Entity title-->
-        <div class="entity-list__title col-md-11 col-md-offset-1 col-sm-12 col-sm-offest-0">
-            <h1 style="text-transform: uppercase; margin:3% 0 2% 0;"><span>{$ entityname $}</span><h1>
+        <div class="entity-list__title col-md-12 col-sm-12">
+            <h1 class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0">
+               <span class=" entity-detail__title">{$ entityname $}</span>
+               
+               <span ng-if="entityname == 'projects'" class="pull-right">
+                    <i class="fa fa-plus-circle"></i>
+               </span>
+               
+           <h1>
+           
         </div>
     
         <!--Left content-->
