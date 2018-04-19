@@ -287,16 +287,22 @@ class v14:
     @staticmethod
     def get_entity_details(request, entity='news', entity_id=None):
         results = []
+        profile = None
+
         try:
             method_to_call = 'get_' + entity+'_detail'
             results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
         except DSPConnectorException:
             pass
+        except AttributeError as a:
+            if entity == 'projects':
+                local_entities = Project.objects.get(pk=entity_id)
+                results = ProjectSerializer(local_entities).data
+            else:
+                local_entities = Challenge.objects.get(pk=entity_id)
+                results = ChallengeSerializer(local_entities, many=True).data
 
-        return JsonResponse({
-            'status': 'ok',
-            'result': results,
-        }, status=200)
+        return success('ok','single entity',results)
 
     @staticmethod
     def get_entity(request, entity= 'news'):
