@@ -81,10 +81,13 @@ export default [function(){
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             
             $scope.get_data = (url) => {
+                $scope.nodata = false;
                 $http.get(url).then(res => {
                     $scope.entity = res.data.result[0] || null
-                    $scope.nodata = $scope.entity.length === 0
-                })
+                    $scope.nodata = res.data.result.length === 0
+                },
+                err => $scope.modata = true
+                )
             }
             
             $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')

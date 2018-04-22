@@ -12,7 +12,7 @@ export default [function(){
                     <br>
                 </div>
                 <!--No data-->
-                <div ng-if="error"><h2>There are no class="capitalize">{$ entityname $}</span> available</h2></div>
+                <div ng-if="error"><h2>There are no <span class="capitalize">{$ entityname $}</span> available</h2></div>
 
             </div>
         `,

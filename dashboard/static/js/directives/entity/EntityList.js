@@ -18,7 +18,7 @@ let template = `
                 <div class="col-md-12">
                     <entity-loading
                         loading="entities.length==0 && !nodata"
-                        nodata="nodata"
+                        error="nodata"
                         entityname="{$ entityname $}"
                     ></entity-loading>
                 </div>
@@ -64,11 +64,13 @@ export default [function(){
             $scope.nodata = false;
             
             $scope.get_data = (url) => {
+                $scope.nodata = false;
                 $http.get(url).then(res => {
-                    console.log(res);
                     $scope.entities = res.data.result || []
                     $scope.nodata = _.get(res , 'data.result', []).length === 0
-                })
+                },
+                err => $scope.nodata = true
+                )
             }
             $scope.get_data('/api/v1.4/' + $scope.entityname)
 
