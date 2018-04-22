@@ -3,7 +3,7 @@ export default [function(){
         template:`
         <i
             ng-click="bookmark()"
-            ng-if="$root.authorization > 0"
+            ng-if="$root.authorization > 0 && entityname == 'news'"
             class="fa fa-bookmark-o pointer"
             ng-class="{'text-red': bookmarked}"
         ></i>

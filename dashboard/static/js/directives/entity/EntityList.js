@@ -1,5 +1,4 @@
 import * as _ from 'lodash'
-import * as d3 from 'd3';
 let template = `
     <div class="row entity-list">
     
@@ -7,13 +6,10 @@ let template = `
         <div class="entity-list__title col-md-12 col-sm-12">
             <h1 class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0">
                <span class=" entity-detail__title">{$ entityname $}</span>
-               
-               <span ng-if="entityname == 'projects'" class="pull-right">
+               <span ng-if="entityname === 'projects'">
                     <i class="fa fa-plus-circle"></i>
                </span>
-               
            <h1>
-           
         </div>
     
         <!--Left content-->

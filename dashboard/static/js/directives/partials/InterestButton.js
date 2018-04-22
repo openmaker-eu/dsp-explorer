@@ -5,7 +5,7 @@ export default [function(){
             ng-click="interest()"
             ng-if="$root.authorization > 0"
             class="fa fa-star-o pointer"
-            ng-class="{'text-red': interested}"
+            ng-class="{'text-red': interested, fa-bell-o: entityname == events }"
         ></i>
 `,
         scope: {
