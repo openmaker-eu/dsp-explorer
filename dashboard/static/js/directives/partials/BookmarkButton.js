@@ -3,9 +3,9 @@ export default [function(){
         template:`
         <i
             ng-click="bookmark()"
-            ng-if="$root.authorization > 0 && entityname == 'news'"
-            class="fa fa-bookmark-o pointer"
-            ng-class="{'text-red': bookmarked}"
+            ng-if="$root.authorization > 0"
+            class="fa  pointer"
+            ng-class="{'text-red': bookmarked, 'fa-bookmark-o': entityname !== 'events', 'fa-bell-o': entityname === 'events'}"
         ></i>
 `,
         scope: {

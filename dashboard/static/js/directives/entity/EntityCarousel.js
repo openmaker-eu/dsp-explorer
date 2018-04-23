@@ -15,9 +15,9 @@ let template = `
              ></entity-loading>
             
             <div class="entity-carousel__body" ng-if="entities.length > 0">
-                <slick settings="slickConfig">
-                    <div ng-repeat="entity in entities | limitTo: limit || undefined ">
-                        <entity-preview entity="entity" entityname="{$ entityname $}" ></entity-preview>
+                <slick settings="slickConfig" style="padding:0% 10%;">
+                    <div ng-repeat="entity in entities | limitTo: limit || undefined" style="width: 90%;">
+                        <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
                 </slick>  
             <div>
@@ -44,8 +44,7 @@ export default [function(){
                     $scope.entities = res.data.result || []
                 })
             }
-            let id = $scope.profileid? '/'+$scope.profileid : '/'
-            $scope.get_data('/api/v1.4/' + $scope.entityname + id)
+            $scope.get_data('/api/v1.4/' + $scope.entityname + '/')
     
     
             $scope.slickConfig ={

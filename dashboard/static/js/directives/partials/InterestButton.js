@@ -3,9 +3,9 @@ export default [function(){
         template:`
         <i
             ng-click="interest()"
-            ng-if="$root.authorization > 0"
+            ng-if="$root.authorization > 0 && entityname == 'projects'"
             class="fa fa-star-o pointer"
-            ng-class="{'text-red': interested, 'fa-bell-o': entityname === 'events' }"
+            ng-class="{'text-red': interested }"
         ></i>
 `,
         scope: {

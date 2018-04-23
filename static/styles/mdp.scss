@@ -22,6 +22,8 @@ $color-projects--light : #ffb685;
 $color-events : #669900;
 $color-events--light : #9dbd5c;
 
+$color-white: #fff;
+
 $color_list : (
         'news': $color-news,
         'news--light': $color-news--light,
@@ -48,19 +50,96 @@ $color_list : (
         'color-grey--dark':$color-grey--dark,
         'color-grey--light':$color-grey--light,
         
-        'color-black':$color-black
-        
+        'color-black':$color-black,
+        'color-white':$color-white
+
 );
+
+
+
+
+/*
+* TYPHOGRAPHY
+*/
+
+.light { font-weight: 300!important; }
+.regular { font-weight: 400; }
+.semi-bold { font-weight: 700; }
+.bold { font-weight: 700; }
+
+.cairo { font-family: 'Cairo', sans-serif!important; }
+.zilla { font-family: 'Zilla Slab', serif; }
+
+
+// BASE
+
+body, html {
+
+  @extend .zilla;
+  font-size:12px;
+
+  background-color: $color-grey--light;
+  height: 100%;
+  width: 100%;
+  font-family: 'Cairo', sans-serif;
+  color: #333;
+  font-weight: 400;
+
+}
+
+header .navbar.navbar-default{
+  &, & *:not(.glyphicon) { @extend .cairo; }
+}
+
+.entity-carousel {
+  .entity-carousel__header {
+    @extend .cairo;
+    @extend .regular;
+  }
+
+}
+.home-page{
+  .entity-carousel__header a {  @extend .light; font-size:150%;  }
+  p { font-size:1.71rem; }
+}
+
+
+.entity-list, .entity-detail{
+  &__title, &__title *:not(i){
+    text-transform: uppercase;
+    @extend .cairo;
+    @extend .light;
+  }
+}
+
+
+// elements
 
 @each $entity_name, $entity_color in $color_list {
 
   .entity--#{$entity_name} {
     .om-spinner__bounce {background-color: $entity_color;}
   }
-  .text-#{$entity_name} { color : $entity_color; }
+  .text-#{$entity_name} { color : $entity_color!important; }
   .background-#{$entity_name} {
       background-color: $entity_color ;
   }
+
+  .stripe-full--#{$entity_name} {
+
+    &:before {
+      content:"";
+      background-color:$entity_color;
+      position: absolute;
+      height: 100%;
+      width: 4000px;
+      left: -2000px;
+      z-index: -1;
+    }
+
+
+  }
+
 
 }
 
@@ -124,6 +203,11 @@ $color_list : (
 .entity-preview {
   width:100%;
   height:100%
+}
+
+.entity-heading {
+  i { color:$color-grey}
+
 }
 
 .entity-sidebar{
@@ -195,45 +279,44 @@ $color_list : (
 
 }
 
-/*
-* TYPHOGRAPHY
-*/
 
-.light { font-weight: 300!important; }
-.regular { font-weight: 400; }
-.semi-bold { font-weight: 700; }
-.bold { font-weight: 700; }
+.btn {
+  @extend .cairo;
+  font-weight: bold;
+  border-radius: 2px;
 
-.cairo { font-family: 'Cairo', sans-serif!important; }
-.zilla { font-family: 'Zilla Slab', serif; }
+  &--white {
+    background-color: $color-white;
+    border-color: $color-grey;
+    color: $color-grey;
 
-body{
-  @extend .zilla;
-  font-size:18px;
-}
-
-header .navbar.navbar-default{
-  &, & *:not(.glyphicon) { @extend .cairo; }
-}
-
-.entity-carousel {
-  .entity-carousel__header {
-    @extend .cairo;
-    @extend .regular;
+    &:hover {
+      border-color: $color-grey--dark;
+      color: $color-grey--dark;
+    }
+  }
+  &--big {
+    padding:15px 40px;
   }
 
 }
-.home-page{
-  .entity-carousel__header a {  @extend .light; font-size:150%;  }
-  p { font-size:1.71rem; }
-}
 
+// hack bootstrap cointainer
+$om_breakpoints: (
+  sm: (768, 768),
+  md: (992, 992),
+  lg: (1200, 1170),
+);
 
-.entity-list, .entity-detail{
-  &__title, &__title *{
-    text-transform: uppercase;
-    @extend .cairo;
-    @extend .light;
+@each $bk in $om_breakpoints {
+  @media (min-width: nth($bk, 1) px) {
+    .container{
+      width: nth($bk, 2) px!important;
+      background-color: #f00!important;
+    }
   }
 }
+
+
+
 
