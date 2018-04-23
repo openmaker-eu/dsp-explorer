@@ -34,7 +34,6 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_events(topic_id, location="", cursor=0):
-
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
         params += '&location={location}'.format(location=location) if location else ''
         params += '&cursor={cursor}'.format(cursor=cursor)
@@ -46,10 +45,11 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_events_detail(entity_id):
-        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+        url = DSPConnectorV13.generate_url(
             endpoint='/get_events',
-            parameter='?events_id={news_id}'.format(news_id=entity_id))
-        )
+            parameter='?event_ids={news_id}'.format(news_id=entity_id))
+        print url
+        return DSPConnectorV13._get(url)
 
     @staticmethod
     def get_hashtags(topic_id, date_string="yesterday"):

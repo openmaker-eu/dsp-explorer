@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^article/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
 
     url(r'^events_list/$', views.event_list, name='event_list'),
-    url(r'^events/(?P<entity_id>[0-9]+)$', views.event_detail, name='event_detail'),
+    url(r'^events/(?P<entity_id>(\d+))/$', views.event_detail, name='event_detail'),
 
     url(r'^projects_list/$', views.project_list, name='prj_list'),
     url(r'^projects/(?P<entity_id>[0-9]+)$', views.project_detail, name='prj_detail'),
