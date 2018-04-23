@@ -40,7 +40,7 @@ let template = `
                     
                         <!--Entity list-->
                         <div
-                            class="col-lg-3 col-md-4 col-sm-6 col-xs-12 "
+                            class="col-lg-4 col-md-6 col-sm-12 col-xs-12 "
                             ng-repeat="entity in entities"
                             style="margin-bottom:1%; margin-top: 1%;"
                         >

@@ -38,25 +38,22 @@ $color_list : (
         'event--light': $color-events--light,
         'event': $color-events,
 
-        'color-red':$color-red,
-        'color-red--dark':$color-red--dark,
-        'color-red--light':$color-red--light,
+        'red':$color-red,
+        'red--dark':$color-red--dark,
+        'red--light':$color-red--light,
         
-        'color-brown':$color-brown,
-        'color-brown--dark':$color-brown--dark,
-        'color-brown--light':$color-brown--light,
+        'brown':$color-brown,
+        'brown--dark':$color-brown--dark,
+        'brown--light':$color-brown--light,
         
-        'color-grey':$color-grey,
-        'color-grey--dark':$color-grey--dark,
-        'color-grey--light':$color-grey--light,
+        'grey':$color-grey,
+        'grey--dark':$color-grey--dark,
+        'grey--light':$color-grey--light,
         
-        'color-black':$color-black,
-        'color-white':$color-white
+        'black':$color-black,
+        'white':$color-white
 
 );
-
-
-
 
 /*
 * TYPHOGRAPHY
@@ -278,7 +275,6 @@ header .navbar.navbar-default{
   }
 
 }
-
 
 .btn {
   @extend .cairo;
