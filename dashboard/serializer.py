@@ -102,7 +102,7 @@ class BookmarkSerializer(serializers.ModelSerializer):
         Because Bookmark is Polymorphic
         """
         if isinstance(obj, EntityProxy):
-            return obj.get_real_object()
+            return obj.get_real_object()[0]
         elif isinstance(obj, Project):
             return ProjectSerializer(obj).to_representation(obj)
         return super(BookmarkSerializer, self).to_representation(obj)

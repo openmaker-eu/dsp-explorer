@@ -384,15 +384,7 @@ class v14:
         try:
             profile = request.user.profile
             results = profile.get_bookmarks(entity)
-            serialized = []
-            print results
-            print "####################################"
-            if entity == 'events' or entity == 'news':
-                for r in results:
-                    serialized.append(r.get_real_object())
-                serialized = serialized[0]
-            else:
-                serialized = BookmarkSerializer(results, many=True).data
+            serialized = BookmarkSerializer(results, many=True).data
 
             return JsonResponse({
                 'status': 'ok',
