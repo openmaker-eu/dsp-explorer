@@ -55,7 +55,7 @@ export default [function(){
                 err => $scope.nodata = true
                 )
             }
-            $scope.get_data('/api/v1.4/bookmarked/' + $scope.entityname + '/')
+            $scope.get_data('/api/v1.4/bookmarks/' + $scope.entityname + '/')
             $rootScope.$on($scope.event_name, (n,a)=> a && ($scope.is_visible = a.visible) )
 
         }]
