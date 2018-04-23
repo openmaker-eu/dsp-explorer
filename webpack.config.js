@@ -48,6 +48,13 @@ module.exports = {
                 }
             },
             {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                use: [
+                    'url-loader?limit=10000',
+                    'img-loader'
+                ]
+            },
+            {
                 test: /\.(png|woff|woff2|eot|ttf|svg|json)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader?limit=100000&name=../fonts/[hash].[ext]'
 

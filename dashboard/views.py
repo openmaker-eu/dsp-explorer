@@ -28,7 +28,7 @@ from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
-
+    '''
     top_influencers_by_user_location = None
     events_by_topic_and_location = None
     audiences = None
@@ -88,6 +88,59 @@ def dashboard(request, topic_id=None):
     }
 
     return render(request, 'dashboard/dashboard.html', context)
+    '''
+    return HttpResponseRedirect(reverse('dashboard:login'))
+
+
+def news_list(request):
+    context = {
+        'entity': 'news',
+        'slider': 'events-projects'
+    }
+    return render(request, 'dashboard/entity_list.html', context)
+
+def event_list(request):
+    context = {
+        'entity': 'events',
+        'slider': 'news-projects'
+    }
+    return render(request, 'dashboard/entity_list.html', context)
+
+
+def project_list(request):
+    context = {
+        'entity': 'projects',
+        'slider': 'news-events'
+    }
+    return render(request, 'dashboard/entity_list.html', context)
+
+
+def news_detail(request, entity_id):
+    context = {
+        'entity': 'news',
+        'entity_id': entity_id,
+        'slider': 'news-events-projects'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
+
+def project_detail(request, entity_id):
+    context = {
+        'entity': 'projects',
+        'entity_id': entity_id,
+        'slider': 'projects-news-events'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
+
+def event_detail(request, entity_id):
+    context = {
+        'entity': 'events',
+        'entity_id': entity_id,
+        'slider': 'events-news-projects'
+    }
+    return render(request, 'dashboard/event_detail.html', context)
+
 
 @login_required()
 def insight(request, user_twitter_username=None):

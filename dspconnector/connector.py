@@ -34,7 +34,6 @@ class DSPConnectorV13(object):
 
     @staticmethod
     def get_events(topic_id, location="", cursor=0):
-
         params = '?topic_id={topic_id}'.format(topic_id=topic_id)
         params += '&location={location}'.format(location=location) if location else ''
         params += '&cursor={cursor}'.format(cursor=cursor)
@@ -45,6 +44,14 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
+    def get_events_detail(entity_id):
+        url = DSPConnectorV13.generate_url(
+            endpoint='/get_events',
+            parameter='?event_ids={news_id}'.format(news_id=entity_id))
+        print url
+        return DSPConnectorV13._get(url)
+
+    @staticmethod
     def get_hashtags(topic_id, date_string="yesterday"):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_hashtags',
@@ -52,11 +59,18 @@ class DSPConnectorV13(object):
         )
 
     @staticmethod
-    def get_news(topic_id, date='yesterday', cursor=0):
-
-        return DSPConnectorV13._get(DSPConnectorV13.generate_url(
+    def get_news(topic_id, date='month', cursor=0):
+        url = DSPConnectorV13.generate_url(
             endpoint='/get_news',
             parameter='?topic_ids={topic_id}&date={date}&cursor={cursor}'.format(topic_id=topic_id, date=date, cursor=cursor))
+        return DSPConnectorV13._get(url)
+
+    @staticmethod
+    def get_news_detail(entity_id):
+        url = DSPConnectorV13.generate_url(
+            endpoint='/search_news',
+            parameter='?news_ids={news_id}'.format(news_id=entity_id))
+        return DSPConnectorV13._get(url
         )
 
     @staticmethod

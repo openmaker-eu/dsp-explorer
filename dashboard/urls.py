@@ -14,6 +14,22 @@ urlpatterns = [
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
 
+    ###################################### MDP ROUTES
+    # Article list
+
+    url(r'^news_list/$', views.news_list, name='news_list'),
+    url(r'^news/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
+
+    url(r'^articles_list/$', views.news_list, name='news_list'),
+    url(r'^article/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
+
+    url(r'^events_list/$', views.event_list, name='event_list'),
+    url(r'^events/(?P<entity_id>(\d+))/$', views.event_detail, name='event_detail'),
+
+    url(r'^projects_list/$', views.project_list, name='prj_list'),
+    url(r'^projects/(?P<entity_id>[0-9]+)$', views.project_detail, name='prj_detail'),
+
+    ###################################### MDP ROUTES
     # Explore
     url(r'^dashboard/theme/(?P<topic_id>[0-9]+)/$', views.theme, name='theme'),
     url(r'^dashboard/theme/$', views.theme, {'topic_id': None}, name='theme'),
@@ -32,8 +48,6 @@ urlpatterns = [
     url(r'^profile/project/$', views.project, name='project'),
     url(r'^profile/project/(?P<project_id>[0-9]+)/$', views.project, name='project'),
     url(r'^profile/project/(?P<project_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.project, name='project'),
-
-
 
     url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
@@ -62,9 +76,21 @@ urlpatterns = [
     # Feedback
     url(r'^feedback/$', views.feedback, name='feedback'),
 
-
     url(r'^challenge/$', views.challenge, name='challenge'),
     url(r'^challenge/(?P<challenge_id>[0-9]+)/$', views.challenge, name='challenge'),
+
+
+    # API v1.4
+    ## MDP
+    url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.bookmark, name='bookmark'),
+    url(r'^api/v1.4/bookmarks/$', api.v14.get_bookmarks, name='get_bookmark'),
+
+    url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.interest, name='bookmark'),
+    url(r'^api/v1.4/interests/$', api.v14.get_interests, name='get_bookmark'),
+
+    url(r'^api/v1.4/(?P<entity>\w+)/$', api.v14.get_entity, name='api_13_entity'),
+
+    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api.v14.get_entity_details, name='get_entity_details'),
 
 
 

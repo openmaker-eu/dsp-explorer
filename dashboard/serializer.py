@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
-from dashboard.models import Challenge, Company, Project, ProjectContributor
+from dashboard.models import Challenge, Company, Project, ProjectContributor, EntityProxy, Bookmark, Interest
 from .models import Tag
 import json
 
@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name',)
+        fields = '__all__'
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -72,7 +72,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_tags_string(self, obj):
-        return obj.get_tags()
+        return TagSerializer(obj.get_tags(), many=True).data
 
     def get_interested(self, obj):
         return ProfileSerializer(obj.interested(), many=True).data
@@ -82,3 +82,46 @@ class ProjectSerializer(serializers.ModelSerializer):
         return ProjectContributorSerializer(contrib_rel, many=True).data
 
 
+class EntityProxySerializer(serializers.ModelSerializer):
+    #interested = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EntityProxy
+        fields = '__all__'
+
+
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+    class Meta:
+        model = Bookmark
+        fields = ('profile',)
+
+    def to_representation(self, obj):
+        """
+        Because Bookmark is Polymorphic
+        """
+        if isinstance(obj, EntityProxy):
+            return EntityProxySerializer(obj).to_representation(obj)
+        elif isinstance(obj, Project):
+            return ProjectSerializer(obj).to_representation(obj)
+        return super(BookmarkSerializer, self).to_representation(obj)
+
+
+class InterestSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = Interest
+        fields = ('profile',)
+
+    def to_representation(self, obj):
+        """
+        Because Interest is Polymorphic
+        """
+        if isinstance(obj, EntityProxy):
+            return EntityProxySerializer(obj).to_representation(obj)
+        elif isinstance(obj, Project):
+            return ProjectSerializer(obj).to_representation(obj)
+        return super(InterestSerializer, self).to_representation(obj)

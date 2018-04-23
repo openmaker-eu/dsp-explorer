@@ -3,10 +3,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Profile, Invitation, User, ProjectContributor
+from .models import Profile, Invitation, User, ProjectContributor, Bookmark, ModelHelper
 from utils.hasher import HashHelper
 from utils.mailer import EmailHelper
-from .serializer import ProfileSerializer, ProjectContributorSerializer
+from .serializer import ProfileSerializer, ProjectSerializer, ChallengeSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
@@ -18,15 +18,18 @@ from crmconnector.models import Party
 from json_tricks.np import dump, dumps, load, loads, strip_comments
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from utils.Colorizer import Colorizer
-
+from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
+from dashboard.serializer import BookmarkSerializer, InterestSerializer
+
+from .helpers import mix_result_round_robin
 from django.http import HttpResponse
 from django.apps import apps
 from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
-from dashboard.models import Challenge, Project, Tag
+from dashboard.models import Challenge, Project, Tag, EntityProxy
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as dt
 import simplejson as simplejson
@@ -262,6 +265,185 @@ def get_om_events(request):
             status=500)
 
 ###########
+# API V 1.4
+###########
+
+class v14:
+    @staticmethod
+    def __wrap_response(*args, **kwargs):
+        try:
+            results = args[0](args[1:])
+        except DSPConnectorException:
+            return JsonResponse({
+                'status': 'error',
+                'result': {}
+            }, status=400)
+        return JsonResponse({
+            'status': 'ok',
+            'result': results
+        }, status=200)
+
+
+    @staticmethod
+    def get_entity_details(request, entity='news', entity_id=None):
+        results = []
+        profile = None
+
+        try:
+            method_to_call = 'get_' + entity+'_detail'
+            results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
+        except DSPConnectorException:
+            pass
+        except AttributeError as a:
+            if entity == 'projects':
+                local_entities = Project.objects.get(pk=entity_id)
+                results = ProjectSerializer(local_entities).data
+            else:
+                local_entities = Challenge.objects.get(pk=entity_id)
+                results = ChallengeSerializer(local_entities, many=True).data
+
+        return success('ok','single entity',results)
+
+    @staticmethod
+    def get_entity(request, entity= 'news'):
+        #TODO make cursor works
+        profile = None
+        results = []
+        local_entities = None
+        try:
+            profile = request.user.profile
+        except:
+            # NOt logged user
+            profile = None
+
+        try:
+            topics_list = DSPConnectorV12.get_topics()['topics']
+            topics_id_list = [x['topic_id'] for x in topics_list]
+            method_to_call = 'get_' + entity
+            if not profile:
+                selected_topic = random.choice(topics_id_list)
+                results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
+                results = results[:5]
+            else:
+                for index,topic_id in enumerate(topics_id_list):
+                    results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
+                results = mix_result_round_robin(*results)
+        except DSPConnectorException:
+            pass
+        except AttributeError as a:
+            local_entities = Project.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ProjectSerializer(local_entities, many=True).data)
+            local_entities = Challenge.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ChallengeSerializer(local_entities, many=True).data)
+
+        return success('ok','entity list',results)
+
+
+    @staticmethod
+    def bookmark(request, entity='news', entity_id=None):
+        # GET return status of a bookmark (ES: {bookmarked:true|false})
+        # POST toggle status of a bookmark an return it (ES: {bookmarked:true|false})
+        results = {}
+        try:
+            local_entity = None
+            profile = request.user.profile
+            try:
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+            except ObjectDoesNotExist as odne:
+                return not_found()
+            if request.method == 'POST':
+                results['bookmarked'] = profile.bookmark_this(local_entity)
+            else:
+                results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
+            return success('ok','bookmark',results)
+        except AttributeError as a:
+            return not_authorized()
+        except Exception as e:
+            print e
+            return not_authorized()
+
+    @staticmethod
+    def get_bookmarks(request):
+        try:
+            profile = request.user.profile
+            results = profile.get_bookmarks()
+            serialized = BookmarkSerializer(results, many=True).data
+            return JsonResponse({
+                'status': 'ok',
+                'result': serialized,
+            }, status=200)
+        except Exception as e:
+            return not_authorized()
+
+    @staticmethod
+    def interest(request, entity='news', entity_id=None):
+        '''
+        :param request:
+        :param entity:
+        :param entity_id:
+        :return:
+            GET mode
+                If request's user exists, the api will return all user interested in the entity specified
+                If request is from an anonymous users, just the number of interested people is will be returned
+            POST mode(only for logged)
+                Toggle the interest for the specified entity for the logged user
+        '''
+        results = {}
+        local_entity = None
+        try:
+            #logged user
+            profile = request.user.profile
+            try:
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+            except ObjectDoesNotExist as odne:
+                return not_found()
+            if request.method == 'GET':
+                results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
+                results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
+                results['interested_counter'] = len(local_entity.interested())
+
+            else:
+                # Toggle interest
+                results['iaminterested'] = profile.interest_this(local_entity)
+                results['interested'] = ProfileSerializer(local_entity.interested(), many=True).data
+                results['interested_counter'] = len(local_entity.interested())
+            return JsonResponse({
+                'status': 'ok',
+                'result': results,
+            }, status=200)
+        except Exception as e:
+            #Anonymous user
+            if request.method == 'GET':
+                local_entity = ModelHelper.find_this_entity(entity, entity_id)
+                results['interested_counter'] = len(local_entity.interested())
+                return JsonResponse({
+                    'status': 'ok',
+                    'result': results,
+                }, status=202)
+            else:
+                return not_authorized()
+
+    @staticmethod
+    def get_interests(request):
+        try:
+            profile = request.user.profile
+            results = profile.get_interests()
+            serialized = InterestSerializer(results, many=True).data
+            return JsonResponse({
+                'status': 'ok',
+                'result': serialized,
+            }, status=200)
+        except Exception as e:
+            return JsonResponse({
+                'status': 'ko',
+                'result': 'Unhautorized',
+            }, status=403)
+
+###########
 # API V 1.3
 ###########
 
@@ -282,9 +464,6 @@ class v13:
 
     @staticmethod
     def get_influencers(request, topic_id=1, location=None):
-
-        print location
-
         if not location:
             place = json.loads(request.user.profile.place)
             location = place['country_short']
@@ -965,7 +1144,6 @@ def interest_challenge(request, challenge_id):
             'COORDINATOR_EMAIL': challenge.coordinator_email
         }
 
-        print email_context
 
         if request.method == 'POST':
             # Add interest
@@ -1018,6 +1196,35 @@ def interest_project(request, project_id):
             # Remove interest
             request.user.profile.delete_interest(Project, project_id)
             message = 'interest in project removed'
+        print 'success'
+        return success('ok', message, {})
+
+    except Exception as e:
+        print e
+        response = JsonResponse({'status': 'error', 'message': e})
+        response.status_code = 500
+        return response
+
+
+@login_required
+def interest_entity(request, entity_type='article', entity_external_id=None):
+    try:
+        entity = EntityProxy.objects.filter(externalId=entity_external_id, entity_type=entity_type)
+
+        if not entity:
+            entity = EntityProxy(externalId=entity_external_id, entity_type=entity_type)
+            entity.save()
+
+        if request.method == 'POST':
+            print 'add interest'
+            # Add interest
+            request.user.profile.add_interest(entity)
+            message = 'interest in entity added'
+        if request.method == 'DELETE':
+            print 'remove interest'
+            # Remove interest
+            request.user.profile.delete_interest(EntityProxy, entity.pk)
+            message = 'interest in entity removed'
         print 'success'
         return success('ok', message, {})
 

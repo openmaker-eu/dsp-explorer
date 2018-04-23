@@ -19,12 +19,42 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.urls import reverse
 from utils.mailer import EmailHelper
+from dspconnector.connector import DSPConnectorV13
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+
+
 
 class ModelHelper:
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None):
         return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
             if filter_class is not None else list_to_filter
+
+    @staticmethod
+    def find_this_entity(entity, entity_id):
+        local_entity = None
+        if entity == 'news' or entity == 'events':
+            with transaction.atomic():
+                try:
+                    local_entity = EntityProxy.objects.select_for_update().get(type=entity,externalId=entity_id)
+                except EntityProxy.DoesNotExist:
+                    print "CREATE THE ENTITY [TYPE]:{} --- [ID]:{}".format(entity, entity_id)
+                    local_entity = EntityProxy()
+                    local_entity.externalId = entity_id
+                    local_entity.type = entity
+                    local_entity.save()
+
+        elif entity == 'projects':
+            local_entity = Project.objects.get(pk=entity_id)
+        else:
+            try:
+                local_entity = Challenge.objects.get(pk=entity_id)
+            except Challenge.DoesNotExist as e:
+                raise ObjectDoesNotExist
+            except Exception as e:
+                raise ObjectDoesNotExist
+        return local_entity
 
 
 class Tag(models.Model):
@@ -453,6 +483,52 @@ class Profile(models.Model):
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
         interest.delete()
 
+    def is_this_interested_by_me(self, entity):
+        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+
+    def interest_this(self, entity):
+        if self.is_this_interested_by_me(entity):
+            # remove interest
+            self.delete_interest(entity, entity.id)
+        else:
+            # add interest
+            self.add_interest(entity)
+        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+
+    def add_bookmark(self, bookmark_obj):
+        ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
+        existing_interest = Bookmark.objects.filter(content_type_id=ct_id, profile_id=self.pk,
+                                                    object_id=bookmark_obj.pk)
+        # If doesnt exist create interest and relations
+        if len(existing_interest) == 0:
+            bookmark = Bookmark(content_object=bookmark_obj)
+            bookmark.profile = self
+            bookmark.save()
+
+    def get_bookmarks(self, filter_class=None):
+        bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
+        return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
+
+    def is_this_bookmarked_by_me(self, entity):
+        return len(self.profile_bookmark.filter(object_id=entity.id)) == 1
+
+    def bookmark_this(self, entity):
+        if self.is_this_bookmarked_by_me(entity):
+            # remove bookmark
+            self.delete_bookmark(entity, entity.id)
+        else:
+            # add bookmark
+            self.add_bookmark(entity)
+
+        return len(self.profile_bookmark.filter(object_id=entity.id)) == 1
+
+    def delete_bookmark(self, bookmark_obj, bookmark_id):
+        # Get interest-related-model class type id
+        ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
+        # Get Interest record
+        bookmark = Bookmark.objects.filter(content_type_id=ct_id, object_id=bookmark_id, profile_id=self.pk)
+        bookmark.delete()
+
     def set_crm_id(self, crm_id):
         self.crm_id = crm_id
         self.save()
@@ -602,9 +678,18 @@ class Company(models.Model):
         return self.name
 
 
+class Bookmark(models.Model):
+    profile = models.ForeignKey(Profile, related_name='profile_bookmark')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def get(self):
+        return self.content_object
+
+
 class Interest(models.Model):
     profile = models.ForeignKey(Profile, related_name='profile_interest')
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -706,7 +791,8 @@ class Project(models.Model):
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def get_tags(self):
-        return map(lambda x: x.name, self.tags.all())
+        return self.tags.all()
+        #return map(lambda x: x.name, self.tags.all())
 
     def set_tags(self, tags):
         self.tags.clear()
@@ -719,3 +805,30 @@ class ProjectContributor(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     contributor = models.ForeignKey(Profile, on_delete=models.CASCADE)
     status = models.CharField(_('Status'), max_length=50, default='pending')
+
+
+class EntityProxy(models.Model):
+    externalId = models.CharField(default='0', max_length=50)
+    # NB type MUST be:
+    # - news
+    # - events
+    type = models.CharField(_('Type'), max_length=50, default='news')
+
+    interest = GenericRelation(Interest)
+
+    class Meta:
+        unique_together = ('externalId', 'type',)
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+    def get_real_object(self):
+        '''
+        You should be able to return a complete object frlom proxy using the external_id
+        :return: complete object parsed by Watchtower
+        '''
+        method_to_call = 'get_' + self.type + '_detail'
+        results = getattr(DSPConnectorV13, method_to_call)(entity_id=self.externalId)[self.type]
+        return results

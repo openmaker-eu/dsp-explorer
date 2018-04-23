@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block container %}
+    <div class="container-fluid">
+        <entity-list
+                profileid="{{request.user.profile.id}}"
+                entityname="{{entity}}"
+                slider="{{slider}}">
+        </entity-list>
+        <br><br>
+    </div>
+{% endblock %}
