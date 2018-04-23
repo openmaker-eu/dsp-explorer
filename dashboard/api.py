@@ -380,6 +380,19 @@ class v14:
             return not_authorized()
 
     @staticmethod
+    def get_bookmark_by_entities(request, entity=None):
+        try:
+            profile = request.user.profile
+            results = profile.get_bookmarks(entity)
+            serialized = BookmarkSerializer(results, many=True).data
+            return JsonResponse({
+                'status': 'ok',
+                'result': serialized,
+            }, status=200)
+        except Exception as e:
+            return not_authorized()
+
+    @staticmethod
     def interest(request, entity='news', entity_id=None):
         '''
         :param request:

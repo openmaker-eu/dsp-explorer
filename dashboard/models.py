@@ -507,7 +507,13 @@ class Profile(models.Model):
 
     def get_bookmarks(self, filter_class=None):
         bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
-        return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
+        if filter_class == 'events' or filter_class == 'news':
+            return filter(lambda i: i.type==filter_class,
+                          ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy))
+        else:
+            filter_class = eval(filter_class.title()[:-1])
+            return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
+
 
     def is_this_bookmarked_by_me(self, entity):
         return len(self.profile_bookmark.filter(object_id=entity.id)) == 1

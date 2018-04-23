@@ -95,7 +95,7 @@ class DSPConnectorV13(object):
     @staticmethod
     def _get(url):
         try:
-            response = requests.get(url, timeout=8)
+            response = requests.get(url, timeout=30)
         except:
             response = None
         return DSPConnectorV13._wrapper_request(response=response)
