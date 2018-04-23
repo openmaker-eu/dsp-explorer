@@ -55,19 +55,93 @@ $color_list : (
 
 );
 
+
+
+
+/*
+* TYPHOGRAPHY
+*/
+
+.light { font-weight: 300!important; }
+.regular { font-weight: 400; }
+.semi-bold { font-weight: 700; }
+.bold { font-weight: 700; }
+
+.cairo { font-family: 'Cairo', sans-serif!important; }
+.zilla { font-family: 'Zilla Slab', serif; }
+
+
+// BASE
+
+body, html {
+
+  @extend .zilla;
+  font-size:12px;
+
+  background-color: $color-grey--light;
+  height: 100%;
+  width: 100%;
+  font-family: 'Cairo', sans-serif;
+  color: #333;
+  font-weight: 400;
+
+}
+
+header .navbar.navbar-default{
+  &, & *:not(.glyphicon) { @extend .cairo; }
+}
+
+.entity-carousel {
+  .entity-carousel__header {
+    @extend .cairo;
+    @extend .regular;
+  }
+
+}
+.home-page{
+  .entity-carousel__header a {  @extend .light; font-size:150%;  }
+  p { font-size:1.71rem; }
+}
+
+
+.entity-list, .entity-detail{
+  &__title, &__title *:not(i){
+    text-transform: uppercase;
+    @extend .cairo;
+    @extend .light;
+  }
+}
+
+
+// elements
+
 @each $entity_name, $entity_color in $color_list {
 
   .entity--#{$entity_name} {
     .om-spinner__bounce {background-color: $entity_color;}
   }
-  .text-#{$entity_name} { color : $entity_color; }
+  .text-#{$entity_name} { color : $entity_color!important; }
   .background-#{$entity_name} {
       background-color: $entity_color ;
   }
 
-}
+  .stripe-full--#{$entity_name} {
 
-body, html { background-color: $color-grey--light; }
+    &:before {
+      content:"";
+      background-color:$entity_color;
+      position: absolute;
+      height: 100%;
+      width: 4000px;
+      left: -2000px;
+      z-index: -1;
+    }
+
+
+  }
+
+
+}
 
 .entity-carousel{
 
@@ -205,47 +279,6 @@ body, html { background-color: $color-grey--light; }
 
 }
 
-/*
-* TYPHOGRAPHY
-*/
-
-.light { font-weight: 300!important; }
-.regular { font-weight: 400; }
-.semi-bold { font-weight: 700; }
-.bold { font-weight: 700; }
-
-.cairo { font-family: 'Cairo', sans-serif!important; }
-.zilla { font-family: 'Zilla Slab', serif; }
-
-body{
-  @extend .zilla;
-  font-size:18px;
-}
-
-header .navbar.navbar-default{
-  &, & *:not(.glyphicon) { @extend .cairo; }
-}
-
-.entity-carousel {
-  .entity-carousel__header {
-    @extend .cairo;
-    @extend .regular;
-  }
-
-}
-.home-page{
-  .entity-carousel__header a {  @extend .light; font-size:150%;  }
-  p { font-size:1.71rem; }
-}
-
-
-.entity-list, .entity-detail{
-  &__title, &__title *:not(i){
-    text-transform: uppercase;
-    @extend .cairo;
-    @extend .light;
-  }
-}
 
 .btn {
   @extend .cairo;
@@ -267,5 +300,23 @@ header .navbar.navbar-default{
   }
 
 }
+
+// hack bootstrap cointainer
+$om_breakpoints: (
+  sm: (768, 768),
+  md: (992, 992),
+  lg: (1200, 1170),
+);
+
+@each $bk in $om_breakpoints {
+  @media (min-width: nth($bk, 1) px) {
+    .container{
+      width: nth($bk, 2) px!important;
+      background-color: #f00!important;
+    }
+  }
+}
+
+
 
 

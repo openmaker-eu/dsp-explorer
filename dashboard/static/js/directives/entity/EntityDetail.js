@@ -1,99 +1,73 @@
 import * as _ from 'lodash'
 import * as d3 from 'd3';
-
 let template = `
-    <div class="entity-detail">
-    
-       <!--Entity Heading-->
-       <div class="col-md-12 entity-heading margin-bottom-1-perc">
-           <h1 class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-0">
-               <span class=" entity-detail__title">{$ entityname $}</span>
-               
-               <span class="pull-right">
-                   <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
-                   <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
-               </span>
-               
-           <h1>
-       </div>
-
-
-       <div class="col-md-8 col-md-offset-1 col-sm-9 col-sm-offset-01 entity-content">
-            <!--Content-->
-            <div class="col-md-8">
-            
-                <!--Loader-->
-                <entity-loading
-                    loading="!entity && !nodata"
-                    nodata="nodata"
-                    entityname="{$ entityname $}"
-                ></entity-loading>
-            
-                <!-- Enitiy details -->
-                <div  ng-if="entity !== null">
-                    <div>
-                        <h2 class="text-{$ entityname $}">{$ entity.title || entity.name $}</h2>
-                        <br>
-                        <p ng-if="entity.lenght == 0">Loading data</p>
-                        <p>{$ entity.full_text || entity.description $}</p>
-                    </div>
-                    <br>
-                    <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
-                    
-                </div>
+    <div class="entity--{$ entityname $} entity-preview">
+        <div ng-class="{'force-square': preview}">
+            <div class="do-not-remove-me-please">
+                
+                <!--Entity Detail Title-->
+                <h3 class="text-{$ entityname $}">
+                    <span>{$ entity.title || entity.name | limitTo: 20 $}</span>
+                    <span ng-if="entity.title.length > 20">...</span>
+                </h3>
                 <br>
-            </div>
-            <div class="col-md-4">
-            
-                <!--EVENT ONLY: Event details with icons-->
-                <div ng-if="entityname == 'challenge'">
-                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;
-                        <span>{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</span>
-                        <span>{$ entity.end_time | date:'d MMMM yyyy,EEEE' $}</span>
-                    </p>
-                </div>
-            
-                <img src="{$ entity.im $}" class="col-md-12" alt="">
-            </div>
-        </div>
 
-        <!--Right sidebar-->
-        <div class="col-md-3">
-            <entity-sidebar slider="{$ slider $}" entityname="{$ entityname $}"></entity-sidebar>
+                <!--EVENT ONLY: Event details with icons-->
+                <div ng-if="entityname == 'events'" class="entity-preview__events-detail">
+                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</p>
+                    <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$ entity.place $}</p>
+                    <p><a href="{$ entity.link $}" target="_blank"><i class="fa fa-plus-square"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
+                </div>
+                
+                <!--Fade container-->
+                <div ng-if="preview" class="fade"></div>
+                
+                <!--Read more-->
+                <a ng-if="entityid && preview" href="/{$ entityname $}/{$ entityid $}" class="read-more"><h4>READ MORE</h4></a>
+
+                <!-- Show Full text if exist-->
+                <div>
+                
+                    <!--News-->
+                    <p ng-if="entity.full_text">
+                        {$ entity.summary | limitTo : 1024 $}
+                        <span ng-if="entity.description.text.length > 1024">...</span>
+                    </p>
+                    
+                    <!--Events-->
+                    <p ng-if="entity.description.text">
+                        {$ entity.description.text || limitTo : 1024 $}
+                        <span ng-if="entity.description.text.length > 1024">...</span>
+                    </p>
+                    
+                    <!--Projects-->
+                    <p ng-if="entity.description && !entity.description.text">
+                        {$ entity.description || limitTo : 1024 $}
+                        <span ng-if="entity.description.length > 1024">...</span>
+                    </p>
+                    
+                    <!--link to source-->
+                    <p ng-if="!preview && (entity.link || entity.source)" class="text-red">
+                        <a href="{$ entity.link || entity.source $}" target="_blank">Got to source</a>
+                    </p>
+                
+                </div>
+
+                
+            </div>
         </div>
-        
     </div>
 `
-
 export default [function(){
     return {
         template:template,
         scope: {
+            entity: '=',
             entityname: '@',
             entityid : '@',
-            slider: '@'
+            preview : '='
         },
-        controller : ['$scope', '$http', 'toastr', '$rootScope', '$timeout', function($scope, $http, toastr, $rootScope, $timeout) {
-            let url = ''
-
-            $scope.entity = null
-            $scope.nodata = false
-            
-            $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            
-            $scope.get_data = (url) => {
-                $scope.nodata = false;
-                $http.get(url).then(res => {
-                    $scope.entity = res.data.result[0] || null
-                    $scope.nodata = res.data.result.length === 0
-                },
-                err => $scope.modata = true
-                )
-            }
-            
-            $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
-    
-        }]
+        controller : ['$scope', function($scope) {}]
     }
 }]
 

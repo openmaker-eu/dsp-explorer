@@ -1,6 +1,9 @@
 import * as _ from 'lodash'
 let template = `
-        <div class="col-md-12 entity-content background-{$ entityname $}" style="height: 300px;">
+        <div
+            ng-if="is_visible"
+            class="col-md-12 entity-content background-{$ entityname $} stripe-full--{$ entityname $}"
+            style="height: 300px;">
             <div class="row">
                 <div class="col-md-12">
                     <entity-loading
@@ -36,10 +39,12 @@ export default [function(){
         scope: {
             entityname : '@',
         },
-        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
+        controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
             let url = ''
             $scope.entities = []
-            $scope.nodata = false;
+            $scope.nodata = false
+            $scope.is_visible = false
+            $scope.event_name = 'bookmarked.' + $scope.entityname + '.visibility'
             
             $scope.get_data = (url) => {
                 $scope.nodata = false;
@@ -51,6 +56,9 @@ export default [function(){
                 )
             }
             $scope.get_data('/api/v1.4/bookmarks/' + $scope.entityname + '/')
+            $rootScope.$on($scope.event_name, (n,a)=> a && ($scope.is_visible = a.visible) )
+            $rootScope.$on($scope.event_name, (n,a)=> console.log(a) )
+            
 
         }]
     }

@@ -70,13 +70,14 @@ app.directive('project', require('./directives/Project').default )
 
 // Pages
 app.directive('homePage', require('./directives/pages/HomePage').default )
+app.directive('entityListPage', require('./directives/pages/EntityListPage').default )
+app.directive('entityDetailPage', require('./directives/pages/EntityDetailPage').default )
+
 
 // Entity
-app.directive('entityList', require('./directives/entity/EntityList').default )
 app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
-app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
 app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
-app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
+app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
 
 // Partials
 app.directive('bookmarkedStripe', require('./directives/entity/BookmarkedStripe').default )
