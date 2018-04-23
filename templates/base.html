@@ -65,26 +65,18 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         {% if not user.is_anonymous %}
-                        <li class="{% if current_url == 'dashboard:dashboard' %}liactive{% endif %}" >
-                            <a href="{% url 'dashboard:dashboard' %}">Home</a>
-                        </li>
-                        <li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{% url 'dashboard:theme' %}">Feeds</a>
-                                </li>
-                                <li role="separator" class="divider"></li>
-                                <li>
-                                    <a href="{% url 'dashboard:events' %}">Events</a>
-                                </li>
-                            </ul>
-                        </li>
-                        {% if request.user.is_superuser %}
-                        <li class="{% if current_url == 'dashboard:insight' %}liactive{% endif %}" >
-                            <a href="{% url 'dashboard:insight' %}">Insight</a>
-                        </li>
-                        {% endif %}
+                        <!--<li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">-->
+                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>-->
+                            <!--<ul class="dropdown-menu">-->
+                                <!--<li>-->
+                                    <!--<a href="{% url 'dashboard:theme' %}">Feeds</a>-->
+                                <!--</li>-->
+                                <!--<li role="separator" class="divider"></li>-->
+                                <!--<li>-->
+                                    <!--<a href="{% url 'dashboard:events' %}">Events</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
                         <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
                             <a href="{% url 'dashboard:community' %}">Community</a>
                         </li>
@@ -114,9 +106,6 @@
                                     <a href="{% url 'pss:application_result' %}">Results</a>
                                 </li>
                             </ul>
-                        </li>
-                        <li class="{% if current_url == 'chatbot:chatbot' %}liactive{% endif %}" >
-                            <a href="{% url 'chatbot:chatbot' %}">ChatBot</a>
                         </li>
                         {% endif %}
 
@@ -172,24 +161,24 @@
     <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
 
         <div class="row back padding-bottom-20">
-            {% if user.is_anonymous %}
-            <div class="container">
-                <div class="row margin-top-25">
-                    <div class="col-md-8 text-white">
-                        <p class="sub-title">About <strong>Open</strong>Maker</p>
-                        <p>
-                            The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.
-                        </p>
-                        <p>
-                            This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-center margin-top-30">
-                        <a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
+            <!--{% if user.is_anonymous %}-->
+            <!--<div class="container">-->
+                <!--<div class="row margin-top-25">-->
+                    <!--<div class="col-md-8 text-white">-->
+                        <!--<p class="sub-title">About <strong>Open</strong>Maker</p>-->
+                        <!--<p>-->
+                            <!--The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.-->
+                        <!--</p>-->
+                        <!--<p>-->
+                            <!--This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.-->
+                        <!--</p>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-4 text-center margin-top-30">-->
+                        <!--<a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--{% endif %}-->
 
             <div class="container">
                 <div class="row margin-top-20">

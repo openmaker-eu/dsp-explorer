@@ -4,6 +4,9 @@ let template = `
         <div ng-repeat="entity_name in entities_names " class="col-md-4">
             <entity-carousel entityname="{$ entity_name $}" limit="$root.authorization<10 && 1"></entity-carousel>
         </div>
+        <div ng-if="$root.authorization<10" class="text-center col-md-12 margin-top-5-perc margin-bottom-5-perc">
+            <a href="/onboarding" class="btn btn--white btn-lg btn--big ">LOAD MORE</a>
+        </div>
     </div>
 `
 

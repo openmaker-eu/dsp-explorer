@@ -59,24 +59,31 @@ app.controller('eventsController', require('./controllers/events.controller').de
 app.controller('searchController', require('./controllers/searchmembers.controller').default )
 app.directive('userStories', require('./directives/UserStories.directive').default )
 
+// Challenge
 app.directive('challengeList', require('./directives/ChallengeList').default )
 app.directive('challenge', require('./directives/Challenge').default )
 
-app.directive('entityList', require('./directives/entity/EntityList').default )
-app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
-app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
-app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
-app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
-
-app.directive('homePage', require('./directives/HomePage').default )
-
-app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
-
+// Projects
 app.directive('projectDetail', require('./directives/ProjectDetail').default )
 app.directive('projectList', require('./directives/ProjectList').default )
 app.directive('project', require('./directives/Project').default )
 
+// Pages
+app.directive('homePage', require('./directives/pages/HomePage').default )
+
+// Entity
+app.directive('entityList', require('./directives/entity/EntityList').default )
+app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
+app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
+app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
+app.directive('entityPreview', require('./directives/entity/EntityPreview').default )
+
 // Partials
+app.directive('bookmarkedStripe', require('./directives/entity/BookmarkedStripe').default )
+app.directive('bookmarkedStripeToggler', require('./directives/partials/BookmarkedStripeToggler').default )
+
+app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
+
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )

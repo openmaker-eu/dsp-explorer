@@ -22,6 +22,8 @@ $color-projects--light : #ffb685;
 $color-events : #669900;
 $color-events--light : #9dbd5c;
 
+$color-white: #fff;
+
 $color_list : (
         'news': $color-news,
         'news--light': $color-news--light,
@@ -48,8 +50,9 @@ $color_list : (
         'color-grey--dark':$color-grey--dark,
         'color-grey--light':$color-grey--light,
         
-        'color-black':$color-black
-        
+        'color-black':$color-black,
+        'color-white':$color-white
+
 );
 
 @each $entity_name, $entity_color in $color_list {
@@ -63,6 +66,8 @@ $color_list : (
   }
 
 }
+
+body, html { background-color: $color-grey--light; }
 
 .entity-carousel{
 
@@ -124,6 +129,11 @@ $color_list : (
 .entity-preview {
   width:100%;
   height:100%
+}
+
+.entity-heading {
+  i { color:$color-grey}
+
 }
 
 .entity-sidebar{
@@ -230,10 +240,32 @@ header .navbar.navbar-default{
 
 
 .entity-list, .entity-detail{
-  &__title, &__title *{
+  &__title, &__title *:not(i){
     text-transform: uppercase;
     @extend .cairo;
     @extend .light;
   }
 }
+
+.btn {
+  @extend .cairo;
+  font-weight: bold;
+  border-radius: 2px;
+
+  &--white {
+    background-color: $color-white;
+    border-color: $color-grey;
+    color: $color-grey;
+
+    &:hover {
+      border-color: $color-grey--dark;
+      color: $color-grey--dark;
+    }
+  }
+  &--big {
+    padding:15px 40px;
+  }
+
+}
+
 
