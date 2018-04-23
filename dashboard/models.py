@@ -27,9 +27,12 @@ from django.db import transaction
 
 class ModelHelper:
     @classmethod
-    def filter_instance_list_by_class(cls, list_to_filter, filter_class=None):
-        return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
-            if filter_class is not None else list_to_filter
+    def filter_instance_list_by_class(cls, list_to_filter, filter_class=None, filter_type=None):
+        if filter_type:
+            return filter(lambda x: x.type == filter_type and isinstance(x, filter_class), list_to_filter)
+        else:
+            return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
+                if filter_class is not None else list_to_filter
 
     @staticmethod
     def find_this_entity(entity, entity_id):
@@ -508,8 +511,7 @@ class Profile(models.Model):
     def get_bookmarks(self, filter_class=None):
         bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
         if filter_class == 'events' or filter_class == 'news':
-            return filter(lambda i: i.type==filter_class,
-                          ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy))
+            return ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy, filter_class)
         else:
             filter_class = eval(filter_class.title()[:-1])
             return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)

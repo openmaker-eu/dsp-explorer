@@ -90,10 +90,9 @@ class EntityProxySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
 class BookmarkSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+
     class Meta:
         model = Bookmark
         fields = ('profile',)
