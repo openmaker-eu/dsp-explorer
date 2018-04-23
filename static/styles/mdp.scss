@@ -38,25 +38,24 @@ $color_list : (
         'event--light': $color-events--light,
         'event': $color-events,
 
-        'color-red':$color-red,
-        'color-red--dark':$color-red--dark,
-        'color-red--light':$color-red--light,
+        'challenge--light': $color-brown--light,
+
+        'red':$color-red,
+        'red--dark':$color-red--dark,
+        'red--light':$color-red--light,
         
-        'color-brown':$color-brown,
-        'color-brown--dark':$color-brown--dark,
-        'color-brown--light':$color-brown--light,
+        'brown':$color-brown,
+        'brown--dark':$color-brown--dark,
+        'brown--light':$color-brown--light,
         
-        'color-grey':$color-grey,
-        'color-grey--dark':$color-grey--dark,
-        'color-grey--light':$color-grey--light,
+        'grey':$color-grey,
+        'grey--dark':$color-grey--dark,
+        'grey--light':$color-grey--light,
         
-        'color-black':$color-black,
-        'color-white':$color-white
+        'black':$color-black,
+        'white':$color-white
 
 );
-
-
-
 
 /*
 * TYPHOGRAPHY
@@ -122,7 +121,7 @@ header .navbar.navbar-default{
   }
   .text-#{$entity_name} { color : $entity_color!important; }
   .background-#{$entity_name} {
-      background-color: $entity_color ;
+      background-color: $entity_color !important ;
   }
 
   .stripe-full--#{$entity_name} {
@@ -198,6 +197,9 @@ header .navbar.navbar-default{
 .entity-list{
   &__box {
     border: solid 3px #eee;
+    background: $color-white;
+    * { overflow:visible!important; }
+
   }
 }
 .entity-preview {
@@ -231,18 +233,22 @@ header .navbar.navbar-default{
   }
 }
 
-
 .entity-preview{
 
   .fade {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
     z-index:1000;
     opacity:1;
+
+    top: -10%;
+    left: -20%;
+    z-index: 1000;
+    width: 140%;
+    height: 120%;
+
     background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background-size: cover;
+
   }
 
   &__events-detail{
@@ -278,7 +284,6 @@ header .navbar.navbar-default{
   }
 
 }
-
 
 .btn {
   @extend .cairo;
@@ -318,5 +323,9 @@ $om_breakpoints: (
 }
 
 
+.overflow-here {
+  overflow: hidden!important;
+  & * { overflow: visible!important}
 
+}
 

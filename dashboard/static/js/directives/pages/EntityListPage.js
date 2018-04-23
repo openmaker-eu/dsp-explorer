@@ -7,7 +7,11 @@ let template = `
             <div class="entity-list__title entity-heading col-md-12 col-sm-12">
                 <div class="row">
                     <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
-                       <span class="entity-detail__title">{$ entityname $}</span>
+                       <span class="entity-detail__title">
+           
+                            <span ng-if="entityname !== 'projects'" >{$ entityname $}</span>
+                            <span ng-if="entityname === 'projects'" >Projects / <span class="text-red">Challenges</span></span>
+                       </span>
                        
                        <span ng-if="$root.authorization>=10 && entityname === 'projects'">
                             <a href="/profile/project/"><i class="fa fa-plus-circle text-{$ entityname $}"></i></a>
@@ -34,17 +38,19 @@ let template = `
                         
                     </div>
     
-                    <div ng-if="entities.length > 0">
+                    <div ng-if="entities.length > 0" >
                     
                         <bookmarked-stripe entityname="{$ entityname $}"></bookmarked-stripe>
                     
                         <!--Entity list-->
                         <div
-                            class="col-lg-3 col-md-4 col-sm-6 col-xs-12 "
+                            class="col-lg-4 col-md-6 col-sm-12 col-xs-12 "
                             ng-repeat="entity in entities"
                             style="margin-bottom:1%; margin-top: 1%;"
                         >
-                            <div class="col-md-12 entity-list__box">
+                            <div
+                                class="col-md-12 entity-list__box overflow-here"
+                                ng-class="{ 'background-challenge--light': entity.hasOwnProperty('company') }">
                                 <entity-detail
                                     entity="entity"
                                     entityname="{$ entityname $}"

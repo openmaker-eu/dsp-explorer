@@ -12,14 +12,20 @@ export default [function(){
                     <br>
                 </div>
                 <!--No data-->
-                <div ng-if="error"><h2>There are no <span class="capitalize">{$ entityname $}</span> available</h2></div>
+                <div ng-if="error">
+                    <h2>
+                        <span ng-if="!errormessage">There are no <span class="capitalize">{$ entityname $}</span> available</span>
+                        <span ng-if="errormessage">{$ errormessage $}</span>
+                    </h2>
+                </div>
 
             </div>
         `,
         scope: {
             loading : '=',
             error : '=',
-            entityname : '@'
+            entityname : '@',
+            errormessage : '@'
         },
         controller : ['$scope',function($scope){}]
     }

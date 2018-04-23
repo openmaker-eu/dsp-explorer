@@ -48,7 +48,7 @@ let template = `
                     
                     <!--link to source-->
                     <p ng-if="!preview && (entity.link || entity.source)" class="text-red">
-                        <a href="{$ entity.link || entity.source $}" target="_blank">Got to source</a>
+                        <a href="{$ entity.link || entity.url $}" target="_blank">Got to source</a>
                     </p>
                 
                 </div>

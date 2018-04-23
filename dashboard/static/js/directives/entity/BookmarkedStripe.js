@@ -2,30 +2,30 @@ import * as _ from 'lodash'
 let template = `
         <div
             ng-if="is_visible"
-            class="col-md-12 entity-content background-{$ entityname $} stripe-full--{$ entityname $}"
-            style="height: 300px;">
+            class="col-md-12 entity-content stripe-full--{$ entityname $}"
+        >
             <div class="row">
                 <div class="col-md-12">
                     <entity-loading
                         loading="entities.length==0 && !nodata"
                         error="nodata"
                         entityname="{$ entityname $}"
+                        errormessage="You have no bookmarked {$ entityname $}"
                     ></entity-loading>
                 </div>
 
                 <div ng-if="entities.length > 0">
-                    <!--Entity list-->
                     <div
-                        class="col-lg-3 col-md-4 col-sm-6 col-xs-12 "
+                        class="col-lg-4 col-md-6 col-sm-12 col-xs-12 "
                         ng-repeat="entity in entities | limitTo : 3"
-                        style="margin-bottom:1%; margin-top: 1%;"
+                        style="margin-bottom:2%; margin-top: 2%;"
                     >
-                        <div class="col-md-12 entity-list__box">
-                            <entity-preview
+                        <div class="col-md-12 entity-list__box background-white">
+                            <entity-detail
                                 entity="entity"
                                 entityname="{$ entityname $}"
                                 entityid="{$ entity.link_id || entity.id $}"
-                            ></entity-preview>
+                            ></entity-detail>
                         </div>
                     </div>
                 </div>
@@ -57,8 +57,6 @@ export default [function(){
             }
             $scope.get_data('/api/v1.4/bookmarks/' + $scope.entityname + '/')
             $rootScope.$on($scope.event_name, (n,a)=> a && ($scope.is_visible = a.visible) )
-            $rootScope.$on($scope.event_name, (n,a)=> console.log(a) )
-            
 
         }]
     }
