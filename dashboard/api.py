@@ -377,6 +377,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
+            print e
             return not_authorized()
 
     @staticmethod
@@ -391,6 +392,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
+            print e
             return not_authorized()
 
     @staticmethod

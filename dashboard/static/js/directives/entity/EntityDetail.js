@@ -36,13 +36,13 @@ let template = `
                     
                     <!--Events-->
                     <p ng-if="entity.description.text">
-                        {$ entity.description.text || limitTo : 1024 $}
+                        {$ entity.description.text | limitTo : 1024 $}
                         <span ng-if="entity.description.text.length > 1024">...</span>
                     </p>
                     
                     <!--Projects-->
                     <p ng-if="entity.description && !entity.description.text">
-                        {$ entity.description || limitTo : 1024 $}
+                        {$ entity.description | limitTo : 1024 $}
                         <span ng-if="entity.description.length > 1024">...</span>
                     </p>
                     

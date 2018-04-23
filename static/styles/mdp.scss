@@ -308,16 +308,17 @@ header .navbar.navbar-default{
 
 // hack bootstrap cointainer
 $om_breakpoints: (
-  sm: (768px, 76px),
-  md: (992px, 992px),
-  lg: (1200px, 2000px),
+  sm: (768, 100),
+  md: (992, 100),
+  lg: (1200, 90),
+  xl: (1650, 80),
 );
 
-@each $bk in $om_breakpoints {
-  @media all and (min-width: nth($bk, 1)) {
+@each $om_size, $om_bk in $om_breakpoints {
+  @media all and (min-width: #{nth($om_bk, 1)}) {
     .container{
-      width:  nth($bk, 2);
-      background-color: #f00!important;
+      //width: #{ ((nth($om_bk, 2) * nth($om_bk, 1) /100) } px !important;
+      //background-color: #f00!important;
     }
   }
 }
