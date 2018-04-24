@@ -48,9 +48,7 @@ let template = `
                             ng-repeat="entity in entities"
                             style="margin-bottom:1%; margin-top: 1%;"
                         >
-                            <div
-                                class="col-md-12 entity-list__box overflow-here"
-                                ng-class="{ 'background-challenge--light': entity.hasOwnProperty('company') }">
+                            <div class="entity-list__box">
                                 <entity-detail
                                     entity="entity"
                                     entityname="{$ entityname $}"

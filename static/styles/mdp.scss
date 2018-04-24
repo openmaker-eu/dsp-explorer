@@ -125,7 +125,6 @@ header .navbar.navbar-default{
   }
 
   .stripe-full--#{$entity_name} {
-
     &:before {
       content:"";
       background-color:$entity_color;
@@ -135,8 +134,6 @@ header .navbar.navbar-default{
       left: -2000px;
       z-index: -1;
     }
-
-
   }
 
 
@@ -198,7 +195,7 @@ header .navbar.navbar-default{
   &__box {
     border: solid 3px #eee;
     background: $color-white;
-    * { overflow:visible!important; }
+    //* { overflow:visible!important; }
 
   }
 }
@@ -212,43 +209,57 @@ header .navbar.navbar-default{
 
 }
 
-.entity-sidebar{
+.entity-sidebar {
 
   @each $entity_name, $entity_color in $color_list {
     &.background-#{$entity_name} {
       &:before {
         @extend .background-#{$entity_name};
+        @media all and (max-width: 768px) {
+          display: none !important;
+          background: none;
+        }
       }
     }
   }
+
   &::before {
     background: #bbb;
     content: ' ';
     height: 150%;
-    margin-top:-25%;
-    margin-left: -15px; /* compensates column's padding */
+    margin-top: -25%;
+    margin-left: -15px;
     position: fixed;
     width: 100%;
-    z-index: 0; /* puts behind content */
+    z-index: 0;
+
+    @media all and (max-width: 768px) {
+      display: none;
+    }
+
   }
 }
 
-.entity-preview{
+.entity-detail{
+
+  &-padding {
+    padding:2% 8%;
+  }
 
   .fade {
     position: absolute;
-    z-index:1000;
     opacity:1;
 
-    top: -10%;
-    left: -20%;
+    top: 0;
+    left: 0;
+    bottom:0;
+    right:0;
     z-index: 1000;
-    width: 140%;
-    height: 120%;
+    width: 100%;
+    height: 100%;
 
     background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
     background-size: cover;
-
   }
 
   &__events-detail{
@@ -258,31 +269,43 @@ header .navbar.navbar-default{
 
   .read-more {
     position:absolute;
-    bottom:1%;
-    left:1%;
+    bottom:0;
+    left:0;
+    width:100%;
+    text-align: left;
     z-index:1001;
     font-weight: bold;
     * { color:#f00;}
   }
 
-}
-
-.force-square {
-  position: relative;
-  width:100%;
-  padding-bottom:100%;
-  overflow:hidden;
-
-  & > * {
-    position: absolute;
-    top:0;
-    right:0;
-    bottom:0;
-    left:0;
+  .force-square {
+    position: relative;
     width:100%;
-    height:100%;
+    padding-bottom:100%;
+    overflow:hidden;
+
+    & > * {
+      position: absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+      width:100%;
+      height:100%;
+    }
   }
 
+}
+
+
+.entity-detail-page {
+  &__content {
+    .entity-detail{
+      &-padding {
+        padding:0;
+      }
+    }
+  }
 }
 
 .btn {
@@ -315,12 +338,14 @@ $om_breakpoints: (
 );
 
 @each $om_size, $om_bk in $om_breakpoints {
+
   @media all and (min-width: #{nth($om_bk, 1)}) {
     .container{
-      //width: #{ ((nth($om_bk, 2) * nth($om_bk, 1) /100) } px !important;
-      //background-color: #f00!important;
+      //width: #{nth($om_bk, 2)} px !important;
+      background-color: #f00!important;
     }
   }
+
 }
 
 .overflow-here {

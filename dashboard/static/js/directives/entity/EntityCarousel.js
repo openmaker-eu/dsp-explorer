@@ -1,6 +1,3 @@
-import * as _ from 'lodash'
-import * as d3 from 'd3';
-
 let template = `
     <div class="col-md-12"  >
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
@@ -15,7 +12,7 @@ let template = `
              ></entity-loading>
             
             <div class="entity-carousel__body" ng-if="entities.length > 0">
-                <slick settings="slickConfig" style="padding:0% 10%;">
+                <slick settings="slickConfig">
                     <div ng-repeat="entity in entities | limitTo: limit || undefined" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>

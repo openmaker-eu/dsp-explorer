@@ -1,40 +1,42 @@
 let template = `
-    <div class="container entity-list">
+    <div class="container entity-detail-page">
         <div class="row">
-        
-           <!--Entity Heading-->
-           <div class="col-md-12 entity-heading margin-bottom-1-perc">
+            
+            <!--Entity Heading-->
+            <div class="col-md-12 entity-heading margin-bottom-1-perc">
                 <div class="row">
-                       <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
-                           <span class=" entity-detail__title">{$ entityname $}</span>
-                           <span class="pull-right">
-                               <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
-                               <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
-                           </span>
-                       <h1>
+                   <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
+                       <span class=" entity-detail__title">{$ entityname $}</span>
+                       <span class="pull-right">
+                           <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                           <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                       </span>
+                   <h1>
                 </div>
-           </div>
-    
-           <div class="col-md-9 col-sm-9 col-sm-offset-01 entity-content">
+            </div>
+            
+            <div class="col-md-9 col-sm-9 col-sm-offset-01 entity-detail-page__content">
+                
                 <!--Content-->
-                <div class="row">
+                <div class="row entity-detail__content">
                     <div class="col-md-8">
-                    
+                        
                         <!--Loader-->
                         <entity-loading
                             loading="!entity && !nodata"
                             nodata="nodata"
                             entityname="{$ entityname $}"
                         ></entity-loading>
-                    
+                        
                         <!-- Enitiy details -->
                         <div ng-if="entity !== null">
                             <entity-detail entity="entity" entityid="{$ entityid $}" entityname="{$ entityname $}" ></entity-preview>
                         </div>
                         <br>
+                        
                     </div>
                     <div class="col-md-4">
-                    
+                        
                         <!--EVENT ONLY: Event details with icons-->
                         <div ng-if="entityname == 'challenge'">
                             <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;
@@ -42,7 +44,7 @@ let template = `
                                 <span>{$ entity.end_time | date:'d MMMM yyyy,EEEE' $}</span>
                             </p>
                         </div>
-                    
+                        
                         <img src="{$ entity.im || entity.picture || entity.cover $}" class="col-md-12" alt="single {$ entityname $} image">
                         
                     </div>

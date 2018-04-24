@@ -1,9 +1,16 @@
-import * as _ from 'lodash'
-import * as d3 from 'd3';
+
 let template = `
-    <div class="entity--{$ entityname $} entity-preview">
+    <div class="entity--{$ entityname $} entity-detail"
+        ng-class="{
+            'background-challenge--light': entity.hasOwnProperty('company'),
+            'background-white': ! entity.hasOwnProperty('company')
+        }">
         <div ng-class="{'force-square': preview}">
-            <div class="do-not-remove-me-please">
+            
+            <!--Fade container-->
+            <div ng-if="preview" class="fade"></div>
+            
+            <div class="do-not-remove-me-please entity-detail-padding" >
                 
                 <!--Entity Detail Title-->
                 <h3 class="text-{$ entityname $}">
@@ -18,12 +25,9 @@ let template = `
                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$ entity.place $}</p>
                     <p><a href="{$ entity.link $}" target="_blank"><i class="fa fa-plus-square"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
                 </div>
-                
-                <!--Fade container-->
-                <div ng-if="preview" class="fade"></div>
-                
+  
                 <!--Read more-->
-                <a ng-if="entityid && preview" href="/{$ entityname $}/{$ entityid $}" class="read-more"><h4>READ MORE</h4></a>
+                <a ng-if="entityid && preview" href="/{$ entityname $}/{$ entityid $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
 
                 <!-- Show Full text if exist-->
                 <div>
@@ -52,8 +56,7 @@ let template = `
                     </p>
                 
                 </div>
-
-                
+   
             </div>
         </div>
     </div>

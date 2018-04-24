@@ -5,6 +5,7 @@ let template = `
             class="col-md-12 entity-content stripe-full--{$ entityname $}"
         >
             <div class="row">
+            
                 <div class="col-md-12">
                     <entity-loading
                         loading="entities.length==0 && !nodata"
@@ -20,15 +21,17 @@ let template = `
                         ng-repeat="entity in entities | limitTo : 3"
                         style="margin-bottom:2%; margin-top: 2%;"
                     >
-                        <div class="col-md-12 entity-list__box background-white">
+                        <div class="entity-list__box">
                             <entity-detail
                                 entity="entity"
                                 entityname="{$ entityname $}"
                                 entityid="{$ entity.link_id || entity.id $}"
+                                preview="true"
                             ></entity-detail>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
 `
