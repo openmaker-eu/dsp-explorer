@@ -5,7 +5,8 @@ export default [function(){
                 <!--Loading Data-->
                 <div ng-if="loading" class="text-center">
                     <h2>
-                        <span>Loading <span class="capitalize">{$ entityname $}</span></span>
+                        <span ng-if="!custommessage">Loading <span class="capitalize">{$ entityname $}</span></span>
+                        <span ng-if="custommessage" >{$ custommessage $}</span>
                         <br><br>
                         <om-spinner></om-spinner>
                     </h2>
@@ -25,7 +26,8 @@ export default [function(){
             loading : '=',
             error : '=',
             entityname : '@',
-            errormessage : '@'
+            errormessage : '@',
+            custommessage : '@'
         },
         controller : ['$scope',function($scope){}]
     }

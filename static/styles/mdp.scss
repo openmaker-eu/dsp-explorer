@@ -3,7 +3,7 @@ $color-red : #ff3333;
 $color-red--dark : #bf2626;
 $color-red--light : #ffd6d6;
 
-$color-brown: #9d9d9d;
+$color-brown: #9d8585;
 $color-brown--dark: #330000;
 $color-brown--light: #d6cccc;
 
@@ -357,3 +357,81 @@ $om_breakpoints: (
   & * { overflow: visible!important}
 }
 
+// login
+.signup-modal {
+
+  display: flex!important;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  z-index:2000000!important;
+
+  .modal-dialog {
+    margin: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 2000;
+
+    .modal-content {
+
+      width: 100%;
+      height: 100%;
+
+      .modal-body {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between;
+        align-content: center;
+        height: 100%;
+        .modal-slider {
+          flex-grow: 1;
+        }
+
+        .slick-list,
+        .slick-track {
+          height: 100%;
+        }
+
+      }
+
+      .step-navigation {
+        display: flex !important;
+        flex-direction: row;
+        justify-content: space-between;
+        align-content: center;
+        & * {
+          display: flex !important;
+          flex-direction: row;
+          justify-content: center;
+          align-content: center;
+          text-align: center;
+          margin: 0;
+          align-self: center;
+        }
+
+      }
+
+    }
+  }
+
+  .signup-template{
+    height:100%;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+
+    & > * {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+    }
+
+
+
+    &__label { text-align: center; }
+
+  }
+
+}

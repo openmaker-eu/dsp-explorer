@@ -1,4 +1,5 @@
 
+
 let jQuery = window.$ = window.jQuery = require('jquery');
 require('../../../node_modules/angular/angular');
 require('../../../node_modules/ngmap')
@@ -73,7 +74,6 @@ app.directive('homePage', require('./directives/pages/HomePage').default )
 app.directive('entityListPage', require('./directives/pages/EntityListPage').default )
 app.directive('entityDetailPage', require('./directives/pages/EntityDetailPage').default )
 
-
 // Entity
 app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )
 app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
@@ -89,5 +89,9 @@ app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
 app.directive('omSpinner', require('./directives/partials/OmSpinner').default )
+app.directive('signupTemplate', require('./directives/partials/SignupTemplate').default )
+
+
+app.factory('SignupModal', require('./factories/SignupModal').default )
 
 
