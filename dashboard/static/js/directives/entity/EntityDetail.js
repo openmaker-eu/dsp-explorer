@@ -3,7 +3,7 @@ let template = `
     <div class="entity--{$ entityname $} entity-detail"
         ng-class="{
             'background-challenge--light': entity.hasOwnProperty('company'),
-            'background-white': ! entity.hasOwnProperty('company')
+            'background-white': ! entity.hasOwnProperty('company') && preview
         }">
         <div ng-class="{'force-square': preview}">
             
