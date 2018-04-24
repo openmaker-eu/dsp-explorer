@@ -10,7 +10,7 @@ let template = `
             <!--Fade container-->
             <div ng-if="preview" class="fade"></div>
             
-            <div class="do-not-remove-me-please entity-detail-padding" >
+            <div class="entity-detail__content entity-detail-padding" >
                 
                 <!--Entity Detail Title-->
                 <h3 class="text-{$ entityname $}">
@@ -20,7 +20,7 @@ let template = `
                 <br>
 
                 <!--EVENT ONLY: Event details with icons-->
-                <div ng-if="entityname == 'events'" class="entity-preview__events-detail">
+                <div ng-if="entityname == 'events'" class="entity-detail__event-detail">
                     <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</p>
                     <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$ entity.place $}</p>
                     <p><a href="{$ entity.link $}" target="_blank"><i class="fa fa-plus-square"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
@@ -30,7 +30,7 @@ let template = `
                 <a ng-if="entityid && preview" href="/{$ entityname $}/{$ entityid $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
 
                 <!-- Show Full text if exist-->
-                <div>
+                <!--<div>-->
                 
                     <!--News-->
                     <p ng-if="entity.full_text">
@@ -55,7 +55,7 @@ let template = `
                         <a href="{$ entity.link || entity.url $}" target="_blank">Got to source</a>
                     </p>
                 
-                </div>
+                <!--</div>-->
    
             </div>
         </div>
