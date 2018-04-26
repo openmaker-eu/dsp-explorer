@@ -36,12 +36,12 @@ let template = `
                         
                     </div>
                     <div class="col-md-4">
-                        
+                                                    <!--ng-if="{$ entityname == 'challenges' $}"-->
+
                         <!--Challenges: Event details with icons-->
                         <div
-                            ng-if="{$ entityname == 'challenge' $}"
                             style="display: flex; flex-direction: row; justify-content:left; align-items:center; "
-                         >
+                        >
                                 <hh5><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;</hh5>
                                 <h5>{$ entity.data.start_date | date:'d MMMM yyyy' $}</h5>
                                 <h5>&nbsp;-&nbsp;</h5>
@@ -51,6 +51,11 @@ let template = `
                         <img style="padding:0; width:100%;" ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}" class="col-md-12">
                         
                     </div>
+                    
+                    <div class="col-md-12">
+                        <entity-interested  entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
+                    </div>
+                    
                 </div>
             </div>
     

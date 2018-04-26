@@ -58,7 +58,7 @@ def get_entity_details(request, entity='news', entity_id=None):
             local_entities = Challenge.objects.get(pk=entity_id)
             results = ChallengeSerializer(local_entities, many=True).data
 
-    return success('ok','single entity',results)
+    return success('ok', 'single entity', results)
 
 
 def bookmark(request, entity='news', entity_id=None):
@@ -100,6 +100,8 @@ def get_bookmarks(request):
 
 def get_bookmark_by_entities(request, entity=None):
     try:
+
+        entity = entity[:-1]
         profile = request.user.profile
         results = profile.get_bookmarks(entity)
         serialized = BookmarkSerializer(results, many=True).data
@@ -209,12 +211,10 @@ def apilogout(request):
 
 class entity(APIView):
     def get(self, request, entity):
-
         #TODO make cursor works
         profile = None
         results = []
         local_entities = None
-
         try:
             profile = request.user.profile
         except:
@@ -249,9 +249,7 @@ class entity(APIView):
 
 class entity_details(APIView):
     def get(self, request, entity='news', entity_id=None):
-
         results = []
-
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)
             results = ProjectSerializer(local_entities).data
