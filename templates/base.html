@@ -24,7 +24,7 @@
 
 </head>
 
-<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController as baseCtrl" style=""
+<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController" style=""
       ng-init="
           toastrMessage = [
                  {% for message in messages %}
@@ -36,8 +36,7 @@
                      },
                 {% endfor %}
           ];
-          om_authorization = {{ om_authorization }};
-          is_logged = om_authorization >=10;
+          $root.authorization = {{ om_authorization }};
       "
 >
 
@@ -50,7 +49,7 @@
         {% endwith %}
     </header>
 
-    <main ng-if="reload == false">
+    <main>
         {% block container %}
         {% endblock %}
     </main>

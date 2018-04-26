@@ -12,14 +12,13 @@
             <a class="navbar-brand logo text-red" href="/">
                 <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left" style="height:120%; margin-top:-2%;">
                 <span class="pull-left text-red" style="font-weight: 900;">OM<span>explorer</span></span>
-                <!--<p>AUTH:{$ om_authorization $}</p>-->
             </a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-            <ul ng-if="om_authorization >= 10" class="nav navbar-nav navbar-right">
+            <ul ng-if="$root.authorization >= 10" class="nav navbar-nav navbar-right">
 
                 <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
                     <a href="{% url 'dashboard:community' %}">Community</a>
@@ -28,7 +27,7 @@
                     <a href="{% url 'dashboard:invite' %}">Invite</a>
                 </li>
 
-                <li  ng-if="om_authorization === 1000"
+                <li  ng-if="$root.authorization >= 1000"
                         class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -63,7 +62,7 @@
                 </li>
             </ul>
 
-            <ul ng-if="om_authorization < 10" class="nav navbar-nav navbar-right">
+            <ul ng-if="$root.authorization < 10" class="nav navbar-nav navbar-right">
                 <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
                     <a ng-click="open_signup()" class="pointer" >Onboard</a>
                 </li>

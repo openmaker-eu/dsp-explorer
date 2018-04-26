@@ -21,6 +21,9 @@ export default [function(){
         controller : ['$scope', '$rootScope', function($scope, $rootScope) {
             $scope.entities_names = ['news', 'events', 'projects']
             $scope.open_login = ()=>{ $rootScope.$emit('signup.modal.open') }
+            
+            console.log('homepage', $scope);
+            
         }]
     }
 }]

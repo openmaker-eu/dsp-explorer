@@ -17,6 +17,7 @@ export function angularBase(app=null){
     
     // Import angular componenets
     app && app.factory('ModalFactory', require('./factories/modal.factory').default )
+    app && app.factory('LoginService', require('./factories/LoginService').default )
     app && app.factory('MessageModal', require('./factories/message.modal.factory').default )
     app && app.controller('baseController', require('./controllers/base.controller').default )
     return this

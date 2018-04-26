@@ -16,7 +16,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         }
 
         get = async ()=>{
-            console.log('get', this.url);
             this.data = (await $http.get( this.url, {timeout: 5000}) ).data || this.data
             return await this.data
         }
@@ -31,11 +30,8 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         }
     }
     
-    $rootScope.$on('authorization.change', (a,b)=>{
-        if(a!==b) {
-            console.log('change');
-            _.each(f.entities, (e)=>{ e.get() })
-        }
+    $rootScope.$watch('authorization', (a,b)=>{
+        if(a!==b) {_.each(f.entities, (e)=>{ e.get() })}
     })
 
     return f
