@@ -86,8 +86,8 @@ export default
             method: 'POST',
             url: '/api/v1.4/login/',
             data: {
-                username: 'massimo.santoli@top-ix.org',
-                password: 'q1w2e3r4'
+                username: '',
+                password: ''
             },
         })
             .then(
