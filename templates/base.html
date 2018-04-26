@@ -36,7 +36,8 @@
                      },
                 {% endfor %}
           ];
-          om_authorization = {{om_authorization}};
+          om_authorization = {{ om_authorization }};
+          is_logged = om_authorization >=10;
       "
 >
 
@@ -45,123 +46,19 @@
 <div class="om-main-wrapper">
     <header>
         {% with current_url=request.resolver_match.view_name  %}
-        <nav class="navbar navbar-default">
-            <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand logo text-red" href="/">
-                        <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left" style="height:120%; margin-top:-2%;">
-                        <span class="pull-left text-red" style="font-weight: 900;">OM<span>explorer</span></span>
-                    </a>
-                </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if not user.is_anonymous %}
-                        <!--<li class="dropdown {% if current_url == 'dashboard:theme' or current_url == 'dashboard:events' %}liactive{% endif %}">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Explore<span class="caret"></span></a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li>-->
-                                    <!--<a href="{% url 'dashboard:theme' %}">Feeds</a>-->
-                                <!--</li>-->
-                                <!--<li role="separator" class="divider"></li>-->
-                                <!--<li>-->
-                                    <!--<a href="{% url 'dashboard:events' %}">Events</a>-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                        <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
-                            <a href="{% url 'dashboard:community' %}">Community</a>
-                        </li>
-
-                        {% if request.user.is_superuser %}
-                        <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Invitation<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                {% endif %}
-                                <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
-                                    <a href="{% url 'dashboard:invite' %}">Invite new members</a>
-                                </li>
-                                {% if request.user.is_superuser %}
-                                <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
-                                    <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
-                                </li>
-                            </ul>
-                        </li>
-                        {% endif %}
-
-                        {% if request.user.is_superuser %}
-                        {# TODO check permission super admin and isstaff #}
-                        <li class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apply&nbsp<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{% url 'pss:application_result' %}">Results</a>
-                                </li>
-                            </ul>
-                        </li>
-                        {% endif %}
-
-                        <!--Challenge-->
-                        <li class="{% if current_url == 'dashboard:challenge' %}liactive{% endif %}" >
-                            <a href="{% url 'dashboard:challenge' %}">Challenge</a>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                               data-toggle="dropdown" role="button"
-                               aria-haspopup="true" aria-expanded="false"  style="{% if current_url == 'dashboard:profile' %}color:#db4348;{% endif %}">
-                                <span class="glyphicon glyphicon-user"></span>
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{% url 'dashboard:profile' %}">{{request.user.first_name}}</a>
-                                </li>
-                                <li role="separator" class="divider"></li>
-                                <li>
-                                    <a href="{% url 'dashboard:logout' %}">Logout</a>
-                                </li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
-                            <!--<a href="{% url 'dashboard:onboarding' %}">Onboard</a>-->
-                            <a ng-click="open_login()" class="pointer" >Onboard</a>
-                        </li>
-                        <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
-
-                        {% endif %}
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-        </nav>
+            {% include "header.html" %}
         {% endwith %}
     </header>
 
-    <main>
+    <main ng-if="reload == false">
         {% block container %}
         {% endblock %}
     </main>
 
-    <!-- end base container -->
-    <!--{% if not user.is_anonymous %}-->
-    <!--<div id="floating-button" ng-click="openModal('#feedback_modal')" title="Leave a feedback">-->
-    <!--<p class="plus"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i></p>-->
-    <!--</div>-->
-    <!--{% endif %}-->
-
-    <!--</div>-->
     <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
 
         <div class="row back padding-bottom-20">
+
             <!--{% if user.is_anonymous %}-->
             <!--<div class="container">-->
                 <!--<div class="row margin-top-25">-->

@@ -1,0 +1,78 @@
+<nav class="navbar navbar-default">
+
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand logo text-red" href="/">
+                <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left" style="height:120%; margin-top:-2%;">
+                <span class="pull-left text-red" style="font-weight: 900;">OM<span>explorer</span></span>
+                <!--<p>AUTH:{$ om_authorization $}</p>-->
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <ul ng-if="om_authorization >= 10" class="nav navbar-nav navbar-right">
+
+                <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
+                    <a href="{% url 'dashboard:community' %}">Community</a>
+                </li>
+                <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
+                    <a href="{% url 'dashboard:invite' %}">Invite</a>
+                </li>
+
+                <li  ng-if="om_authorization === 1000"
+                        class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admin">Admin area</a></li>
+                        <li><a style="border-bottom:dashed 1px #bbb; width:90%; height:0; margin: 5%"></a></li>
+                        <li>
+                            <a href="{% url 'pss:application_result' %}">Application Results</a>
+                        </li>
+                        <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
+                            <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle"
+                       data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false"  style="{% if current_url == 'dashboard:profile' %}color:#db4348;{% endif %}">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{% url 'dashboard:profile' %}">Your Profile</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <!--<a href="{% url 'dashboard:logout' %}">Logout</a>-->
+                            <a ng-click="logout()" >Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul ng-if="om_authorization < 10" class="nav navbar-nav navbar-right">
+                <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
+                    <a ng-click="open_signup()" class="pointer" >Onboard</a>
+                </li>
+                <li><a href="#" ng-click="openModal('#login_modal')">Login</a></li>
+
+                <li><a  ng-click="login()">Login Async</a></li>
+            </ul>
+
+
+        </div>
+    </div>
+</nav>

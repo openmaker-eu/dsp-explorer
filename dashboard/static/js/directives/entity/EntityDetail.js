@@ -14,7 +14,7 @@ let template = `
                 
                 <!--Entity Detail Title-->
                 <h3 class="text-{$ entityname $}">
-                    <span>{$ entity.title || entity.name | limitTo: 20 $}</span>
+                    <span>{$ entity.title || entity.name | limitTo: ( preview == true ? 20 : ''  ) $}</span>
                     <span ng-if="entity.title.length > 20">...</span>
                 </h3>
                 <br>

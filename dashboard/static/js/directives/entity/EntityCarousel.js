@@ -7,13 +7,13 @@ let template = `
             
             <entity-loading
                 class="text-{$ entityname $} text-center"
-                loading="entities.length == 0 "
+                loading="reload || entities.data.length === 0"
                 entityname="{$ entityname $}"
              ></entity-loading>
             
-            <div class="entity-carousel__body" ng-if="entities.length > 0">
-                <slick settings="slickConfig">
-                    <div ng-repeat="entity in entities | limitTo: limit || undefined" style="width: 90%;">
+            <div class="entity-carousel__body" ng-if="!reload">
+                <slick settings="slickConfig" ng-cloak>
+                    <div ng-repeat="entity in entities.data | limitTo: (limit || 20) || undefined" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
                 </slick>  
@@ -32,17 +32,16 @@ export default [function(){
             slider : '@',
             limit: '='
         },
-        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr) {
-            let url = ''
-            $scope.entities = []
+        controller : ['$scope', '$http', '$timeout', 'EntityProvider', async function($scope, $http, $timeout, EntityProvider) {
             
-            $scope.get_data = (url) => {
-                $http.get(url).then(res => {
-                    $scope.entities = res.data.result || []
-                })
-            }
-            $scope.get_data('/api/v1.4/' + $scope.entityname + '/')
-    
+            $scope.reload = 0;
+            $scope.entities = EntityProvider.make($scope.entityname)
+            $scope.nodata = !$scope.entities.get()
+            
+            $scope.$watch('entities.data',  (a, b)=>{
+                $scope.reload = true;
+                $timeout(function(){$scope.reload=false},500);
+            })
     
             $scope.slickConfig ={
                 slidesToShow: 1,

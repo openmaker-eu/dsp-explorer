@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 
-from . import views, authentication, api, static
+from . import views, authentication, api, static, api14
 
 app_name = 'dashboard'
 
@@ -28,6 +28,9 @@ urlpatterns = [
 
     url(r'^projects_list/$', views.project_list, name='prj_list'),
     url(r'^projects/(?P<entity_id>[0-9]+)$', views.project_detail, name='prj_detail'),
+
+    url(r'^challenges/(?P<entity_id>[0-9]+)$', views.challenge_detail, name='prj_detail'),
+
 
     ###################################### MDP ROUTES
     # Explore
@@ -82,17 +85,21 @@ urlpatterns = [
 
     # API v1.4
     ## MDP
-    url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.bookmark, name='bookmark'),
-    url(r'^api/v1.4/bookmarks/(?P<entity>\w+)/$', api.v14.get_bookmark_by_entities, name='get_bookmark_by_entities'),
-    url(r'^api/v1.4/bookmarks/$', api.v14.get_bookmarks, name='get_bookmark'),
+    url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.bookmark, name='bookmark'),
+    url(r'^api/v1.4/bookmarks/(?P<entity>\w+)/$', api14.get_bookmark_by_entities, name='get_bookmark_by_entities'),
+    url(r'^api/v1.4/bookmarks/$', api14.get_bookmarks, name='get_bookmark'),
 
     url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.interest, name='bookmark'),
-    url(r'^api/v1.4/interests/$', api.v14.get_interests, name='get_bookmark'),
+    url(r'^api/v1.4/interests/$', api14.get_interests, name='get_bookmark'),
 
-    url(r'^api/v1.4/(?P<entity>\w+)/$', api.v14.get_entity, name='api_13_entity'),
+    url(r'^api/v1.4/authorization/$', api14.user_authorization, name='get_user_authorization'),
 
-    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api.v14.get_entity_details, name='get_entity_details'),
+    url(r'^api/v1.4/login/$', api14.apilogin, name='user_login'),
+    url(r'^api/v1.4/logout/$', api14.apilogout, name='user_logout'),
 
+    url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
+
+    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='get_entity_details'),
 
 
     # API v1.3

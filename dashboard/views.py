@@ -121,7 +121,7 @@ def news_detail(request, entity_id):
         'entity_id': entity_id,
         'slider': 'news-events-projects'
     }
-    return render(request, 'dashboard/event_detail.html', context)
+    return render(request, 'dashboard/entity_detail.html', context)
 
 
 def project_detail(request, entity_id):
@@ -130,7 +130,16 @@ def project_detail(request, entity_id):
         'entity_id': entity_id,
         'slider': 'projects-news-events'
     }
-    return render(request, 'dashboard/event_detail.html', context)
+    return render(request, 'dashboard/entity_detail.html', context)
+
+
+def challenge_detail(request, entity_id):
+    context = {
+        'entity': 'challenges',
+        'entity_id': entity_id,
+        'slider': 'projects-news-events'
+    }
+    return render(request, 'dashboard/entity_detail.html', context)
 
 
 def event_detail(request, entity_id):
@@ -139,7 +148,7 @@ def event_detail(request, entity_id):
         'entity_id': entity_id,
         'slider': 'events-news-projects'
     }
-    return render(request, 'dashboard/event_detail.html', context)
+    return render(request, 'dashboard/entity_detail.html', context)
 
 
 @login_required()

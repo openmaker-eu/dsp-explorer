@@ -1,12 +1,12 @@
 let template = `
-    <div class="container entity-detail-page">
+    <div class="container ">
         <div class="row">
             
             <!--Entity Heading-->
             <div class="col-md-12 entity-heading margin-bottom-1-perc">
                 <div class="row">
                    <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
-                       <span class=" entity-detail__title">{$ entityname $}</span>
+                       <span class="entity-detail__title">{$ entityname $}</span>
                        <span class="pull-right">
                            <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
                            <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
@@ -23,29 +23,32 @@ let template = `
                         
                         <!--Loader-->
                         <entity-loading
-                            loading="!entity && !nodata"
+                            loading="!entity.data && !nodata"
                             nodata="nodata"
                             entityname="{$ entityname $}"
                         ></entity-loading>
                         
                         <!-- Enitiy details -->
-                        <div ng-if="entity !== null">
-                            <entity-detail entity="entity" entityid="{$ entityid $}" entityname="{$ entityname $}" ></entity-preview>
+                        <div ng-if="entity.data !== null">
+                            <entity-detail entity="entity.data" entityid="{$ entityid $}" entityname="{$ entityname $}" ></entity-preview>
                         </div>
                         <br>
                         
                     </div>
                     <div class="col-md-4">
                         
-                        <!--EVENT ONLY: Event details with icons-->
-                        <div ng-if="entityname == 'challenge'">
-                            <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;
-                                <span>{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</span>
-                                <span>{$ entity.end_time | date:'d MMMM yyyy,EEEE' $}</span>
-                            </p>
+                        <!--Challenges: Event details with icons-->
+                        <div
+                            ng-if="{$ entityname == 'challenge' $}"
+                            style="display: flex; flex-direction: row; justify-content:left; align-items:center; "
+                         >
+                                <hh5><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;</hh5>
+                                <h5>{$ entity.data.start_date | date:'d MMMM yyyy' $}</h5>
+                                <h5>&nbsp;-&nbsp;</h5>
+                                <h5>{$ ( entity.data.end_date | date:'d MMMM yyyy') || 'In progress' $}</h5>
                         </div>
                         
-                        <img src="{$ entity.im || entity.picture || entity.cover $}" class="col-md-12" alt="single {$ entityname $} image">
+                        <img style="padding:0; width:100%;" ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}" class="col-md-12">
                         
                     </div>
                 </div>
@@ -68,26 +71,12 @@ export default [function(){
             entityid : '@',
             slider: '@'
         },
-        controller : ['$scope', '$http', 'toastr', function($scope, $http, toastr,) {
-            let url = ''
-
-            $scope.entity = null
-            $scope.nodata = false
+        controller : ['$scope', '$http','EntityProvider', async function($scope, $http, EntityProvider) {
             
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            
-            $scope.get_data = (url) => {
-                $scope.nodata = false;
-                $http.get(url).then(res => {
-                    $scope.entity = res.data.result[0] || null
-                    $scope.nodata = res.data.result && res.data.result.length === 0
-                },
-                err => $scope.nodata = true
-                )
-            }
-            
-            $scope.get_data('/api/v1.4/' + $scope.entityname + '/details/' + $scope.entityid + '/')
-    
+            $scope.entity = EntityProvider.make($scope.entityname,$scope.entityid)
+            $scope.nodata = !$scope.entity.get()
+
         }]
     }
 }]

@@ -38,6 +38,7 @@ from rest_framework import generics
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 import os, re
+from django.http import Http404
 
 
 def search_members(request, search_string):
@@ -458,6 +459,50 @@ class v14:
                 'status': 'ko',
                 'result': 'Unhautorized',
             }, status=403)
+
+    @staticmethod
+    def user_authorization(request):
+        from dspexplorer.site_helpers import User
+        return JsonResponse({
+            'status': 'ok',
+            'result': User.authorization(request) ,
+        }, status=200)
+
+    @staticmethod
+    def login(request):
+        from django.contrib.auth import authenticate, login
+
+        from dashboard.serializer import UserSerializer
+        from django.core.serializers import serialize
+
+
+        data = json.loads(request.body)
+
+        user = authenticate(
+            username=data.get('username', False),
+            password=data.get('password', False)
+        )
+
+        if user is not None:
+            login(request, user)
+        else:
+            raise Http404('Username or password are wrong')
+
+        return JsonResponse({
+            'status': 'ok',
+            'result': serialize('json', [user]),
+        }, status=200)
+
+    @staticmethod
+    def logout(request):
+        from django.contrib.auth import logout
+
+        logout(request)
+
+        return JsonResponse({
+            'status': 'ok',
+            'result': '',
+        }, status=200)
 
 ###########
 # API V 1.3

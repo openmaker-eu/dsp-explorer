@@ -1,4 +1,5 @@
-
+"use strict";
+import 'babel-polyfill';
 
 let jQuery = window.$ = window.jQuery = require('jquery');
 require('../../../node_modules/angular/angular');
@@ -93,5 +94,9 @@ app.directive('signupTemplate', require('./directives/partials/SignupTemplate').
 
 
 app.factory('SignupModal', require('./factories/SignupModal').default )
+
+// content providers
+
+app.factory('EntityProvider', require('./content_providers/EntityProvider').default )
 
 

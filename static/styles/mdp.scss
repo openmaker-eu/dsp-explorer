@@ -90,6 +90,14 @@ header .navbar.navbar-default{
   &, & *:not(.glyphicon) { @extend .cairo; }
 }
 
+main {
+  display:flex;
+  & > * {
+      display: flex;
+      flex-grow:1;
+  }
+}
+
 .entity-carousel {
   .entity-carousel__header {
     @extend .cairo;
@@ -298,11 +306,9 @@ header .navbar.navbar-default{
       height:100%;
     }
   }
-
 }
 
-
-.entity-detail-page {
+.entity-detail-page{
   &__content {
     .entity-detail{
       &-padding {
@@ -310,6 +316,11 @@ header .navbar.navbar-default{
       }
     }
   }
+}
+
+.challenges-detail-page {
+  background: $color-brown--light;
+  i {color:$color-brown; }
 }
 
 .btn {

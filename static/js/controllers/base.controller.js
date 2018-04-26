@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 export default
-    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory', 'SignupModal',
-    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactoryl, SignupModal) {
+    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory', 'SignupModal', '$timeout',
+    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactoryl, SignupModal, $timeout) {
     
     $scope.rootScope = $rootScope;
     
@@ -63,7 +63,47 @@ export default
         })
     })
     
-    $scope.open_login = ()=>{ $rootScope.$emit('signup.modal.open') }
+    $scope.open_signup = ()=>{ $rootScope.$emit('signup.modal.open') }
+    
+    // update auth
+    $scope.$watch('om_authorization', (a,b)=>{
+        console.log('auth: ', a, b);
+        a!==b && $rootScope.$emit('authorization.change', a)
+    })
+    
+    
+    // AUTH
+    let refresh_page = (authorization)=> {
+        console.log('refresh page');
+        $scope.om_authorization = authorization;
+    }
+    
+    $scope.reload = false;
+    
+    $scope.login = ()=>{
+        $rootScope.$emit('authorization.reload')
+        $http({
+            method: 'POST',
+            url: '/api/v1.4/login/',
+            data: {
+                username: 'massimo.santoli@top-ix.org',
+                password: 'q1w2e3r4'
+            },
+        })
+            .then(
+            n=> { console.log(n); refresh_page(10)} ,
+            n=>console.log(n)
+        )
+    }
+    
+    $scope.logout = ()=>{
+        $rootScope.$emit('authorization.reload')
+        $http.post('/api/v1.4/logout/')
+            .then(
+                n=>refresh_page(0),
+                n=>console.log(n)
+            )
+    }
     
 }]
 

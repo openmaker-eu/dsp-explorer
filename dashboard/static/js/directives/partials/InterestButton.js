@@ -1,13 +1,13 @@
 export default [function(){
     return {
         template:`
-        <i
-            ng-click="interest()"
-            ng-if="$root.authorization > 0 && entityname == 'projects'"
-            class="fa fa-star-o pointer"
-            ng-class="{'text-red': interested }"
-        ></i>
-`,
+            <i
+                ng-click="interest()"
+                ng-if="$root.authorization > 0 && (entityname !== 'projects' || entityname !== 'challenges') "
+                class="fa fa-star-o pointer"
+                ng-class="{'text-red': interested }"
+            ></i>
+        `,
         scope: {
             entityname : '@',
             entityid : '@'

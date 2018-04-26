@@ -1,5 +1,6 @@
 var path = require("path")
 var webpack = require('webpack')
+require("babel-polyfill");
 var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 var BundleTracker = require('webpack-bundle-tracker');
 var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
@@ -7,10 +8,8 @@ var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 module.exports = {
 
     entry: {
-        dashboard: [ path.resolve(__dirname, 'dashboard/static/js') ],
-        pss: [ path.resolve(__dirname, 'pss/static/js') ],
-        chatbot: [ path.resolve(__dirname, 'chatbot/static/js') ]
-        // enter a new entry point here
+        dashboard: ['babel-polyfill', path.resolve(__dirname, 'dashboard/static/js') ],
+        pss: [ path.resolve(__dirname, 'pss/static/js') ]
     },
     output: {
         path: path.join(__dirname, "static/bundles"),

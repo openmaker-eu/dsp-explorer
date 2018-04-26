@@ -29,6 +29,7 @@ export default [function(){
             errormessage : '@',
             custommessage : '@'
         },
-        controller : ['$scope',function($scope){}]
+        controller : ['$scope', '$rootScope', function($scope, $rootScope){
+        }]
     }
 }]
