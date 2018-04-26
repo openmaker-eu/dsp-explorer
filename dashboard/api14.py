@@ -208,6 +208,20 @@ def apilogout(request):
     return Response({'authorization': 0})
 
 
+@api_view(['GET'])
+def questions(request):
+    questions = (
+        {'id': '2', 'type': 'text', 'label':' What is your first name', 'data': ''},
+        {'id': '2', 'type': 'text', 'label': 'What is your last name', 'data': ''},
+        {'id': '1', 'type': 'ddl', 'label':' What is your gender', 'data':
+            ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
+         },
+        {'id': '3', 'type': 'slider', 'label': 'How much do you like openmaker?', 'data': 90},
+        {'id': '4', 'type': 'login', 'label': 'Your login information'}
+    )
+    return Response({'questions': questions})
+
+
 
 class entity(APIView):
     def get(self, request, entity):

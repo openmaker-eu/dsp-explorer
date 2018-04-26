@@ -41,57 +41,35 @@
 >
 
 <div id="cover-filter"></div>
-<!--<div id="top-div">-->
-<div class="om-main-wrapper">
-    <header>
-        {% with current_url=request.resolver_match.view_name  %}
-            {% include "header.html" %}
-        {% endwith %}
-    </header>
+    <div class="om-main-wrapper">
+        <header>
+            {% with current_url=request.resolver_match.view_name  %}
+                {% include "header.html" %}
+            {% endwith %}
+        </header>
 
-    <main>
-        {% block container %}
-        {% endblock %}
-    </main>
+        <main>
+            {% block container %}
+            {% endblock %}
+        </main>
 
-    <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
-
-        <div class="row back padding-bottom-20">
-
-            <!--{% if user.is_anonymous %}-->
-            <!--<div class="container">-->
-                <!--<div class="row margin-top-25">-->
-                    <!--<div class="col-md-8 text-white">-->
-                        <!--<p class="sub-title">About <strong>Open</strong>Maker</p>-->
-                        <!--<p>-->
-                            <!--The OpenMaker initiative is a pan-European project aiming to seed and accelerate the 4th Industrial Revolution – driving the radical distribution, decentralization and mass collaboration between manufacturers and makers.-->
-                        <!--</p>-->
-                        <!--<p>-->
-                            <!--This initiative seeks to catalyse the ideation, discovery, design & prototyping of business models, production processes, products, and governance systems.-->
-                        <!--</p>-->
-                    <!--</div>-->
-                    <!--<div class="col-md-4 text-center margin-top-30">-->
-                        <!--<a href="https://ec.europa.eu/digital-single-market/news/22-new-caps-projects-horizon-2020" target="_blank"><img style="width: 250px" src="/static/images/EUGrant.png"/></a>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--{% endif %}-->
-
-            <div class="container">
-                <div class="row margin-top-20">
-                    <div class="col-md-12 pull-right">
-                        <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
-                        <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
-                        <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
-                        <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
+        <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
+            <div class="row back padding-bottom-20">
+                <div class="container">
+                    <div class="row margin-top-20">
+                        <div class="col-md-12 pull-right">
+                            <a href="http://openmaker.eu" target="_blank" class="text-red">OpenMaker&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/terms" class="text-red">Terms & Conditions&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="/privacy" class="text-red">Privacy Policy&nbsp;</a><span class="text-red">&mdash;</span>
+                            <a href="http://openmaker.eu/#hs-contact-section" target="_blank" class="text-red">Contact us&nbsp;</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </footer>
-</div>
+        </footer>
+    </div>
 
-</div>
+    </div>
 </div>
 
 {% include "./modals/login.html" %}

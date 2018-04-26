@@ -5,7 +5,7 @@ let template = `
     <div class="modal-body padding-5-perc" ng-if="!steps">
              <entity-loading
                 class="text-center"
-                loading="true"
+                loading="steps.lenght == 0"
                 entityname=""
                 custommessage="Loading your questions"
              ></entity-loading>
@@ -57,17 +57,20 @@ export default ['$http', '$rootScope', '$uibModal', '$sce', '$timeout',  functio
                 windowClass: 'signup-modal',
                 controller: [ '$scope', '$rootScope', function($scope, $rootScope){
                     
-                    $scope.steps = null
+                    $scope.steps = []
 
                     // MOCK
-                    $scope.get = n=>$timeout(n=>({data:{result: {steps: [
-                        {type: 'ddl', label:'Do you like more?', data: ['a','b','c']},
-                        {type: 'text', label:'What is your name', data: 'ciao'},
-                        {type: 'slider', label:'How much do you like openmaker?', data: 90}
-                    ]}}}), 1000)
+                    // $scope.get = n=>$timeout(n=>({data:{result:{steps:steps}}}),1000)
                     // ENDMOCK
-
-                    $scope.get().then(res=>$scope.steps=res.data.result.steps)
+                    
+                    $scope.get= ()=>{
+                        $http.get('/api/v1.4/questions/').then((res)=>{
+                            console.log(res);
+                            $scope.steps = res.data.questions
+                        })
+    
+                    }
+                    $scope.get()
                     
                     $scope.current = 0;
                     $scope.slickConfig ={
