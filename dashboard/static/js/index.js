@@ -5,8 +5,14 @@ let jQuery = window.$ = window.jQuery = require('jquery');
 require('../../../node_modules/angular/angular');
 require('../../../node_modules/ngmap')
 
+import  moment from '../../../node_modules/moment/min/moment-with-locales';
+window.moment = moment
+
+require('../../../node_modules/angular-moment-picker/dist/angular-moment-picker')
+
 // Import this app style
 require("../style/index.scss")
+
 // Require static angular componenets
 let baseImports = require("../../../static/js/index")
 // Angular form imports
@@ -34,7 +40,8 @@ var app = angular.module('dashboard', [
     'infinite-scroll',
     'vsGoogleAutocomplete',
     'ngMap',
-    'slickCarousel'
+    'slickCarousel',
+    'moment-picker'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');

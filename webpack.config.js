@@ -4,6 +4,7 @@ require("babel-polyfill");
 var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 var BundleTracker = require('webpack-bundle-tracker');
 var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
+var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
 
 module.exports = {
 
@@ -62,17 +63,25 @@ module.exports = {
         ]
     },
     plugins: [
+        // new ContextReplacementPlugin(
+        //     /moment[\/\\]locale$/,
+        //     /de|fr|hu|it|en|es/
+        // ),,
+        new ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/),
+        
         new CommonsChunkPlugin({
             filename: "commons-[chunkhash].js",
             name: "commons"
         }),
         new BundleTracker(),
         new CleanObsoleteChunks()
+
     ],
+    
     resolve : {
         extensions : [ '.js', '.css', '.scss', '.html' ],
         alias : {
-            'basescss':  path.resolve(__dirname, "./static/styles/base.scss")
+            'basescss':  path.resolve(__dirname, "./static/styles/base.scss"),
         }
     }
 }

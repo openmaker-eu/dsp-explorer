@@ -210,14 +210,21 @@ def apilogout(request):
 
 @api_view(['GET'])
 def questions(request):
+    from dashboard.models import Tag
+
     questions = (
-        {'id': '2', 'type': 'text', 'label':' What is your first name', 'data': ''},
-        {'id': '2', 'type': 'text', 'label': 'What is your last name', 'data': ''},
-        {'id': '1', 'type': 'ddl', 'label':' What is your gender', 'data':
+        {'id': '2', 'name': 'first_name', 'type': 'text', 'label': ' What is your first name?', 'data': ''},
+        {'id': '2', 'name': 'last_name', 'type': 'text', 'label': 'What is your last name?', 'data': ''},
+        {'id': '1', 'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'data':
             ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
          },
-        {'id': '3', 'type': 'slider', 'label': 'How much do you like openmaker?', 'data': 90},
-        {'id': '4', 'type': 'login', 'label': 'Your login information'}
+        {'id': '2', 'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'data': ''},
+        {'id': '2', 'name': 'city', 'type': 'city', 'label': 'What is your city?', 'data': ''},
+        {'id': '2', 'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?', 'data': ''},
+        {'id': '2', 'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'data': [x.name for x in Tag.objects.all()]},
+        {'id': '4', 'name': 'login', 'type': 'login', 'label': 'Your login information'}
+
+        # {'id': '3', 'name': '', 'type': 'slider', 'label': 'How much do you like openmaker?', 'data': 90},
     )
     return Response({'questions': questions})
 

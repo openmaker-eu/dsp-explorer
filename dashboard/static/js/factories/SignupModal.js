@@ -24,7 +24,7 @@ let template = `
 
         <div class="col-md-12 step-navigation">
             
-            <span class="pointer sup-prev ">
+            <span ng-class="{'transparent':is_start}" class="pointer sup-prev ">
                 <h1><i class="glyphicon glyphicon-menu-left text-brown"></i></h1>
                 <h4>&nbsp;PREVIOUS</h4>
             </span>
@@ -37,9 +37,14 @@ let template = `
                 ></i>
             </span>
             
-            <span class="pointer sup-next">
+            <span ng-if="!is_end" class="pointer sup-next">
                 <h4>NEXT&nbsp;</h4>
                 <h1><i class="glyphicon glyphicon-menu-right text-brown"></i></h1>
+            </span>
+            
+            <span ng-if="is_end" ng-click="close()" class="pointer sup-next">
+                <h4>CLOSE&nbsp;&nbsp;</h4>
+                <h1><i class="fa fa-times-circle-o text-brown"></i></h1>
             </span>
             
         </div>
@@ -55,24 +60,20 @@ export default ['$http', '$rootScope', '$uibModal', '$sce', '$timeout',  functio
                 template: template,
                 backdrop: true,
                 windowClass: 'signup-modal',
-                controller: [ '$scope', '$rootScope', function($scope, $rootScope){
-                    
-                    $scope.steps = []
-
-                    // MOCK
-                    // $scope.get = n=>$timeout(n=>({data:{result:{steps:steps}}}),1000)
-                    // ENDMOCK
-                    
-                    $scope.get= ()=>{
-                        $http.get('/api/v1.4/questions/').then((res)=>{
-                            console.log(res);
-                            $scope.steps = res.data.questions
-                        })
+                controller: [ '$scope', function($scope){
     
-                    }
-                    $scope.get()
-                    
                     $scope.current = 0;
+                    $scope.is_start = true
+                    $scope.is_end = false
+                    
+                    $scope.steps = null
+                    $scope.close = ()=>{ factory.modalInstance.close() }
+
+                    $http.get('/api/v1.4/questions/').then((res)=>{
+                        $scope.steps = res.data.questions
+                    })
+  
+                    
                     $scope.slickConfig ={
                         slidesToShow: 1,
                         slidesToScroll: 1,
@@ -83,10 +84,17 @@ export default ['$http', '$rootScope', '$uibModal', '$sce', '$timeout',  functio
                         event: {
                             afterChange: function (event, slick, currentSlide, nextSlide) {
                                 $scope.current = currentSlide;
-                                if(currentSlide+1 == $scope.steps.length) { $scope.close = true; }
+                                $scope.is_start = currentSlide === 0
+                                $scope.is_end = currentSlide === $scope.steps.length
+                                
+                                $('.slick-current').find('input, select').focus().select().click()
+                                
                             },
                             edge: function(event, slick, direction){ console.log(direction); },
-                            init: function (event, slick) { slick.slickGoTo($scope.current); }
+                            init: function (event, slick) {
+                                slick.slickGoTo($scope.current);
+                                window.onkeypress = (e)=> {e.which=== 13&& slick.slickNext()}
+                            }
                         }
                     }
                     
