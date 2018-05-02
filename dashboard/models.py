@@ -24,35 +24,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 
-class User(User):
-
-    class Meta:
-        proxy = True
-
-    @classmethod
-    def create(cls, **kwargs):
-
-        if User.objects.filter(email=kwargs.get('email', False)).first():
-            return False
-        try:
-            user = User.objects.create_user(
-                username=kwargs.get('email', False),
-                email=kwargs.get('email', False),
-                password=kwargs.get('password', False),
-                first_name=kwargs.get('first_name', False),
-                last_name=kwargs.get('last_name', False)
-            )
-            user.is_active = False
-            user.save()
-            return User.objects.get(email=kwargs.get('email', False))
-
-        except Exception as e:
-            print e
-            return False
-
-
-
-
 class ModelHelper:
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None, filter_type=None):
@@ -217,6 +188,33 @@ class SourceOfInspiration(models.Model):
         return self.name
 
 
+class User(User):
+
+    class Meta:
+        proxy = True
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+
+        if User.objects.filter(email=kwargs.get('email', False)).first():
+            return False
+        try:
+            user = User.objects.create_user(
+                username=kwargs.get('email', False),
+                email=kwargs.get('email', False),
+                password=kwargs.get('password', False),
+                first_name=kwargs.get('first_name', False),
+                last_name=kwargs.get('last_name', False)
+            )
+            user.is_active = False
+            user.save()
+            return User.objects.get(email=kwargs.get('email', False))
+
+        except Exception as e:
+            print e
+            return False
+
+
 class Profile(models.Model):
     crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -255,6 +253,32 @@ class Profile(models.Model):
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
 
+
+    @classmethod
+    def create(cls, **kwargs):
+        user = kwargs.get('user', None)
+        tags = kwargs.get('tags', None)
+        print tags
+
+        profile = cls(user=user)
+
+        profile.picture = kwargs.get('picture', None)
+        profile.gender = kwargs.get('gender', None)
+        profile.birthdate = kwargs.get('birthdate', None)
+        profile.city = kwargs.get('city', None)
+        profile.occupation = kwargs.get('occupation', None)
+        profile.place = kwargs.get('place', None)
+        profile.save()
+
+        # Add tags
+        if tags:
+            for tag in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags):
+                tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
+                profile.tags.add(tagInstance)
+            profile.save()
+
+        return profile
+
     def set_location(self):
         return None
 
@@ -278,8 +302,10 @@ class Profile(models.Model):
     class Meta:
         ordering = ('user',)
 
+
+
     @classmethod
-    def create(cls, email, first_name, last_name, picture, password=None, gender=None,
+    def createold(cls, email, first_name, last_name, picture, password=None, gender=None,
                birthdate=None, city=None, occupation=None, twitter_username=None, place=None, tags=None):
         try:
             user = User.objects.get(email=email)
@@ -306,12 +332,6 @@ class Profile(models.Model):
             profile.twitter_username = twitter_username
             profile.place = place
             profile.save()
-
-            if tags:
-                for tag in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
-                    tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
-                    profile.tags.add(tagInstance)
-                profile.save()
 
         if not user.is_active:
             profile.reset_token = Profile.get_new_reset_token()

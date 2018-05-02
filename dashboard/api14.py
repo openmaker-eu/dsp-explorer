@@ -307,19 +307,16 @@ def signup(request):
     email = request.data.get('email', False)
     password = request.data.get('password', False)
     password_confirm = request.data.get('password_confirm', False)
-    birthdate = request.data.get('birtdate', False)
 
     if len(User.objects.filter(email=email)) > 0:
         return Response(data={'error': 'User already exist'}, status=401)
 
     if not password or password != password_confirm:
         return Response(data={'error': 'Password and password confirm don\'t match'}, status=401)
-    request.data.pop('password_confirm', None)
+    # request.data.pop('password_confirm', None)
 
-    perofile = Profile.create(**request.data)
-    profile = Profile.objects.filter(email=email)
-
-    print profile
+    user = User.create(**request.data)
+    profile = Profile.create(user=user, **request.data)
 
     # # send e-mail
     # confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
