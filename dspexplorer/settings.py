@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'dspconnector.apps.DspconnectorConfig',
     'pss.apps.PssConfig',
-    'chatbot.apps.ChatbotConfig',
     'froala_editor',
     'django.contrib.admin',
     'django.contrib.auth',

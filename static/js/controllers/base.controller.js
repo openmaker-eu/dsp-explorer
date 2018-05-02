@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 export default
-    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory', 'SignupModal', '$timeout', 'LoginService',
-    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactoryl, SignupModal, $timeout, LoginService) {
+    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory', 'QuestionModal', '$timeout', 'LoginService',
+    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory, QuestionModal, $timeout, LoginService) {
     
     $scope.openModal = (m) => {
         let modal = $(m);
@@ -15,7 +15,6 @@ export default
     }
     
     $scope.closeModal = () => { $scope.modalInstance.close();  $scope.modal_message = null;}
-    
     $scope.modal_message = null;
     
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
@@ -27,9 +26,6 @@ export default
             // Is a Modal
             if( el.tags.indexOf('modal') > -1 ){
                 try{
-
-                    console.log(el.message);
-
                     let modal_options = JSON.parse( el.message );
                     modal_options.body = modal_options.body.replace(/ESCAPE/g, '"');
                     modal_options.title
@@ -58,9 +54,10 @@ export default
         })
     })
     
+    $scope.open_signup = ()=>{ $rootScope.$emit('question.modal.open') }
     
-    $scope.open_signup = ()=>{ $rootScope.$emit('signup.modal.open') }
-
+    // $rootScope.$emit('question.modal.open')
+    
     // LOGIN
     $scope.logout =()=>LoginService.logout()
     $scope.login =()=>LoginService.login()

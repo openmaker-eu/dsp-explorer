@@ -38,8 +38,9 @@
     "webpack-clean-obsolete-chunks": "^0.1.10"
   },
   "dependencies": {
-    "angular": "^1.6.5",
+    "angular": "^1.6.10",
     "angular-animate": "^1.6.5",
+    "angular-formly": "^8.4.1",
     "angular-moment": "^1.2.0",
     "angular-moment-picker": "^0.10.2",
     "angular-motion": "^0.4.4",
@@ -49,6 +50,8 @@
     "angular-toastr": "^2.1.1",
     "angular-ui-bootstrap": "^2.5.0",
     "angular-vs-repeat": "^1.1.7",
+    "api-check": "^7.5.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "bootstrap-additions": "^0.3.1",
     "bootstrap-sass": "^3.3.7",
     "cookieconsent": "^3.0.4",

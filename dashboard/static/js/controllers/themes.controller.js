@@ -26,7 +26,6 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         },
         
         get_news : function(cursor = -1 , theme=feed.theme , filter=feed.filter){
-            console.log('cursor', cursor);
             $http.get('/api/v1.3/news/' + (theme || 1) + '/' + filter + '/' + cursor + '/')
                 .then(
                     (response) => {
@@ -82,8 +81,6 @@ export default [ '$scope','$uibModal','$http','$aside', function ($scope,$uibMod
         $scope.FeedModel.get_news(-1, newValue, $scope.filter)
         influencers.get_audiences($scope.topic_id);
         influencers.get_influencers($scope.topic_id);
-        
-        console.log(influencers.location);
         
         // Unbind to execute watch only once
         unbind_topic_id()

@@ -199,7 +199,6 @@ def onboarding(request):
         if gender == 'female': imagefile = 'images/profile/female.svg'
         if gender == 'other': imagefile = 'images/profile/other.svg'
 
-
         # Check if user exist
         try:
             User.objects.get(email=email)

@@ -49,8 +49,6 @@ let pie = function(div_id, sectors){
     
     var maxValue = _.maxBy(data,n=>Number(n.size)).size
     
-    console.log((maxValue/4)*3, (maxValue/4)*2)
-    
     var colorScale = d3.scaleQuantile()
         .domain([ maxValue/4, maxValue ])
         .range([ '#efefef', '#bbbbbb', '#ff97a1', '#db4348'])

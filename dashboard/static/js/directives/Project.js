@@ -102,7 +102,6 @@ export default [function(){
                 .then(function(response) {
                     $scope.projectid ? $window.location.href = '/profile/project/' + $scope.projectid + '/detail': $window.location.href = '/profile'
                 }, function(response) {
-                    console.log(response)
                     toastr.error('Error', response.data.message);
                 });
         }

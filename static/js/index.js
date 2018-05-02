@@ -10,9 +10,6 @@ require("bootstrap-sass")
 require("../../node_modules/cookieconsent/build/cookieconsent.min"); // library
 require("../../static/js/cookie/cookie.policy.behaviour"); // Config
 
-// Header and footer behaviour
-require("../../static/js/footer/header.footer.behaviour")
-
 export function angularBase(app=null){
     
     // Import angular componenets
@@ -23,7 +20,7 @@ export function angularBase(app=null){
     return this
 }
 
-export function angularForm(){
+export function angularForm(app){
     
     require('angular-ui-bootstrap');
     require('angular-toastr');

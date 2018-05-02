@@ -449,46 +449,47 @@ $om_breakpoints: (
   }
 
 }
+//
+//.signup-template{
+//
+//  .signup-input {
+//    .ui-select-choices-row-inner, .ui-select-match-item{font-size: 200%;}
+//    input, select {
+//      text-align: center;
+//      font-size: 200%; padding: 3%;
+//      border:solid 2px $color-brown--light!important; border-radius: 0!important;
+//
+//    }
+//    select {
+//      -webkit-border-radius:0;
+//      -moz-border-radius:0;
+//    }
+//
+//    .ui-select-bootstrap  {
+//
+//      padding:0; border:none;
+//
+//      * { box-shadow: none!important; outline:0 !important;}
+//
+//      & > .ui-select-choices{left:0;text-align: left;}
+//      input {width:100%!important;}
+//      .ui-select-highlight { color :$color-brown; }
+//      .ui-select-choices {.btn { width:100%; text-align: left;}}
+//      .ui-select-choices-row {
+//        &.active .ui-select-choices-row-inner {
+//          background-color:$color-brown--light!important; color:#fff!important;
+//          .ui-select-highlight { color: $color-black; }
+//        }
+//      }
+//      .ui-select-match-item { background-color:$color-brown!important; color:#fff!important; border:$color-brown--dark!important;}
+//
+//      .ng-not-empty:first-child{ padding:1%!important; }
+//
+//    }
+//
+//  }
+//}
 
-.signup-template{
-
-  .signup-input {
-    .ui-select-choices-row-inner, .ui-select-match-item{font-size: 200%;}
-    input, select {
-      text-align: center;
-      font-size: 200%; padding: 3%;
-      border:solid 2px $color-brown--light!important; border-radius: 0!important;
-
-    }
-    select {
-      -webkit-border-radius:0;
-      -moz-border-radius:0;
-    }
-
-    .ui-select-bootstrap  {
-
-      padding:0; border:none;
-
-      * { box-shadow: none!important; outline:0 !important;}
-
-      & > .ui-select-choices{left:0;text-align: left;}
-      input {width:100%!important;}
-      .ui-select-highlight { color :$color-brown; }
-      .ui-select-choices {.btn { width:100%; text-align: left;}}
-      .ui-select-choices-row {
-        &.active .ui-select-choices-row-inner {
-          background-color:$color-brown--light!important; color:#fff!important;
-          .ui-select-highlight { color: $color-black; }
-        }
-      }
-      .ui-select-match-item { background-color:$color-brown!important; color:#fff!important; border:$color-brown--dark!important;}
-
-      .ng-not-empty:first-child{ padding:1%!important; }
-
-    }
-
-  }
-}
 .moment-picker {
   z-index:200000000000!important;
 
@@ -509,6 +510,5 @@ $om_breakpoints: (
   }
 
 }
-
 
 .pac-container {z-index:100000000;}

@@ -8,7 +8,13 @@ export default [function(){
                         <span ng-if="!custommessage">Loading <span class="capitalize">{$ entityname $}</span></span>
                         <span ng-if="custommessage" >{$ custommessage $}</span>
                         <br><br>
-                        <om-spinner></om-spinner>
+                        
+                        <div class="om-spinner">
+                            <div class="om-spinner__bounce1 om-spinner__bounce"></div>
+                            <div class="om-spinner__bounce2 om-spinner__bounce"></div>
+                            <div class="om-spinner__bounce3 om-spinner__bounce"></div>
+                        </div>
+                        
                     </h2>
                     <br>
                 </div>

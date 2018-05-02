@@ -2,7 +2,6 @@ import * as _ from 'lodash'
 
 export default ['$http', '$rootScope',  function($http, $rootScope){
     
-    console.log('$rootScope' ,$rootScope);
     let F = {
         login : (username, password)=>{
             
@@ -23,8 +22,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         },
         
         logout : ()=>{
-            console.log('logotu');
-    
             $rootScope.$emit('authorization.reload')
             $http.post('/api/v1.4/logout/')
                 .then(
@@ -33,7 +30,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                 )
         },
         refresh_page : (res)=> {
-            console.log('res', res);
             $rootScope.authorization = res.data.authorization;
         }
     }

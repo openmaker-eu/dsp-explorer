@@ -96,8 +96,9 @@ urlpatterns = [
 
     url(r'^api/v1.4/login/$', api14.apilogin, name='user_login'),
     url(r'^api/v1.4/logout/$', api14.apilogout, name='user_logout'),
+    url(r'^api/v1.4/signup/$', api14.signup, name='user_signup'),
 
-    url(r'^api/v1.4/questions/$', api14.questions, name='questions'),
+    url(r'^api/v1.4/questions/$', api14.questions.as_view(), name='questions'),
 
     url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 

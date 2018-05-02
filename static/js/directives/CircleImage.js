@@ -36,8 +36,6 @@ export default [function(){
             let img = element.find('img');
             img.bind('load', n=>$scope.fitImageToCircle($(img)))
             
-            $scope.$watch('src', console.log)
-            
         }
     }
     

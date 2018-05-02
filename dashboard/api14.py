@@ -14,6 +14,7 @@ import random, logging
 logger = logging.getLogger(__name__)
 
 from dashboard.serializer import BookmarkSerializer, InterestSerializer
+from dashboard.models import User, Profile
 
 from .helpers import mix_result_round_robin
 from dashboard.models import Challenge, Project
@@ -208,28 +209,6 @@ def apilogout(request):
     return Response({'authorization': 0})
 
 
-@api_view(['GET'])
-def questions(request):
-    from dashboard.models import Tag
-
-    questions = (
-        {'id': '2', 'name': 'first_name', 'type': 'text', 'label': ' What is your first name?', 'data': ''},
-        {'id': '2', 'name': 'last_name', 'type': 'text', 'label': 'What is your last name?', 'data': ''},
-        {'id': '1', 'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'data':
-            ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
-         },
-        {'id': '2', 'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'data': ''},
-        {'id': '2', 'name': 'city', 'type': 'city', 'label': 'What is your city?', 'data': ''},
-        {'id': '2', 'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?', 'data': ''},
-        {'id': '2', 'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'data': [x.name for x in Tag.objects.all()]},
-        {'id': '4', 'name': 'login', 'type': 'login', 'label': 'Your login information'}
-
-        # {'id': '3', 'name': '', 'type': 'slider', 'label': 'How much do you like openmaker?', 'data': 90},
-    )
-    return Response({'questions': questions})
-
-
-
 class entity(APIView):
     def get(self, request, entity):
         #TODO make cursor works
@@ -287,3 +266,78 @@ class entity_details(APIView):
                 pass
 
         return Response(results)
+
+
+class questions(APIView):
+
+    def get(self, request):
+        from dashboard.models import Tag
+
+        if not request.user.is_active:
+            questions = (
+
+                {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
+                {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
+                {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
+                    ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
+                 },
+                {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?'},
+                {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
+                {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
+                {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
+                {'id': '4', 'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
+                {'name': '', 'type': 'confirm_email', 'label': 'Thank you'}
+
+                # {'name': '', 'type': 'slider', 'label': 'How much do you like openmaker?', 'value': 90},
+            )
+        return Response({'questions': questions})
+
+    def put(self, request):
+        error = ''
+        return Response({})
+
+    def filter_questions(self, questions, keywords):
+        res = {k: v for (v, k) in questions.items()}
+        return res
+
+
+@api_view(['PUT'])
+def signup(request):
+
+    email = request.data.get('email', False)
+    password = request.data.get('password', False)
+    password_confirm = request.data.get('password_confirm', False)
+    birthdate = request.data.get('birtdate', False)
+
+    if len(User.objects.filter(email=email)) > 0:
+        return Response(data={'error': 'User already exist'}, status=401)
+
+    if not password or password != password_confirm:
+        return Response(data={'error': 'Password and password confirm don\'t match'}, status=401)
+    request.data.pop('password_confirm', None)
+
+    perofile = Profile.create(**request.data)
+    profile = Profile.objects.filter(email=email)
+
+    print profile
+
+    # # send e-mail
+    # confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+    #
+    # subject = 'Onboarding... almost done!'
+    # content = "{0}{1}{2}".format(
+    #     invitation_base_template_header,
+    #     onboarding_email_template.format(
+    #         FIRST_NAME=first_name.encode('utf-8'),
+    #         LAST_NAME=last_name.encode('utf-8'),
+    #         CONFIRMATION_LINK=confirmation_link,
+    #     ),
+    #     invitation_base_template_footer)
+    #
+    # EmailHelper.send_email(
+    #     message=content,
+    #     subject=subject,
+    #     receiver_email=email
+    # )
+
+    return Response({'success': True}) if profile else Response(data={'error': 'error creating user'}, status=403)
