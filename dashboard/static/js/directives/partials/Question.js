@@ -2,7 +2,7 @@ let fields = require('../../../templates/question_templates.html')
 import {TemplateLoader} from '../../classes/TemplateLoader'
 
 let template = `
-     <ng-form name="{$ x.name $}" class="signup-template">
+     <form name="{$ x.name $}" class="signup-template">
         <div class="" style="padding:5%;">
             <h1 class="signup-template__label">{$ x.label $}</h1>
             <br>
@@ -10,7 +10,7 @@ let template = `
             <h3 ng-if="x.error" class=" signup-template__label text-red">{$ x.error $}</h3>
         </div>
         <input type="submit" class="submit" style="display:none!important;">
-     <ng-form>
+     <form>
 `
 
 export default { 

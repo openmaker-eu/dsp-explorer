@@ -19,16 +19,15 @@ let template = `
                 entityname=""
                 custommessage="Saving data"
         ></entity-loading>
-    
-        <div ng-show="!loading">
+  
         
-            <form name="wizard.form" ng-if="questions">
+            <form name="wizard.form" ng-if="questions" ng-show="!loading">
                 <slick class="col-md-12 modal-slider" settings="slickConfig" prev-arrow=".sup-prev" next-arrow=".sup-next">
                     <question ng-repeat="question in questions" data="question" model="wizard.formmodel" ></question>
                 </slick>
             </form>
            
-            <div class="col-md-12 step-navigation">
+            <div class="col-md-12 step-navigation" ng-show="!loading">
                 
                 <span ng-class="{'transparent':is_start}" class="pointer " ng-click="prev()">
                     <h1><i class="glyphicon glyphicon-menu-left text-brown"></i></h1>
@@ -54,7 +53,7 @@ let template = `
                 </span>
                 
             </div>
-        </div>
+
 
     </div>
 `
@@ -138,7 +137,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                                 $scope.current = currentSlide;
                                 $scope.is_start = currentSlide === 0
                                 $scope.is_end = currentSlide+1 === $scope.questions.length
-                                // $('.slick-current').find('input, select').focus().select().click()
+                                $('.slick-current').find('input, select').first().focus().select().click()
                                 
                             },
                             beforeChange: (event, slick, currentSlide, nextSlide)=>{

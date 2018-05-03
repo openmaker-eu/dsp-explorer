@@ -383,10 +383,15 @@ $om_breakpoints: (
   z-index:2000000!important;
 
   .modal-dialog {
-    margin: 5%;
-    width: 90%;
-    height: 90%;
+
+    width:100%;
+    height:100%;
     z-index: 2000;
+
+    @media all and (max-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 2%; width: 96%; height: 96%;}
+    @media all and (max-width: #{nth(map-get($om_breakpoints,'md'),1)}px) { height: 85%;}
+    @media all and (min-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 15%; width: 70%; height: 90%}
+    @media all and (min-width: #{nth(map-get($om_breakpoints,'xl'),1)}px) { margin: 20%; width: 60%; height: 85%;}
 
     .modal-content {
 
@@ -399,13 +404,12 @@ $om_breakpoints: (
         justify-content: space-between;
         align-content: center;
         height: 100%;
-        .modal-slider {
-          flex-grow: 1;
-        }
 
-        .slick-list,
+        .modal-slider{flex-grow: 1;}
+        .slick-list,.slick-track {height: 100%;}
         .slick-track {
-          height: 100%;
+          display: flex;
+          align-items: center;
         }
 
       }
@@ -451,12 +455,13 @@ $om_breakpoints: (
 }
 
 .signup-template{
+  $signup-font-size: 120%;
 
   .signup-input {
-    .ui-select-choices-row-inner, .ui-select-match-item{font-size: 200%;}
+    .ui-select-choices-row-inner, .ui-select-match-item{font-size: $signup-font-size;}
     input, select, .ui-select-toggle {
       text-align: center;
-      font-size: 200%; padding: 3%;
+      font-size: $signup-font-size; padding: 1.5%;
       border:solid 2px $color-brown--light!important; border-radius: 0!important;
 
     }
@@ -482,7 +487,7 @@ $om_breakpoints: (
         }
       }
       .ui-select-match-item { background-color:$color-brown!important; color:#fff!important; border:$color-brown--dark!important;}
-      .ui-select-placeholder, .ui-select-match-text{ position: relative; top: -18px;}
+      .ui-select-placeholder, .ui-select-match-text{ position: relative; top: -10px;}
 
       .ng-not-empty:first-child{ padding:1%!important; }
 
@@ -509,6 +514,11 @@ $om_breakpoints: (
   td {
     &.selected { background: $color-brown--dark; }
   }
+
+}
+
+.pivacy_check_form{
+  i, a { color:$color-brown--dark; font-weight: bold;}
 
 }
 

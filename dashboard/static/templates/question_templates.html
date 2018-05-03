@@ -19,14 +19,6 @@
 [slider]
 <input name="{$ x.name $}" type="range" min="0" max="100" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>`,
 
-[login]
-<label class="signup-template__label" for="email">email</label>
-<input name="email" type="email" value="{$ x.value $}" ng-model="m['email']" class="form-control" required><br>
-<label class="signup-template__label" for="password">password</label>
-<input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" required><br>
-<label class="signup-template__label" for="password_confirm">repeat password</label>
-<input name="password_confirm" type="password" value="{$ x.value $}" ng-model="m['password_confirm']" class="form-control" required><br>
-
 [confirm_email]
 <h1 class="signup-template__label text-brown">
     <i class="fa fa-check-circle-o" style=" font-size:400%; font-weight:300;"></i><br>
@@ -100,4 +92,43 @@ required>
 
 [text]
 <input name="{$ x.name $}" type="text" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>
+
+
+[login]
+
+<label class="signup-template__label" for="email">email</label>
+<input name="email" type="email" value="{$ x.value $}" ng-model="m['email']" class="form-control" required><br>
+<label class="signup-template__label" for="password">password</label>
+<input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" required><br>
+<label class="signup-template__label" for="password_confirm">repeat password</label>
+<input name="password_confirm" type="password" value="{$ x.value $}" ng-model="m['password_confirm']" class="form-control" required><br>
+<br>
+<div class="form-group pivacy_check_form" ng-init="privacy=false; tac=false;">
+    <span class="pointer" style="cursor:pointer;">
+        <span ng-click="tac=!tac;">
+            <i class="glyphicon" ng-class="{'glyphicon-check':tac, 'glyphicon-unchecked':!tac}"></i>
+            <input type="checkbox" ng-model="tac" required="required" class="fake-check">
+            &nbsp;You agree to the conditions
+        </span>
+        (<a target="_blank" href="{% url 'dashboard:express_acceptance' %}">Express Acceptance</a>)
+    </span>
+    <br>
+    <span class="pointer" style="cursor:pointer;">
+        <span ng-click="privacy=!privacy;" >
+            <i class="glyphicon" ng-class="{'glyphicon-check':privacy, 'glyphicon-unchecked':!privacy}"></i>
+            <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
+            &nbsp;You agree to use your data to allow us to map the community of makers and encourage the meeting between
+            representatives of the makers' community and the manufacturing industry By registering you agree to the following conditions
+        </span>
+        (<a target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+        <span ng-click="privacy=!privacy;" >, You consent to the use of your data in accordance with the privacy policy</span>
+            (<a target="_blank" href="{% url 'dashboard:privacy' %}">Privacy policy</a>)
+        <span ng-click="privacy=!privacy;" >you ask to use our service.You will receive an email to confirm your registration.</span>
+    </span>
+    <br><br>
+    <span>
+         The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
+         (<a target="_blank" href="{% url 'dashboard:terms_conditions' %}">terms and the conditions</a>)
+    </span>
+</div>
 
