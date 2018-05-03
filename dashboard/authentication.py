@@ -49,7 +49,7 @@ def login_page(request):
                 profile = Profile.objects.get(user_id=user.id)
                 crm_user = CRMConnector.search_party_by_email(profile.user.email)
                 if not profile.crm_id:
-                    profile.crm_id = crm_user['id']
+                    profile.crm_id = crm_user['id'] if crm_user and 'id' in crm_user else None
                     profile.save()
                 messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
                 return HttpResponseRedirect(reverse('dashboard:login'))

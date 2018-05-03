@@ -62,7 +62,10 @@ let template = `
 export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     
     let F = {
-        open: n=>{
+        open: (ev,preset)=>{
+            
+            console.log('preset', preset);
+            
             F.modalInstance = $uibModal.open({
                 template: template,
                 backdrop: true,
@@ -76,13 +79,13 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     $scope.slick = null
                     $scope.wizard = {form:{}, formmodel:{}}
                     
-                    $scope.questions = null
+                    $scope.questions = preset || null
                     $scope.loading = false
                     $scope.error = false
                     
                     $scope.close = ()=>{ F.modalInstance.close() }
 
-                    $http.get('/api/v1.4/questions/').then((res)=>{$scope.questions = res.data.questions})
+                    if(!preset) $http.get('/api/v1.4/questions/').then((res)=>{$scope.questions = res.data.questions})
                     
                     $scope.submit = (url=false)=>{
                         let call = $http.put(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)

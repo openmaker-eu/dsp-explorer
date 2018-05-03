@@ -3,9 +3,18 @@
 <!-- m :     model object-->
 
 [select]
-<select name="{$ x.name $}" class="form-control" required>
-    <option ng-repeat="dato in x.options track by $index" value="{$ dato.value $}" ng-model="m[x.name]">{$ dato.label $}</option>
-</select>
+<ui-select
+        class="form-control"
+        ng-model="m[x.name]"
+        title="Select your gender"
+>
+    <ui-select-match placeholder="Select your gender">{$ $select.selected.value.label $}</ui-select-match>
+    <ui-select-choices repeat="tag.value.value as (key, tag) in x.options | filter: { value: { label: $select.search }}">
+        <div ng-bind-html="tag.value.label | highlight: $select.search"></div>
+    </ui-select-choices>
+</ui-select>
+
+<input type="hidden" name="{$ x.name $}" ng-value="m[x.name]" required/>
 
 [slider]
 <input name="{$ x.name $}" type="range" min="0" max="100" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>`,
@@ -34,6 +43,21 @@ required>
 
 [multi_select]
 <ui-select
+        multiple
+        class="form-control"
+        ng-model="m[x.name]"
+        title="Choose a tag" limit="3"
+
+>
+    <ui-select-match placeholder="Type a tag and press enter *">{$ $item $}</ui-select-match>
+    <ui-select-choices repeat="tag in x.options | filter:$select.search track by $index">
+        <div ng-bind-html="tag | highlight: $select.search"></div>
+    </ui-select-choices>
+</ui-select><br/>
+<input type="hidden" name="{$ x.name $}" ng-value="x.value" required/>
+
+[tags_select]
+<ui-select
         multiple tagging
         tagging-label="" tagging-tokens="SPACE|ENTER|,|/|<|>|{|}|^"
         sortable="true"
@@ -47,7 +71,7 @@ required>
         <div ng-bind-html="tag| highlight: $select.search"></div>
     </ui-select-choices>
 </ui-select><br/>
-<input type="hidden" name="{$ x.name $}" ng-value="x.value" required/>
+<input type="hidden" name="{$ x.name $}" ng-value="m[x.name]" required/>
 
 [city]
 <input

@@ -41,8 +41,9 @@ let template = `
                         <!--Challenges: Event details with icons-->
                         <div
                             style="display: flex; flex-direction: row; justify-content:left; align-items:center; "
+                            ng-if="entity.data.start_date"
                         >
-                                <hh5><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;</hh5>
+                                <h5><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                 <h5>{$ entity.data.start_date | date:'d MMMM yyyy' $}</h5>
                                 <h5>&nbsp;-&nbsp;</h5>
                                 <h5>{$ ( entity.data.end_date | date:'d MMMM yyyy') || 'In progress' $}</h5>

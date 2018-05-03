@@ -275,17 +275,18 @@ class questions(APIView):
 
         if not request.user.is_active:
             questions = (
-
-                {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
-                {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
                 {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
                     ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
                  },
+                {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
+
+                {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
+                {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
+
                 {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?'},
                 {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
                 {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
-                {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
-                {'id': '4', 'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
+                {'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
                 {'name': '', 'type': 'confirm_email', 'label': 'Thank you'}
 
                 # {'name': '', 'type': 'slider', 'label': 'How much do you like openmaker?', 'value': 90},
@@ -313,7 +314,6 @@ def signup(request):
 
     if not password or password != password_confirm:
         return Response(data={'error': 'Password and password confirm don\'t match'}, status=401)
-    # request.data.pop('password_confirm', None)
 
     user = User.create(**request.data)
     profile = Profile.create(user=user, **request.data)
