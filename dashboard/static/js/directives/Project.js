@@ -115,7 +115,7 @@ export default [function(){
                 } else {
                     $scope.data.end_date = new Date(res.data.result[0].end_date)
                 }
-                $scope.$apply(()=>$(window).trigger('resize'))
+                // $scope.$apply(()=>$(window).trigger('resize'))
             })
         }
 

@@ -5,15 +5,15 @@ let template = `
     <div class="modal-body padding-5-perc">
     
         <entity-loading
-                ng-if="!questions"
+                ng-if="loading"
                 class="text-center"
-                loading="questions.length == 0"
+                loading="loading"
                 entityname=""
                 custommessage="Loading your questions"
         ></entity-loading>
         
         <entity-loading
-                ng-if="loading"
+                ng-if="saving"
                 class="text-center"
                 loading="loading"
                 entityname=""
@@ -63,8 +63,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     let F = {
         open: (ev,preset)=>{
             
-            console.log('preset', preset);
-            
             F.modalInstance = $uibModal.open({
                 template: template,
                 backdrop: true,
@@ -79,12 +77,16 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     $scope.wizard = {form:{}, formmodel:{}}
                     
                     $scope.questions = preset || null
-                    $scope.loading = false
+                    $scope.saving = false
+                    $scope.loading = !preset
                     $scope.error = false
                     
                     $scope.close = ()=>{ F.modalInstance.close() }
 
-                    if(!preset) $http.get('/api/v1.4/questions/').then((res)=>{$scope.questions = res.data.questions})
+                    if(!preset) $http.get('/api/v1.4/questions/').then((res)=>{
+                        $scope.questions = res.data.questions ;
+                        $scope.loading = false
+                    })
                     
                     $scope.submit = (url=false)=>{
                         let call = $http.put(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)
@@ -96,24 +98,29 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                         let question = _.get($scope , 'questions['+$scope.current+']')
                         let form = $scope.wizard.form
                         let subform = $scope.wizard.form[question.name]
+                        angular.forEach(subform.$$controls, function (field) { field.$validate() })
  
                         // Stop if invalid data on current step
                         if(subform && subform.hasOwnProperty('$invalid') && subform.$invalid) {
                             subform.$$element.find('.submit').click()
-                            return
                         }
+                        else {
     
-                        // Perform apicall
-                        if( question && question.apicall ){
-                            $scope.loading=true;
-                            $scope.submit(question.apicall).then(()=>{
-                                    $scope.loading=false;
-                                    $scope.slickConfig.method.slickNext()
-                                },
-                                (res)=>{$scope.loading=false; question.error=res.data.error; console.log(res);})
+                            // Perform apicall
+                            if (question && question.apicall) {
+                                $scope.saving = true;
+                                $scope.submit(question.apicall).then(() => {
+                                        $scope.saving = false;
+                                        $scope.slickConfig.method.slickNext()
+                                    },
+                                    (res) => {
+                                        $scope.saving = false;
+                                        question.error = res.data.error;
+                                    })
+                            }
+                            else
+                                $scope.slickConfig.method.slickNext()
                         }
-                        else
-                            $scope.slickConfig.method.slickNext()
 
                         
                     }
@@ -141,10 +148,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                                 
                             },
                             beforeChange: (event, slick, currentSlide, nextSlide)=>{
-                                
-                                console.log(currentSlide, nextSlide, event, slick);
-                               
-                                
+                                //console.log(currentSlide, nextSlide, event, slick);
                             },
                             init: function (event, slick) {
                                 slick.slickGoTo($scope.current);

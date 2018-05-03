@@ -18,7 +18,7 @@ export default [function(){
                             res[0].data.details = res[0].data.details && $sce.trustAsHtml(res[0].data.details)
                             $scope.challenge = res[0].data || {}
                             $scope.interested_ids = res[1].data || []
-                            $scope.$apply(()=>$(window).trigger('resize'))
+                            // $scope.$apply(()=>$(window).trigger('resize'))
                         },
                         err=>console.log('Error: ', err)
                     )

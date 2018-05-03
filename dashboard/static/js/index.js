@@ -1,4 +1,4 @@
-"use strict";
+
 import 'babel-polyfill';
 
 let jQuery = window.$ = window.jQuery = require('jquery');

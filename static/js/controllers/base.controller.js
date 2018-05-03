@@ -54,7 +54,7 @@ export default
         })
     })
     
-    $scope.open_signup = ()=>{ $rootScope.$emit('question.modal.open') }
+    $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
     
     // $rootScope.$emit('question.modal.open')
     

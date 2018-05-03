@@ -71,7 +71,7 @@ export default [function(){
                 $http.post('/api/v1.3/project/invitation/' + status + '/', data).then(res => {
                     toastr.success('Success',res.data.message)
                     $scope.get_data($scope.url)
-                    $scope.$apply(()=>$(window).trigger('resize'))
+                    // $scope.$apply(()=>$(window).trigger('resize'))
                 },err=>console.log(err))
             }
 
@@ -89,7 +89,7 @@ export default [function(){
                         res=>{
                             $scope.project = res[0].data.result[0] || []
                             $scope.interested_ids = res[1].data || []
-                            $scope.$apply(()=>$(window).trigger('resize'))
+                            // $scope.$apply(()=>$(window).trigger('resize'))
                             // flatting contributors
                             // ToDo improve performance
                             if (!_.isEmpty($scope.project.project_contributors))
@@ -103,7 +103,7 @@ export default [function(){
             $scope.delete_project = (url) => {
                 $http.delete(url).then(res => {
                     $window.location.href = '/profile';
-                    $scope.$apply(()=>$(window).trigger('resize'))
+                    // $scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
 

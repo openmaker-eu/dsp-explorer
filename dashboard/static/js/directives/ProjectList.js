@@ -64,7 +64,7 @@ export default [function(){
                         el.is_interested = _.filter(el.interested, {id:$scope.requestprofileid}).length > 0
                         return el
                     })
-                    $scope.$apply(()=>$(window).trigger('resize'))
+                    // $scope.$apply(()=>$(window).trigger('resize'))
                 })
             }
 
