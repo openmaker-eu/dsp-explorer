@@ -1,5 +1,6 @@
 import * as _ from 'lodash'
 
+
 let template = `
    
     <div class="modal-body padding-5-perc">
@@ -54,7 +55,6 @@ let template = `
                 
             </div>
 
-
     </div>
 `
 
@@ -70,46 +70,50 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 transclude:true,
                 controller: ['$scope', '$http', function($scope, $http){
     
-                    $scope.current = 0;
-                    $scope.is_start = true
-                    $scope.is_end = false
-                    $scope.slick = null
-                    $scope.wizard = {form:{}, formmodel:{}}
+                    console.log(moment().subtract('16', 'year').format('YYYY-MM-DD'));
                     
+                    // Models
+                    $scope.wizard = {form:{}, formmodel:{}}
                     $scope.questions = preset || null
+                    
+                    // Status variables
                     $scope.saving = false
                     $scope.loading = !preset
                     $scope.error = false
-                    
-                    $scope.close = ()=>{ F.modalInstance.close() }
-
+                    $scope.is_start = true
+                    $scope.is_end = false
+                    $scope.current = 0;
+    
+                    // Get questions from backend if not provided to directive
                     if(!preset) $http.get('/api/v1.4/questions/').then((res)=>{
                         $scope.questions = res.data.questions ;
                         $scope.loading = false
                     })
                     
-                    $scope.submit = (url=false)=>{
-                        let call = $http.put(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)
-                        return call
-                    }
+                    // API Call
+                    $scope.api_call =(url=false)=>$http.put(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)
                     
+                    // Go to Next question
                     $scope.next = ()=>{
     
                         let question = _.get($scope , 'questions['+$scope.current+']')
-                        let form = $scope.wizard.form
                         let subform = $scope.wizard.form[question.name]
-                        angular.forEach(subform.$$controls, function (field) { field.$validate() })
+                        
+                        // Display form errors
+                        subform.$$element.addClass('subform-submitted')
+    
+                        // Trigger validation on Next
+                        _.each(subform.$$controls,  (field)=>{field.$validate();})
  
-                        // Stop if invalid data on current step
-                        if(subform && subform.hasOwnProperty('$invalid') && subform.$invalid) {
-                            subform.$$element.find('.submit').click()
-                        }
-                        else {
+                        console.log('subform', subform);
+                        
+                        // Go on only if form-data is valid
+                        if(_.get(subform, '$valid')) {
     
                             // Perform apicall
                             if (question && question.apicall) {
                                 $scope.saving = true;
-                                $scope.submit(question.apicall).then(() => {
+                                $scope.api_call(question.apicall).then(() => {
                                         $scope.saving = false;
                                         $scope.slickConfig.method.slickNext()
                                     },
@@ -121,48 +125,40 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                             else
                                 $scope.slickConfig.method.slickNext()
                         }
-
-                        
                     }
-                    $scope.prev = ()=>{
-                        $scope.slickConfig.method.slickPrev()
-                    }
+                    // Go to Prev question
+                    $scope.prev = ()=>{$scope.slickConfig.method.slickPrev()}
     
+                    // Close Modal
+                    $scope.close = ()=>{ F.modalInstance.close() }
+                    
+                    // Slick Carousel configuration
                     $scope.slickConfig ={
                         method:{},
-                        event: {},
-                        events: {},
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
+                        slidesToShow: 1, slidesToScroll: 1,
                         draggable: false,
                         autoplay: false,
-                        arrows: true,
                         infinite: false,
                         event: {
                             afterChange: function (event, slick, currentSlide, nextSlide) {
-                                
                                 $scope.current = currentSlide;
                                 $scope.is_start = currentSlide === 0
                                 $scope.is_end = currentSlide+1 === $scope.questions.length
                                 $('.slick-current').find('input, select').first().focus().select().click()
                                 
                             },
-                            beforeChange: (event, slick, currentSlide, nextSlide)=>{
-                                //console.log(currentSlide, nextSlide, event, slick);
-                            },
                             init: function (event, slick) {
                                 slick.slickGoTo($scope.current);
-                                window.onkeypress = (e)=> {e.which=== 13&& $scope.next()}
                             }
                         }
                     }
-                    
+    
+                    window.onkeypress = (e)=> { e.which=== 13 && $scope.next()}
+    
                 }]
             });
         }
     }
-    
-    
     
     $rootScope.$on('question.modal.open', F.open)
     return F

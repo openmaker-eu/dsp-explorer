@@ -2,15 +2,14 @@ let fields = require('../../../templates/question_templates.html')
 import {TemplateLoader} from '../../classes/TemplateLoader'
 
 let template = `
-     <form name="{$ x.name $}" class="signup-template">
+     <div ng-form="{$ x.name $}" class="signup-template">
         <div class="" style="padding:5%;">
             <h1 class="signup-template__label">{$ x.label $}</h1>
             <br>
             <div class="signup-input"></div>
             <h3 ng-if="x.error" class=" signup-template__label text-red">{$ x.error $}</h3>
         </div>
-        <input type="submit" class="submit" style="display:none!important;">
-     <form>
+     <div>
 `
 
 export default { 
@@ -20,7 +19,7 @@ export default {
         data: '=',
         model: '=',
     },
-    controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
+    controller: ['$scope', '$element', '$compile', '$timeout', function($scope, $element, $compile, $timeout) {
         
         // Wait for controller to init
         this.$onInit = ()=>{
@@ -30,13 +29,12 @@ export default {
             $scope.m = this.model
             
             // Object containign this sub form
-            $scope[$scope.x.name] = {}
+            $scope.subform = $scope[$scope.x.name]
             
-            $scope.template = angular.element( TemplateLoader.load(fields, this.data.type) )
-            $element.find('.signup-input').html( $scope.template )
-    
             // Compile template
-            $scope.$applyAsync(function() {
+            $scope.$applyAsync(()=>{
+                $scope.template = angular.element( TemplateLoader.load(fields, $scope.x.type) )
+                $element.find('.signup-input').html( $scope.template )
                 $scope.template = $compile( $scope.template )($scope)
             });
 

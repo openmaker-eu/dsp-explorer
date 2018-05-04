@@ -272,18 +272,22 @@ class questions(APIView):
 
     def get(self, request):
         from dashboard.models import Tag
+        import datetime
 
         questions = (
 
+            {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'max': str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))},
+
             {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
+            {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
+
             {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
-            {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?'},
-            {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
-            {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
             {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
                 ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
              },
-            {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
+            {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
+            {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
+
             {'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
 
             {'name': '', 'type': 'confirm_email', 'label': 'Thank you'},

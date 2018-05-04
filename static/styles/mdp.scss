@@ -462,7 +462,9 @@ $om_breakpoints: (
     input, select, .ui-select-toggle {
       text-align: center;
       font-size: $signup-font-size; padding: 1.5%;
-      border:solid 2px $color-brown--light!important; border-radius: 0!important;
+      border:solid 2px!important;
+      border-color: $color-brown--light!important;
+      border-radius: 0!important;
 
     }
     select {
@@ -488,7 +490,6 @@ $om_breakpoints: (
       }
       .ui-select-match-item { background-color:$color-brown!important; color:#fff!important; border:$color-brown--dark!important;}
       .ui-select-placeholder, .ui-select-match-text{ position: relative; top: -10px;}
-
       .ng-not-empty:first-child{ padding:1%!important; }
 
     }
@@ -523,3 +524,19 @@ $om_breakpoints: (
 }
 
 .pac-container {z-index:100000000;}
+
+.subform-submitted .signup-input{
+
+  //email
+  //max
+  //maxlength
+  //min
+  //minlength
+  //number
+  //pattern
+  //required
+  //url
+
+  .ng-invalid,.ng-empty ,.ng-empty .ui-select-toggle { border-color:$color-red!important; }
+
+}
