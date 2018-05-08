@@ -1,13 +1,7 @@
 # coding=utf-8
-from django.test import TestCase, Client
-from dashboard.models import Profile
 import json
 from dashboard.models import Profile, User, SourceOfInspiration, Tag
-from django.shortcuts import render, reverse
-from utils.Colorizer import Colorizer
-import datetime
-import pytz
-from django.utils import timezone
+
 
 def create_test_user():
     password = '12345678'
@@ -26,7 +20,8 @@ def create_test_user():
         'place': '{"city":"Torreon","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
     }
 
-    Profile.create(**user_data)
+    user = User.create(**user_data)
+    Profile.create(user=user, **user_data)
     user = User.objects.filter(email=user_data['email'])[0]
     user.is_active = True
 

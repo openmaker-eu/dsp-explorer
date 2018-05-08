@@ -8,7 +8,7 @@ let template = `
         <div ng-class="{'force-square': preview}">
             
             <!--Fade container-->
-            <div ng-if="preview" class="fade"></div>
+            <a href="/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>
             
             <div class="entity-detail__content entity-detail-padding" >
                 

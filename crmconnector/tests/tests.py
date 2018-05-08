@@ -7,13 +7,15 @@ from utils.Colorizer import Colorizer
 from ..serializers import PartySerializer
 from ..models import Party
 from rest_framework.exceptions import APIException
+import copy
+from rest_framework.exceptions import NotFound
 
 class CrmTestCase(TestCase):
 
     party = None
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpClass(cls):
 
         cls.user_data = {
             'email': 'test_unit@test.com',
@@ -29,8 +31,8 @@ class CrmTestCase(TestCase):
             'place': '{"city":"Torreon","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
         }
 
-        Profile.create(**cls.user_data)
-        cls.user = User.objects.filter(email=cls.user_data['email'])[0]
+        cls.user = User.create(**cls.user_data)
+        profile = Profile.create(user=cls.user, **cls.user_data)
 
         # Extra fields
         # cls.user.profile.types_of_innovation = 'Product innovation,Technological innovation,Business model innovation'
@@ -41,6 +43,7 @@ class CrmTestCase(TestCase):
         cls.user.profile.source_of_inspiration.add(SourceOfInspiration.create('Apple'))
         cls.user.profile.source_of_inspiration.add(SourceOfInspiration.create('Microsoft'))
         cls.user.profile.source_of_inspiration.add(SourceOfInspiration.create('Samsung'))
+
         ## Tags
         cls.user.profile.tags.add(Tag.create('Innovation'))
         cls.user.profile.tags.add(Tag.create('Social'))
@@ -61,22 +64,52 @@ class CrmTestCase(TestCase):
 
         # Create Party
         cls.party = Party(cls.user)
+        cls.party.get()
 
-    def tearDown(self):
-        # self.party.find_and_delete()
-        pass
+    @classmethod
+    def tearDownClass(self):
+        self.party.delete()
 
-    def testConnection(self):
-        print(Colorizer.LightPurple('[ CRM Test : Connection test ]'))
+    def test_1_connection(self):
+        print(Colorizer.LightPurple('\n[ CRM Test : Connection test ]'))
         response = self.party.all()
         self.assertEqual(response.status_code, 200, '[CRM-CONNECTOR ERROR] Response error :\n %s ' % response)
 
-    def testFind(self):
-        print(Colorizer.LightPurple('[ CRM Test : Find party by email test ]'))
-        results = self.party.get()
-        self.assertTrue(True, '[CRM-CONNECTOR ERROR] Response is not a valid Party object :\n %s ')
+    def test_2_creation(self):
+        print(Colorizer.LightPurple('[ CRM Test : Create ]'))
+        results = self.party.create_or_update()
+        self.assertIsInstance(results, dict, '[CRM-CONNECTOR ERROR] Creation Response should be a dictionary ')
 
-    def testInsertion(self):
-        print(Colorizer.LightPurple('[ CRM Test : Insertion test ]'))
+    def test_5_Update(self):
+        print(Colorizer.LightPurple('[ CRM Test : Update test ]'))
         results = self.party.create_or_update()
         self.assertTrue(True, '[CRM-CONNECTOR ERROR] Response is not a valid Party object :\n %s ')
+
+    def test_6_FindNotExisting(self):
+        print(Colorizer.LightPurple('\n[ CRM Test : Find non existent party by email]'))
+
+        # Deepcopy user
+        user = copy.deepcopy(self.user)
+        user.email = 'test_clone@gmail.com'
+        party = Party(user)
+
+        party.emailAddresses[0]['address'] = 'test_clone@gmail.com'
+        results = party.get()
+
+        self.assertIsNone(results, '\n[CRM-CONNECTOR ERROR] Response should be empty')
+
+    def test_7_findExisting(self):
+        print(Colorizer.LightPurple('\n[ CRM Test : Find existing party]'))
+        results = self.party.get()
+        self.assertIsInstance(results, dict, '\n[CRM-CONNECTOR ERROR] Get Response should contain a dictionary')
+
+    # def test_8_RemoveExisting(self):
+    #     print(Colorizer.LightPurple('\n[ CRM Test : Remove test ]'))
+    #     delete = self.party.delete()
+    #     print 'delete'
+    #
+    #     print self.party.get()
+    #     with self.assertRaises(NotFound):
+    #         self.party.get()
+
+

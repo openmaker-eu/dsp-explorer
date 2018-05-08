@@ -71,25 +71,25 @@ required>
 <input type="hidden" ng-model="m[x.name]" name="{$ x.name $}" required/>
 
 [city]
-<input
-       autocomplete="**********"required
+<input ng-init="dummy_model_city=''"
+       autocomplete="false"
        class="form-control"
        vs-google-autocomplete="{ types:['(cities)'] }"
        vs-autocomplete-validator
-       ng-model="m[x.name]"
-       vs-latitude ="place.lat"
-       vs-longitude="place.long"
-       vs-street-number="place.street_number"
-       vs-street="place.street"
-       vs-city="place.city"e
-       vs-state="place.state"
-       vs-country="place.country"
-       vs-country-short="place.country_short"
-       vs-post-code="place.post_code"
+       ng-model="dummy_model_city"
 
-       type="text" name="city" id="city"
-       placeholder="Start typing the city name where you ar based *"><br />
+       vs-latitude ="m[x.name].lat"
+       vs-longitude="m[x.name].long"
+       vs-street-number="m[x.name].street_number"
+       vs-street="m[x.name].street"
+       vs-city="m[x.name].city"
+       vs-state="m[x.name].state"
+       vs-country="m[x.name].country"
+       vs-country-short="m[x.name].country_short"
+       vs-post-code="m[x.name].post_code"
 
+       type="text" name="{$ x.name $}"
+       placeholder="Start typing the city name where you ar based" required>
 <input type="hidden" ng-model="m[x.name]" name="{$ x.name $}" required/>
 
 [loading]

@@ -520,7 +520,6 @@ $om_breakpoints: (
 
 .pivacy_check_form{
   i, a { color:$color-brown--dark; font-weight: bold;}
-
 }
 
 .pac-container {z-index:100000000;}
@@ -537,6 +536,11 @@ $om_breakpoints: (
   //required
   //url
 
-  .ng-invalid,.ng-empty ,.ng-empty .ui-select-toggle { border-color:$color-red!important; }
+  .ng-invalid, // for simple html
+  .ng-empty .ui-select-toggle, // simple select
+  .ui-select-container.ng-empty .ui-select-search// multi select
+  {
+    border-color:$color-red!important;
+  }
 
 }

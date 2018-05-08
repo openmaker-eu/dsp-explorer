@@ -12,10 +12,14 @@ class CRMConnector(object):
     
     @staticmethod
     def _wrapper_request(response):
-        if response.status_code < 205:
+        if response.status_code < 204:
             return response.json()
+        if response.status_code == 204:
+            # Handle no content response
+            return None
         if response.status_code == 422:
             raise CRMValidationException('Status Code: {0}\nResponse: {1}'.format(response.status_code, response.content))
+
         raise NotFound('There are some connection problem, try again later')
 
     @staticmethod

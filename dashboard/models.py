@@ -208,7 +208,7 @@ class User(User):
             )
             user.is_active = False
             user.save()
-            return User.objects.get(email=kwargs.get('email', False))
+            return user
 
         except Exception as e:
             print e
@@ -258,7 +258,6 @@ class Profile(models.Model):
     def create(cls, **kwargs):
         user = kwargs.get('user', None)
         tags = kwargs.get('tags', None)
-        print tags
 
         profile = cls(user=user)
 
@@ -268,6 +267,7 @@ class Profile(models.Model):
         profile.city = kwargs.get('city', None)
         profile.occupation = kwargs.get('occupation', None)
         profile.place = kwargs.get('place', None)
+        profile.reset_token = Profile.get_new_reset_token()
         profile.save()
 
         # Add tags

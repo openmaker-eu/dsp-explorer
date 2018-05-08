@@ -37,17 +37,6 @@ class ProfileTestCase(TestCase):
             'place': '{"city":"Torreon","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
         }
 
-    def test_1_create(self):
-        user = User.create(**self.userdata)
-        profile = Profile.create(user=user, **self.userdata)
-        self.assertIsInstance(profile, Profile, Colorizer.Red('Error during profile creation'))
-
-    def test_2_check_reset_token(self):
-        user = User.create(**self.userdata)
-        profile = Profile.create(user=user, **self.userdata)
-        print profile.reset_token
-        self.assertIsNot(profile.reset_token, None, Colorizer.Red('Error during profile creation'))
-
 
     #######################
     # TEST PAGE RESPONSE #

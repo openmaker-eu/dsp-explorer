@@ -276,23 +276,19 @@ class questions(APIView):
 
         questions = (
 
-            {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'max': str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))},
 
             {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
-            {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags...', 'options': [x.name for x in Tag.objects.all()]},
-
             {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
             {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
                 ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
              },
+            {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'max': str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))},
             {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
             {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
-
+            {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags', 'options': [x.name for x in Tag.objects.all()]},
             {'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
-
             {'name': '', 'type': 'confirm_email', 'label': 'Thank you'},
 
-            # {'name': '', 'type': 'slider', 'label': 'How much do you like openmaker?', 'value': 90},
         )
         if not request.user.is_active:
             pass
@@ -309,6 +305,7 @@ class questions(APIView):
 
 @api_view(['PUT'])
 def signup(request):
+    from utils.mailer import EmailHelper
 
     email = request.data.get('email', False)
     password = request.data.get('password', False)
@@ -323,23 +320,18 @@ def signup(request):
     user = User.create(**request.data)
     profile = Profile.create(user=user, **request.data)
 
-    # # send e-mail
-    # confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
-    #
-    # subject = 'Onboarding... almost done!'
-    # content = "{0}{1}{2}".format(
-    #     invitation_base_template_header,
-    #     onboarding_email_template.format(
-    #         FIRST_NAME=first_name.encode('utf-8'),
-    #         LAST_NAME=last_name.encode('utf-8'),
-    #         CONFIRMATION_LINK=confirmation_link,
-    #     ),
-    #     invitation_base_template_footer)
-    #
-    # EmailHelper.send_email(
-    #     message=content,
-    #     subject=subject,
-    #     receiver_email=email
-    # )
+    # Send email
+    confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
+
+    EmailHelper.email(
+        template_name='onboarding_email_template',
+        title='OpenMaker Nomination done!',
+        vars={
+            'FIRST_NAME': user.first_name.encode('utf-8'),
+            'LAST_NAME': user.last_name.encode('utf-8'),
+            'CONFIRMATION_LINK': confirmation_link,
+        },
+        receiver_email=user.email
+    )
 
     return Response({'success': True}) if profile else Response(data={'error': 'error creating user'}, status=403)

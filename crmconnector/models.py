@@ -87,6 +87,7 @@ class Party(object):
     ##################
 
     def get_custom_field(self, user):
+        import datetime
 
         custom_fields = {
             '444006': user.profile.city,
@@ -95,7 +96,9 @@ class Party(object):
             '444014': user.profile.technical_expertise,
             '412036': user.profile.technical_expertise,
             '444008': user.profile.occupation,
-            '444007': user.profile.birthdate.strftime("%Y-%m-%d"),
+            '444007': user.profile.birthdate
+                if isinstance(user.profile.birthdate, basestring)
+                else user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
             '444016': user.profile.statement if not user.profile.statement or len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
 
@@ -120,7 +123,7 @@ class Party(object):
     def update(self):
         self.__capsule_party and self.get()
         # print json.dumps(self.as_dict(), indent=1)
-        CRMConnector.update_party(self.__capsule_party['id'], {'party': self.as_dict()})
+        return CRMConnector.update_party(self.__capsule_party['id'], {'party': self.as_dict()})
 
     def create(self):
         return CRMConnector.add_party({'party': self.as_dict()})

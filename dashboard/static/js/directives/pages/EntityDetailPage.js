@@ -36,8 +36,6 @@ let template = `
                         
                     </div>
                     <div class="col-md-4">
-                                                    <!--ng-if="{$ entityname == 'challenges' $}"-->
-
                         <!--Challenges: Event details with icons-->
                         <div
                             style="display: flex; flex-direction: row; justify-content:left; align-items:center; "

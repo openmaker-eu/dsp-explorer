@@ -40,3 +40,5 @@ pss/application
 !pss/application/PSS_application_form.pdf
 npm-debug.*
 
+docker-compose.yml
+

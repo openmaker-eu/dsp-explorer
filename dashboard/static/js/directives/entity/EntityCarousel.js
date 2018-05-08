@@ -7,11 +7,12 @@ let template = `
             
             <entity-loading
                 class="text-{$ entityname $} text-center"
-                loading="reload || entities.data.length === 0"
+                loading="reload || !entities"
                 entityname="{$ entityname $}"
+                error="!reload && entities && entities.data.length === 0 "
              ></entity-loading>
             
-            <div class="entity-carousel__body" ng-if="!reload && entities.data.length > 0">
+            <div class="entity-carousel__body" ng-if="!reload && entities && entities.data.length > 0">
                 <slick settings="slickConfig" ng-cloak>
                     <div ng-repeat="entity in entities.data | limitTo: (limit || 20) || undefined" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
