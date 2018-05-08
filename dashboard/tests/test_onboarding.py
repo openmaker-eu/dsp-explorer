@@ -14,28 +14,28 @@ from itertools import chain
 
 class ProfileTestCase(TestCase):
 
-    client = Client()
-    user = None
-    password = '12345678'
+    # client = Client()
+    # user = None
+    # password = '12345678'
 
-    @classmethod
-    def setUpTestData(cls):
-        user = testhelpers.create_test_user()
-        cls.user = User.objects.get(email=user.email)
-        # cls.login()
-        cls.userdata = {
-            'email': 'test@test.com',
-            'first_name': 'aaa_unit_test',
-            'last_name': 'aaa_test_unit',
-            'picture': 'images/profile/default_user_icon.png',
-            'password': 'q1w2e3r34t345',
-            'gender': 'Female',
-            'birthdate': '1980-01-12',
-            'city': 'Torreon',
-            'occupation': 'tester',
-            'twitter_username': '',
-            'place': '{"city":"Torreon","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
-        }
+    # @classmethod
+    # def setUpTestData(cls):
+    #     user = testhelpers.create_test_user()
+    #     cls.user = User.objects.get(email=user.email)
+    #     # cls.login()
+    #     cls.userdata = {
+    #         'email': 'test@test.com',
+    #         'first_name': 'aaa_unit_test',
+    #         'last_name': 'aaa_test_unit',
+    #         'picture': 'images/profile/default_user_icon.png',
+    #         'password': 'q1w2e3r34t345',
+    #         'gender': 'Female',
+    #         'birthdate': '1980-01-12',
+    #         'city': 'Torreon',
+    #         'occupation': 'tester',
+    #         'twitter_username': '',
+    #         'place': '{"city":"Torreon","state":"Coah.","country_short":"MX","country":"Messico","lat":25.5428443,"long":-103.40678609999998}',
+    #     }
 
 
     #######################

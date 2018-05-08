@@ -56,11 +56,12 @@ export default
     
     $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
     
-    // $rootScope.$emit('question.modal.open')
-    
     // LOGIN
     $scope.logout =()=>LoginService.logout()
-    $scope.login =()=>LoginService.login()
+    $scope.login =()=>$rootScope.$emit('question.modal.open', [
+        {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
+        {name:'end', type:'success', label: 'Successful login', }
+    ])
 
-    }]
+}]
 

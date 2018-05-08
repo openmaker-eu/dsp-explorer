@@ -92,11 +92,10 @@ urlpatterns = [
     url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.interest, name='bookmark'),
     url(r'^api/v1.4/interests/$', api14.get_interests, name='get_bookmark'),
 
-    url(r'^api/v1.4/authorization/$', api14.user_authorization, name='get_user_authorization'),
-
     url(r'^api/v1.4/login/$', api14.apilogin, name='user_login'),
     url(r'^api/v1.4/logout/$', api14.apilogout, name='user_logout'),
     url(r'^api/v1.4/signup/$', api14.signup, name='user_signup'),
+    url(r'^api/v1.4/authorization/$', api14.authorization, name='get_user_authorization'),
 
     url(r'^api/v1.4/questions/$', api14.questions.as_view(), name='questions'),
 

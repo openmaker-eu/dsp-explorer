@@ -18,10 +18,10 @@
 [slider]
 <input name="{$ x.name $}" type="range" min="0" max="100" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>`,
 
-[confirm_email]
+[success]
 <h1 class="signup-template__label text-brown">
     <i class="fa fa-check-circle-o" style=" font-size:400%; font-weight:300;"></i><br>
-        <h1 class="signup-template__label">Check your inbox for a confirmation email</h1>
+    <h1 class="signup-template__label">{$ x.value $}</h1>
 </h1>
 
 [date]
@@ -98,9 +98,14 @@ required>
 [text]
 <input name="{$ x.name $}" type="text" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>
 
-
 [login]
+<label class="signup-template__label" for="email">email</label>
+<input name="username" type="email" value="{$ x.value $}" ng-model="m['username']" class="form-control" required><br>
+<label class="signup-template__label" for="password">password</label>
+<input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" required><br>
+<i class="signup-template__label text-brown"><a href="/recover/"><strong>Password forgotten? Click here</strong></a></i>
 
+[signup]
 <label class="signup-template__label" for="email">email</label>
 <input name="email" type="email" value="{$ x.value $}" ng-model="m['email']" class="form-control" required><br>
 <label class="signup-template__label" for="password">password</label>

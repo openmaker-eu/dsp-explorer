@@ -1,8 +1,8 @@
 
 let template = /*html*/`
-    <div class="container">
+    <div class="container home-page">
         <div class="row margin-top-5-perc margin-bottom-5-perc">
-            <div class="home-page">
+            <div>
                 <div ng-repeat="entity_name in entities_names" class="col-md-4">
                     <entity-carousel entityname="{$ entity_name $}" limit="$root.authorization<10 && 1"></entity-carousel>
                 </div>

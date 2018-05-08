@@ -179,28 +179,26 @@ def get_interests(request):
             'result': 'Unhautorized',
         }, status=403)
 
-
-def user_authorization(request):
+@api_view(['GET'])
+def authorization(request):
     from dspexplorer.site_helpers import User
-    return JsonResponse({
-        'status': 'ok',
-        'result': User.authorization(request) ,
-    }, status=200)
+    return Response({'authorization': AuthUser.authorization(request)})
 
 @api_view(['POST'])
 def apilogin(request):
     from django.contrib.auth import authenticate, login, logout
-    data = json.loads(request.body)
+    print request.data
     user = authenticate(
-        username=data.get('username', False),
-        password=data.get('password', False)
+        username=request.data.get('username', False),
+        password=request.data.get('password', False)
     )
     if user is not None:
         login(request, user)
     else:
-        raise Http404('Username or password are wrong')
+        return Response(data={'error': 'Username or password are wrong'}, status=401)
 
     return Response({'authorization': AuthUser.authorization(request)})
+
 
 @api_view(['POST'])
 def apilogout(request):
@@ -275,8 +273,6 @@ class questions(APIView):
         import datetime
 
         questions = (
-
-
             {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
             {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
             {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
@@ -286,15 +282,14 @@ class questions(APIView):
             {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
             {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
             {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags', 'options': [x.name for x in Tag.objects.all()]},
-            {'name': 'login', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
-            {'name': '', 'type': 'confirm_email', 'label': 'Thank you'},
-
+            {'name': 'signup', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
+            {'name': 'confirm_email', 'type': 'success', 'label': 'Thank you', 'value': 'Check your inbox for a confirmation email'},
         )
         if not request.user.is_active:
             pass
         return Response({'questions': questions})
 
-    def put(self, request):
+    def post(self, request):
         error = ''
         return Response({})
 
@@ -303,7 +298,7 @@ class questions(APIView):
         return res
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def signup(request):
     from utils.mailer import EmailHelper
 

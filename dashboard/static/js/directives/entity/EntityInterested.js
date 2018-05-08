@@ -1,17 +1,16 @@
 export default [function(){
     return {
         template:`
-            <div class="row" ng-if="$root.authorization>=10">
+            <div class="row" ng-if="$root.authorization>=10" ng-click="console.log($root.authorization)">
                 <a
                     ng-href="/profile/{$ inter.id $}"
                     class="col-md-1 col-sm-2 col-xs-4"
                     ng-repeat="inter in interested track by $index | limitTo: 20"
                 >
                     <!--<a class="pointer" style="display:block;">-->
-                        <circle-image src="inter.picture"></circle-image>
+                        <circle-image src="inter.picture || '/media/images/profile/female.svg'"></circle-image>
                     <!--</a>-->
                 </a>
-     
             </div>
             <div ng-if="$root.authorization<10">INTERESTED: {$ interested.interested_counter || 0 $}</div>
         `,

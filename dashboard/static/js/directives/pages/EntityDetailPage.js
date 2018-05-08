@@ -47,7 +47,10 @@ let template = `
                                 <h5>{$ ( entity.data.end_date | date:'d MMMM yyyy') || 'In progress' $}</h5>
                         </div>
                         
-                        <img style="padding:0; width:100%;" ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}" class="col-md-12">
+                        <img style="padding:0; width:100%;"
+                            ng-if="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
+                            ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
+                        class="col-md-12">
                         
                     </div>
                     

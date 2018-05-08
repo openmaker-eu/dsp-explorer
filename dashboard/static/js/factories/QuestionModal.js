@@ -69,12 +69,11 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 windowClass: 'signup-modal',
                 transclude:true,
                 controller: ['$scope', '$http', function($scope, $http){
-    
-                    console.log(moment().subtract('16', 'year').format('YYYY-MM-DD'));
                     
                     // Models
                     $scope.wizard = {form:{}, formmodel:{}}
                     $scope.questions = preset || null
+                    console.log('questions', $scope.questions);
                     
                     // Status variables
                     $scope.saving = false
@@ -85,13 +84,15 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     $scope.current = 0;
     
                     // Get questions from backend if not provided to directive
-                    if(!preset) $http.get('/api/v1.4/questions/').then((res)=>{
-                        $scope.questions = res.data.questions ;
-                        $scope.loading = false
-                    })
+                    !preset && $http
+                        .get('/api/v1.4/questions/')
+                        .then((res)=>{
+                            $scope.questions = res.data.questions ;
+                            $scope.loading = false
+                        })
                     
                     // API Call
-                    $scope.api_call =(url=false)=>$http.put(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)
+                    $scope.api_call =(url=false)=>$http.post(_.isString(url) ? url : '/api/v1.4/questions/', $scope.wizard.formmodel)
                     
                     // Go to Next question
                     $scope.next = ()=>{
@@ -103,7 +104,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                         subform.$$element.addClass('subform-submitted')
     
                         // Trigger validation on Next
-                        _.each(subform.$$controls,  (field)=>{field.$validate();})
+                        _.each(subform.$$controls, (field)=>{field.$validate();})
  
                         console.log('subform', subform);
                         
@@ -115,6 +116,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                                 $scope.saving = true;
                                 $scope.api_call(question.apicall).then(() => {
                                         $scope.saving = false;
+                                        question.emitevent && $rootScope.$emit(question.emitevent, {})
                                         $scope.slickConfig.method.slickNext()
                                     },
                                     (res) => {
@@ -124,6 +126,9 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                             }
                             else
                                 $scope.slickConfig.method.slickNext()
+                            
+                            
+                            
                         }
                     }
                     // Go to Prev question
