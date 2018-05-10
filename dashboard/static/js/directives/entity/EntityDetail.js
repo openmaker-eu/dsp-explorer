@@ -5,7 +5,16 @@ let template = `
             'background-challenge--light': entity.hasOwnProperty('company'),
             'background-white': ! entity.hasOwnProperty('company') && preview
         }">
-        <div ng-class="{'force-square': preview}">
+        
+        <div ng-class="{'force-square': preview}" ng-if="['lovers','loved'].includes(entityname)">
+            <img ng-src="{$ entity.picture $}" alt="" style="width:100%;">
+        </div>
+        
+        <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">
+            Profile Page
+        </div>
+        
+        <div ng-class="{'force-square': preview}" ng-if="['projects','news','events'].includes(entityname)">
             
             <!--Fade container-->
             <a href="/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>

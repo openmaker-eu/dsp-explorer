@@ -54,9 +54,11 @@ export default
         })
     })
     
-    $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
+    // GET AUTH AND USER DATA
+    $rootScope.$emit('authorization.refresh')
     
-    // LOGIN
+    // GLOBAL ACTIONS
+    $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
     $scope.logout =()=>LoginService.logout()
     $scope.login =()=>$rootScope.$emit('question.modal.open', [
         {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},

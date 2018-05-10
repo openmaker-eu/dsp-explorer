@@ -122,11 +122,13 @@
         city='{{ profile.city }}';
 
         {% if url in profile.picture %}
-            image_model = { src:'{{ profile.picture.url}}',files:{}};
+            image_model = { src:'/media/{{ profile.picture.url}}',files:{}};
+        {% elif profile.picture %}
+            image_model = { src:'/media/{{ profile.picture }}',files:{}};
         {% elif profile.gender != None %}
-            image_model = { src:'images/profile/{{profile.gender}}.svg',files:{}};
+            image_model = { src:'/media/images/profile/{{profile.gender}}.svg',files:{}};
         {% else %}
-            image_model = { src:'images/profile/other.svg',files:{}};
+            image_model = { src:'/media/images/profile/other.svg',files:{}};
         {% endif  %}
 
         gender = '{{profile.gender}}';
@@ -155,7 +157,7 @@
 
                     <div class="col-sm-6 col-sm-offset-0 col-md-6 col-md-offset-0 col-xs-12">
                         <div class="col-md-8 col-md-offset-4">
-                            <circle-image ng-src="image_model.src" ></circle-image>
+                            <circle-image src="image_model.src" ></circle-image>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">

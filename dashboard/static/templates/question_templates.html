@@ -116,7 +116,7 @@ required>
 <div class="form-group pivacy_check_form" ng-init="privacy=false; tac=false;">
     <span class="pointer" style="cursor:pointer;">
         <span ng-click="tac=!tac;">
-            <i class="glyphicon" ng-class="{'glyphicon-check':tac, 'glyphicon-unchecked':!tac}"></i>
+            <i class="glyphicon required" ng-class="{'glyphicon-check':tac, 'glyphicon-unchecked':!tac}"></i>
             <input type="checkbox" ng-model="tac" required="required" class="fake-check">
             &nbsp;You agree to the conditions
         </span>
@@ -125,7 +125,7 @@ required>
     <br>
     <span class="pointer" style="cursor:pointer;">
         <span ng-click="privacy=!privacy;" >
-            <i class="glyphicon" ng-class="{'glyphicon-check':privacy, 'glyphicon-unchecked':!privacy}"></i>
+            <i class="glyphicon required" ng-class="{'glyphicon-check':privacy, 'glyphicon-unchecked':!privacy}"></i>
             <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
             &nbsp;You agree to use your data to allow us to map the community of makers and encourage the meeting between
             representatives of the makers' community and the manufacturing industry By registering you agree to the following conditions

@@ -4,8 +4,8 @@ export default [function(){
         <i
             ng-click="bookmark()"
             ng-if="$root.authorization > 0"
-            class="fa  pointer"
-            ng-class="{'text-red': bookmarked, 'fa-bookmark-o': entityname !== 'events', 'fa-bell-o': entityname === 'events'}"
+            class="fa pointer hidden"
+            ng-class="{'text-red': bookmarked, 'visible fa-bookmark-o': entityname !== 'events', 'visible fa-bell-o': entityname === 'events'}"
         ></i>
 `,
         scope: {

@@ -41,4 +41,5 @@ pss/application
 npm-debug.*
 
 docker-compose.yml
+db.json
 

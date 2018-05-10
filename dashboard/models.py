@@ -53,6 +53,8 @@ class ModelHelper:
 
         elif entity == 'projects':
             local_entity = Project.objects.get(pk=entity_id)
+        elif entity == 'profile':
+            local_entity = Profile.objects.get(pk=entity_id)
         else:
             try:
                 local_entity = Challenge.objects.get(pk=entity_id)
@@ -61,7 +63,6 @@ class ModelHelper:
             except Exception as e:
                 raise ObjectDoesNotExist
         return local_entity
-
 
 class Tag(models.Model):
     name = models.CharField(_('Name'), max_length=50, null=False, blank=False)
@@ -215,6 +216,21 @@ class User(User):
             return False
 
 
+# class interest_mixin(models.Model):
+#     '''
+#     addnin
+#     '''
+#     class Meta:
+#         abstract = True
+#
+#     interest = GenericRelation('Interest')
+#
+#     def interested(self, filter_class=None):
+#         interests = self.interest.all().order_by('-created_at')
+#         interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+#         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+
 class Profile(models.Model):
     crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -244,6 +260,13 @@ class Profile(models.Model):
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
+    interest = GenericRelation('Interest')
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     socialLinks = models.TextField(
         _('Social Links'),

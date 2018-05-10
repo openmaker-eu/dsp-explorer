@@ -36,7 +36,7 @@
                      },
                 {% endfor %}
           ];
-          $root.authorization = {{ om_authorization }};
+
       "
 >
 
@@ -46,7 +46,9 @@
             {% with current_url=request.resolver_match.view_name  %}
                 {% include "header.html" %}
             {% endwith %}
+           <!--<h1>AUTH: {$ $root.authorization $}</h1><h1>USER: {$ $root.user $}</h1>-->
         </header>
+
 
         <main>
             {% block container %}

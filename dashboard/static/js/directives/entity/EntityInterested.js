@@ -23,12 +23,12 @@ export default [function(){
             $scope.interested = [];
     
             // Build url
-            let url = `/api/v1.4/interest/${$scope.entityname}/${$scope.entityid}/`
+            let url = `/api/v1.4/interested/${$scope.entityname}/${$scope.entityid}/`
     
             // Change bookmarked button color
             const change_status = res => {
-                res.status === 200 && ($scope.counter = _.get(res, 'data.result.interested_counter', 0))
-                res.status === 200 && ($scope.interested = _.get(res, 'data.result.interested', []))
+                res.status === 200 && ($scope.counter = _.get(res, 'data.interested_counter', 0))
+                res.status === 200 && ($scope.interested = _.get(res, 'data.interested', []))
             }
     
             // First check if is bookmarked

@@ -20,12 +20,16 @@ from .helpers import mix_result_round_robin
 from dashboard.models import Challenge, Project
 
 from django.http import Http404
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from django.core.serializers import serialize
 from dspexplorer.site_helpers import User as AuthUser
+from dashboard.serializer import UserSerializer
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import AnonymousUser
 
 
 def __wrap_response(*args, **kwargs):
@@ -101,7 +105,6 @@ def get_bookmarks(request):
 
 def get_bookmark_by_entities(request, entity=None):
     try:
-
         entity = entity[:-1]
         profile = request.user.profile
         results = profile.get_bookmarks(entity)
@@ -116,7 +119,43 @@ def get_bookmark_by_entities(request, entity=None):
         return not_authorized()
 
 
-def interest(request, entity='news', entity_id=None):
+@api_view(['GET'])
+def interest(request, entity=None, user_id=None):
+    """
+    :param request:
+    :param entity:
+    :param user_id:
+    :return:
+        GET:
+            return all the interest of specified user
+            if entity is defined the result will contains only this entity type
+            if no user id specified will use the logged user
+    """
+    profile = request.user.profile if \
+        request.user.is_authenticated() and \
+        not user_id else \
+        Profile.objects.filter(pk=user_id).first()
+
+    if not profile:
+        return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+    dashboard = __import__("dashboard")
+
+    try:
+        entity_class = entity and getattr(dashboard.models, entity.capitalize())
+        serializer = entity and getattr(dashboard.serializer, entity.capitalize()+'Serializer')
+        interest = profile.interested(entity_class)
+        print 'INTEREST'
+        print interest
+        return Response(serializer(interest, many=True).data)
+    except Exception as e:
+        print 'EXCEPTION'
+        print e
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST', 'GET'])
+def interested(request, entity='news', entity_id=None):
     '''
     :param request:
     :param entity:
@@ -141,30 +180,25 @@ def interest(request, entity='news', entity_id=None):
             results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
             results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
             results['interested_counter'] = len(local_entity.interested())
-
         else:
             # Toggle interest
             results['iaminterested'] = profile.interest_this(local_entity)
             results['interested'] = ProfileSerializer(local_entity.interested(), many=True).data
             results['interested_counter'] = len(local_entity.interested())
-        return JsonResponse({
-            'status': 'ok',
-            'result': results,
-        }, status=200)
+        return Response(results)
     except Exception as e:
+        print e
         #Anonymous user
         if request.method == 'GET':
             local_entity = ModelHelper.find_this_entity(entity, entity_id)
             results['interested_counter'] = len(local_entity.interested())
-            return JsonResponse({
-                'status': 'ok',
-                'result': results,
-            }, status=202)
+            return Response(results)
         else:
-            return not_authorized()
+            return Http404()
 
 
 def get_interests(request):
+    print '###############################'
     try:
         profile = request.user.profile
         results = profile.get_interests()
@@ -179,36 +213,16 @@ def get_interests(request):
             'result': 'Unhautorized',
         }, status=403)
 
-@api_view(['GET'])
-def authorization(request):
-    from dspexplorer.site_helpers import User
-    return Response({'authorization': AuthUser.authorization(request)})
-
-@api_view(['POST'])
-def apilogin(request):
-    from django.contrib.auth import authenticate, login, logout
-    print request.data
-    user = authenticate(
-        username=request.data.get('username', False),
-        password=request.data.get('password', False)
-    )
-    if user is not None:
-        login(request, user)
-    else:
-        return Response(data={'error': 'Username or password are wrong'}, status=401)
-
-    return Response({'authorization': AuthUser.authorization(request)})
-
-
-@api_view(['POST'])
-def apilogout(request):
-    from django.contrib.auth import logout
-    logout(request)
-    return Response({'authorization': 0})
-
 
 class entity(APIView):
     def get(self, request, entity):
+        """
+
+        :param request:
+        :param entity:
+        :return:
+        """
+
         #TODO make cursor works
         profile = None
         results = []
@@ -217,6 +231,23 @@ class entity(APIView):
             profile = request.user.profile
         except:
             profile = None
+
+        # Local entities
+        if entity == 'loved':
+            return interest(request, 'profile')
+        if entity == 'lovers':
+            return interested(request, 'profile')
+        if entity == 'projects':
+            local_entities = Project.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ProjectSerializer(local_entities, many=True).data)
+            local_entities = Challenge.objects.all()
+            if not profile:
+                local_entities = local_entities[:5]
+            results.extend(ChallengeSerializer(local_entities, many=True).data)
+
+        # Remote Entities
         try:
             topics_list = DSPConnectorV12.get_topics()['topics']
             topics_id_list = [x['topic_id'] for x in topics_list]
@@ -233,16 +264,9 @@ class entity(APIView):
         except DSPConnectorException:
             pass
         except AttributeError as a:
-            local_entities = Project.objects.all()
-            if not profile:
-                local_entities = local_entities[:5]
-            results.extend(ProjectSerializer(local_entities, many=True).data)
-            local_entities = Challenge.objects.all()
-            if not profile:
-                local_entities = local_entities[:5]
-            results.extend(ChallengeSerializer(local_entities, many=True).data)
+            pass
 
-        return Response(results[:20])
+        return Response(results[:20] if len(results) > 20 else results)
 
 
 class entity_details(APIView):
@@ -254,6 +278,9 @@ class entity_details(APIView):
         elif entity == 'challenges':
             local_entities = Challenge.objects.get(pk=entity_id)
             results = ChallengeSerializer(local_entities).data
+        elif entity == 'profile':
+            local_entities = Profile.objects.get(pk=entity_id)
+            results = ProfileSerializer(local_entities).data
         else:
             try:
                 method_to_call = 'get_' + entity+'_detail'
@@ -282,10 +309,11 @@ class questions(APIView):
             {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
             {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
             {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags', 'options': [x.name for x in Tag.objects.all()]},
-            {'name': 'signup', 'type': 'login', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
+            {'name': 'signup', 'type': 'signup', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
             {'name': 'confirm_email', 'type': 'success', 'label': 'Thank you', 'value': 'Check your inbox for a confirmation email'},
         )
-        if not request.user.is_active:
+        if request.user.is_active:
+            # Handle question on later time
             pass
         return Response({'questions': questions})
 
@@ -330,3 +358,36 @@ def signup(request):
     )
 
     return Response({'success': True}) if profile else Response(data={'error': 'error creating user'}, status=403)
+
+
+@api_view(['GET'])
+def authorization(request):
+    return Response({
+        'authorization': AuthUser.authorization(request),
+        'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated() else None
+    })
+
+
+@api_view(['POST'])
+def apilogin(request):
+    print request.data
+    user = authenticate(
+        username=request.data.get('username', False),
+        password=request.data.get('password', False)
+    )
+    if user is not None:
+        login(request, user)
+    else:
+        return Response(data={'error': 'Username or password are wrong'}, status=401)
+
+    return Response({
+        'authorization': AuthUser.authorization(request),
+        'user': UserSerializer(user, many=False).data if request.user.is_authenticated() else None
+    })
+
+
+@api_view(['POST'])
+def apilogout(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return Response({'authorization': 0})

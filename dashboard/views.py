@@ -22,6 +22,8 @@ import datetime as dt, json, os, logging, re, random
 from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
 from dashboard.models import Location
+from django.http import Http404, HttpResponseForbidden
+
 
 logger = logging.getLogger(__name__)
 from utils.GoogleHelper import GoogleHelper
@@ -150,6 +152,20 @@ def event_detail(request, entity_id):
     }
     return render(request, 'dashboard/entity_detail.html', context)
 
+
+def profile_detail(request, entity_id=None):
+
+    if not entity_id and isinstance(request.user, User):
+        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id':request.user.profile.id}))
+    if not entity_id and request.user:
+        return HttpResponseForbidden()
+
+    context = {
+        'entity': 'profile',
+        'entity_id': entity_id,
+        'slider': 'loved-lovers'
+    }
+    return render(request, 'dashboard/profile_detail.html', context)
 
 @login_required()
 def insight(request, user_twitter_username=None):

@@ -4,8 +4,8 @@ export default [function(){
             <i
                 ng-click="interest()"
                 ng-if="$root.authorization > 0 && (entityname !== 'projects' || entityname !== 'challenges') "
-                class="fa fa-star-o pointer"
-                ng-class="{'text-red': interested }"
+                class="fa pointer"
+                ng-class="{'text-red': interested, 'fa-star-o':entityname!=='profile', 'fa-heart-o': entityname==='profile' }"
             ></i>
         `,
         scope: {
@@ -17,12 +17,12 @@ export default [function(){
             // $scope.interest = (challenge) => $scope.interested = !$scope.interested
     
             // Build url
-            let url = `/api/v1.4/interest/${$scope.entityname}/${$scope.entityid}/`
+            let url = `/api/v1.4/interested/${$scope.entityname}/${$scope.entityid}/`
     
             // Change bookmarked button color
             const change_status = res => {
                 if(res.status === 200){
-                    $scope.interested = _.get(res, 'data.result.iaminterested', $scope.interested)
+                    $scope.interested = _.get(res, 'data.iaminterested', $scope.interested)
                     $rootScope.$emit('interested.new')
                 }
             }

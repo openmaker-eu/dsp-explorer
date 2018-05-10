@@ -7,9 +7,11 @@ import json
 
 
 class UserSerializer(serializers.ModelSerializer):
+
+    profile = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
+        fields = ('email', 'first_name', 'last_name', 'profile')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -25,7 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('id', 'user', 'picture', 'occupation', 'tags', 'city')
+        fields = '__all__'
 
 
 class CompanySerializer(serializers.ModelSerializer):

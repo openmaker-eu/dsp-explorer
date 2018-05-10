@@ -31,6 +31,9 @@ urlpatterns = [
 
     url(r'^challenges/(?P<entity_id>[0-9]+)$', views.challenge_detail, name='prj_detail'),
 
+    url(r'^profile/(?P<entity_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
+    url(r'^profile/$', views.profile_detail, name='profile_detail'),
+
 
     ###################################### MDP ROUTES
     # Explore
@@ -52,10 +55,11 @@ urlpatterns = [
     url(r'^profile/project/(?P<project_id>[0-9]+)/$', views.project, name='project'),
     url(r'^profile/project/(?P<project_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.project, name='project'),
 
-    url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
+    # url(r'^profile/(?P<profile_id>[0-9]+)/$', views.profile, {'action': None}, name='profile'),
     url(r'^profile/(?P<action>[\w\-]+)/$', views.profile, {'profile_id': None}, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/(?P<action>[\w\-]+)/$', views.profile, name='profile'),
     url(r'^profile/(?P<profile_id>[0-9]+)/invitation/(?P<project_id>[0-9]+)/(?P<status>.+)/$', views.collaborator_invitation, name='profile'),
+
     url(r'^profile/$', views.profile, {'action': None}, name='profile'),
 
     # Search
@@ -89,7 +93,13 @@ urlpatterns = [
     url(r'^api/v1.4/bookmarks/(?P<entity>\w+)/$', api14.get_bookmark_by_entities, name='get_bookmark_by_entities'),
     url(r'^api/v1.4/bookmarks/$', api14.get_bookmarks, name='get_bookmark'),
 
-    url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api.v14.interest, name='bookmark'),
+    url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<user_id>\w+)/$', api14.interest, name='all_interest_of_user_in_entitiy'),
+    url(r'^api/v1.4/interest/(?P<entity>\w+)/$', api14.interest, {'entity': None}, name='all_interest_of_loggeduser_in_entitiy'),
+    url(r'^api/v1.4/interest/$', api14.interest, {'entity': None, 'user_id': None}, name='all_interest_of_user'),
+
+    url(r'^api/v1.4/interested/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.interested, name='get_interested'),
+    url(r'^api/v1.4/interested/(?P<entity>\w+)/$', api14.interested, name='get_interested'),
+
     url(r'^api/v1.4/interests/$', api14.get_interests, name='get_bookmark'),
 
     url(r'^api/v1.4/login/$', api14.apilogin, name='user_login'),
@@ -101,7 +111,7 @@ urlpatterns = [
 
     url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 
-    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='get_entity_details'),
+    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='entity_detail'),
 
 
     # API v1.3

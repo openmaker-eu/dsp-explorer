@@ -73,7 +73,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     // Models
                     $scope.wizard = {form:{}, formmodel:{}}
                     $scope.questions = preset || null
-                    console.log('questions', $scope.questions);
                     
                     // Status variables
                     $scope.saving = false
@@ -105,8 +104,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     
                         // Trigger validation on Next
                         _.each(subform.$$controls, (field)=>{field.$validate();})
- 
-                        console.log('subform', subform);
                         
                         // Go on only if form-data is valid
                         if(_.get(subform, '$valid')) {
@@ -114,7 +111,8 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                             // Perform apicall
                             if (question && question.apicall) {
                                 $scope.saving = true;
-                                $scope.api_call(question.apicall).then(() => {
+                                $scope.api_call(
+                                    question.apicall).then(() => {
                                         $scope.saving = false;
                                         question.emitevent && $rootScope.$emit(question.emitevent, {})
                                         $scope.slickConfig.method.slickNext()
@@ -126,8 +124,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                             }
                             else
                                 $scope.slickConfig.method.slickNext()
-                            
-                            
                             
                         }
                     }

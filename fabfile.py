@@ -54,6 +54,13 @@ def start():
     local('python manage.py runserver 0.0.0.0:8000')
 
 
+def init():
+    local('npm run dev &')
+    local('python manage.py migrate')
+    local('python ./manage.py loaddata db.json')
+    local('python manage.py runserver 0.0.0.0:8000')
+
+
 @hosts(['topix@dspexplorer.top-ix.org'])
 def deploy_dev():
     with cd('/var/www/dsp-explorer'):
@@ -99,3 +106,11 @@ def test_e2e():
 
 def pair_crm_ids():
     local('python ./capsule_crm.py pair_crm_ids')
+
+
+def dumpdata():
+    local('python ./manage.py dumpdata > db.json --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 4')
+
+
+def loaddata():
+    local('python ./manage.py loaddata db.json')

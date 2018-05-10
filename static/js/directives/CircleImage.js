@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 
 let template = `
     <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }" style="display: block;">
-        <div class="profile-image-static" style="border-radius:50%; overflow: hidden; z-index:1000;">
+        <div class="profile-image-static background-grey" style="border-radius:50%; overflow: hidden; z-index:1000;">
             <img ng-src="{$ src $}" style="width:100%; height:100%; position: absolute;  "/>
         </div>
     </a>

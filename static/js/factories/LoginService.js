@@ -27,8 +27,10 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         },
         refresh_page : async(res)=> {
             res = res || await $http.get('/api/v1.4/authorization')
-            console.log('Referesh:', res);
+    
+            console.log(res.data);
             $rootScope.authorization = res.data.authorization;
+            $rootScope.user = res.data.user || {};
         }
     }
     
