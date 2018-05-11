@@ -10,6 +10,9 @@ require("bootstrap-sass")
 require("../../node_modules/cookieconsent/build/cookieconsent.min"); // library
 require("../../static/js/cookie/cookie.policy.behaviour"); // Config
 
+import fontawesome from '@fortawesome/fontawesome'
+
+
 export function angularBase(app=null){
     
     // Import angular componenets

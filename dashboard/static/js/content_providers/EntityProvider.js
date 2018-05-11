@@ -6,13 +6,16 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
     
     class Entity {
         data = null
-        url = ''
+        url = baseurl
         
-        constructor(entityname, entityid=null) {
+        constructor(entityname, entityid=null, userid=null) {
             this.entityname = entityname
             this.entityid = entityid
+            this.userid = userid
             this.data = entityid ? null : []
-            this.url = `${baseurl}/${entityname}/${entityid ? 'details/'+entityid+'/' : ''}`
+            
+            this.url += userid ? `/user/${userid}` : ''
+            this.url += `/${entityname}/${entityid ? 'details/'+entityid+'/' : ''}`
         }
 
         get = async ()=>{
@@ -23,9 +26,9 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
     
     let f = {
         entities : {},
-        make(entityname, entityid=null) {
+        make(entityname, entityid=null, userid=null) {
             let name = entityname + ( entityid ? '_detail_'+entityid : '' )
-            f.entities.hasOwnProperty(name) || ( f.entities[name] = new Entity(entityname, entityid) )
+            f.entities.hasOwnProperty(name) || ( f.entities[name] = new Entity(entityname, entityid, userid) )
             return f.entities[name]
         }
     }

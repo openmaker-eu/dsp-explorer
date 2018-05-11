@@ -1,9 +1,9 @@
 export default [function(){
     return {
         template:`
-            <span ng-if="$root.athorization >= 10" ng-click="toggle()">
-                <i ng-if="!is_visible" class="glyphicon glyphicon-menu-down text-red pointer"></i>
-                <i ng-if="is_visible" class="glyphicon glyphicon-menu-up text-red pointer"></i>
+            <span ng-if="$root.authorization >= 10" ng-click="toggle()">
+                <i ng-if="!is_visible" class="fas fa-chevron-down text-red pointer"></i>
+                <i ng-if="is_visible" class="fas fa-chevron-up text-red pointer"></i>
             </span>
         `,
         scope: {

@@ -94,6 +94,7 @@ def get_bookmarks(request):
         profile = request.user.profile
         results = profile.get_bookmarks()
         serialized = BookmarkSerializer(results, many=True).data
+
         return JsonResponse({
             'status': 'ok',
             'result': serialized,
@@ -105,9 +106,13 @@ def get_bookmarks(request):
 
 def get_bookmark_by_entities(request, entity=None):
     try:
+        # entity = re.sub(r'^(?!news)(\w+)s$', r'\1', entity)
         entity = entity[:-1]
+        print '1'
         profile = request.user.profile
+        print '2'
         results = profile.get_bookmarks(entity)
+        print '3'
         serialized = BookmarkSerializer(results, many=True).data
 
         return JsonResponse({
@@ -120,15 +125,14 @@ def get_bookmark_by_entities(request, entity=None):
 
 
 @api_view(['GET'])
-def interest(request, entity=None, user_id=None):
+def interest(request, entity, user_id=None):
     """
     :param request:
     :param entity:
     :param user_id:
     :return:
         GET:
-            return all the interest of specified user
-            if entity is defined the result will contains only this entity type
+            return all the interest shown by specified user that belongs to specific entitiy type
             if no user id specified will use the logged user
     """
     profile = request.user.profile if \
@@ -140,13 +144,12 @@ def interest(request, entity=None, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
     dashboard = __import__("dashboard")
-
     try:
+        print 'entity'
+        print entity
         entity_class = entity and getattr(dashboard.models, entity.capitalize())
         serializer = entity and getattr(dashboard.serializer, entity.capitalize()+'Serializer')
-        interest = profile.interested(entity_class)
-        print 'INTEREST'
-        print interest
+        interest = profile.interests(entity_class)
         return Response(serializer(interest, many=True).data)
     except Exception as e:
         print 'EXCEPTION'
@@ -155,7 +158,7 @@ def interest(request, entity=None, user_id=None):
 
 
 @api_view(['POST', 'GET'])
-def interested(request, entity='news', entity_id=None):
+def interested(request, entity='news', entity_id=None, user_id=None):
     '''
     :param request:
     :param entity:
@@ -171,7 +174,8 @@ def interested(request, entity='news', entity_id=None):
     local_entity = None
     try:
         #logged user
-        profile = request.user.profile
+        profile = Profile.objects.filter(pk=user_id).first() if user_id else request.user.profile if request.user.is_authenticated() else None
+        print profile
         try:
             local_entity = ModelHelper.find_this_entity(entity, entity_id)
         except ObjectDoesNotExist as odne:
@@ -215,7 +219,7 @@ def get_interests(request):
 
 
 class entity(APIView):
-    def get(self, request, entity):
+    def get(self, request, entity, user_id=None):
         """
 
         :param request:
@@ -234,9 +238,9 @@ class entity(APIView):
 
         # Local entities
         if entity == 'loved':
-            return interest(request, 'profile')
+            return interest(request, entity='profile', user_id=user_id)
         if entity == 'lovers':
-            return interested(request, 'profile')
+            return interested(request, entity='profile', user_id=user_id)
         if entity == 'projects':
             local_entities = Project.objects.all()
             if not profile:

@@ -23,10 +23,13 @@
             <!--LEFT MENU-->
             <!------------->
             <ul ng-if="$root.authorization >= 10" class="nav navbar-nav navbar-left">
+                <!--<li style="font-size:120%;"><a>|</a></li>-->
                 <li  ng-if="$root.authorization >= 1000"
                      class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="text-red bold" style="font-size:150%;">Admin&nbsp;<span class="fa fa-caret-down text-white"></span></span>
+                        <span class="text-red bold" style="font-size:190%;">Admin&nbsp;
+                            <span class="far fas fa-caret-down text-white">
+                        </span></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/admin">Admin area</a></li>

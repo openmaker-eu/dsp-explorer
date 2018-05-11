@@ -94,7 +94,7 @@ urlpatterns = [
     url(r'^api/v1.4/bookmarks/$', api14.get_bookmarks, name='get_bookmark'),
 
     url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<user_id>\w+)/$', api14.interest, name='all_interest_of_user_in_entitiy'),
-    url(r'^api/v1.4/interest/(?P<entity>\w+)/$', api14.interest, {'entity': None}, name='all_interest_of_loggeduser_in_entitiy'),
+    url(r'^api/v1.4/interest/(?P<entity>\w+)/$', api14.interest, {'user_id': None}, name='all_interest_of_loggeduser_in_entitiy'),
     url(r'^api/v1.4/interest/$', api14.interest, {'entity': None, 'user_id': None}, name='all_interest_of_user'),
 
     url(r'^api/v1.4/interested/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.interested, name='get_interested'),
@@ -112,6 +112,9 @@ urlpatterns = [
     url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 
     url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='entity_detail'),
+
+    # Entity with user id (Tailored)
+    url(r'^api/v1.4/user/(?P<user_id>\w+)/(?P<entity>\w+)/$', api14.entity.as_view(), name='user_entity'),
 
 
     # API v1.3

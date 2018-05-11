@@ -30,9 +30,9 @@ let template = `
 
                 <!--EVENT ONLY: Event details with icons-->
                 <div ng-if="entityname == 'events'" class="entity-detail__event-detail">
-                    <p><i class="fa fa-calendar"></i>&nbsp;&nbsp;{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</p>
-                    <p><i class="fa fa-map-marker"></i>&nbsp;&nbsp;{$ entity.place $}</p>
-                    <p><a href="{$ entity.link $}" target="_blank"><i class="fa fa-plus-square"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
+                    <p><i class="far fa-calendar-alt"></i>&nbsp;&nbsp;{$ entity.start_time | date:'d MMMM yyyy,EEEE' $}</p>
+                    <p><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;{$ entity.place $}</p>
+                    <p><a href="{$ entity.link $}" target="_blank"><i class="far fa-calendar-plus"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
                 </div>
   
                 <!--Read more-->

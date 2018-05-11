@@ -6,6 +6,7 @@ let template = `
    
             <entity-carousel
                 entityname="{$ slider_name $}"
+                userid="{$ entityid $}"
                 class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
             ></entity-carousel>
             
@@ -17,7 +18,7 @@ export default [function(){
         template:template,
         scope: {
             entityname: '@',
-            entityid: '@',
+            userid: '@',
             sidebartype:'@',
             slider : '@',
         },

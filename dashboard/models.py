@@ -268,6 +268,9 @@ class Profile(models.Model):
         interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
+    def interests(self, filter_class=object):
+        return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
+
     socialLinks = models.TextField(
         _('Social Links'),
         max_length=200,
@@ -600,7 +603,6 @@ class Profile(models.Model):
             filter_class = eval(filter_class.title()[:-1])
             return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
 
-
     def is_this_bookmarked_by_me(self, entity):
         return len(self.profile_bookmark.filter(object_id=entity.id)) == 1
 
@@ -876,6 +878,9 @@ class Project(models.Model):
     creator_role = models.TextField(_('Creator Role'), blank=True, null=True)
 
     interest = GenericRelation(Interest)
+
+    def __unicode__(self):
+        return self.name
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')

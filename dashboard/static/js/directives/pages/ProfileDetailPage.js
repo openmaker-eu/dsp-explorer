@@ -54,7 +54,7 @@ let template = `
             
             <!--Right sidebar-->
             <div class="col-md-3">
-                <entity-sidebar slider="loved-lovers" entityname="profile" entityid="{$ entityid $}"></entity-sidebar>
+                <entity-sidebar slider="loved-lovers" entityname="profile" userid="81"></entity-sidebar>
             </div>
             
         </div>

@@ -95,7 +95,13 @@ body, html {
 
 header .navbar.navbar-default{
 
-  &, & *:not(.glyphicon) { @extend .cairo; }
+  &, & *:not(.glyphicon):not(.fa):not(.far):not(.fas) { @extend .cairo; }
+  i, span {
+    &.fa, &.fas, &.far {
+      font-weight: 900!important;
+    }
+
+  }
 
   a { text-transform: uppercase;}
 

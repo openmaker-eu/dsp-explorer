@@ -28,15 +28,16 @@ export default [function(){
         template:template,
         transclude:false,
         scope: {
-            profileid : '=',
+            entityid : '@',
             entityname : '@',
+            userid : '@',
             slider : '@',
             limit: '='
         },
         controller : ['$scope', '$http', '$timeout', 'EntityProvider', async function($scope, $http, $timeout, EntityProvider) {
             
             $scope.reload = 0;
-            $scope.entities = EntityProvider.make($scope.entityname)
+            $scope.entities = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
             $scope.nodata = !$scope.entities.get()
             
             $scope.$watch('entities.data',  (a, b)=>{
@@ -47,8 +48,8 @@ export default [function(){
             $scope.slickConfig ={
                 slidesToShow: 1,
                 slidesToScroll: 1,
-                prevArrow: '<i class="glyphicon glyphicon-menu-left slick-arrow--custom prev"></i>',
-                nextArrow: '<i class="glyphicon glyphicon-menu-right slick-arrow--custom next"></i>',
+                prevArrow: '<i class="fas fa-chevron-left slick-arrow--custom prev"></i>',
+                nextArrow: '<i class="fas fa-chevron-right slick-arrow--custom next"></i>',
     
                 //focusOnSelect: false,
                 autoplay: false,
