@@ -42,7 +42,6 @@
           $root.user = {};
           {% if user.is_authenticated %}
           $root.user.first_name = '{{user.first_name}}';
-          $root.user.first_name = 'INITIALIZED';
           $root.user.last_name = '{{user.last_name}}';
           $root.user.email = '{{user.email}}';
           $root.user.profile = {{user.profile.id}};

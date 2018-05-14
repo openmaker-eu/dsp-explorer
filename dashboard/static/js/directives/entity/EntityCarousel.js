@@ -2,7 +2,9 @@ let template = `
     <div class="col-md-12"  >
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
             <div class="entity-carousel__header">
-                <h3><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
+                <h3 ng-if="!['loved', 'lovers'].includes(entityname)"><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
+                <h3 ng-if="entityname == 'loved'"><a>You <i class="far fa-heart"></i></a></h3>
+                <h3 ng-if="entityname == 'lovers'"><a>who <i class="far fa-heart"></i> you</a></h3>
             </div>
             
             <entity-loading
@@ -19,6 +21,7 @@ let template = `
                     </div>
                 </slick>  
             <div>
+            
         </div>
     </div>
 `
@@ -41,7 +44,7 @@ export default [function(){
             
             $scope.$watch('entities.data',  (a, b)=>{
                 $scope.reload = true;
-                $timeout(function(){$scope.reload=false,$scope.nodata=a.length===0},500);
+                $timeout(function(){$scope.reload=false, $scope.nodata=a.length===0},500);
             })
     
             $scope.slickConfig ={

@@ -12,7 +12,7 @@ export default [function(){
             entityname : '@',
             entityid : '@'
         },
-        controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+        controller : ['$scope', '$http', '$rootScope', 'EntityProvider', function($scope, $http, $rootScope, EntityProvider){
             $scope.interested = false;
             // $scope.interest = (challenge) => $scope.interested = !$scope.interested
     
@@ -21,10 +21,11 @@ export default [function(){
     
             // Change bookmarked button color
             const change_status = res => {
+                console.log(EntityProvider.entities);
                 if(res.status === 200){
-                    console.log(res);
                     $scope.interested = _.get(res, 'data', $scope.interested)
                     $rootScope.$emit('interested.new')
+                    $scope.entityname==='profile' && EntityProvider.entities['lovers'].get()
                 }
             }
     

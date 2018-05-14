@@ -24,7 +24,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             let prom = $http.get(this.url, {timeout: 10000})
             prom
                 .then(
-                    (res)=>this.data = res.data,
+                    (res)=>{ this.data = res.data, $rootScope.$emit('entitiy.'+this.entityname+'.new')},
                     (err)=>console.log('error', err)
                 )
                 .finally(()=>this.loading = false)
@@ -44,6 +44,8 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
     $rootScope.$watch('authorization', (a,b)=>{
         if(a!==b) {_.each(f.entities, (e)=>{ e.get() })}
     })
+    
+    $rootScope.$on('entity.change', (a)=>{ _.get(f.entities, a).get() })
 
     return f
     
