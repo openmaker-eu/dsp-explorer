@@ -7,12 +7,12 @@ let template = `
             
             <entity-loading
                 class="text-{$ entityname $} text-center"
-                loading="reload || !entities"
+                loading="entities.loading"
                 entityname="{$ entityname $}"
-                error="!reload && entities && entities.data.length === 0 "
+                error="!entities.loading && entities && entities.data && entities.data.length===0"
              ></entity-loading>
             
-            <div class="entity-carousel__body" ng-if="!reload && entities && entities.data.length > 0">
+            <div class="entity-carousel__body" ng-if="!entities.loading && entities && entities.data.length > 0">
                 <slick settings="slickConfig" ng-cloak>
                     <div ng-repeat="entity in entities.data | limitTo: (limit || 20) || undefined" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
@@ -36,13 +36,12 @@ export default [function(){
         },
         controller : ['$scope', '$http', '$timeout', 'EntityProvider', async function($scope, $http, $timeout, EntityProvider) {
             
-            $scope.reload = 0;
             $scope.entities = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
-            $scope.nodata = !$scope.entities.get()
+            $scope.entities.get()
             
             $scope.$watch('entities.data',  (a, b)=>{
                 $scope.reload = true;
-                $timeout(function(){$scope.reload=false},500);
+                $timeout(function(){$scope.reload=false,$scope.nodata=a.length===0},500);
             })
     
             $scope.slickConfig ={
@@ -61,7 +60,6 @@ export default [function(){
                 //accessibility: true,
                 adaptiveHeight: false
             }
-
 
         }]
     }

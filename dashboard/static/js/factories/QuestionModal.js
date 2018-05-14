@@ -31,26 +31,26 @@ let template = `
             <div class="col-md-12 step-navigation" ng-show="!loading">
                 
                 <span ng-class="{'transparent':is_start}" class="pointer " ng-click="prev()">
-                    <h1><i class="glyphicon glyphicon-menu-left text-brown"></i></h1>
+                    <h1><i class="fas fa-chevron-left text-brown"></i></h1>
                     <h4>&nbsp;PREVIOUS</h4>
                 </span>
                
                 <span style="text-align:center;">
                     <i
                         ng-repeat="(q_index, question) in [].constructor(questions.length) track by $index"
-                        class="fa text-brown margin-10-perc"
-                        ng-class="{'fa-circle-o': q_index == current, 'fa-circle' :q_index !== current}"
+                        class="fa-circle text-brown margin-10-perc"
+                        ng-class="{'fas': q_index == current, 'far' :q_index !== current}"
                     ></i>
                 </span>
                 
                 <span ng-if="!is_end" class="pointer" ng-click="next()">
                     <h4>NEXT&nbsp;</h4>
-                    <h1><i class="glyphicon glyphicon-menu-right text-brown"></i></h1>
+                    <h1><i class="fas fa-chevron-right text-brown"></i></h1>
                 </span>
                 
                 <span ng-if="is_end" ng-click="close()" class="pointer sup-next">
                     <h4>CLOSE&nbsp;&nbsp;</h4>
-                    <h1><i class="fa fa-times-circle-o text-brown"></i></h1>
+                    <h1><i class="far fa-times-circle text-brown"></i></h1>
                 </span>
                 
             </div>

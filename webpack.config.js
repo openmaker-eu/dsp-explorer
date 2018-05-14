@@ -1,23 +1,41 @@
-var path = require("path")
-var webpack = require('webpack')
-require("babel-polyfill");
-var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
+var webpack = require('./node_modules/webpack');
 var BundleTracker = require('webpack-bundle-tracker');
-var CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
+var path = require('path');
 var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
 
 module.exports = {
 
+    context: __dirname,
+
     entry: {
-        dashboard: ['babel-polyfill', path.resolve(__dirname, 'dashboard/static/js') ],
-        pss: [ path.resolve(__dirname, 'pss/static/js') ]
+        dashboard: ['babel-polyfill', path.resolve('dashboard/static/js')],
+        pss: ['babel-polyfill', path.resolve('pss/static/js') ],
     },
+
     output: {
-        path: path.join(__dirname, "static/bundles"),
+        path: path.resolve("static/bundles"),
         publicPath: '/static/bundles/',
-        filename: "[name]-[chunkhash].js"
+        filename: '[name]-[hash].js'
     },
-    module : {
+
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendor',
+                    chunks: 'all',
+                },
+                commons: {
+                    name: "commons",
+                    chunks: "initial",
+                    minChunks: 2
+                }
+            }
+        }
+    },
+
+    module: {
         rules: [
             {   test: /\.html?$/, loader: ["html-loader"] },
             {
@@ -28,23 +46,15 @@ module.exports = {
                 test: /\.scss?$/,
                 use : [
                     { loader: "style-loader" },
-                    { loader:  "css-loader" },
-                    { loader: "sass-loader"
-                        // ,
-                        // options: {
-                        //     sourceMap: true,
-                        //     data: '@import "base";',
-                        //     includePaths: [ path.resolve(__dirname, "./static/styles/") ]
-                        // }
-                    }
+                    { loader: "css-loader" },
+                    { loader: "sass-loader"}
                 ]
-    
             },
             {
-                test: /\.js?$/, loader: 'babel-loader' ,
+                test: /\.js?$/,
                 exclude:  /node_modules/,
-                query: {
-                    presets: [ 'es2015' , 'stage-0'],
+                use: {
+                    loader: 'babel-loader'
                 }
             },
             {
@@ -59,29 +69,24 @@ module.exports = {
                 loader: 'file-loader?limit=100000&name=../fonts/[hash].[ext]'
 
             }
-
         ]
     },
-    plugins: [
-        // new ContextReplacementPlugin(
-        //     /moment[\/\\]locale$/,
-        //     /de|fr|hu|it|en|es/
-        // ),,
-        new ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/),
-        
-        new CommonsChunkPlugin({
-            filename: "commons-[chunkhash].js",
-            name: "commons"
-        }),
-        new BundleTracker(),
-        new CleanObsoleteChunks()
 
-    ],
-    
-    resolve : {
-        extensions : [ '.js', '.css', '.scss', '.html' ],
-        alias : {
-            'basescss':  path.resolve(__dirname, "./static/styles/base.scss"),
-        }
-    }
-}
+    resolve: {
+        modules: ['node_modules']
+    },
+
+    plugins: [
+        // replace moment require with empty module
+        new ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/),
+        new BundleTracker({filename: './webpack-stats.json'}),
+        // provide global plugins (EG jquery, lodash)
+        new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery',
+        }),
+    ]
+   
+
+};

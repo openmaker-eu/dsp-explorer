@@ -19,7 +19,6 @@ export default [function(){
             entityid : '@'
         },
         controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
-            $scope.counter = 0;
             $scope.interested = [];
     
             // Build url
@@ -27,8 +26,7 @@ export default [function(){
     
             // Change bookmarked button color
             const change_status = res => {
-                res.status === 200 && ($scope.counter = _.get(res, 'data.interested_counter', 0))
-                res.status === 200 && ($scope.interested = _.get(res, 'data.interested', []))
+                res.status === 200 && ($scope.interested = _.get(res, 'data', []))
             }
     
             // First check if is bookmarked

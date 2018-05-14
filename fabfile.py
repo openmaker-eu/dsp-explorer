@@ -9,7 +9,7 @@ from fabric.api import *
 
 def install():
     local('pip install -r requirements.txt')
-    local('npm i')
+    local('npm install')
 
 
 def pip_save(package):
@@ -34,7 +34,6 @@ def req_pop():
 
 def makemigrations():
     local('python manage.py makemigrations')
-
 
 def migrate():
     local('python manage.py migrate')

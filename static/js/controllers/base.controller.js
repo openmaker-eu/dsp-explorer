@@ -1,22 +1,17 @@
 import * as _ from 'lodash'
 export default
-    ['$scope','$uibModal','$http','$rootScope','toastr','MessageModal', 'ModalFactory', 'QuestionModal', '$timeout', 'LoginService',
-    function ($scope,$uibModal,$http,$rootScope,toastr, MessageModal, ModalFactory, QuestionModal, $timeout, LoginService) {
+            ['$scope','$http','$rootScope','toastr','MessageModal','QuestionModal','LoginService',
+    function ($scope, $http, $rootScope, toastr, MessageModal, QuestionModal, LoginService) {
     
-    $scope.openModal = (m) => {
-        let modal = $(m);
-        if( modal.length>0 ){
-            $scope.modalInstance = $uibModal.open({
-                template: modal.html(),
-                backdrop: 'static',
-                scope: $scope
-            });
-        }
-    }
+    // GLOBAL ACTIONS
+    $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
+    $scope.logout =()=>LoginService.logout()
+    $scope.login =()=>$rootScope.$emit('question.modal.open', [
+        {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
+        {name:'end', type:'success', label: 'Successful login', }
+    ])
     
-    $scope.closeModal = () => { $scope.modalInstance.close();  $scope.modal_message = null;}
-    $scope.modal_message = null;
-    
+    // TOASTR
     $scope.$watch('toastrMessage', function (newValue, oldValue) {
         _.forEach( newValue, (el) => {
             
@@ -53,17 +48,6 @@ export default
             
         })
     })
-    
-    // GET AUTH AND USER DATA
-    $rootScope.$emit('authorization.refresh')
-    
-    // GLOBAL ACTIONS
-    $scope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
-    $scope.logout =()=>LoginService.logout()
-    $scope.login =()=>$rootScope.$emit('question.modal.open', [
-        {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
-        {name:'end', type:'success', label: 'Successful login', }
-    ])
 
 }]
 

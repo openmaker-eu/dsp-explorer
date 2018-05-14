@@ -143,14 +143,13 @@ def interest(request, entity, user_id=None):
     if not profile:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
-    dashboard = __import__("dashboard")
     try:
-        print 'entity'
-        print entity
-        entity_class = entity and getattr(dashboard.models, entity.capitalize())
-        serializer = entity and getattr(dashboard.serializer, entity.capitalize()+'Serializer')
-        interest = profile.interests(entity_class)
-        return Response(serializer(interest, many=True).data)
+        model_class = ModelHelper.get_by_name(entity.capitalize())
+        model_serializer = ModelHelper.get_serializer(entity.capitalize())
+        interest = profile.interests(model_class)
+        res = model_serializer(interest, many=True).data
+        print res
+        return Response(res)
     except Exception as e:
         print 'EXCEPTION'
         print e
@@ -158,47 +157,42 @@ def interest(request, entity, user_id=None):
 
 
 @api_view(['POST', 'GET'])
-def interested(request, entity='news', entity_id=None, user_id=None):
+def my_interest(request, entity, entity_id):
+    """
+
+    :param request:
+    :param entity:
+    :param entity_id:
+    :return:
+            GET : if logged user is interested
+            POST : toggle interest and return if logged user is interested
+    """
+    profile = request.user.profile
+    local_entity = ModelHelper.find_this_entity(entity, entity_id)
+    if request.method == 'GET':
+        return Response(profile.is_this_interested_by_me(local_entity))
+    else:
+        return Response(profile.interest_this(local_entity))
+
+
+@api_view(['GET'])
+def interested(request, entity='news', entity_id=None):
     '''
     :param request:
     :param entity:
     :param entity_id:
     :return:
-        GET mode
-            If request's user exists, the api will return all user interested in the entity specified
-            If request is from an anonymous users, just the number of interested people is will be returned
-        POST mode(only for logged)
-            Toggle the interest for the specified entity for the logged user
+        If request's user exists, the api will return all user interested in the entity specified
+        If request is from an anonymous users, just the number of interested people is will be returned
     '''
-    results = {}
-    local_entity = None
+
     try:
-        #logged user
-        profile = Profile.objects.filter(pk=user_id).first() if user_id else request.user.profile if request.user.is_authenticated() else None
-        print profile
-        try:
-            local_entity = ModelHelper.find_this_entity(entity, entity_id)
-        except ObjectDoesNotExist as odne:
-            return not_found()
-        if request.method == 'GET':
-            results['iaminterested'] = profile.is_this_interested_by_me(local_entity)
-            results['interested'] = ProfileSerializer(local_entity.interested(),many=True).data
-            results['interested_counter'] = len(local_entity.interested())
-        else:
-            # Toggle interest
-            results['iaminterested'] = profile.interest_this(local_entity)
-            results['interested'] = ProfileSerializer(local_entity.interested(), many=True).data
-            results['interested_counter'] = len(local_entity.interested())
-        return Response(results)
+        local_entity = ModelHelper.find_this_entity(entity, entity_id)
+        res = ProfileSerializer(local_entity.interested(), many=True).data if request.user.is_authenticated() \
+            else len(local_entity.interested())
+        return Response(res)
     except Exception as e:
-        print e
-        #Anonymous user
-        if request.method == 'GET':
-            local_entity = ModelHelper.find_this_entity(entity, entity_id)
-            results['interested_counter'] = len(local_entity.interested())
-            return Response(results)
-        else:
-            return Http404()
+        return Response({}, status=status.HTTP_404_NOT_FOUND)
 
 
 def get_interests(request):
@@ -240,7 +234,7 @@ class entity(APIView):
         if entity == 'loved':
             return interest(request, entity='profile', user_id=user_id)
         if entity == 'lovers':
-            return interested(request, entity='profile', user_id=user_id)
+            return interested(request, entity='profile', entity_id=user_id)
         if entity == 'projects':
             local_entities = Project.objects.all()
             if not profile:

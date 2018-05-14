@@ -7,6 +7,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
     class Entity {
         data = null
         url = baseurl
+        loading = true
         
         constructor(entityname, entityid=null, userid=null) {
             this.entityname = entityname
@@ -18,9 +19,16 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             this.url += `/${entityname}/${entityid ? 'details/'+entityid+'/' : ''}`
         }
 
-        get = async ()=>{
-            this.data = (await $http.get( this.url, {timeout: 5000}) ).data || this.data
-            return await this.data
+        get = ()=>{
+            this.loading = true;
+            let prom = $http.get(this.url, {timeout: 10000})
+            prom
+                .then(
+                    (res)=>this.data = res.data,
+                    (err)=>console.log('error', err)
+                )
+                .finally(()=>this.loading = false)
+            return prom
         }
     }
     

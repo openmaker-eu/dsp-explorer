@@ -97,6 +97,7 @@ urlpatterns = [
     url(r'^api/v1.4/interest/(?P<entity>\w+)/$', api14.interest, {'user_id': None}, name='all_interest_of_loggeduser_in_entitiy'),
     url(r'^api/v1.4/interest/$', api14.interest, {'entity': None, 'user_id': None}, name='all_interest_of_user'),
 
+    url(r'^api/v1.4/user/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.my_interest, name='get_interested'),
     url(r'^api/v1.4/interested/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.interested, name='get_interested'),
     url(r'^api/v1.4/interested/(?P<entity>\w+)/$', api14.interested, name='get_interested'),
 

@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-let template = `
+let template = /*html*/`
     <div class="container entity-list">
         <div class="row ">
         

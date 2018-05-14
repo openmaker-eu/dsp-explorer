@@ -1,20 +1,26 @@
-// Import Js library
-window.$ = window.jQuery = require('jquery')
-window.m = window.moment = require("../../node_modules/moment/moment")
-import  * as  _  from 'lodash'
+//import 'babel-polyfill';
+// Import jquery
+var jQuery = window.$ = window.jQuery = require('jquery')
+// Import angularjs
+var angular = require('../../node_modules/angular/angular')
+// Import Moment.js
+import moment from '../../node_modules/moment/min/moment-with-locales';
+window.moment = moment
 
+
+// Import angular google maps
+require('../../node_modules/ngmap')
 // Import bootstrap sass
 require("bootstrap-sass")
-
 // Import cookie consent
 require("../../node_modules/cookieconsent/build/cookieconsent.min"); // library
 require("../../static/js/cookie/cookie.policy.behaviour"); // Config
-
+// Import fonatwesome 5
 import fontawesome from '@fortawesome/fontawesome'
-
+// Import lodash
+import  * as  _  from 'lodash';
 
 export function angularBase(app=null){
-    
     // Import angular componenets
     app && app.factory('ModalFactory', require('./factories/modal.factory').default )
     app && app.factory('LoginService', require('./factories/LoginService').default )
@@ -29,7 +35,6 @@ export function angularForm(app){
     require('angular-toastr');
     require('angular-sanitize');
     require('angular-animate');
-    require('angular-strap');
     require("ui-select")
     return this
 }
@@ -47,3 +52,4 @@ export function dataVizDirectives(app){
     app.directive('simplePagination', require('./directives/SimplePagination').default )
     return this
 }
+

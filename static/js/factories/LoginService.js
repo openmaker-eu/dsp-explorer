@@ -13,7 +13,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     },
                 })
                 .then(
-                    n=> {F.refresh_page(n)} ,
+                    n=> {F.refresh_auth(n)} ,
                     n=>console.log(n)
                 )
         },
@@ -21,20 +21,18 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         logout : ()=>{
             $http.post('/api/v1.4/logout/')
                 .then(
-                    n=>F.refresh_page(n),
+                    n=>F.refresh_auth(n),
                     n=>console.log(n)
                 )
         },
-        refresh_page : async(res)=> {
-            res = res || await $http.get('/api/v1.4/authorization')
-    
-            console.log(res.data);
+        refresh_auth : async(res)=> {
+            res = res || await $http.get('/api/v1.4/authorization/')
             $rootScope.authorization = res.data.authorization;
             $rootScope.user = res.data.user || {};
         }
     }
     
-    $rootScope.$on('authorization.refresh', ()=>F.refresh_page())
+    $rootScope.$on('authorization.refresh', ()=>F.refresh_auth())
     return F
     
 }]

@@ -22,9 +22,41 @@ from utils.mailer import EmailHelper
 from dspconnector.connector import DSPConnectorV13
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 
 
 class ModelHelper:
+
+    @staticmethod
+    def get_by_name(model_name):
+        ct_model = ContentType.objects.get(model=model_name)
+        return ct_model.model_class()
+
+    @staticmethod
+    def get_serializer(model):
+
+        ct_model = None
+        model_name = None
+
+        try:
+            # GET ContentType instance
+            if isinstance(model, basestring):
+                ct_model = ContentType.objects.get(model=model)
+                model_name = model
+            elif issubclass(model, models.Model):
+                ct_model = ContentType.objects.get_for_model(model)
+                model_name = model._meta.object_name
+
+            # GET Application
+            app_label = ct_model.app_label
+            app = __import__(app_label)
+
+            # Try to get serializer class
+            return getattr(app.serializer, model_name+'Serializer')
+        except Exception as e:
+            return False
+
+
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None, filter_type=None):
         if filter_type:

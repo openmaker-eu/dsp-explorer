@@ -10,6 +10,7 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
 
     <!-- WEBPACK BUNDLES -->
+    {% render_bundle 'vendor' 'js' %}
     {% render_bundle 'commons' 'js' %}
     {% render_bundle request.resolver_match.app_name 'js' %}
 
@@ -37,6 +38,15 @@
                 {% endfor %}
           ];
 
+          $root.authorization = {{om_authorization}};
+          $root.user = {};
+          {% if user.is_authenticated %}
+          $root.user.first_name = '{{user.first_name}}';
+          $root.user.first_name = 'INITIALIZED';
+          $root.user.last_name = '{{user.last_name}}';
+          $root.user.email = '{{user.email}}';
+          $root.user.profile = {{user.profile.id}};
+          {% endif %}
       "
 >
 
@@ -49,8 +59,13 @@
            <!--<h1>AUTH: {$ $root.authorization $}</h1><h1>USER: {$ $root.user $}</h1>-->
         </header>
 
+        <entity-loading
+                class="text-center"
+                loading="$root.authorization===undefined"
+                ng-if="$root.authorization===undefined"
+        ></entity-loading>
 
-        <main>
+        <main ng-show="$root.authorization!==undefined">
             {% block container %}
             {% endblock %}
         </main>

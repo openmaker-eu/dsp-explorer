@@ -1,37 +1,22 @@
-
-import 'babel-polyfill';
-
-let jQuery = window.$ = window.jQuery = require('jquery');
-require('../../../node_modules/angular/angular');
-require('../../../node_modules/ngmap')
-
-import  moment from '../../../node_modules/moment/min/moment-with-locales';
-window.moment = moment
+//Require static angular componenets
+let baseImports = require("../../../static/js/index")
 
 require('../../../node_modules/angular-moment-picker/dist/angular-moment-picker')
-
-// Import this app style
 require("../style/index.scss")
 
-// Require static angular componenets
-let baseImports = require("../../../static/js/index")
 // Angular form imports
 baseImports.angularForm()
 
-// require('../../../node_modules/api-check/src/api-check')
-var formly = require('../../../node_modules/angular-formly/dist/formly')
-
 
 // Stuff
-require('ng-infinite-scroll')
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validator");
 
+import slickCarousel from 'slick-carousel';
 require("../../../node_modules/slick-carousel/slick/slick.css");
 require("../../../node_modules/slick-carousel/slick/slick-theme.css");
 require("../../../node_modules/slick-carousel");
 require("../../../node_modules/angular-slick-carousel/");
-
 
 // Init Angular APP
 var app = angular.module('dashboard', [
@@ -40,13 +25,10 @@ var app = angular.module('dashboard', [
     'ui.select',
     'ngSanitize',
     'ngAnimate',
-    'mgcrea.ngStrap',
-    'infinite-scroll',
     'vsGoogleAutocomplete',
     'ngMap',
     'slickCarousel',
-    'moment-picker',
-    formly
+    'moment-picker'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
@@ -58,6 +40,7 @@ var app = angular.module('dashboard', [
     }])
     .config(['$qProvider', function ($qProvider) {$qProvider.errorOnUnhandledRejections(false);}])
 ;
+
 
 // Require base angular componenets
 baseImports.angularBase(app)
