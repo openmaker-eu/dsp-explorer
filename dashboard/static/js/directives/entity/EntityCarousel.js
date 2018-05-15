@@ -1,10 +1,10 @@
 let template = `
-    <div class="col-md-12"  >
+    <div class="col-md-12">
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
             <div class="entity-carousel__header">
                 <h3 ng-if="!['loved', 'lovers'].includes(entityname)"><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
-                <h3 ng-if="entityname == 'loved'"><a>You <i class="far fa-heart"></i></a></h3>
-                <h3 ng-if="entityname == 'lovers'"><a>who <i class="far fa-heart"></i> you</a></h3>
+                <h3 ng-if="entityname == 'loved'">You <i class="far fa-heart"></i></h3>
+                <h3 ng-if="entityname == 'lovers'">who <i class="far fa-heart"></i> you</h3>
             </div>
             
             <entity-loading

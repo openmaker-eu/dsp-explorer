@@ -56,7 +56,6 @@ class ModelHelper:
         except Exception as e:
             return False
 
-
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None, filter_type=None):
         if filter_type:

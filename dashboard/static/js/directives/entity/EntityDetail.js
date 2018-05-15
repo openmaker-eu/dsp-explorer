@@ -6,8 +6,8 @@ let template = `
             'background-white': ! entity.hasOwnProperty('company') && preview
         }">
         
-        <div ng-class="{'force-square': preview}" ng-if="['lovers','loved'].includes(entityname)">
-            <img ng-src="{$ entity.picture $}" alt="" style="width:100%;">
+        <div  ng-class="{'force-square': preview}" ng-if="['lovers','loved'].includes(entityname)">
+            <a href="/profile/{$ entity.id $}"><img ng-src="{$ entity.picture $}" alt="" style="width:100%;"></a>
         </div>
         
         <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">

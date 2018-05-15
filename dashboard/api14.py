@@ -65,27 +65,23 @@ def get_entity_details(request, entity='news', entity_id=None):
 
     return success('ok', 'single entity', results)
 
-
+@api_view(['GET', 'POST'])
 def bookmark(request, entity='news', entity_id=None):
     # GET return status of a bookmark (ES: {bookmarked:true|false})
     # POST toggle status of a bookmark an return it (ES: {bookmarked:true|false})
-    results = {}
     try:
         local_entity = None
         profile = request.user.profile
         try:
             local_entity = ModelHelper.find_this_entity(entity, entity_id)
         except ObjectDoesNotExist as odne:
-            return not_found()
+            return Response({}, status.HTTP_404_NOT_FOUND)
         if request.method == 'POST':
-            results['bookmarked'] = profile.bookmark_this(local_entity)
+            return Response(profile.bookmark_this(local_entity))
         else:
-            results['bookmarked'] = profile.is_this_bookmarked_by_me(local_entity)
-        return success('ok','bookmark',results)
-    except AttributeError as a:
-        return not_authorized()
+            return Response(profile.is_this_bookmarked_by_me(local_entity))
     except Exception as e:
-        return not_authorized()
+        return Response({}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
 def get_bookmarks(request):
@@ -134,8 +130,6 @@ def interest(request, entity, user_id=None):
         res = model_serializer(interest, many=True).data
         return Response(res)
     except Exception as e:
-        print 'EXCEPTION'
-        print e
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -159,16 +153,33 @@ def my_interest(request, entity, entity_id):
 
 
 @api_view(['GET'])
+def user_projects(request, profile_id):
+    """
+
+    :param request:
+    :param profile_id:
+    :return:
+            List of project created by specific user
+            if profile_id is not provided logged user will be used
+    """
+    print 'OKI'
+    profile = Profile.objects.filter(pk=profile_id).first() if profile_id else request.user.profile
+    projects = Project.objects.filter(profile=profile)
+    serialized = ProjectSerializer(projects, many=True).data
+    return Response(serialized)
+
+
+@api_view(['GET'])
 def interested(request, entity='news', entity_id=None):
-    '''
+    """
+
     :param request:
     :param entity:
     :param entity_id:
     :return:
         If request's user exists, the api will return all user interested in the entity specified
         If request is from an anonymous users, just the number of interested people is will be returned
-    '''
-
+    """
     try:
         local_entity = ModelHelper.find_this_entity(entity, entity_id)
         res = ProfileSerializer(local_entity.interested(), many=True).data if request.user.is_authenticated() \
@@ -201,6 +212,7 @@ class entity(APIView):
 
         :param request:
         :param entity:
+        :param user_id:
         :return:
         """
 

@@ -81,6 +81,7 @@ app.directive('entityCarousel', require('./directives/entity/EntityCarousel').de
 app.directive('entitySidebar', require('./directives/entity/EntitySidebar').default )
 app.directive('entityDetail', require('./directives/entity/EntityDetail').default )
 app.directive('bookmarkedStripe', require('./directives/entity/BookmarkedStripe').default )
+app.directive('userProjectsStripe', require('./directives/entity/UserProjectsStripe').default )
 app.directive('entityInterested', require('./directives/entity/EntityInterested').default )
 
 // Dynamic Elements

@@ -21,7 +21,7 @@ export default [function(){
             
             // Change bookmarked button color
             const change_status = res => {
-                res.status === 200 && ($scope.bookmarked = _.get(res, 'data.result.bookmarked', $scope.bookmarked))
+                res.status === 200 && ($scope.bookmarked = _.get(res, 'data', $scope.bookmarked))
             }
             
             // First check if is bookmarked

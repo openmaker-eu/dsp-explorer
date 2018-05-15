@@ -114,8 +114,14 @@ urlpatterns = [
 
     url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='entity_detail'),
 
+    # Projects
+    url(r'^api/v1.4/user/(?P<profile_id>\w+)/project/$', api14.user_projects, name='user_projects'),
+    url(r'^api/v1.4/user/project/$', api14.user_projects, {'profile_id': None}, name='logged_user_projects'),
+
     # Entity with user id (Tailored)
     url(r'^api/v1.4/user/(?P<user_id>\w+)/(?P<entity>\w+)/$', api14.entity.as_view(), name='user_entity'),
+
+
 
 
     # API v1.3

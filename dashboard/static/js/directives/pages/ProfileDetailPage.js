@@ -48,6 +48,10 @@ let template = `
                                 </span>
                             </h5>
                         </div>
+                        <div class="col-md-12">
+                            <user-projects-stripe profileid="{$ entityid $}"></user-projects-stripe>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
