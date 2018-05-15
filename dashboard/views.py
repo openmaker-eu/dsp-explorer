@@ -156,7 +156,7 @@ def event_detail(request, entity_id):
 def profile_detail(request, entity_id=None):
 
     if not entity_id and isinstance(request.user, User):
-        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id':request.user.profile.id}))
+        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id': request.user.profile.id}))
     if not entity_id and request.user:
         return HttpResponseForbidden()
 
