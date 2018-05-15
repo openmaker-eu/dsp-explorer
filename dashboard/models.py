@@ -320,6 +320,7 @@ class Profile(models.Model):
         profile.city = kwargs.get('city', None)
         profile.occupation = kwargs.get('occupation', None)
         profile.place = kwargs.get('place', None)
+        profile.city = kwargs.get('city', None)
         profile.reset_token = Profile.get_new_reset_token()
         profile.save()
 
