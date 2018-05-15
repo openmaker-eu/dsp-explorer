@@ -60,14 +60,10 @@ class ModelHelper:
     @classmethod
     def filter_instance_list_by_class(cls, list_to_filter, filter_class=None, filter_type=None):
         if filter_type:
-            print "SONO QUI"
-            print filter_type
-            print filter_class
-            return filter(lambda x: hasattr(x, 'type') and x.type == filter_type
-                                    and isinstance(x, filter_class), list_to_filter)
-        else:
-            return filter(lambda x: isinstance(x, filter_class), list_to_filter) \
-                if filter_class is not None else list_to_filter
+            return [x for x in list_to_filter if isinstance(x, filter_class) if x.type == filter_type if hasattr(x, 'type')]
+        if filter_class is not None:
+            return [x for x in list_to_filter if isinstance(x, filter_class)]
+        return list_to_filter
 
     @staticmethod
     def find_this_entity(entity, entity_id):
@@ -598,6 +594,7 @@ class Profile(models.Model):
 
     def delete_interest(self, interest_obj, interest_id):
         # Get interest-related-model class type id
+        # Get content type from model instance
         ct_id = ContentType.objects.get_for_model(interest_obj).pk
         # Get Interest record
         interest = Interest.objects.filter(content_type_id=ct_id, object_id=interest_id, profile_id=self.pk)
@@ -607,8 +604,11 @@ class Profile(models.Model):
         return len(self.profile_interest.filter(object_id=entity.id)) == 1
 
     def interest_this(self, entity):
+
         if self.is_this_interested_by_me(entity):
             # remove interest
+            print entity.__class__.__name__
+
             self.delete_interest(entity, entity.id)
         else:
             # add interest
@@ -617,8 +617,10 @@ class Profile(models.Model):
 
     def add_bookmark(self, bookmark_obj):
         ct_id = ContentType.objects.get_for_model(bookmark_obj).pk
-        existing_interest = Bookmark.objects.filter(content_type_id=ct_id, profile_id=self.pk,
-                                                    object_id=bookmark_obj.pk)
+        existing_interest = Bookmark.objects.filter(
+            content_type_id=ct_id, profile_id=self.pk,
+            object_id=bookmark_obj.pk
+        )
         # If doesnt exist create interest and relations
         if len(existing_interest) == 0:
             bookmark = Bookmark(content_object=bookmark_obj)
@@ -626,13 +628,12 @@ class Profile(models.Model):
             bookmark.save()
 
     def get_bookmarks(self, filter_class=None):
-        print filter_class
         bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
         if filter_class == 'events' or filter_class == 'news':
-            print "I'm there"
-            return ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy, filter_class)
+            res = ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy, filter_class)
+            return res
         else:
-            filter_class = eval(filter_class.title()[:-1])
+            filter_class = ModelHelper.get_by_name(EntityProxy.singular_name(filter_class))
             return ModelHelper.filter_instance_list_by_class(bookmarks, filter_class)
 
     def is_this_bookmarked_by_me(self, entity):
@@ -961,3 +962,7 @@ class EntityProxy(models.Model):
         method_to_call = 'get_' + self.type + '_detail'
         results = getattr(DSPConnectorV13, method_to_call)(entity_id=self.externalId)[self.type]
         return results
+
+    @classmethod
+    def singular_name(cls, name=None):
+        return re.sub(r'^(?!news)(\w+)s$', r'\1', name) if name else None

@@ -52,8 +52,8 @@ export default [function(){
             $scope.get_data = (url) => {
                 $scope.nodata = false;
                 $http.get(url).then(res => {
-                    $scope.entities = res.data.result || []
-                    $scope.nodata = _.get(res , 'data.result', []).length === 0
+                    $scope.entities = res.data || []
+                    $scope.nodata = _.get(res , 'data', []).length === 0
                 },
                 err => $scope.nodata = true
                 )

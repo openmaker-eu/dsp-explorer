@@ -85,43 +85,27 @@ def bookmark(request, entity='news', entity_id=None):
     except AttributeError as a:
         return not_authorized()
     except Exception as e:
-        print e
         return not_authorized()
 
-
+@api_view(['GET'])
 def get_bookmarks(request):
     try:
         profile = request.user.profile
         results = profile.get_bookmarks()
         serialized = BookmarkSerializer(results, many=True).data
-
-        return JsonResponse({
-            'status': 'ok',
-            'result': serialized,
-        }, status=200)
+        return Response(serialized)
     except Exception as e:
-        print e
-        return not_authorized()
+        return Response({}, status.HTTP_404_NOT_FOUND)
 
-
+@api_view(['GET'])
 def get_bookmark_by_entities(request, entity=None):
     try:
-        # entity = re.sub(r'^(?!news)(\w+)s$', r'\1', entity)
-        entity = entity[:-1]
-        print '1'
         profile = request.user.profile
-        print '2'
         results = profile.get_bookmarks(entity)
-        print '3'
         serialized = BookmarkSerializer(results, many=True).data
-
-        return JsonResponse({
-            'status': 'ok',
-            'result': serialized,
-        }, status=200)
+        return Response(serialized)
     except Exception as e:
-        print e
-        return not_authorized()
+        return Response({}, status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['GET'])
@@ -148,7 +132,6 @@ def interest(request, entity, user_id=None):
         model_serializer = ModelHelper.get_serializer(entity.capitalize())
         interest = profile.interests(model_class)
         res = model_serializer(interest, many=True).data
-        print res
         return Response(res)
     except Exception as e:
         print 'EXCEPTION'
@@ -365,10 +348,8 @@ def authorization(request):
         'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated() else None
     })
 
-
 @api_view(['POST'])
 def apilogin(request):
-    print request.data
     user = authenticate(
         username=request.data.get('username', False),
         password=request.data.get('password', False)
