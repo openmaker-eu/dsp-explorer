@@ -7,13 +7,13 @@ let template = `
             <div class="row">
 
                 <div ng-if="entities.length > 0">
-                
                 <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
-                    <div
-                        class="col-lg-3 col-md-6 col-sm-12 col-xs-12 "
-                        ng-repeat="entity in entities | limitTo : 4"
-                        style="margin-bottom:2%; margin-top: 2%;"
-                    >
+
+                <div
+                    class="col-lg-3 col-md-6 col-sm-12 col-xs-12 "
+                    ng-repeat="entity in entities | limitTo : 4"
+                    style="margin-bottom:2%; margin-top: 2%;"
+                >
                         <div class="entity-list__box">
                             <entity-detail
                                 entity="entity"

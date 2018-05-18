@@ -18,41 +18,50 @@ let template = `
             </div>
             
             <div class="col-md-9 user-detail">
-                
-                <div class="user-detail__header">
-                    <div>
-                        <div class="col-md-2 col-md-offset-5">
-                            <circle-image src="entity.data.picture" style="min-width:100%;"></circle-image>
-                        </div>
-                    </div>
+                <div class="user-detail__header" ">
                     
-                    <div>
-                        <div class="col-md-4 col-md-offset-4">
-                            <h2 class="text-center">{$ entity.data.user.first_name+' '+entity.data.user.last_name $}</h2>
+                         <div>
+                            <div class="col-md-2 col-md-offset-5">
+                                <circle-image src="entity.data.picture" style="min-width:100%;" ></circle-image>
+                            </div>
+                        </div>
+                <div ng-click="edit()" class="pointer">
+   
+                        <div>
+                            <div class="col-md-4 col-md-offset-4">
+                                <h2 class="text-center">{$ entity.data.user.first_name+' '+entity.data.user.last_name $}</h2>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-md-8 col-md-offset-2">
+                                <h5 class="user-detail__info">
+                                    <span>
+                                        <span><i class="fa fa-fw fa-briefcase"></i>&nbsp;&nbsp;{$ entity.data.occupation $}</span>
+                                        <span><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{$ entity.data.gender $}</span>
+                                    </span>
+                                    <br>
+                                    <span>
+                                        <span><i class="fa fa-fw fa-map-marker"></i>&nbsp;&nbsp;{$ entity.data.city $}</span>
+                                        <span><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{$ entity.data.birthdate | date:'d MMMM yyyy' $}</span>
+                                    </span><br>
+                                    <span>
+                                        <span><i class="fa fa-fw fa-hashtag"></i>&nbsp;&nbsp;<span ng-repeat="tag in entity.data.tags">{$ tag.name $}&nbsp;</span></span>
+                                    </span>
+                                </h5>
+                            </div>
+                            
+                            <div ng-if="entity.data.statement" class="col-md-12">
+                                <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
+                                <h4 class="text-center zilla light">{$ entity.data.statement $}</h4>
+                            </div>
+                        
                         </div>
                     </div>
-                    <div>
-                        <div class="col-md-8 col-md-offset-2">
-                            <h5 class="user-detail__info">
-                                <span>
-                                    <span><i class="fa fa-fw fa-briefcase"></i>&nbsp;&nbsp;{$ entity.data.occupation $}</span>
-                                    <span><i class="fa fa-fw fa-transgender bold"></i>&nbsp;&nbsp;{$ entity.data.gender $}</span>
-                                </span>
-                                <br>
-                                <span>
-                                    <span><i class="fa fa-fw fa-map-marker"></i>&nbsp;&nbsp;{$ entity.data.city $}</span>
-                                    <span><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{$ entity.data.birthdate | date:'d MMMM yyyy' $}</span>
-                                </span><br>
-                                <span>
-                                    <span><i class="fa fa-fw fa-hashtag"></i>&nbsp;&nbsp;<span ng-repeat="tag in entity.data.tags">{$ tag.name $}&nbsp;</span></span>
-                                </span>
-                            </h5>
-                        </div>
+
                         <div class="col-md-12">
                             <user-projects-stripe profileid="{$ entityid $}"></user-projects-stripe>
                         </div>
                         
-                    </div>
                 </div>
             </div>
             
@@ -85,6 +94,8 @@ export default [function(){
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.entity = EntityProvider.make($scope.entityname,$scope.entityid)
             $scope.nodata = !$scope.entity.get()
+    
+            $scope.edit = ()=> $rootScope.$emit('question.modal.open', null, 'edit-profile' )
 
         }]
     }

@@ -455,7 +455,6 @@ def profile(request, profile_id=None, action=None):
         'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())),
         'source_of_inspiration': json.dumps(map(lambda x: x.name, SourceOfInspiration.objects.all()))
     }
-
     return render(request, 'dashboard/profile.html', context)
 
 

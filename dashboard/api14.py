@@ -14,8 +14,8 @@ import random, logging
 logger = logging.getLogger(__name__)
 
 from dashboard.serializer import BookmarkSerializer, InterestSerializer
-from dashboard.models import User, Profile
-
+from dashboard.models import User, Profile, Tag
+import datetime
 from .helpers import mix_result_round_robin
 from dashboard.models import Challenge, Project
 
@@ -27,10 +27,10 @@ from rest_framework.decorators import api_view
 
 from django.core.serializers import serialize
 from dspexplorer.site_helpers import User as AuthUser
-from dashboard.serializer import UserSerializer
+from dashboard.serializer import UserSerializer, TagSerializer, ProfileSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import AnonymousUser
-
+from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 
 def __wrap_response(*args, **kwargs):
     try:
@@ -288,35 +288,115 @@ class entity_details(APIView):
 
 class questions(APIView):
 
-    def get(self, request):
-        from dashboard.models import Tag
-        import datetime
+    parser_classes = (MultiPartParser,)
+    questions = []
 
-        questions = (
-            {'name': 'first_name', 'type': 'text', 'label': ' What is your first name?'},
-            {'name': 'last_name', 'type': 'text', 'label': 'What is your last name?'},
-            {'name': 'gender', 'type': 'select', 'label': ' What is your gender?', 'options':
-                ({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
-             },
-            {'name': 'birthdate', 'type': 'date', 'label': ' What is your birthdate?', 'max': str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))},
-            {'name': 'city', 'type': 'city', 'label': 'What is your city?'},
-            {'name': 'occupation', 'type': 'text', 'label': 'What is your occupation?'},
-            {'name': 'tags', 'type': 'multi_select', 'label': 'Choose 3 tags', 'options': [x.name for x in Tag.objects.all()]},
-            {'name': 'signup', 'type': 'signup', 'label': 'Your login information', 'apicall': '/api/v1.4/signup/'},
-            {'name': 'confirm_email', 'type': 'success', 'label': 'Thank you', 'value': 'Check your inbox for a confirmation email'},
-        )
-        if request.user.is_active:
-            # Handle question on later time
-            pass
-        return Response({'questions': questions})
+    def get(self, request):
+        # Request for signup questions
+        if not request.user.is_authenticated():
+            self.questions = [
+                self.make('first_name', 'text', 'What is your first name?'),
+                self.make('last_name', 'text', 'What is your last name?'),
+                self.make('gender', 'select', 'What is your gender?',
+                    options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
+                ),
+                self.make('birthdate', 'date', 'What is your birthdate?', max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))),
+                self.make('city', 'city', 'What is your city?'),
+                self.make('occupation', 'text', 'What is your occupation?'),
+                self.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
+                self.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
+                self.make('sugnup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),
+            ]
+
+        # Request for a specific set of questions
+        if request.user.is_authenticated() and len(request.query_params) > 0:
+            action = request.query_params.get('action', None)
+
+            # Request for the edit profile questions
+            action == 'edit-profile' and self.edit_profile(request)
+        else:
+            if not request.user.profile.statement:
+                self.questions = [
+                    self.make('statement', 'textarea', 'Write a short description about you', value='Thank you',
+                        apicall='/api/v1.4/questions/',
+                        emitevent='entity.change.all'
+                    ),
+                    self.make('question_end', 'success', 'Thank you', value='Thank you')
+                ]
+        return Response({'questions': self.questions})
+
+    def edit_profile(self, request):
+
+        user = request.user
+        profile = request.user.profile
+        questions = [
+            self.make('first_name', 'text', 'What is your first name?'),
+            self.make('last_name', 'text', 'What is your last name?'),
+            self.make('gender', 'select', 'What is your gender?',
+                options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
+            ),
+            self.make('occupation', 'text', 'What is your occupation?'),
+            self.make('birthdate', 'date', 'What is your birthdate?',
+                max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
+                value=profile.birthdate.strftime('%Y/%m/%d'),
+            ),
+            self.make('city', 'city', 'What is your city?',
+                value={'city': profile.city, 'place': profile.place}
+            ),
+            self.make('tags', 'multi_select', 'Choose 3 tags',
+                options=[x.name for x in Tag.objects.all()],
+                value=[x.name for x in profile.tags.all()],
+            ),
+            self.make('statement', 'textarea', 'Short description about you (optional)'),
+            self.make('picture', 'imageupload', 'Upload you profile image (optional)',
+                      value='as',
+                      apicall='/api/v1.4/questions/',
+                      emitevent='entity.change.all'
+            )
+        ]
+
+        # @TODO remove tags
+        # Add Values
+        for question in questions:
+            question['value'] = question.get('value', None) \
+                                or getattr(profile, question['name'], None) \
+                                or getattr(user, question['name'], None)
+
+        self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
+
+    def make(self, name, type, label='', **kwargs):
+        question = {'name': name, 'type': type, 'label': label}
+        for key, arg in kwargs.iteritems():
+            question[key] = arg
+        return question
 
     def post(self, request):
-        error = ''
-        return Response({})
+        user = request.user
+        profile = request.user.profile
 
-    def filter_questions(self, questions, keywords):
-        res = {k: v for (v, k) in questions.items()}
-        return res
+        print request.data
+        try:
+            # User
+            user.first_name = request.data.get('first_name', user.first_name)
+            user.last_name = request.data.get('last_name', user.last_name)
+            # Profile
+            profile.city = request.data.get('city', profile.city)
+            profile.place = json.loads(request.data.get('place', profile.place))
+            profile.birthdate = request.data.get('birthdate', profile.birthdate)
+            profile.occupation = request.data.get('occupation', profile.occupation)
+            profile.statement = request.data.get('statement', profile.statement)
+
+            profile.tags_create_or_update(request.data.get('tags', None), clear=True)
+            profile.picture_set_or_update(request.data.get('picture', None))
+
+        except Exception as error:
+            return Response(data={'error': error}, status=403)
+
+        user.save()
+        profile.save()
+
+        return Response()
+
 
 
 @api_view(['POST'])

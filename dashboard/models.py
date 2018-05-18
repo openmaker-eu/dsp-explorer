@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-from datetime import datetime as dt
+from datetime import datetime as dt, datetime
 from utils.hasher import HashHelper
 import uuid
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
@@ -23,7 +23,7 @@ from dspconnector.connector import DSPConnectorV13
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
-
+import os
 
 class ModelHelper:
 
@@ -34,7 +34,6 @@ class ModelHelper:
 
     @staticmethod
     def get_serializer(model):
-
         ct_model = None
         model_name = None
 
@@ -91,14 +90,19 @@ class ModelHelper:
                 raise ObjectDoesNotExist
         return local_entity
 
+
 class Tag(models.Model):
-    name = models.CharField(_('Name'), max_length=50, null=False, blank=False)
+    name = models.CharField(max_length=50, blank=False)
 
     @classmethod
     def create(cls, name):
         tag = Tag(name=name)
         tag.save()
         return tag
+
+    @classmethod
+    def create_or_update(cls, tag):
+       return Tag.objects.filter(name=tag).first() or Tag.create(name=tag) if isinstance(tag, basestring) else None
 
     def __unicode__(self):
         return self.name
@@ -306,7 +310,6 @@ class Profile(models.Model):
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
 
-
     @classmethod
     def create(cls, **kwargs):
         user = kwargs.get('user', None)
@@ -324,14 +327,32 @@ class Profile(models.Model):
         profile.reset_token = Profile.get_new_reset_token()
         profile.save()
 
-        # Add tags
-        if tags:
-            for tag in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags):
-                tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
-                profile.tags.add(tagInstance)
-            profile.save()
+        tags and profile.tags_create_or_update(tags)
 
         return profile
+
+    def tags_create_or_update(self, tags, clear=False):
+        if not tags:
+            return False
+        tags = [re.sub(r'\W', '', x.lower().capitalize()) for x in tags] if isinstance(tags, basestring) else tags
+        clear and self.tags.clear()
+        for tag in tags:
+            tagInstance = Tag.create_or_update(tag)
+            tagInstance and self.tags.add(tagInstance)
+        tags and self.save()
+
+    def picture_set_or_update(self, picture):
+        print picture
+        if picture:
+            filename, file_extension = os.path.splitext(picture.name)
+            if not file_extension in ['.jpg', '.jpeg', '.png']:
+                raise ValueError('nonvalid')
+            if picture.size > 1048576: ## 1MB limit
+                raise ValueError('sizelimit')
+            picture.name = 'p_' + str(self.pk) + file_extension  ## str(datetime.now().microsecond)
+            self.picture = picture
+
+        return picture
 
     def set_location(self):
         return None
@@ -901,7 +922,7 @@ class Project(models.Model):
     name = models.CharField(_('Name'), max_length=50, default='')
     picture = models.ImageField(_('Challenge picture'), upload_to='images/projects')
     description = models.TextField(_('Description'), default='')
-    tags = models.ManyToManyField(Tag, related_name='tags', blank=True, null=True)
+    tags = models.ManyToManyField(Tag, related_name='tags', blank=True)
 
     start_date = models.DateTimeField(_('Start date'), blank=True, null=True)
     end_date = models.DateTimeField(_('End date'), blank=True, null=True)

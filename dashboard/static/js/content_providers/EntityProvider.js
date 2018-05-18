@@ -41,11 +41,12 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         }
     }
     
-    $rootScope.$watch('authorization', (a,b)=>{
-        if(a!==b) {_.each(f.entities, (e)=>{ e.get() })}
-    })
+    const reload_all = (a, b)=>{ a!==b && _.each(f.entities, (e)=>{ e.get() }) }
     
-    $rootScope.$on('entity.change', (a)=>{ _.get(f.entities, a).get() })
+    $rootScope.$watch('authorization', reload_all)
+    
+    $rootScope.$on('entity.change', (a)=>{_.get(f.entities, a).get()})
+    $rootScope.$on('entity.change.all', (a)=>{ reload_all(1,2) })
 
     return f
     

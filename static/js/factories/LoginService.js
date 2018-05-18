@@ -17,7 +17,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     n=>console.log(n)
                 )
         },
-        
         logout : ()=>{
             $http.post('/api/v1.4/logout/')
                 .then(

@@ -1,10 +1,10 @@
-<!-- Ctrl :  controller object-->
 <!-- x :     defintion object-->
 <!-- m :     model object-->
 
 [select]
 <ui-select
         class="form-control"
+        ng-init="m[x.name] = x.value"
         ng-model="m[x.name]"
         title="Select your gender"
 >
@@ -28,10 +28,10 @@
 <input
        class="form-control"
        ng-model="m[x.name]"
+       moment-picker="x.value"
        format="YYYY-MM-DD"
        placeholder="Select a date..."
        start-view="decade"
-       moment-picker="m[x.name]"
        inline="true"
        max-date="x.max"
        validate="true"
@@ -42,6 +42,7 @@ required>
 <ui-select
         multiple
         class="form-control"
+        ng-init="m[x.name] = x.value"
         ng-model="m[x.name]"
         title="Write here to search available {$ x.name $}" limit="3"
 >
@@ -60,8 +61,9 @@ required>
         sortable="true"
         spinner-enabled="true"
         class="form-control"
+        ng-init="m[x.name] = x.value"
         ng-model="m[x.name]"
-        title="Choose a tag" limit="3"
+        title="Choose a tag" limit="5"
 >
     <ui-select-match placeholder="Type a tag and press enter *">{$ $item $}</ui-select-match>
     <ui-select-choices repeat="tag in x.options | filter:$select.search track by $index">
@@ -71,11 +73,13 @@ required>
 <input type="hidden" ng-model="m[x.name]" name="{$ x.name $}" required/>
 
 [city]
-<input
+<span ng-init="m['city']=x.value['city']; m['place']=x.value['place'] || {}"></span>
+<input type="text"
        autocomplete="false"
        class="form-control"
        vs-google-autocomplete="{ types:['(cities)'] }"
        vs-autocomplete-validator
+
        ng-model="m['city']"
 
        vs-latitude ="m['place'].lat"
@@ -88,16 +92,41 @@ required>
        vs-country-short="m['place'].country_short"
        vs-post-code="m['place'].post_code"
 
-       type="text" name="{$ x.name $}"
-       placeholder="Start typing the city name where you ar based" required>
-    <input type="hidden" ng-model="m['city']" name="city" required/>
-    <input type="hidden" ng-model="m['place']" name="place" required/>
+       placeholder="Start typing the city name where you ar based"
+>
+<input type="hidden" ng-model="m['city']" ng-value="m['city']"  name="city" required/>
+<!--<input type="hidden" ng-model="m['place']" ng-value="m['place']" name="place" required/>-->
+<textarea name="place">{$ m['place'] | json $}</textarea>
+
 
 [loading]
 <h1>Loading</h1>
 
+[imageupload]
+<div class="fake-input__container" style="width:40%; left:30%; right:30%;">
+    <circle-image src="entity.data.picture" ></circle-image>
+    <input
+        ng-model="m[x.name]"
+        input_file_model="entity.data.picture"
+        type="file"
+        name="picture"
+    />
+    <div class="fake-input__icon">
+        <span class="fas fa-plus-circle fa-5x"></span>
+    </div>
+</div>
+
+[textarea]
+<textarea class="form-control"
+          ng-init="m[x.name] = x.value"
+          ng-model="m[x.name]"
+          ng-value="m[x.name]"
+          name="{$ x.name $}"
+          cols="30" rows="10"
+></textarea>
+
 [text]
-<input name="{$ x.name $}" type="text" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>
+<input name="{$ x.name $}" type="text" ng-init="m[x.name] = x.value" ng-model="m[x.name]" class="form-control"  required>
 
 [login]
 <label class="signup-template__label" for="email">email</label>

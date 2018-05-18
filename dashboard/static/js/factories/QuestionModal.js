@@ -22,7 +22,7 @@ let template = `
         ></entity-loading>
   
         
-            <form name="wizard.form" ng-if="questions" ng-show="!loading">
+            <form name="wizard.form" ng-if="questions" ng-show="!loading" class="wizard-form" enctype="multipart/form-data">
                 <slick class="col-md-12 modal-slider" settings="slickConfig" prev-arrow=".sup-prev" next-arrow=".sup-next">
                     <question ng-repeat="question in questions" data="question" model="wizard.formmodel" ></question>
                 </slick>
@@ -35,7 +35,7 @@ let template = `
                     <h4>&nbsp;PREVIOUS</h4>
                 </span>
                
-                <span style="text-align:center;">
+                <span style="text-align:center;" ng-click="stampa()">
                     <i
                         ng-repeat="(q_index, question) in [].constructor(questions.length) track by $index"
                         class="fa-circle text-brown margin-10-perc"
@@ -61,7 +61,7 @@ let template = `
 export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     
     let F = {
-        open: (ev,preset)=>{
+        open: (ev,preset,action=null)=>{
             
             F.modalInstance = $uibModal.open({
                 template: template,
@@ -84,7 +84,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     
                     // Get questions from backend if not provided to directive
                     !preset && $http
-                        .get('/api/v1.4/questions/')
+                        .get('/api/v1.4/questions/' + ( action ? '?action='+action : '') )
                         .then((res)=>{
                             $scope.questions = res.data.questions ;
                             $scope.loading = false
@@ -107,12 +107,16 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                         
                         // Go on only if form-data is valid
                         if(_.get(subform, '$valid')) {
-    
+                            
                             // Perform apicall
                             if (question && question.apicall) {
                                 $scope.saving = true;
-                                $scope.api_call(
-                                    question.apicall).then(() => {
+                                $http.post(
+                                    '/api/v1.4/questions/',
+                                    new FormData($('.wizard-form')[0]),
+                                    {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
+                                )
+                                    .then(() => {
                                         $scope.saving = false;
                                         question.emitevent && $rootScope.$emit(question.emitevent, {})
                                         $scope.slickConfig.method.slickNext()
@@ -155,6 +159,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     }
     
                     window.onkeypress = (e)=> { e.which=== 13 && $scope.next()}
+                    $scope.stampa = ()=>{console.log($scope.wizard.form) ; console.log($scope.wizard.formmodel)}
     
                 }]
             });

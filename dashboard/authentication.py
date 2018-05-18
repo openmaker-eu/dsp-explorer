@@ -27,8 +27,6 @@ from rest_framework.exceptions import NotFound
 logger = logging.getLogger(__name__)
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation, InvitationAlreadyExist, InvitationDoesNotExist
 
-
-
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')

@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
-from dashboard.models import Challenge, Company, Project, ProjectContributor, EntityProxy, Bookmark, Interest
-from .models import Tag
+from dashboard.models import Challenge, Company, Project, ProjectContributor, EntityProxy, Bookmark, Interest, Tag
 import json
 
 

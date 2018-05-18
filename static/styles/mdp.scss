@@ -506,14 +506,16 @@ $om_breakpoints: (
 
   .signup-input {
     .ui-select-choices-row-inner, .ui-select-match-item{font-size: $signup-font-size;}
-    input, select, .ui-select-toggle {
+    input, select, .ui-select-toggle, textarea {
       text-align: center;
       font-size: $signup-font-size; padding: 1.5%;
       border:solid 2px!important;
       border-color: $color-brown--light!important;
       border-radius: 0!important;
+      resize: none;
 
     }
+
     select {
       -webkit-border-radius:0;
       -moz-border-radius:0;
@@ -619,5 +621,38 @@ $om_breakpoints: (
       }
 
     }
+  }
+}
+
+.fake-input {
+  &__container {
+    position: relative;
+    border:solid 3px $color-brown; border-radius: 50%;
+    z-index: 10000;
+    input {
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      z-index: 10002;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+  &__icon{
+    color: $color-brown;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    & > * {margin:0; padding:0;}
+
   }
 }
