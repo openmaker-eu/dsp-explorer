@@ -40,7 +40,6 @@ class OpenDataConnector(object):
     @classmethod
     def get_by_latlng(cls, latlng):
         url = cls.__get_url({'dataset': dataset, 'facet': 'country', 'geofilter.distance': latlng+',1000'})+'&facet=timezone'
-        print url
         return cls.__perform_get(url)
 
     @classmethod

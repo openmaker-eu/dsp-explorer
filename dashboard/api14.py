@@ -116,7 +116,7 @@ def interest(request, entity, user_id=None):
             if no user id specified will use the logged user
     """
     profile = request.user.profile if \
-        request.user.is_authenticated() and \
+        request.user.is_authenticated and \
         not user_id else \
         Profile.objects.filter(pk=user_id).first()
 
@@ -130,6 +130,8 @@ def interest(request, entity, user_id=None):
         res = model_serializer(interest, many=True).data
         return Response(res)
     except Exception as e:
+        print('Error')
+        print(e)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -162,7 +164,6 @@ def user_projects(request, profile_id):
             List of project created by specific user
             if profile_id is not provided logged user will be used
     """
-    print 'OKI'
     profile = Profile.objects.filter(pk=profile_id).first() if profile_id else request.user.profile
     projects = Project.objects.filter(profile=profile)
     serialized = ProjectSerializer(projects, many=True).data
@@ -182,7 +183,7 @@ def interested(request, entity='news', entity_id=None):
     """
     try:
         local_entity = ModelHelper.find_this_entity(entity, entity_id)
-        res = ProfileSerializer(local_entity.interested(), many=True).data if request.user.is_authenticated() \
+        res = ProfileSerializer(local_entity.interested(), many=True).data if request.user.is_authenticated \
             else len(local_entity.interested())
         return Response(res)
     except Exception as e:
@@ -190,7 +191,6 @@ def interested(request, entity='news', entity_id=None):
 
 
 def get_interests(request):
-    print '###############################'
     try:
         profile = request.user.profile
         results = profile.get_interests()
@@ -227,9 +227,9 @@ class entity(APIView):
 
         # Local entities
         if entity == 'loved':
-            return interest(request, entity='profile', user_id=user_id)
+            return interest(request._request, entity='profile', user_id=user_id)
         if entity == 'lovers':
-            return interested(request, entity='profile', entity_id=user_id)
+            return interested(request._request, entity='profile', entity_id=user_id)
         if entity == 'projects':
             local_entities = Project.objects.all()
             if not profile:
@@ -293,7 +293,7 @@ class questions(APIView):
 
     def get(self, request):
         # Request for signup questions
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             self.questions = [
                 self.make('first_name', 'text', 'What is your first name?'),
                 self.make('last_name', 'text', 'What is your last name?'),
@@ -309,7 +309,7 @@ class questions(APIView):
             ]
 
         # Request for a specific set of questions
-        if request.user.is_authenticated() and len(request.query_params) > 0:
+        if request.user.is_authenticated and len(request.query_params) > 0:
             action = request.query_params.get('action', None)
 
             # Request for the edit profile questions
@@ -349,13 +349,12 @@ class questions(APIView):
             ),
             self.make('statement', 'textarea', 'Short description about you (optional)'),
             self.make('picture', 'imageupload', 'Upload you profile image (optional)',
-                      value='as',
+                      value=profile.picture.url if profile.picture else None,
                       apicall='/api/v1.4/questions/',
                       emitevent='entity.change.all'
             )
         ]
 
-        # @TODO remove tags
         # Add Values
         for question in questions:
             question['value'] = question.get('value', None) \
@@ -366,7 +365,7 @@ class questions(APIView):
 
     def make(self, name, type, label='', **kwargs):
         question = {'name': name, 'type': type, 'label': label}
-        for key, arg in kwargs.iteritems():
+        for key, arg in kwargs.items():
             question[key] = arg
         return question
 
@@ -374,7 +373,6 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
 
-        print request.data
         try:
             # User
             user.first_name = request.data.get('first_name', user.first_name)
@@ -396,7 +394,6 @@ class questions(APIView):
         profile.save()
 
         return Response()
-
 
 
 @api_view(['POST'])
@@ -437,7 +434,7 @@ def signup(request):
 def authorization(request):
     return Response({
         'authorization': AuthUser.authorization(request),
-        'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated() else None
+        'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated else None
     })
 
 @api_view(['POST'])
@@ -453,7 +450,7 @@ def apilogin(request):
 
     return Response({
         'authorization': AuthUser.authorization(request),
-        'user': UserSerializer(user, many=False).data if request.user.is_authenticated() else None
+        'user': UserSerializer(user, many=False).data if request.user.is_authenticated else None
     })
 
 

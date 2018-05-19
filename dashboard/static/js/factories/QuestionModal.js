@@ -112,7 +112,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                             if (question && question.apicall) {
                                 $scope.saving = true;
                                 $http.post(
-                                    '/api/v1.4/questions/',
+                                    _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/',
                                     new FormData($('.wizard-form')[0]),
                                     {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
                                 )

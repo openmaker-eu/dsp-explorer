@@ -24,75 +24,12 @@ from rest_framework.exceptions import NotFound
 from dashboard.models import Location
 from django.http import Http404, HttpResponseForbidden
 
-
 logger = logging.getLogger(__name__)
 from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
-    '''
-    top_influencers_by_user_location = None
-    events_by_topic_and_location = None
-    audiences = None
-    events_by_topic_and_location = None
-    selected_topic = None
-    topics = None
-    last_members = None
-    hot_tags = None
-    json_hot_tags = None
-    hot_news = None
-
-    try:
-        topics_list = DSPConnectorV12.get_topics()['topics']
-
-        if topic_id:
-            selected_topic = filter(lambda x: x['topic_id'] == int(topic_id), topics_list)[0]
-        else:
-            selected_topic = random.choice(topics_list)
-
-        hot_news = DSPConnectorV13.get_news(selected_topic['topic_id'])['news'][:4]
-
-        # check user location and according to that ask for events, influencers and audiences
-        profile = request.user.profile
-        user_profile_location = profile.get_location()['country_short'] if 'country_short' in profile.get_location() else ''
-
-        top_influencers_by_user_location = DSPConnectorV13.get_influencers(
-            selected_topic['topic_id'],
-            user_profile_location
-        )['local_influencers'][:4]
-        audiences = DSPConnectorV13.get_audiences(selected_topic['topic_id'], user_profile_location)['audience_sample'][:4]
-
-        events_by_topic_and_location = DSPConnectorV13.get_events(selected_topic['topic_id'], user_profile_location.lower())['events'][:4]
-
-    except DSPConnectorException as e:
-        messages.error(request, e.message)
-        topics_list = {}
-        selected_topic = 'No themes'
-        context = {'selected_topic': selected_topic, 'topics': topics_list}
-        return render(request, 'dashboard/theme.html', context)
-    except Exception as e:
-        print 'Exception -- '
-        print e
-
-    hot_tags = [t[0] for t in Profile.get_hot_tags(30)]
-    last_members = Profile.get_last_n_members(3)
-
-    context = {
-        'selected_topic': selected_topic,
-        'topics': topics_list,
-        'last_members': last_members,
-        'hot_tags': hot_tags,
-        'json_hot_tags': json.dumps(hot_tags),
-        'hot_news': hot_news,
-        'top_influencers': top_influencers_by_user_location,
-        'audiences':audiences,
-        'events': events_by_topic_and_location
-    }
-
-    return render(request, 'dashboard/dashboard.html', context)
-    '''
     return HttpResponseRedirect(reverse('dashboard:login'))
-
 
 def news_list(request):
     context = {
@@ -229,26 +166,11 @@ def events(request, topic_id):
     context = {'selected_topic': selected_topic, 'topics': topics_list, 'country': user_profile_location}
     return render(request, 'dashboard/events.html', context)
 
-
 @login_required()
 def test(request):
     from dashboard.form import ProfileForm
-
-    # print json.dumps(request.POST)
-    # form = ProfileForm(data=dict(request.POST), files=request.FILES)
-
-    # if form.is_valid():
-    #     print 'Form is valid'
-    #     print 'Form data :'
-    #     print form.fields
-    # else:
-    #     print 'form not valid'
-    #     print form.errors
-
     form = ProfileForm(request.POST or None)
-
     return render(request, 'test.html', {'form': form})
-
 
 @login_required()
 def profile(request, profile_id=None, action=None):
@@ -281,8 +203,8 @@ def profile(request, profile_id=None, action=None):
             logout(request)
 
         except Exception as e:
-            print 'error removing user'
-            print e
+            print('error removing user')
+            print(e)
             messages.warning(request, 'An error occour deleting your profile, please try again.')
             return HttpResponseRedirect(reverse('dashboard:profile'))
 
@@ -447,7 +369,6 @@ def profile(request, profile_id=None, action=None):
     user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
     
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
-    print user_profile.pk
     context = {
         'profile': user_profile,
         'profile_action': action,
@@ -528,7 +449,7 @@ def invite(request):
             messages.error(request, 'You cannot invite youself!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
         except Exception as e:
-            print e.message
+            print(e.message)
             messages.error(request, 'Please try again!')
             return HttpResponseRedirect(reverse('dashboard:invite'))
 
@@ -574,5 +495,5 @@ def collaborator_invitation(request, profile_id=None, project_id=None, status=No
             messages.success(request, 'Collaboration updated!')
             contribution.update(status=status)
     except ObjectDoesNotExist as o:
-        print o
+        print(o)
     return HttpResponseRedirect('/profile/project/%s/detail' % this_project.id)

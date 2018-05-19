@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
-from json_tricks.np import dump, dumps, load, loads, strip_comments
-from capsule import CRMConnector
+from json_tricks.nonp import dump, dumps, load, loads, strip_comments
+from crmconnector.capsule import CRMConnector
 from copy import copy, deepcopy
 from utils.Colorizer import Colorizer
 
@@ -54,7 +54,7 @@ class Party(object):
             self.organisation = {'name': user.profile.organization}
 
         # Custom Fields
-        for custom_id, local_value in self.get_custom_field(user).iteritems():
+        for custom_id, local_value in self.get_custom_field(user).items():
             if local_value and local_value is not None and local_value != '':
                 self.fields.append({
                     "value": local_value,
@@ -74,7 +74,6 @@ class Party(object):
 
     def as_dict(self):
         return dict((x, y) for x, y in self.__dict__.items() if x[:6] != '_Party')
-        # return self.__dict__
 
     def __set_user(self, user):
         self.__local_user = user
@@ -97,7 +96,7 @@ class Party(object):
             '412036': user.profile.technical_expertise,
             '444008': user.profile.occupation,
             '444007': user.profile.birthdate
-                if isinstance(user.profile.birthdate, basestring)
+                if isinstance(user.profile.birthdate, str)
                 else user.profile.birthdate.strftime("%Y-%m-%d"),
             '411953': user.profile.gender.capitalize(),
             '444016': user.profile.statement if not user.profile.statement or len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
@@ -118,11 +117,10 @@ class Party(object):
             '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None
         }
 
-        return dict((k, v) for k, v in custom_fields.iteritems() if v)
+        return dict((k, v) for k, v in custom_fields.items() if v)
 
     def update(self):
         self.__capsule_party and self.get()
-        # print json.dumps(self.as_dict(), indent=1)
         return CRMConnector.update_party(self.__capsule_party['id'], {'party': self.as_dict()})
 
     def create(self):
@@ -186,12 +184,9 @@ class Party(object):
             if len(customs) > 0:
                 custom = customs[0]
                 if custom['type'] == 'list' and not field['value'] in custom['options']:
-                    print Colorizer.Yellow('Excluding field : %s ' % field)
+                    print(Colorizer.Yellow('Excluding field : {} ',format(field)))
                     self.fields.remove(field)
-                    print Colorizer.Yellow('Field Excluded')
-
-        # print Colorizer.Green('USER DATA :')
-        # print Colorizer.Yellow(json.dumps(self.as_dict(), indent=2))
+                    print(Colorizer.Yellow('Field Excluded'))
 
     # CRM does not check for duplicated on some fields
     # Those methods find match between local and CRM data an merge in unique object without duplicates

@@ -43,9 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'webpack_loader',
-    'django_select2',
-
+    'webpack_loader'
 ]
 
 MIDDLEWARE = [
@@ -156,7 +154,7 @@ WEBPACK_LOADER = {
 LOGIN_URL = '/'
 
 # import local settings
-from local_settings import *
+from dspexplorer.local_settings import *
 
 FROALA_EDITOR_PLUGINS = ('align', 'char_counter', 'code_beautifier' ,'code_view', 'draggable', 'emoticons',
                          'entities', 'file', 'font_size', 'fullscreen', 'image_manager', 'image', 'inline_style',

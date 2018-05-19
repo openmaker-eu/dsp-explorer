@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
+from django_mysql.models import JSONField
 from django.utils import timezone
 from datetime import datetime as dt, datetime
 from utils.hasher import HashHelper
@@ -39,7 +40,7 @@ class ModelHelper:
 
         try:
             # GET ContentType instance
-            if isinstance(model, basestring):
+            if isinstance(model, str):
                 ct_model = ContentType.objects.get(model=model)
                 model_name = model
             elif issubclass(model, models.Model):
@@ -53,6 +54,8 @@ class ModelHelper:
             # Try to get serializer class
             return getattr(app.serializer, model_name+'Serializer')
         except Exception as e:
+            print('try get serializer error')
+            print(e)
             return False
 
     @classmethod
@@ -71,7 +74,7 @@ class ModelHelper:
                 try:
                     local_entity = EntityProxy.objects.select_for_update().get(type=entity,externalId=entity_id)
                 except EntityProxy.DoesNotExist:
-                    print "CREATE THE ENTITY [TYPE]:{} --- [ID]:{}".format(entity, entity_id)
+                    print("CREATE THE ENTITY [TYPE]:{} --- [ID]:{}".format(entity, entity_id))
                     local_entity = EntityProxy()
                     local_entity.externalId = entity_id
                     local_entity.type = entity
@@ -102,9 +105,9 @@ class Tag(models.Model):
 
     @classmethod
     def create_or_update(cls, tag):
-       return Tag.objects.filter(name=tag).first() or Tag.create(name=tag) if isinstance(tag, basestring) else None
+       return Tag.objects.filter(name=tag).first() or Tag.create(name=tag) if isinstance(tag, str) else None
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -216,7 +219,7 @@ class SourceOfInspiration(models.Model):
         source.save()
         return source
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -243,7 +246,7 @@ class User(User):
             return user
 
         except Exception as e:
-            print e
+            print(e)
             return False
 
 
@@ -272,7 +275,7 @@ class Profile(models.Model):
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
-    place = models.TextField(_('Place'), max_length=500, blank=True, null=True)
+    place = JSONField()
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
     role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
@@ -334,7 +337,7 @@ class Profile(models.Model):
     def tags_create_or_update(self, tags, clear=False):
         if not tags:
             return False
-        tags = [re.sub(r'\W', '', x.lower().capitalize()) for x in tags] if isinstance(tags, basestring) else tags
+        tags = [re.sub(r'\W', '', x.lower().capitalize()) for x in tags] if isinstance(tags, str) else tags
         clear and self.tags.clear()
         for tag in tags:
             tagInstance = Tag.create_or_update(tag)
@@ -342,7 +345,6 @@ class Profile(models.Model):
         tags and self.save()
 
     def picture_set_or_update(self, picture):
-        print picture
         if picture:
             filename, file_extension = os.path.splitext(picture.name)
             if not file_extension in ['.jpg', '.jpeg', '.png']:
@@ -365,7 +367,7 @@ class Profile(models.Model):
     # def __str__(self):
     #     return "%s %s" % (self.get_name(), self.get_last_name())
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             return self.user.email
         except:
@@ -569,8 +571,8 @@ class Profile(models.Model):
                     self.place = json.dumps(place)
                     self.save()
         except Exception as e:
-            print 'error'
-            print e
+            print('error')
+            print('e')
 
     def set_place(self, place):
         self.place = place
@@ -595,7 +597,7 @@ class Profile(models.Model):
                 self.location = location
                 self.save()
         except Exception as e:
-            print e
+            print(e)
 
     def add_interest(self, interest_obj):
         from utils.mailer import EmailHelper
@@ -627,9 +629,6 @@ class Profile(models.Model):
     def interest_this(self, entity):
 
         if self.is_this_interested_by_me(entity):
-            # remove interest
-            print entity.__class__.__name__
-
             self.delete_interest(entity, entity.id)
         else:
             # add interest
@@ -775,7 +774,7 @@ class Invitation(models.Model):
             'receiver_first_name': first_name,
             'receiver_last_name': last_name
         }
-        cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.iteritems() if v is not None})
+        cls.objects.filter(sender_email=hashed).update(**{k: v for k, v in sender_dict.items() if v is not None})
 
     @classmethod
     def confirm_sender(cls, sender_email, receiver_email):
@@ -799,7 +798,7 @@ class Invitation(models.Model):
 
 
 class Feedback(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=100)
     message_text = models.TextField(_('Message'), max_length=500)
     created_at = models.DateTimeField(default=dt.now)
@@ -822,12 +821,12 @@ class Company(models.Model):
     description = models.TextField(_('Description'), null=False, blank=False)
     tags = models.ManyToManyField(Tag, related_name='company_tags')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class Bookmark(models.Model):
-    profile = models.ForeignKey(Profile, related_name='profile_bookmark')
+    profile = models.ForeignKey(Profile, related_name='profile_bookmark', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -837,7 +836,7 @@ class Bookmark(models.Model):
 
 
 class Interest(models.Model):
-    profile = models.ForeignKey(Profile, related_name='profile_interest')
+    profile = models.ForeignKey(Profile, related_name='profile_interest', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -846,7 +845,7 @@ class Interest(models.Model):
     def get(self):
         return self.content_object
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Interest(Profile=' + str(self.profile.pk) + ', ' +self.content_object.__class__.__name__ + '=' + str(self.object_id)+')'
 
 
@@ -859,7 +858,7 @@ class Challenge(models.Model):
         (3, 'United Kingdom'),
     )
 
-    company = models.ForeignKey(Company, related_name='challenges', blank=True, null=True)
+    company = models.ForeignKey(Company, related_name='challenges', blank=True, null=True, on_delete=models.CASCADE)
 
     title = models.CharField(_('Title'), max_length=50)
     description = models.CharField(_('Description'), max_length=200)
@@ -877,7 +876,7 @@ class Challenge(models.Model):
     notify_user = models.BooleanField(_('Notifiy User when removes interest'), default=True)
 
     les = models.IntegerField(default=0, choices=les_choices)
-    profile = models.ForeignKey(Profile, blank=True, null=True)
+    profile = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     published = models.BooleanField(_('Published'), default=False)
@@ -904,8 +903,8 @@ class Challenge(models.Model):
                 return les[1]
         return 'less found undefined'
 
-    def __unicode__(self):
-        return self.title.encode('utf-8')
+    def __str__(self):
+        return self.title
 
     def clean(self):
         if not self.profile and not self.company:
@@ -916,7 +915,7 @@ class Challenge(models.Model):
 
 class Project(models.Model):
 
-    profile = models.ForeignKey(Profile)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     project_contributors = models.ManyToManyField(Profile, related_name='project_contributors',
                                                   through='ProjectContributor')
     name = models.CharField(_('Name'), max_length=50, default='')
@@ -933,7 +932,7 @@ class Project(models.Model):
 
     interest = GenericRelation(Interest)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def interested(self, filter_class=None):

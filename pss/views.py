@@ -99,8 +99,6 @@ def application_result(request):
         grouped_by_les
     )
 
-    print applications
-
     context = {
         'applications': applications
     }

@@ -48,7 +48,6 @@ class DSPConnectorV13(object):
         url = DSPConnectorV13.generate_url(
             endpoint='/get_events',
             parameter='?event_ids={news_id}'.format(news_id=entity_id))
-        print url
         return DSPConnectorV13._get(url)
 
     @staticmethod
@@ -141,7 +140,7 @@ class DSPConnectorV12(object):
         ids = ','.join(map(str, topic_ids)) if isinstance(topic_ids, list) else topic_ids
         parameters = '?topic_ids={}'.format(ids)
 
-        for key, value in params.iteritems():
+        for key, value in params.items():
             parameters += "&{key}={value}".format(key=key, value=value)
 
         url = DSPConnectorV12.generate_url(

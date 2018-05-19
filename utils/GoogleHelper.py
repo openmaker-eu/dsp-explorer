@@ -23,8 +23,8 @@ class GoogleHelper:
                 place = place['predictions'][0]
 
         except Exception as e:
-            print 'error'
-            print e
+            print('error')
+            print(e)
 
         if place:
             place_id = place['place_id']
@@ -38,8 +38,8 @@ class GoogleHelper:
                     place_detail = json.loads(response.content)['result']
 
             except Exception as e:
-                print 'error'
-                print e
+                print ('error')
+                print (e)
 
         if place and place_detail:
             try:
@@ -62,8 +62,8 @@ class GoogleHelper:
                 }
 
             except Exception as e:
-                print 'error'
-                print e
+                print('error')
+                print(e)
 
         else:
             return None

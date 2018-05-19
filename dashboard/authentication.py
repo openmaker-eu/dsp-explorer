@@ -19,7 +19,6 @@ import json
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
     invitation_email_confirmed, invitation_email_receiver, onboarding_email_template, authentication_reset_password
 import re
-from django.utils.encoding import force_unicode
 from crmconnector.capsule import CRMConnector
 from crmconnector.models import Party
 from rest_framework.exceptions import NotFound
@@ -256,41 +255,30 @@ def onboarding(request):
 
 
 def onboarding_confirmation(request, token):
-    print 0
-    print token
     # Check for token
     try:
         profile = Profile.objects.get(reset_token=token)
     except Profile.DoesNotExist:
-        print 'no exist'
+        print('no exist')
         messages.error(request, 'Token expired')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     except Exception as e:
-        print 'other error'
-        print e
-    print 1
+        print('other error')
+        print(e)
     # update on crm
     try:
-        print 'a1'
         party = Party(profile.user)
-        print party.__dict__
-        print 'a2'
         result = party.create_or_update()
-        print 'a3'
-        print result
         party_crm_id = result['party']['id']
-        print 'a4'
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
-        print e
+        print(e)
         logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
         return HttpResponseRedirect(reverse('dashboard:profile'))
     except Exception as e:
-        print e
+        print(e)
         logger.debug('CRM CREATION USER ERROR %s' % e)
         return HttpResponseRedirect(reverse('dashboard:profile'))
-
-    print 2
     profile.user.is_active = True
     profile.set_crm_id(party_crm_id)
     profile.user.save()
@@ -313,7 +301,7 @@ def onboarding_confirmation(request, token):
            '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
 
     modal_options = {
-        "title": "Welcome onboard %s!" % force_unicode(profile.user.first_name),
+        "title": "Welcome onboard %s!" % profile.user.first_name,
         "body": escape_html(body),
         "footer": False
     }

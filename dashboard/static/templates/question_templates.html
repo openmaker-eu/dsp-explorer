@@ -96,7 +96,7 @@ required>
 >
 <input type="hidden" ng-model="m['city']" ng-value="m['city']"  name="city" required/>
 <!--<input type="hidden" ng-model="m['place']" ng-value="m['place']" name="place" required/>-->
-<textarea name="place">{$ m['place'] | json $}</textarea>
+<textarea name="place" style="display:none;">{$ m['place'] | json $}</textarea>
 
 
 [loading]
@@ -104,10 +104,9 @@ required>
 
 [imageupload]
 <div class="fake-input__container" style="width:40%; left:30%; right:30%;">
-    <circle-image src="entity.data.picture" ></circle-image>
+    <circle-image src="x.value" ></circle-image>
     <input
-        ng-model="m[x.name]"
-        input_file_model="entity.data.picture"
+        ng-model="x.value"
         type="file"
         name="picture"
     />

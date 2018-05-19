@@ -4,21 +4,17 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Profile, Invitation, User, ProjectContributor, Bookmark, ModelHelper
-from utils.hasher import HashHelper
+
 from utils.mailer import EmailHelper
 from .serializer import ProfileSerializer, ProjectSerializer, ChallengeSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
-from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, \
-    invitation_email_confirm
 import json
 from datetime import date, timedelta
 import random, logging, requests
 from crmconnector.models import Party
-from json_tricks.np import dump, dumps, load, loads, strip_comments
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from utils.Colorizer import Colorizer
-from crmconnector.capsule import CRMConnector
 logger = logging.getLogger(__name__)
 
 from dashboard.serializer import BookmarkSerializer, InterestSerializer
@@ -26,16 +22,12 @@ from dashboard.serializer import BookmarkSerializer, InterestSerializer
 from .helpers import mix_result_round_robin
 from django.http import HttpResponse
 from django.apps import apps
-from django.views import View
 import math
 from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
 from dashboard.models import Challenge, Project, Tag, EntityProxy
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as dt
-import simplejson as simplejson
 
-from rest_framework import generics
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 import os, re
 from django.http import Http404
@@ -259,7 +251,7 @@ def get_om_events(request):
                 'italy': ita_events
             }}, status=200)
     except Exception as e:
-        print e.message
+        print(e.message)
         return JsonResponse({
             'status': 'error',
             'results': {}},
@@ -364,7 +356,7 @@ class v14:
         except AttributeError as a:
             return not_authorized()
         except Exception as e:
-            print e
+            print(e)
             return not_authorized()
 
     @staticmethod
@@ -378,7 +370,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            print e
+            print(e)
             return not_authorized()
 
     @staticmethod
@@ -393,7 +385,7 @@ class v14:
                 'result': serialized,
             }, status=200)
         except Exception as e:
-            print e
+            print(e)
             return not_authorized()
 
     @staticmethod
@@ -558,8 +550,6 @@ class v13:
             events = DSPConnectorV13.get_events(topic_id, location, cursor)
         except DSPConnectorException:
             events = {}
-
-        print 'next_cursor' in events
         'previous_cursor' not in events and events.update({'previous_cursor': 0})
 
         return JsonResponse({
@@ -611,7 +601,6 @@ class v13:
 
         # ToDo add token to avoid actions not allowed
 
-        print 'COLLABORATOR API'
         from dashboard.serializer import ProjectContributorSerializer
         if request.method == 'POST':
             try:
@@ -630,7 +619,6 @@ class v13:
 
                 if len(contribution):
                     if status is not None:
-                        print 'UPDATING'
                         # update the status of the invitation / collaboration
                         contribution.update(status=status)
                         serialized = ProjectContributorSerializer(contribution).data
@@ -703,12 +691,12 @@ class v13:
                     serialized = ProjectContributorSerializer(contribution).data
                     return success('ok', 'invitation sent', serialized)
             except ObjectDoesNotExist as o:
-                print 'ERROR ObjectDoesNotExist'
-                print o
+                print('ERROR ObjectDoesNotExist')
+                print(o)
                 return error()
             except Exception as e:
-                print 'ERROR Exception'
-                print e
+                print('ERROR Exception')
+                print(e)
                 return error()
         else:
             bad_request('only post for now')
@@ -723,8 +711,8 @@ class v13:
                 projects = Project.objects.get(id=project_id, profile=profile)
                 projects.delete()
             except ObjectDoesNotExist as e:
-                print e
-                print not_authorized()
+                print(e)
+                print(not_authorized())
             return success('ok', 'project deleted', {})
 
         # GET ALL
@@ -735,7 +723,7 @@ class v13:
                 serialized = ProjectSerializer(projects, many=True)
                 return success('ok', 'user projects', serialized.data)
             except Exception as e:
-                print e
+                print(e)
                 return not_found()
         # GET SINGLE
         if request.method == 'GET' and project_id is not None:
@@ -744,10 +732,10 @@ class v13:
                 serialized = ProjectSerializer(project, many=True)
                 return success('ok', 'single project', serialized.data)
             except ObjectDoesNotExist as o:
-                print o
+                print(o)
                 return not_found()
             except Exception as e:
-                print e
+                print(e)
                 return error()
         # UPDATE
         if request.method == 'POST' and project_id is not None:
@@ -775,7 +763,7 @@ class v13:
                         return bad_request('The project end date cannot be before the project start date')
                     data_to_update['end_date'] = end_date
             except Exception as e:
-                print e
+                print(e)
                 return error()
             # get the model object and check the profile owns that project
             try:
@@ -787,12 +775,11 @@ class v13:
                 project.__dict__.update(data_to_update)
                 project.save()
             except Project.DoesNotExist as e:
-                print e
+                print(e)
                 return not_authorized()
             except Exception as e:
-                print e
+                print(e)
                 return error()
-            print project
             result = ProjectSerializer(project).data
             return success('ok', 'project updated', result)
         # CREATE
@@ -808,7 +795,7 @@ class v13:
                 project_url = request.POST['project_url']
                 project_tags = request.POST['tags']
             except KeyError as k:
-                print k
+                print(k)
                 return bad_request("Please fill all the fields")
             # check if is or not an ongoing project
             try:
@@ -864,10 +851,10 @@ class v13:
             if str(exc) == 'nonvalid':
                 return bad_request('project_image is not an image file')
         except KeyError as k:
-            print k
+            print(k)
             return bad_request("please fill all the fields")
         except Exception as e:
-            print e
+            print(e)
             return bad_request('some error in the image upload')
 
 ###########
@@ -959,7 +946,6 @@ def update_field(request, to_be_updated, update_token):
 
 
 def update_default_profile_image(users):
-    print 'update_default_profile_image'
     errored = []
     sanititized = []
     for user in users:
@@ -976,24 +962,24 @@ def update_default_profile_image(users):
                 user.profile.save()
         except Profile.DoesNotExist as e:
             errored.append(user.email)
-            print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
+            print(Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple'))
             print (' ')
     # PRINT RESULTS
-    print '-------------'
-    print 'TOTAL RESULTS'
-    print '-------------'
+    print ('-------------')
+    print ('TOTAL RESULTS')
+    print ('-------------')
 
     if len(errored):
-        print Colorizer.Red('%s errored users' % len(errored))
-        print errored
+        print(Colorizer.Red('%s errored users' % len(errored)))
+        print(errored)
 
     if len(sanititized):
-        print Colorizer.Purple('%s updated users : ' % len(sanititized))
+        print(Colorizer.Purple('%s updated users : ' % len(sanititized)))
         print(sanititized)
 
     elif not len(errored) and not len(sanititized):
-        print Colorizer.Green('no updates or errors')
-    print '-------------'
+        print(Colorizer.Green('no updates or errors'))
+    print('-------------')
 
 
 def create_or_update_party(users):
@@ -1010,52 +996,48 @@ def create_or_update_party(users):
             party = Party(user)
             party.create_or_update()
             # logger.debug('UPDATED')
-            print Colorizer.Green('UPDATED %s' % user)
+            print(Colorizer.Green('UPDATED %s' % user))
             print (' ')
 
         except Profile.DoesNotExist as e:
-            print Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple')
-            print (' ')
+            print(Colorizer.custom('[ERROR USER MALFORMED] : %s ' % e, 'white', 'purple'))
+            print(' ')
 
         except Exception as e:
             try:
-                print Colorizer.Red('Try to exclude incompatible custom fields for user: %s' % user)
+                print(Colorizer.Red('Try to exclude incompatible custom fields for user: %s' % user))
                 party.safe_create_or_update()
                 sanititized.append(user.email)
-                print Colorizer.Yellow('UPDATED partially: %s' % user)
-                print (' ')
+                print(Colorizer.Yellow('UPDATED partially: %s' % user))
+                print(' ')
 
             except Exception as safe_exc:
-                print Colorizer.Red('[ ERROR IN SAFE UPDATE ] : %s' % safe_exc)
-                print json.dumps(party.as_dict(), indent=1)
-                print (' ')
+                print(Colorizer.Red('[ ERROR IN SAFE UPDATE ] : %s' % safe_exc))
+                print(json.dumps(party.as_dict(), indent=1))
+                print((' '))
 
-                # logger.error('ERROR %s' % e)
-                # logger.error('USER %s' % user)
-                # logger.error('USER data : %s' % dumps(party.__dict__) if party else 'no data')
-
-                print Colorizer.Red('ERROR UPDATING USER : %s' % user)
-                print ('ERROR: %s' % e)
-                print (' ')
+                print(Colorizer.Red('ERROR UPDATING USER : %s' % user))
+                print('ERROR: %s' % e)
+                print(' ')
                 errored.append(user.email)
 
     # PRINT RESULTS
-    print '-------------'
-    print 'TOTAL RESULTS'
-    print '-------------'
+    print('-------------')
+    print('TOTAL RESULTS')
+    print('-------------')
 
     if len(errored):
-        print Colorizer.Red('%s errored users' % len(errored))
+        print(Colorizer.Red('%s errored users' % len(errored)))
         # logger.error('ERROR updating users : %s' % errored)
-        print errored
+        print(errored)
 
     if len(sanititized):
-        print Colorizer.Purple('%s partially updated users : ' % len(sanititized))
+        print(Colorizer.Purple('%s partially updated users : ' % len(sanititized)))
         print(sanititized)
 
     elif not len(errored) and not len(sanititized):
-        print Colorizer.Green('No errored users')
-    print '-------------'
+        print(Colorizer.Green('No errored users'))
+    print('-------------')
 
 
 def check_canvas(request, twitter_username):
@@ -1065,7 +1047,7 @@ def check_canvas(request, twitter_username):
     try:
         response = requests.get(url)
     except Exception as e:
-        print e
+        print(e)
         res['result'] = False
         res['status'] = 'error'
         return JsonResponse(res, status=200)
@@ -1165,7 +1147,7 @@ def get_profile_projects(request, profile_id):
         serialized = ProjectSerializer(projects, many=True)
         return success('ok', 'user projects', serialized.data)
     except Exception as e:
-        print e
+        print(e)
         response = JsonResponse({'status': 'error', 'message': ''})
         response.status_code = 500
         return response
@@ -1185,10 +1167,10 @@ def get_interest_object_ids(request, model_object=None):
             model = apps.get_model(app_label='dashboard', model_name=model_object.title())
             return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(model)), safe=False)
         except ObjectDoesNotExist as e:
-            print e
+            print(e)
             error('model not found')
         except Exception as e:
-            print e
+            print(e)
             error()
 
 
@@ -1236,7 +1218,7 @@ def interest_challenge(request, challenge_id):
         return JsonResponse({'status': 'success'})
 
     except Exception as e:
-        print e
+        print(e)
         response = JsonResponse({'status': 'error', 'message': e})
         response.status_code = 500
         return response
@@ -1248,20 +1230,17 @@ def interest_project(request, project_id):
         project = Project.objects.get(pk=project_id)
 
         if request.method == 'POST':
-            print 'add interest'
             # Add interest
             request.user.profile.add_interest(project)
             message = 'interest in project added'
         if request.method == 'DELETE':
-            print 'remove interest'
             # Remove interest
             request.user.profile.delete_interest(Project, project_id)
             message = 'interest in project removed'
-        print 'success'
         return success('ok', message, {})
 
     except Exception as e:
-        print e
+        print(e)
         response = JsonResponse({'status': 'error', 'message': e})
         response.status_code = 500
         return response
@@ -1277,20 +1256,17 @@ def interest_entity(request, entity_type='article', entity_external_id=None):
             entity.save()
 
         if request.method == 'POST':
-            print 'add interest'
             # Add interest
             request.user.profile.add_interest(entity)
             message = 'interest in entity added'
         if request.method == 'DELETE':
-            print 'remove interest'
             # Remove interest
             request.user.profile.delete_interest(EntityProxy, entity.pk)
             message = 'interest in entity removed'
-        print 'success'
         return success('ok', message, {})
 
     except Exception as e:
-        print e
+        print(e)
         response = JsonResponse({'status': 'error', 'message': e})
         response.status_code = 500
         return response
