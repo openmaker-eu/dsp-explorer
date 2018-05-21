@@ -40,7 +40,7 @@ export function angularForm(app){
 }
 
 export function directives(app){
-    app.directive('circleImage', require('./directives/CircleImage').default )
+    app.component('circleImage', require('./directives/CircleImage').default )
     app.directive('inputFileModel', require('./directives/FileInputChange').default )
     return this
 }

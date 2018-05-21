@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 let template = `
-    <div class="row">
+    <div class="">
         <svg id="bubble_container"></svg>
     </div>
     <style>
@@ -77,6 +77,8 @@ let bubble = function(div_id, tags){
     
     var diameter = parent.width()
     
+    console.log('parent width ', diameter);
+    
     container.attr('width' , diameter)
     container.attr('height' , diameter)
     
@@ -110,7 +112,7 @@ let bubble = function(div_id, tags){
                 return html_class
             })
             .attr("fill", (d) =>{
-                if(d.children) return '#fff'
+                if(d.children) return 'rgba(0,0,0,0)'
                 return this.factory.search_filter.toLowerCase() === d.data.hashtag.toLowerCase() ? '#db4348' : tag_default_color
             })
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })

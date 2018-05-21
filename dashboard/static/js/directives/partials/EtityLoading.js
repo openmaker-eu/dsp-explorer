@@ -19,7 +19,7 @@ export default [function(){
                     <br>
                 </div>
                 <!--No data-->
-                <div ng-if="error">
+                <div ng-if="error" style="padding:2%;">
                     <h2>
                         <span ng-if="!errormessage">There are no <span class="capitalize">{$ entityname $}</span> available</span>
                         <span ng-if="errormessage">{$ errormessage $}</span>

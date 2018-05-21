@@ -1,10 +1,10 @@
 let template = `
     <div class="col-md-12">
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
+        
             <div class="entity-carousel__header">
-                <h3 ng-if="!['loved', 'lovers'].includes(entityname)"><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
-                <h3 ng-if="entityname == 'loved'">You <i class="far fa-heart"></i></h3>
-                <h3 ng-if="entityname == 'lovers'">who <i class="far fa-heart"></i> you</h3>
+                <h3 ng-if="!title"><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
+                <h3 ng-if="title" ng-bind-html="title"></h3>
             </div>
             
             <entity-loading
@@ -19,6 +19,7 @@ let template = `
                     <div ng-repeat="entity in entities.data | limitTo: (limit || 20) || undefined" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
+
                 </slick>  
             <div>
             
@@ -35,7 +36,8 @@ export default [function(){
             entityname : '@',
             userid : '@',
             slider : '@',
-            limit: '='
+            limit: '=',
+            title : '@'
         },
         controller : ['$scope', '$http', '$timeout', 'EntityProvider', async function($scope, $http, $timeout, EntityProvider) {
             

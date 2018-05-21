@@ -1,42 +1,40 @@
-import * as _ from 'lodash'
-import * as d3 from 'd3';
-
 let template = `
-    <a ng-href="{$ href $}" ng-class="{ 'not-pointer': !href }" style="display: block;">
-        <div class="profile-image-static background-grey" style="border-radius:50%; overflow: hidden; z-index:1000;">
-            <img ng-src="{$ src $}" style="width:100%; height:100%; position: absolute;  "/>
-        </div>
+    <a href="{$ href $}" ng-class="{ 'not-pointer': !href }" style="display: block;">
+        <div class="profile-image-static background-grey"></div>
     </a>
     <style>
+        .profile-image-static { border-radius:50%; overflow: hidden; z-index:1000; }
         .not-pointer , .not-pointer *{ cursor:default!important; }
+        .circle-image { position:absolute; }
+        .landscape { height:100%!important; width:auto!important;  }
+        .portrait { width:100%!important; height:auto!important; }
     </style>
 `
 
-export default [function(){
-    return {
-        template:template,
-        scope : {
-            src : '='
-        },
-        link : function($scope, element, attrs){
-            $(element).css({display:'block'})
-            
-            $scope.fitImageToCircle = (image)=> {
-                if( !image || !image.get(0) ) return
-                image.removeAttr('style')
-        
-                let width = image.get(0).naturalWidth
-                let height = image.get(0).naturalHeight
-                let css = {'display':'block', 'position': 'absolute'}
-                width > height? css.height = '100%' : css.width = '100%'
-                image.css({ display:'block'})
-                image.css(css)
-        
-            }
-            let img = element.find('img');
-            img.bind('load', n=>$scope.fitImageToCircle($(img)))
-            
-        }
-    }
+export default {
+    transclude: true,
+    template: template,
+    bindings: {
+        src: '<',
+        href: '<',
+    },
+    controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
     
-}]
+        
+        this.$onChanges = function(changes){
+    
+            $scope.src= changes.src && changes.src.currentValue
+            $scope.href= (changes.href && changes.href.currentValue) || undefined
+            
+            let image = new Image()
+            image.src = $scope.src
+            image.className = "circle-image landscape"
+            
+            image.onload = p=> p.target.height > p.target.width && (image.className = "circle-image portrait")
+            
+            $element.find('.profile-image-static').html(image)
+            
+        };
+        
+    }],
+}

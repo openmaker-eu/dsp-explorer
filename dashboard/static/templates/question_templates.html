@@ -95,7 +95,6 @@ required>
        placeholder="Start typing the city name where you ar based"
 >
 <input type="hidden" ng-model="m['city']" ng-value="m['city']"  name="city" required/>
-<!--<input type="hidden" ng-model="m['place']" ng-value="m['place']" name="place" required/>-->
 <textarea name="place" style="display:none;">{$ m['place'] | json $}</textarea>
 
 
@@ -104,12 +103,8 @@ required>
 
 [imageupload]
 <div class="fake-input__container" style="width:40%; left:30%; right:30%;">
-    <circle-image src="x.value" ></circle-image>
-    <input
-        ng-model="x.value"
-        type="file"
-        name="picture"
-    />
+    <circle-image src="x.value"></circle-image>
+    <input input_file_model="x.value" type="file" name="picture"/>
     <div class="fake-input__icon">
         <span class="fas fa-plus-circle fa-5x"></span>
     </div>
@@ -119,7 +114,6 @@ required>
 <textarea class="form-control"
           ng-init="m[x.name] = x.value"
           ng-model="m[x.name]"
-          ng-value="m[x.name]"
           name="{$ x.name $}"
           cols="30" rows="10"
 ></textarea>

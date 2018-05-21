@@ -19,7 +19,7 @@ export default {
         data: '=',
         model: '=',
     },
-    controller: ['$scope', '$element', '$compile', '$timeout', function($scope, $element, $compile, $timeout) {
+    controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
         
         // Wait for controller to init
         this.$onInit = ()=>{

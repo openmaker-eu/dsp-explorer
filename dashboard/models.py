@@ -265,6 +265,10 @@ class User(User):
 #         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
 
+
+def default_place():
+    return {}
+
 class Profile(models.Model):
     crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -275,7 +279,7 @@ class Profile(models.Model):
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
-    place = JSONField()
+    place = JSONField(default=default_place, null=True)
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
     role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
@@ -297,14 +301,6 @@ class Profile(models.Model):
 
     interest = GenericRelation('Interest')
 
-    def interested(self, filter_class=None):
-        interests = self.interest.all().order_by('-created_at')
-        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
-        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
-
-    def interests(self, filter_class=object):
-        return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
-
     socialLinks = models.TextField(
         _('Social Links'),
         max_length=200,
@@ -312,6 +308,14 @@ class Profile(models.Model):
         blank=True,
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
+
+    def interested(self, filter_class=None):
+        interests = self.interest.all().order_by('-created_at')
+        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        return ModelHelper.filter_instance_list_by_class(interested, filter_class)
+
+    def interests(self, filter_class=object):
+        return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
 
     @classmethod
     def create(cls, **kwargs):

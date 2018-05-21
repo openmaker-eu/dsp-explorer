@@ -144,11 +144,11 @@ main {
 .transparent {opacity:0; height:0; cursor:default;}
 
 .entity-carousel {
-  .entity-carousel__header {
+  &__header {
     @extend .cairo;
     @extend .regular;
+    padding:0 2%;
   }
-
 }
 
 .home-page{
@@ -415,6 +415,12 @@ $om_breakpoints: (
 
 }
 
+@media all and (min-width: 1650px) {
+  .container{
+    width: 1480px!important;
+  }
+}
+
 .overflow-here {
   overflow: hidden!important;
   & * { overflow: visible!important}
@@ -655,4 +661,12 @@ $om_breakpoints: (
     & > * {margin:0; padding:0;}
 
   }
+}
+
+.profile-edit__tooltip{
+
+  left:75%!important;
+  * { background: #f00!important; color:#fff!important; }
+  .tooltip-arrow { display: none!important;}
+
 }
