@@ -311,7 +311,7 @@ class Profile(models.Model):
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')
-        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        interested = [x.profile for x in interests] if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def interests(self, filter_class=object):
@@ -616,7 +616,7 @@ class Profile(models.Model):
             interest.save()
 
     def get_interests(self, filter_class=None):
-        interests = map(lambda x: x.get(), self.profile_interest.all())
+        interests = [x.get() for x in self.profile_interest.all()]
         return ModelHelper.filter_instance_list_by_class(interests, filter_class)
 
     def delete_interest(self, interest_obj, interest_id):
@@ -652,7 +652,7 @@ class Profile(models.Model):
             bookmark.save()
 
     def get_bookmarks(self, filter_class=None):
-        bookmarks = map(lambda x: x.get(), self.profile_bookmark.all())
+        bookmarks = [x.get() for x in self.profile_bookmark.all()]
         if filter_class == 'events' or filter_class == 'news':
             res = ModelHelper.filter_instance_list_by_class(bookmarks, EntityProxy, filter_class)
             return res
@@ -891,7 +891,7 @@ class Challenge(models.Model):
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')
-        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        interested = [x.profile for x in interests] if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     @classmethod
@@ -941,7 +941,7 @@ class Project(models.Model):
 
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')
-        interested = map(lambda x: x.profile, interests) if len(interests) > 0 else []
+        interested = [x.profile for x in interests] if len(interests) > 0 else []
         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
     def get_tags(self):
@@ -950,7 +950,7 @@ class Project(models.Model):
 
     def set_tags(self, tags):
         self.tags.clear()
-        for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
+        for tagName in [x.lower().capitalize() for x in tags.split(",")]:
             self.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
 
 

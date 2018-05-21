@@ -27,23 +27,7 @@ class OnboardingForm(forms.Form):
 
         if tags == 'undefined' or tags == None or tags == '':
             raise forms.ValidationError("You must provide at least one tag.")
-
-        print 'tags'
-        print self.data['tags']
-
-        self.data['tags'] = [
-            tag for tag in
-            map(
-                lambda x: {'name': re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE)},
-                tags.split(",")
-            )
-        ]
-
-        print 'tags after'
-        print self.data['tags']
-
-
-
+        self.data['tags'] = [{'name': x.lower().capitalize()} for x in tags.split(",")]
 
 class ProfileForm(OnboardingForm):
 

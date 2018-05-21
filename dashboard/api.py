@@ -826,7 +826,7 @@ class v13:
                               project_url=project_url)
             project.save()
             project.tags.clear()
-            for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), project_tags.split(",")):
+            for tagName in [x.lower().capitalize() for x in project_tags.split(",")]:
                 project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
             project.save()
             result = ProjectSerializer(project).data
@@ -1155,7 +1155,7 @@ def get_profile_projects(request, profile_id):
 
 @login_required
 def get_interest_ids(request):
-    return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(Challenge)), safe=False)
+    return JsonResponse([int(x.pk) for x in request.user.profile.get_interests(Challenge)], safe=False)
 
 
 @login_required
@@ -1165,7 +1165,7 @@ def get_interest_object_ids(request, model_object=None):
     else:
         try:
             model = apps.get_model(app_label='dashboard', model_name=model_object.title())
-            return JsonResponse(map(lambda x: int(x.pk), request.user.profile.get_interests(model)), safe=False)
+            return JsonResponse([int(x.pk) for x in request.user.profile.get_interests(model)], safe=False)
         except ObjectDoesNotExist as e:
             print(e)
             error('model not found')

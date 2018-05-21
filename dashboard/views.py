@@ -310,13 +310,13 @@ def profile(request, profile_id=None, action=None):
         
         # Update tags
         user.profile.tags.clear()
-        for tagName in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
+        for tagName in [x.lower().capitalize() for x in tags.split(",")]:
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
         
         # Update sourceofinnovation
         user.profile.source_of_inspiration.through.objects.all().delete()
         if source_of_inspiration:
-            for tagName in map(lambda x: x.lower().capitalize(), source_of_inspiration.split(",")):
+            for tagName in [x.lower().capitalize() for x in source_of_inspiration.split(",")]:
                 user.profile.source_of_inspiration.add(
                     SourceOfInspiration.objects.filter(name=tagName).first() or
                     SourceOfInspiration.create(name=tagName)
@@ -365,16 +365,16 @@ def profile(request, profile_id=None, action=None):
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
     
-    user_profile.jsonTags = json.dumps(map(lambda x: x.name, user_profile.tags.all()))
-    user_profile.jsonSourceOfInspiration = json.dumps(map(lambda x: x.name, user_profile.source_of_inspiration.all()))
-    
+    user_profile.jsonTags = json.dumps([x.name for x in user_profile.tags.all()])
+    user_profile.jsonSourceOfInspiration = json.dumps([x.name for x in user_profile.source_of_inspiration.all()])
+
     user_profile.types_of_innovation = user_profile.types_of_innovation and json.dumps(user_profile.types_of_innovation.split(','))
     context = {
         'profile': user_profile,
         'profile_action': action,
         'is_my_profile': request.user.profile.id == user_profile.id,
-        'tags': json.dumps(map(lambda x: x.name, Tag.objects.all())),
-        'source_of_inspiration': json.dumps(map(lambda x: x.name, SourceOfInspiration.objects.all()))
+        'tags': json.dumps([x.name for x in Tag.objects.all()]),
+        'source_of_inspiration': json.dumps([x.name for x in SourceOfInspiration.objects.all()])
     }
     return render(request, 'dashboard/profile.html', context)
 

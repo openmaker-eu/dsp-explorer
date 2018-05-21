@@ -218,7 +218,7 @@ def onboarding(request):
 
         # Add tags to profile
         # @TODO : handle tag Creation exception
-        for tag in map(lambda x: re.sub(r'\W', '', x.lower().capitalize(), flags=re.UNICODE), tags.split(",")):
+        for tag in [x.lower().capitalize() for x in tags.split(",")]:
             tagInstance = Tag.objects.filter(name=tag).first() or Tag.create(name=tag)
             profile.tags.add(tagInstance)
         profile.save()
@@ -251,7 +251,7 @@ def onboarding(request):
         messages.success(request, 'Confirmation mail sent!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    return render(request, 'dashboard/onboarding.html', {'tags': json.dumps(map(lambda x: x.name, Tag.objects.all()))})
+    return render(request, 'dashboard/onboarding.html', {'tags': json.dumps([x.name for x in Tag.objects.all()])})
 
 
 def onboarding_confirmation(request, token):
