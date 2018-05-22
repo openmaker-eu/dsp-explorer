@@ -2,6 +2,8 @@ import requests
 import json
 import urllib
 from django.conf import settings
+from urllib.parse import urlencode
+from urllib.request import urlopen
 
 
 class GoogleHelper:
@@ -10,7 +12,7 @@ class GoogleHelper:
     def get_city(cls, city):
         api_key = settings.GOOGLE_API_KEY
         city_url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?' \
-                   ''+urllib.urlencode({'input': city, 'key': api_key, 'language': 'en', 'types': '(cities)'})
+                   ''+urlencode({'input': city, 'key': api_key, 'language': 'en', 'types': '(cities)'})
 
         place = None
         place_detail = None
@@ -38,8 +40,8 @@ class GoogleHelper:
                     place_detail = json.loads(response.content)['result']
 
             except Exception as e:
-                print ('error')
-                print (e)
+                print('error')
+                print(e)
 
         if place and place_detail:
             try:

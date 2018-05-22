@@ -1157,7 +1157,6 @@ def get_profile_projects(request, profile_id):
 def get_interest_ids(request):
     return JsonResponse([int(x.pk) for x in request.user.profile.get_interests(Challenge)], safe=False)
 
-
 @login_required
 def get_interest_object_ids(request, model_object=None):
     if model_object is None:

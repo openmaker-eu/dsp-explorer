@@ -14,10 +14,10 @@ from utils.GoogleHelper import GoogleHelper
 def sanitize_place(user):
     try:
         if user.profile:
-            user.profile.sanitize_place()
+            user.profile.sanitize_place(force=True)
     except Exception as e:
-        print 'sanitize place error'
-        print e
+        print('sanitize place error')
+        print(e)
 
 def add_location_to_user(user):
     try:
@@ -38,15 +38,15 @@ def add_location_to_user(user):
             user.profile.save()
 
     except Exception as e:
-        print 'Error 2'
-        print e
+        print('Error 2')
+        print(e)
 
 def deobfuscate_invitation(user):
     try:
         Invitation.deobfuscate_email(user.email, user.first_name, user.last_name)
     except Exception as e:
-        print 'Error Deobfuscation'
-        print e
+        print('Error Deobfuscation')
+        print(e)
 
 if __name__ == "__main__":
     users = User.objects.all()

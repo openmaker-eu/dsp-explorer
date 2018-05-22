@@ -25,6 +25,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
 import os
+from collections import Counter
 
 class ModelHelper:
 
@@ -279,7 +280,7 @@ class Profile(models.Model):
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
-    place = JSONField(default=default_place, null=True)
+    place = models.TextField(default=None, null=True)
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
     role = models.TextField(_('Role'), max_length=200, null=True, blank=True, default='')
@@ -316,6 +317,8 @@ class Profile(models.Model):
 
     def interests(self, filter_class=object):
         return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
+        # return self.profile_interest.all()
+        # return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
 
     @classmethod
     def create(cls, **kwargs):
@@ -546,18 +549,14 @@ class Profile(models.Model):
 
     @classmethod
     def get_hot_tags(cls, tag_number=4):
-        from itertools import chain
-        from collections import Counter
-        tags = chain.from_iterable([map(lambda t: t['name'], tag) for tag in map(lambda p: p.tags.values(),
-                                                                                 Profile.objects.all())])
+        tags = [t["name"] for p in Profile.objects.all() for t in p.tags.values()]
         hot = Counter(tags).most_common(int(tag_number))
         return hot
 
     @classmethod
     def get_sectors(cls):
         from collections import Counter
-        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector',
-                                                                                                       flat=True))
+        flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         sectors = Counter(flat_sectors).most_common(1000)
         return sectors
 
@@ -566,9 +565,9 @@ class Profile(models.Model):
         places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
         return places
 
-    def sanitize_place(self):
+    def sanitize_place(self, force=False):
         try:
-            if not self.place or 'city' not in self.place:
+            if not self.place or 'city' not in self.place or force is not False:
                 city = self.city
                 place = GoogleHelper.get_city(city)
                 if place:
