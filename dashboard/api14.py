@@ -314,7 +314,7 @@ class questions(APIView):
 
             # Request for the edit profile questions
             action == 'edit-profile' and self.edit_profile(request)
-       
+
         return Response({'questions': self.questions})
 
     def edit_profile(self, request):

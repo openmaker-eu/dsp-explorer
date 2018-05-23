@@ -15,8 +15,7 @@ let template = `
         <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">
             Profile Page
         </div>
-        
-        <div ng-class="{'force-square': preview}" ng-if="['projects','news','events'].includes(entityname)">
+        <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
             
             <!--Fade container-->
             <a href="/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>
