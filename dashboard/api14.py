@@ -120,21 +120,14 @@ def interest(request, entity, user_id=None):
         not user_id else \
         Profile.objects.filter(pk=user_id).first()
 
-    print(profile)
-
     if not profile:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         model_class = ModelHelper.get_by_name(entity.capitalize())
-        print(model_class)
         model_serializer = ModelHelper.get_serializer(entity.capitalize())
-        print(model_serializer)
         interest = profile.interests(model_class)
-        print('interest')
-        print(interest)
         res = model_serializer(interest, many=True).data
-        print(res)
         return Response(res)
     except Exception as e:
         print('Error')

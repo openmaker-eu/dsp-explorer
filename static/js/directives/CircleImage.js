@@ -22,7 +22,6 @@ export default {
     
         
         this.$onChanges = function(changes){
-    
             $scope.src= changes.src && changes.src.currentValue
             $scope.href= (changes.href && changes.href.currentValue) || undefined
             

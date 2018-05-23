@@ -9,17 +9,16 @@ let template = `
             
             <entity-loading
                 class="text-{$ entityname $} text-center"
-                loading="entities.loading"
+                loading="entity_list.loading"
                 entityname="{$ entityname $}"
-                error="!entities.loading && entities && entities.data && entities.data.length===0"
+                error="entity_list && !entity_list.loading && entity_list.data && entity_list.data.length===0"
              ></entity-loading>
             
-            <div class="entity-carousel__body" ng-if="!entities.loading && entities && entities.data.length > 0">
-                <slick settings="slickConfig" ng-cloak>
-                    <div ng-repeat="entity in entities.data | limitTo: (limit || 20) || undefined" style="width: 90%;">
+            <div class="entity-carousel__body" ng-if="entity_list && !entity_list.loading && entity_list.data.length!==0">
+                <slick settings="slickConfig">
+                    <div ng-repeat="entity in entity_list.data | limitTo: (limit || 20)" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
-
                 </slick>  
             <div>
             
@@ -39,14 +38,15 @@ export default [function(){
             limit: '=',
             title : '@'
         },
-        controller : ['$scope', '$http', '$timeout', 'EntityProvider', async function($scope, $http, $timeout, EntityProvider) {
+        controller : ['$scope', '$http', '$timeout', 'EntityProvider', function($scope, $http, $timeout, EntityProvider) {
             
-            $scope.entities = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
-            $scope.entities.get()
+            $scope.entity_list = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
+            $scope.entity_list.get()
             
             $scope.$watch('entities.data',  (a, b)=>{
+                console.log($scope.entities);
                 $scope.reload = true;
-                $timeout(function(){$scope.reload=false, $scope.nodata=a.length===0},500);
+                $timeout(function(a){ $scope.reload=false, $scope.nodata= !a || a.length===0 },1000);
             })
     
             $scope.slickConfig ={

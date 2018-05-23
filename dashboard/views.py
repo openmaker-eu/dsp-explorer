@@ -322,36 +322,6 @@ def profile(request, profile_id=None, action=None):
                     SourceOfInspiration.create(name=tagName)
                 )
 
-        # # Add location and Country
-        # try:
-        #     print 'profile place'
-        #     if not user.profile.place or 'city' not in user.profile.place:
-        #         print 'no place'
-        #         new_place = GoogleHelper.get_city(user.profile.city)
-        #         if new_place:
-        #             user.profile.place = json.dumps(new_place)
-        #             user.profile.save()
-        #             print user.profile.place
-        #     if user.profile.place:
-        #         print 'there is place'
-        #         place = json.loads(user.profile.place)
-        #         location = Location.create(
-        #             lat=repr(place['lat']),
-        #             lng=repr(place['long']),
-        #             city=place['city'],
-        #             state=place['state'],
-        #             country=place['country'],
-        #             country_short=place['country_short'],
-        #             post_code=place['post_code'] if 'post_code' in place else '',
-        #             city_alias=place['city']+','
-        #         )
-        #
-        #         user.profile.location = location
-        #         user.profile.save()
-        #
-        # except Exception as e:
-        #     print e
-
         # update on crm
         try:
             party = Party(user)
