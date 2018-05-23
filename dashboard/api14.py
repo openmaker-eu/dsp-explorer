@@ -314,15 +314,7 @@ class questions(APIView):
 
             # Request for the edit profile questions
             action == 'edit-profile' and self.edit_profile(request)
-        else:
-            if not request.user.profile.statement:
-                self.questions = [
-                    self.make('statement', 'textarea', 'Write a short description about you', value='Thank you',
-                        apicall='/api/v1.4/questions/',
-                        emitevent='entity.change.all'
-                    ),
-                    self.make('question_end', 'success', 'Thank you', value='Thank you')
-                ]
+       
         return Response({'questions': self.questions})
 
     def edit_profile(self, request):
