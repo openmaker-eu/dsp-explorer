@@ -25,7 +25,7 @@ export default [function(){
                 if(res.status === 200){
                     $scope.interested = _.get(res, 'data', $scope.interested)
                     $rootScope.$emit('interested.new')
-                    $scope.entityname==='profile' && EntityProvider.entities['lovers'].get()
+                    $scope.entityname==='profile' && EntityProvider.entities['lovers'].get(true)
                 }
             }
     

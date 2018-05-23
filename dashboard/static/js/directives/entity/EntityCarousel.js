@@ -36,6 +36,7 @@ export default [function(){
             userid : '@',
             slider : '@',
             limit: '=',
+            entityperslide: '@',
             title : '@'
         },
         controller : ['$scope', '$http', '$timeout', 'EntityProvider', function($scope, $http, $timeout, EntityProvider) {
@@ -44,13 +45,12 @@ export default [function(){
             $scope.entity_list.get()
             
             $scope.$watch('entities.data',  (a, b)=>{
-                console.log($scope.entities);
                 $scope.reload = true;
                 $timeout(function(a){ $scope.reload=false, $scope.nodata= !a || a.length===0 },1000);
             })
     
             $scope.slickConfig ={
-                slidesToShow: 1,
+                slidesToShow: $scope.entityperslide || 1,
                 slidesToScroll: 1,
                 prevArrow: '<i class="fas fa-chevron-left slick-arrow--custom prev"></i>',
                 nextArrow: '<i class="fas fa-chevron-right slick-arrow--custom next"></i>',

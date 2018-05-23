@@ -2,8 +2,8 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 let template = `
     <div class="entity-sidebar background-{$ entityname $}--light col-md-12">
-        <div class="row" ng-repeat="slider_name in slider_list">
-   
+        <div class="row" ng-repeat="slider_name in slider_list track by $index">
+  
             <entity-carousel
                 entityname="{$ slider_name $}"
                 userid="{$ userid $}"
