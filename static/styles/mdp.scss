@@ -32,9 +32,12 @@ $color_list : (
         'news--light': $color-news--light,
 
         'projects': $color-projects,
-        'projects--light': $color-projects--light,
         'project--light': $color-projects--light,
         'project': $color-projects,
+
+        'challenges': $color-projects,
+        'challenges--light': $color-projects--light,
+        'challenge': $color-projects,
 
         'events': $color-events,
         'events--light': $color-events--light,
@@ -61,7 +64,13 @@ $color_list : (
 
         'black':$color-black,
         'white':$color-white
+);
 
+$om_breakpoints: (
+        sm: (768, 100),
+        md: (992, 100),
+        lg: (1200, 90),
+        xl: (1650, 80),
 );
 
 /*
@@ -105,6 +114,10 @@ header .navbar.navbar-default{
 
   a { text-transform: uppercase;}
 
+  .navbar-toggle{
+    .icon-bar { background-color:$color-white!important; }
+  }
+
   .friends{
     $friends-padding:2px!important;
 
@@ -121,10 +134,13 @@ header .navbar.navbar-default{
       padding-right: $friends-padding;
       a{ padding-right: $friends-padding;  }
     }
-    & > *:last-child{
-      padding-left: $friends-padding;
-      a{  padding-left: $friends-padding;  }
+    @media all and(min-width: 768px){
+      & > *:last-child{
+        padding-left: $friends-padding;
+        a{ padding-left: $friends-padding;  }
+      }
     }
+
 
   }
 }
@@ -397,13 +413,6 @@ main {
 }
 
 // hack bootstrap cointainer
-$om_breakpoints: (
-  sm: (768, 100),
-  md: (992, 100),
-  lg: (1200, 90),
-  xl: (1650, 80),
-);
-
 @each $om_size, $om_bk in $om_breakpoints {
 
   @media all and (min-width: #{nth($om_bk, 1)}) {

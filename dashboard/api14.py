@@ -322,6 +322,9 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
         questions = [
+            self.make('city', 'city', 'What is your city?',
+                      value={'city': profile.city, 'place': json.dumps(profile.place)}
+                      ),
             self.make('first_name', 'text', 'What is your first name?'),
             self.make('last_name', 'text', 'What is your last name?'),
             self.make('gender', 'select', 'What is your gender?',
@@ -331,9 +334,6 @@ class questions(APIView):
             self.make('birthdate', 'date', 'What is your birthdate?',
                 max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
                 value=profile.birthdate.strftime('%Y/%m/%d'),
-            ),
-            self.make('city', 'city', 'What is your city?',
-                value={'city': profile.city, 'place': profile.place}
             ),
             self.make('tags', 'multi_select', 'Choose 3 tags',
                 options=[x.name for x in Tag.objects.all()],

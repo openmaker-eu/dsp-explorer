@@ -7,14 +7,14 @@ Django Application, frontend project of OpenMaker Digital Social Platform.
 
 First of all you need to have:
 
-    Python 2.7+
+    Python 3.5+
     mySql or Postgresql
     nodejs / npm / sass
 
 To ensure a stable and indipendent environment, use **virtualenv** (execute this command inside the root folder):
 
     pip install virtualenv
-    virtualenv -p /usr/bin/python2.7 env
+    virtualenv --python=python3 env
     source env/bin/activate
 
 To enable faster development and configuration we're using **fabric**:
@@ -53,14 +53,15 @@ Install all the requirements. After the installation create a virtualhost like:
 
     <VirtualHost *:80>
 
-          ServerName dsp.openmaker.eu
+          ServerName dspexplorer.top-ix.org
           ServerAdmin hackademy@top-ix.org
-    
+
           WSGIScriptAlias / /var/www/dsp-explorer/dspexplorer/wsgi.py
-          WSGIDaemonProcess DSPEXPLORER python-path=/var/www/dsp-explorer:/var/www/envExplorer/lib/python2.7/site-packages
+          WSGIDaemonProcess DSPEXPLORER python-home=/var/www/dsp-explorer/env python-path=/var/www/dsp-explorer
+
           WSGIProcessGroup DSPEXPLORER
-          
           DocumentRoot /var/www/dsp-explorer
+          
           Alias /static/ /var/www/dsp-explorer/static_root/
           
       <Directory /var/www/dsp-explorer/>

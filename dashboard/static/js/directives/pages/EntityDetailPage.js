@@ -5,13 +5,15 @@ let template = `
             <!--Entity Heading-->
             <div class="col-md-12 entity-heading margin-bottom-1-perc">
                 <div class="row">
-                   <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
+                   <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
                        <span class="entity-detail__title">{$ entityname $}</span>
                        <span class="pull-right">
                            <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                           &nbsp;&nbsp;
                            <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                        </span>
                    <h1>
+                   <h1>&nbsp;</h1>
                 </div>
             </div>
             
@@ -33,6 +35,9 @@ let template = `
                             <entity-detail entity="entity.data" entityid="{$ entityid $}" entityname="{$ entityname $}" ></entity-preview>
                         </div>
                         <br>
+                        <br>
+                        
+                        <entity-interested  entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                         
                     </div>
                     <div class="col-md-4">
@@ -41,21 +46,21 @@ let template = `
                             style="display: flex; flex-direction: row; justify-content:left; align-items:center; "
                             ng-if="entity.data.start_date"
                         >
-                                <h5><i class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                                <h5>{$ entity.data.start_date | date:'d MMMM yyyy' $}</h5>
-                                <h5>&nbsp;-&nbsp;</h5>
-                                <h5>{$ ( entity.data.end_date | date:'d MMMM yyyy') || 'In progress' $}</h5>
+                                <h3><i class="far fa-calendar-alt"></i>&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+                                <h3>
+                                    <small>{$ entity.data.start_date | date:'d MMMM yyyy' $}</small>
+                                    <small>&nbsp;-&nbsp;</small>
+                                    <small>{$ ( entity.data.end_date | date:'d MMMM yyyy') || 'In progress' $}</small>
+                                </h3>
                         </div>
+                        <h3 ng-if="!entity.data.start_date">&nbsp;</h3>
                         
+                        <br>
                         <img style="padding:0; width:100%;"
-                            ng-if="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
+                            ng-if="entity.data.im || entity.data.picture || entity.data.cover"
                             ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
                         class="col-md-12">
                         
-                    </div>
-                    
-                    <div class="col-md-12">
-                        <entity-interested  entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                     </div>
                     
                 </div>

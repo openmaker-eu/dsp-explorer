@@ -12,9 +12,8 @@ let template = `
             </a>
         </div>
         
-        <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">
-            Profile Page
-        </div>
+        <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">Profile Page</div>
+        
         <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
             
             <!--Fade container-->
@@ -28,6 +27,15 @@ let template = `
                     <span ng-if="entity.title.length > 20">...</span>
                 </h3>
                 <br>
+                
+                <!--PROJECTS ONLY: Company title with icons-->
+                <div ng-if="entityname == 'challenges'" class="entity-detail__event-detail">
+                    <h4 style="margin:0; padding:0;">
+                        <img style="max-height: 30px;" ng-src="{$ entity.company.logo $}" alt="">&nbsp;
+                        <span>{$ entity.company.name $}</span>
+                    </h4>
+                    </br>
+                </div>
 
                 <!--EVENT ONLY: Event details with icons-->
                 <div ng-if="entityname == 'events'" class="entity-detail__event-detail">
@@ -44,10 +52,10 @@ let template = `
                 
                     <!--News-->
                     <p ng-if="entity.full_text">
-                        {$ entity.summary | limitTo : 1024 $}
+                        <span>{$ entity.summary | limitTo : 1024 $}</span>
                         <span ng-if="entity.description.text.length > 1024">...</span>
                     </p>
-                    
+
                     <!--Events-->
                     <p ng-if="entity.description.text">
                         {$ entity.description.text | limitTo : 1024 $}
@@ -59,6 +67,9 @@ let template = `
                         {$ entity.description | limitTo : 1024 $}
                         <span ng-if="entity.description.length > 1024">...</span>
                     </p>
+                    
+                    <!--Challenges-->
+                    <span ng-if="entity.details" ng-bind-html="entity.details"></span>
                     
                     <!--link to source-->
                     <p ng-if="!preview && (entity.link || entity.source)" class="text-red">
@@ -80,7 +91,11 @@ export default [function(){
             entityid : '@',
             preview : '='
         },
-        controller : ['$scope', function($scope) {}]
+        controller : ['$scope', '$sce', function($scope, $sce) {
+            
+            $scope.entity.details = $sce.trustAsHtml($scope.entity.details);
+            
+        }]
     }
 }]
 

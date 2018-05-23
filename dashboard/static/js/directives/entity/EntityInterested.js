@@ -4,7 +4,7 @@ export default [function(){
             <div class="row" ng-if="$root.authorization>=10" ng-click="console.log($root.authorization)">
                 <a
                     ng-href="/profile/{$ inter.id $}"
-                    class="col-md-1 col-sm-2 col-xs-4"
+                    class="col-md-1 col-sm-4 col-xs-4"
                     ng-repeat="inter in interested track by $index | limitTo: 20"
                 >
                     <!--<a class="pointer" style="display:block;">-->
