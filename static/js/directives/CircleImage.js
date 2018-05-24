@@ -1,7 +1,8 @@
 let template = `
-    <a href="{$ href $}" ng-class="{ 'not-pointer': !href }" style="display: block;">
+    <a ng-href="{$ href $}" style="display: block;">
         <div class="profile-image-static background-grey"></div>
     </a>
+
     <style>
         .profile-image-static { border-radius:50%; overflow: hidden; z-index:1000; }
         .not-pointer , .not-pointer *{ cursor:default!important; }
@@ -19,10 +20,9 @@ export default {
         href: '<',
     },
     controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
-    
         
         this.$onChanges = function(changes){
-            $scope.src= changes.src && changes.src.currentValue
+            $scope.src= changes.src && changes.src.currentValue || undefined
             $scope.href= (changes.href && changes.href.currentValue) || undefined
             
             let image = new Image()

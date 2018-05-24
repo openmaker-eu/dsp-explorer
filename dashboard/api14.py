@@ -295,8 +295,8 @@ class questions(APIView):
         # Request for signup questions
         if not request.user.is_authenticated:
             self.questions = [
-                self.make('first_name', 'text', 'What is your first name?'),
-                self.make('last_name', 'text', 'What is your last name?'),
+                self.make('register', 'message', 'Signup', value='Signup to Openmaker Explorer'),
+                self.make('name', 'name', 'Who are you?'),
                 self.make('gender', 'select', 'What is your gender?',
                     options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
                 ),
@@ -322,11 +322,8 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
         questions = [
-            self.make('city', 'city', 'What is your city?',
-                      value={'city': profile.city, 'place': json.dumps(profile.place)}
-                      ),
-            self.make('first_name', 'text', 'What is your first name?'),
-            self.make('last_name', 'text', 'What is your last name?'),
+
+            self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
             self.make('gender', 'select', 'What is your gender?',
                 options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
             ),
@@ -335,6 +332,9 @@ class questions(APIView):
                 max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
                 value=profile.birthdate.strftime('%Y/%m/%d'),
             ),
+            self.make('city', 'city', 'What is your city?',
+                      value={'city': profile.city, 'place': profile.place}
+                      ),
             self.make('tags', 'multi_select', 'Choose 3 tags',
                 options=[x.name for x in Tag.objects.all()],
                 value=[x.name for x in profile.tags.all()],
@@ -344,7 +344,7 @@ class questions(APIView):
                       value=profile.picture.url if profile.picture else None,
                       apicall='/api/v1.4/questions/',
                       emitevent='entity.change.all'
-            )
+            ),
         ]
 
         # Add Values

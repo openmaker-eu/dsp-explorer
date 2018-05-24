@@ -24,6 +24,9 @@
     <h1 class="signup-template__label">{$ x.value $}</h1>
 </h1>
 
+[message]
+<h3 class="text-brown text-center"><i>{$ x.value $}</i></h3>
+
 [date]
 <input
        class="form-control"
@@ -97,7 +100,6 @@ required>
 <input type="hidden" ng-model="m['city']" ng-value="m['city']"  name="city" required/>
 <textarea name="place" style="display:none;">{$ m['place'] | json $}</textarea>
 
-
 [loading]
 <h1>Loading</h1>
 
@@ -120,6 +122,14 @@ required>
 
 [text]
 <input name="{$ x.name $}" type="text" ng-init="m[x.name] = x.value" ng-model="m[x.name]" class="form-control"  required>
+
+[name]
+<label class="signup-template__label" for="first_name">First Name</label>
+<input name="first_name" type="text" ng-model="x.value[0]" class="form-control"  required>
+<br>
+<label class="signup-template__label" for="last_name">Last Name</label>
+<input name="last_name" type="text" ng-model="x.value[1]" class="form-control"  required>
+
 
 [login]
 <label class="signup-template__label" for="email">email</label>

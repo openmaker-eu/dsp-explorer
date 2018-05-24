@@ -5,7 +5,6 @@ from django.conf import settings
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
-
 class GoogleHelper:
 
     @classmethod
