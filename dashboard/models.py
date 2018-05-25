@@ -302,6 +302,11 @@ class Profile(models.Model):
 
     interest = GenericRelation('Interest')
 
+    domain = models.TextField(blank=True)
+    area = models.TextField(blank=True)
+    technology = models.TextField(blank=True)
+    skills = models.TextField(blank=True)
+
     socialLinks = models.TextField(
         _('Social Links'),
         max_length=200,
@@ -344,7 +349,7 @@ class Profile(models.Model):
     def tags_create_or_update(self, tags, clear=False):
         if not tags:
             return False
-        tags = [re.sub(r'\W', '', x.lower().capitalize()) for x in tags] if isinstance(tags, str) else tags
+        tags = [x.lower().capitalize() for x in tags.split(",")] if isinstance(tags, str) else tags
         clear and self.tags.clear()
         for tag in tags:
             tagInstance = Tag.create_or_update(tag)

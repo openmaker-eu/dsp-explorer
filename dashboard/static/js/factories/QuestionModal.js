@@ -101,6 +101,8 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                         
                         // Display form errors
                         subform.$$element.addClass('subform-submitted')
+                        
+                        console.log(subform);
     
                         // Trigger validation on Next
                         _.each(subform.$$controls, (field)=>{field.$validate();})

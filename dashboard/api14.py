@@ -303,6 +303,7 @@ class questions(APIView):
                 self.make('birthdate', 'date', 'What is your birthdate?', max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))),
                 self.make('city', 'city', 'What is your city?'),
                 self.make('occupation', 'text', 'What is your occupation?'),
+                self.make('activity-question', 'activity-question', 'What is your activity?'),
                 self.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
                 self.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
                 self.make('sugnup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),
@@ -322,7 +323,6 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
         questions = [
-
             self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
             self.make('gender', 'select', 'What is your gender?',
                 options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
@@ -332,12 +332,18 @@ class questions(APIView):
                 max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
                 value=profile.birthdate.strftime('%Y/%m/%d'),
             ),
-            self.make('city', 'city', 'What is your city?',
-                      value={'city': profile.city, 'place': profile.place}
-                      ),
+            self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
             self.make('tags', 'multi_select', 'Choose 3 tags',
                 options=[x.name for x in Tag.objects.all()],
                 value=[x.name for x in profile.tags.all()],
+            ),
+            self.make('activity-question', 'activity-question', 'What is your activity?',
+                value={
+                    "domain": profile.domain.split(","),
+                    "area": profile.area.split(","),
+                    "technology": profile.technology.split(","),
+                    "skills": profile.skills.split(",")
+                }
             ),
             self.make('statement', 'textarea', 'Short description about you (optional)'),
             self.make('picture', 'imageupload', 'Upload you profile image (optional)',
@@ -365,10 +371,13 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
 
+        print('ACTIVITY: ')
+        print(request.data)
         try:
             # User
             user.first_name = request.data.get('first_name', user.first_name)
             user.last_name = request.data.get('last_name', user.last_name)
+
             # Profile
             profile.city = request.data.get('city', profile.city)
             profile.place = json.loads(request.data.get('place', profile.place))
@@ -376,6 +385,13 @@ class questions(APIView):
             profile.occupation = request.data.get('occupation', profile.occupation)
             profile.statement = request.data.get('statement', profile.statement)
 
+            # Activity
+            profile.domain = request.data.get('domain', profile.domain)
+            profile.area = request.data.get('area', profile.area)
+            profile.technology = request.data.get('technology', profile.technology)
+            profile.skills = request.data.get('skills', profile.skills)
+
+            # Profile Extra
             profile.tags_create_or_update(request.data.get('tags', None), clear=True)
             profile.picture_set_or_update(request.data.get('picture', None))
 

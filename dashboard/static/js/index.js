@@ -93,6 +93,7 @@ app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
 app.component('question', require('./directives/partials/Question').default )
+app.component('activityQuestion', require('./directives/partials/ActivityQuestion').default )
 
 // Content providers
 app.factory('EntityProvider', require('./content_providers/EntityProvider').default )
