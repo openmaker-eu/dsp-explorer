@@ -232,21 +232,27 @@ class User(User):
     @classmethod
     def create(cls, *args, **kwargs):
 
+        print(kwargs)
         if User.objects.filter(email=kwargs.get('email', False)).first():
             return False
         try:
+            print('1')
             user = User.objects.create_user(
-                username=kwargs.get('email', False),
-                email=kwargs.get('email', False),
-                password=kwargs.get('password', False),
-                first_name=kwargs.get('first_name', False),
-                last_name=kwargs.get('last_name', False)
+                username=kwargs.get('email', False)[0],
+                email=kwargs.get('email', False)[0],
+                password=kwargs.get('password', False)[0],
+                first_name=kwargs.get('first_name', False)[0],
+                last_name=kwargs.get('last_name', False)[0]
             )
+            print('2')
             user.is_active = False
+            print('3')
             user.save()
+            print('4')
             return user
 
         except Exception as e:
+            print('User creation Error')
             print(e)
             return False
 
@@ -561,6 +567,12 @@ class Profile(models.Model):
     @classmethod
     def get_sectors(cls):
         from collections import Counter
+
+        print('sectors')
+        print(Profile.objects.values_list('sector', flat=True))
+        print('endsectors')
+
+        #flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         sectors = Counter(flat_sectors).most_common(1000)
         return sectors
