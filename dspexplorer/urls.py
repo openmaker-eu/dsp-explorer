@@ -27,4 +27,5 @@ urlpatterns = [
     }),
     url(r'^froala_editor/', include('froala_editor.urls')),
     url(r'^select2/', include('django_select2.urls')),
+
 ]

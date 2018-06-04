@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 from dashboard.serializer import BookmarkSerializer, InterestSerializer
 from dashboard.models import User, Profile, Tag
-import datetime
+from datetime import datetime
 from .helpers import mix_result_round_robin
 from dashboard.models import Challenge, Project
 
@@ -228,36 +228,40 @@ class entity(APIView):
         # Local entities
         if entity == 'loved':
             return interest(request._request, entity='profile', user_id=user_id)
-        if entity == 'lovers':
+        elif entity == 'lovers':
             return interested(request._request, entity='profile', entity_id=user_id)
-        if entity == 'projects':
-            local_entities = Project.objects.all()
+        elif entity == 'projects':
+            local_entities = Project.objects.order_by('-end_date')
+            # local_entities = Project.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
-            results.extend(ProjectSerializer(local_entities, many=True).data)
-            local_entities = Challenge.objects.all()
+            results = results+ProjectSerializer(local_entities, many=True).data
+            # local_entities = Challenge.objects.order_by('-end_date')
+            local_entities = Challenge.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
-            results.extend(ChallengeSerializer(local_entities, many=True).data)
+            results = results+ChallengeSerializer(local_entities, many=True).data
+            print(results[0]['end_date'])
+            results = sorted(results, key=lambda k: k['end_date'] or '', reverse=False)
+        else:
+            # Remote Entities
+            try:
+                topics_list = DSPConnectorV12.get_topics()['topics']
+                topics_id_list = [x['topic_id'] for x in topics_list]
+                method_to_call = 'get_' + entity
 
-        # Remote Entities
-        try:
-            topics_list = DSPConnectorV12.get_topics()['topics']
-            topics_id_list = [x['topic_id'] for x in topics_list]
-            method_to_call = 'get_' + entity
-
-            if not profile:
-                selected_topic = random.choice(topics_id_list)
-                results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
-                results = results[:5]
-            else:
-                for index,topic_id in enumerate(topics_id_list):
-                    results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
-                results = mix_result_round_robin(*results)
-        except DSPConnectorException:
-            pass
-        except AttributeError as a:
-            pass
+                if not profile:
+                    selected_topic = random.choice(topics_id_list)
+                    results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
+                    results = results[:5]
+                else:
+                    for index,topic_id in enumerate(topics_id_list):
+                        results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
+                    results = mix_result_round_robin(*results)
+            except DSPConnectorException:
+                pass
+            except AttributeError as a:
+                pass
 
         return Response(results[:20] if len(results) > 20 else results)
 

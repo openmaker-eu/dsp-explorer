@@ -128,7 +128,7 @@ class CompanyAdmin(admin.ModelAdmin):
         '       </tr>'
         '   {% endfor %}'
         '</table>'
-        '   <style>.campany_challenges label{display:none;}</style>'
+        '   <style>.campany_challenges label, .field-campany_challenges label{display:none;} .readonly{margin-left:0!important;} </style>'
         '</div>')
 
 
@@ -207,7 +207,7 @@ class ChallengeAdmin(admin.ModelAdmin):
         '           </td>'
         '       </tr>'
         '   {% endfor %}'
-        '   <style>.field-interested label{display:none;}</style>'
+        '   <style>.field-interested label, .field-interested_challenges label{display:none;} .readonly{margin-left:0!important;}</style>'
         '</table>'
     )
 
