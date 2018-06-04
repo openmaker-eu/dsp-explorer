@@ -44,8 +44,11 @@ export default [function(){
             $scope.entity_list = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
             $scope.entity_list.get()
             
-            $scope.$watch('entities.data',  (a, b)=>{
+            $scope.$watch('entity_list.data',  (a, b)=>{
                 $scope.reload = true;
+                console.log('TEST: ',  a);
+                console.log($scope.entity_list);
+    
                 $timeout(function(a){ $scope.reload=false, $scope.nodata= !a || a.length===0 },1000);
             })
     

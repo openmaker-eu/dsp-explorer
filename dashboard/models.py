@@ -272,7 +272,6 @@ class User(User):
 #         return ModelHelper.filter_instance_list_by_class(interested, filter_class)
 
 
-
 def default_place():
     return {}
 
@@ -298,6 +297,7 @@ class Profile(models.Model):
     technical_expertise = models.TextField(_('Technical Expertise'), max_length=200, null=True, blank=True, default='')
 
     technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
+    technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
     role_other = models.TextField(_('Role other'), max_length=200, null=True, blank=True, default='')
     sector_other = models.TextField(_('Sector other'), max_length=200, null=True, blank=True, default='')
 
@@ -321,6 +321,12 @@ class Profile(models.Model):
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
 
+    def best_matches(self):
+        all_matches = [y.pk for x in self.tags.all() for y in x.profile_tags.all() if y.pk!=self.pk]
+        best_matches = [x[0] for x in Counter(all_matches).most_common(5)]
+        return Profile.objects.filter(pk__in=best_matches)
+
+
     def interested(self, filter_class=None):
         interests = self.interest.all().order_by('-created_at')
         interested = [x.profile for x in interests] if len(interests) > 0 else []
@@ -328,8 +334,6 @@ class Profile(models.Model):
 
     def interests(self, filter_class=object):
         return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
-        # return self.profile_interest.all()
-        # return [x.get() for x in self.profile_interest.all() if isinstance(x.get(), filter_class)]
 
     @classmethod
     def create(cls, **kwargs):

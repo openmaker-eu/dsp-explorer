@@ -45,7 +45,6 @@ class ProfileTestCase(TestCase):
     def test_2_check_reset_token(self):
         user = User.create(**self.userdata)
         profile = Profile.create(user=user, **self.userdata)
-        print profile.reset_token
         self.assertIsNot(profile.reset_token, None, Colorizer.Red('Error during profile creation'))
 
 

@@ -15,7 +15,7 @@ require("bootstrap-sass")
 // Import cookie consent
 require("../../node_modules/cookieconsent/build/cookieconsent.min"); // library
 require("../../static/js/cookie/cookie.policy.behaviour"); // Config
-// Import fonatwesome 5
+// Import fontawesome 5
 import fontawesome from '@fortawesome/fontawesome'
 // Import lodash
 import  * as  _  from 'lodash';

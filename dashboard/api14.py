@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 from dashboard.serializer import BookmarkSerializer, InterestSerializer
 from dashboard.models import User, Profile, Tag
-from datetime import datetime
+import datetime
 from .helpers import mix_result_round_robin
 from dashboard.models import Challenge, Project
 
@@ -65,6 +65,7 @@ def get_entity_details(request, entity='news', entity_id=None):
 
     return success('ok', 'single entity', results)
 
+
 @api_view(['GET', 'POST'])
 def bookmark(request, entity='news', entity_id=None):
     # GET return status of a bookmark (ES: {bookmarked:true|false})
@@ -83,6 +84,7 @@ def bookmark(request, entity='news', entity_id=None):
     except Exception as e:
         return Response({}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(['GET'])
 def get_bookmarks(request):
     try:
@@ -92,6 +94,7 @@ def get_bookmarks(request):
         return Response(serialized)
     except Exception as e:
         return Response({}, status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 def get_bookmark_by_entities(request, entity=None):
@@ -241,8 +244,10 @@ class entity(APIView):
             if not profile:
                 local_entities = local_entities[:5]
             results = results+ChallengeSerializer(local_entities, many=True).data
-            print(results[0]['end_date'])
             results = sorted(results, key=lambda k: k['end_date'] or '', reverse=False)
+        elif entity == 'matches':
+            local_entities = Profile.objects.get(pk=user_id).best_matches()
+            results = ProfileSerializer(local_entities, many=True).data
         else:
             # Remote Entities
             try:
@@ -448,6 +453,7 @@ def authorization(request):
         'authorization': AuthUser.authorization(request),
         'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated else None
     })
+
 
 @api_view(['POST'])
 def apilogin(request):
