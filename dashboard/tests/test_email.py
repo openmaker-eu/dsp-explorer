@@ -30,7 +30,7 @@ class MailTestCase(TestCase):
         }
 
     def test_email_all(self):
-        print '[EMAIL TEST] : all'
+        print('[EMAIL TEST] : all')
 
         email_list = (
             'invitation_email_confirm',
