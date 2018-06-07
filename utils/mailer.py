@@ -33,24 +33,26 @@ class EmailHelper(object):
     def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
+
         receivers = [receiver_email]
         formatted_message = Message()
         formatted_message['Content-Type'] = 'text/html'
         formatted_message['Subject'] = Header("%s" % (subject))
         formatted_message['From'] = EmailHelper._format_email(sender_name, sender_email)
         formatted_message['To'] = EmailHelper._format_email(receiver_name, receiver_email)
-        formatted_message.set_payload("""{}""".format(message))
-        
+        formatted_message.set_payload(message)
+        formatted_message = formatted_message.as_string().encode()
         try:
             smtp_obj = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT)
             smtp_obj.ehlo()
             smtp_obj.starttls()
             smtp_obj.ehlo()
             smtp_obj.login(settings.SMTP_USERNAME, settings.SMTP_KEY)
-            smtp_obj.sendmail(sender_email, receivers, str(formatted_message))
+            smtp_obj.sendmail(sender_email, receivers, formatted_message)
             logging.info("Email sent to %s" % receiver_email)
-        except smtplib.SMTPException as error:
+        except (smtplib.SMTPException, Exception) as error:
             logging.error("Error: unable to send email to %s because:\n%s" % (receiver_email, error.message))
+
 
     @staticmethod
     def send_test_email(sendTo):
@@ -87,18 +89,16 @@ class EmailHelper(object):
         email_template = Template(
             base_template.format(body_template).replace('\n', '')
         )
-
-        return email_template.render(Context(vars))
+        return email_template.render(Context(vars)) + ""
 
     @staticmethod
     def email(template_name, receiver_email, title, vars={}):
         try:
             EmailHelper.send_email(
                 subject=title,
-                message=EmailHelper.render_email(template_name, vars).encode('utf-8'),
+                message=EmailHelper.render_email(template_name, vars),
                 receiver_email=receiver_email
             )
             return True
         except Exception as exc:
-            print(exc)
-            return(exc)
+            logging.error("Error: unable to send email to %s because:\n%s" % (receiver_email, exc.message))

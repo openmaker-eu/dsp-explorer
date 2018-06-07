@@ -95,7 +95,7 @@ def release(message):
 
 
 def test(filename=''):
-    local('python manage.py test %s ' % filename)
+    local('python manage.py test %s -k' % filename)
 
 
 def test_e2e():
