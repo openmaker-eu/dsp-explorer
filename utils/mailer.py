@@ -87,7 +87,7 @@ class EmailHelper(object):
         body_template = open(body_template_path).read()
 
         email_template = Template(
-            base_template.format(body_template).replace('\n', '')
+            base_template.format(body_template).replace('\s', '')
         )
         return email_template.render(Context(vars)) + ""
 

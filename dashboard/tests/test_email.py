@@ -7,7 +7,7 @@ import os
 class MailTestCase(TestCase):
     def setUp(self):
         self.email_vars = {
-            'EMAIL': 'andrea.beccaris@top-ix.org',
+            'EMAIL': 'massimo.santoli@top-ix.org',
 
             'FIRST_NAME': 'Résiérr',
             'SENDER_NAME': 'Résiérr',
@@ -35,7 +35,12 @@ class MailTestCase(TestCase):
 
         email_list = (
             'invitation_email_confirm',
-
+            'pss_upload_confirmation',
+            'invitation_email_receiver',
+            'onboarding_email_template',
+            'pss_upload_confirmation',
+            'pss_admin_upload_confirmation',
+            'authentication_reset_password'
         )
 
         for email_name in email_list:
@@ -43,7 +48,7 @@ class MailTestCase(TestCase):
                 template_name=email_name,
                 title='Test Email',
                 vars=self.email_vars,
-                receiver_email='andrea.beccaris@top-ix.org'
+                receiver_email='massimo.santoli@top-ix.org'
             )
 
         self.assertTrue(body, 'Mail error')
