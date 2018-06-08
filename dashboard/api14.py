@@ -301,6 +301,9 @@ class questions(APIView):
     questions = []
 
     def get(self, request):
+
+        action = request.query_params.get('action', None)
+
         # Request for signup questions
         if not request.user.is_authenticated:
             self.questions = [
@@ -320,12 +323,22 @@ class questions(APIView):
 
         # Request for a specific set of questions
         if request.user.is_authenticated and len(request.query_params) > 0:
-            action = request.query_params.get('action', None)
-
             # Request for the edit profile questions
             action == 'edit-profile' and self.edit_profile(request)
 
+        action == 'chatbot.question' and self.chatbot_question(request)
+
         return Response({'questions': self.questions})
+
+    def chatbot_question(self, request):
+        self.questions = [
+            self.make('simple', 'message', 'Random question?', actions_type='button',
+                calltoaction=[
+                    {'value': 'agree', 'label': 'Agree'},
+                    {'value': 'disagree', 'label': 'Disagree'},
+                    {'value': 'notsure', 'label': 'Not Sure'}
+                ]
+            )]
 
     def edit_profile(self, request):
 

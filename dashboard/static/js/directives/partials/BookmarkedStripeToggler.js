@@ -1,4 +1,4 @@
-export default [function(){
+export default function(){
     return {
         template:`
             <span ng-if="$root.authorization >= 10" ng-click="toggle()">
@@ -21,4 +21,4 @@ export default [function(){
             
         }]
     }
-}]
+}

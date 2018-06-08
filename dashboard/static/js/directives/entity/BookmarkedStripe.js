@@ -36,7 +36,7 @@ let template = `
         </div>
 `
 
-export default [function(){
+export default function(){
     return {
         template:template,
         scope: {
@@ -63,7 +63,7 @@ export default [function(){
 
         }]
     }
-}]
+}
 
 
 

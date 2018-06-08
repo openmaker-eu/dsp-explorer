@@ -146,6 +146,8 @@ header .navbar.navbar-default{
   }
 }
 
+.om-main-wrapper { position: relative;}
+
 main {
   display:flex;
   & > * {
@@ -461,7 +463,7 @@ main {
       width: 100%;
       height: 100%;
 
-      .modal-body {
+      .modal-body, wizard {
         display: flex !important;
         flex-direction: column;
         justify-content: space-between;
@@ -477,7 +479,7 @@ main {
 
       }
 
-      .step-navigation {
+      navi-questions {
         display: flex !important;
         flex-direction: row;
         justify-content: space-between;
@@ -679,4 +681,8 @@ main {
   * { background: #f00!important; color:#fff!important; }
   .tooltip-arrow { display: none!important;}
 
+}
+
+chatbot {
+  position:absolute; right:2%; width:30%; z-index:1000000; background: white; box-shadow: 0 0 1px #efefef;
 }

@@ -1,4 +1,4 @@
-export default function(){
+export default [function(){
     return {
         template:`
             <i
@@ -37,4 +37,4 @@ export default function(){
             
         }]
     }
-}
+}]

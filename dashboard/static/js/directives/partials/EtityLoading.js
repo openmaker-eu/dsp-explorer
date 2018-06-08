@@ -1,4 +1,4 @@
-export default [function(){
+export default function(){
     return {
         template:`
             <div>
@@ -38,4 +38,4 @@ export default [function(){
         controller : ['$scope', '$rootScope', function($scope, $rootScope){
         }]
     }
-}]
+}

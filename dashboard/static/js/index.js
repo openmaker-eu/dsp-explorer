@@ -92,8 +92,17 @@ app.directive('bookmarkedStripeToggler', require('./directives/partials/Bookmark
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
-app.component('question', require('./directives/partials/Question').default )
+
+// Questions/Chatbot
+app.directive('wizard', require('./directives/questions/Wizard').default )
+app.component('question', require('./directives/questions/Question').default )
+app.directive('chatbot', require('./directives/questions/Chatbot').default )
+
+app.directive('naviQuestions', require('./directives/questions/NaviQuestions').default )
+// app.component('naviChatbot', require('./directives/questions/NaviChatbot').default )
+
 app.component('activityQuestion', require('./directives/partials/ActivityQuestion').default )
+
 
 // Content providers
 app.factory('EntityProvider', require('./content_providers/EntityProvider').default )

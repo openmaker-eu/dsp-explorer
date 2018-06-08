@@ -474,3 +474,4 @@ def collaborator_invitation(request, profile_id=None, project_id=None, status=No
     except ObjectDoesNotExist as o:
         print(o)
     return HttpResponseRedirect('/profile/project/%s/detail' % this_project.id)
+
