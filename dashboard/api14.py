@@ -295,137 +295,6 @@ class entity_details(APIView):
         return Response(results)
 
 
-class questions(APIView):
-
-    parser_classes = (MultiPartParser,)
-    questions = []
-
-    def get(self, request):
-
-        action = request.query_params.get('action', None)
-
-        # Request for signup questions
-        if not request.user.is_authenticated:
-            self.questions = [
-                self.make('register', 'message', 'Signup', value='Signup to Openmaker Explorer'),
-                self.make('name', 'name', 'Who are you?'),
-                self.make('gender', 'select', 'What is your gender?',
-                    options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
-                ),
-                self.make('birthdate', 'date', 'What is your birthdate?', max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))),
-                self.make('city', 'city', 'What is your city?'),
-                self.make('occupation', 'text', 'What is your occupation?'),
-                self.make('activity-question', 'activity-question', 'What is your activity?'),
-                self.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
-                self.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
-                self.make('sugnup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),
-            ]
-
-        # Request for a specific set of questions
-        if request.user.is_authenticated and len(request.query_params) > 0:
-            # Request for the edit profile questions
-            action == 'edit-profile' and self.edit_profile(request)
-
-        action == 'chatbot.question' and self.chatbot_question(request)
-
-        return Response({'questions': self.questions})
-
-    def chatbot_question(self, request):
-        self.questions = [
-            self.make('simple', 'message', 'Random question?', actions_type='button',
-                calltoaction=[
-                    {'value': 'agree', 'label': 'Agree'},
-                    {'value': 'disagree', 'label': 'Disagree'},
-                    {'value': 'notsure', 'label': 'Not Sure'}
-                ]
-            )]
-
-    def edit_profile(self, request):
-
-        user = request.user
-        profile = request.user.profile
-        questions = [
-            self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
-            self.make('gender', 'select', 'What is your gender?',
-                options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
-            ),
-            self.make('occupation', 'text', 'What is your occupation?'),
-            self.make('birthdate', 'date', 'What is your birthdate?',
-                max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
-                value=profile.birthdate.strftime('%Y/%m/%d'),
-            ),
-            self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
-            self.make('tags', 'multi_select', 'Choose 3 tags',
-                options=[x.name for x in Tag.objects.all()],
-                value=[x.name for x in profile.tags.all()],
-            ),
-            self.make('activity-question', 'activity-question', 'What is your activity?',
-                value={
-                    "domain": profile.domain.split(","),
-                    "area": profile.area.split(","),
-                    "technology": profile.technology.split(","),
-                    "skills": profile.skills.split(",")
-                }
-            ),
-            self.make('statement', 'textarea', 'Short description about you (optional)'),
-            self.make('picture', 'imageupload', 'Upload you profile image (optional)',
-                      value=profile.picture.url if profile.picture else None,
-                      apicall='/api/v1.4/questions/',
-                      emitevent='entity.change.all'
-            ),
-        ]
-
-        # Add Values
-        for question in questions:
-            question['value'] = question.get('value', None) \
-                                or getattr(profile, question['name'], None) \
-                                or getattr(user, question['name'], None)
-
-        self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
-
-    def make(self, name, type, label='', **kwargs):
-        question = {'name': name, 'type': type, 'label': label}
-        for key, arg in kwargs.items():
-            question[key] = arg
-        return question
-
-    def post(self, request):
-        user = request.user
-        profile = request.user.profile
-
-        print('ACTIVITY: ')
-        print(request.data)
-        try:
-            # User
-            user.first_name = request.data.get('first_name', user.first_name)
-            user.last_name = request.data.get('last_name', user.last_name)
-
-            # Profile
-            profile.city = request.data.get('city', profile.city)
-            profile.place = json.loads(request.data.get('place', profile.place))
-            profile.birthdate = request.data.get('birthdate', profile.birthdate)
-            profile.occupation = request.data.get('occupation', profile.occupation)
-            profile.statement = request.data.get('statement', profile.statement)
-
-            # Activity
-            profile.domain = request.data.get('domain', profile.domain)
-            profile.area = request.data.get('area', profile.area)
-            profile.technology = request.data.get('technology', profile.technology)
-            profile.skills = request.data.get('skills', profile.skills)
-
-            # Profile Extra
-            profile.tags_create_or_update(request.data.get('tags', None), clear=True)
-            profile.picture_set_or_update(request.data.get('picture', None))
-
-        except Exception as error:
-            return Response(data={'error': error}, status=403)
-
-        user.save()
-        profile.save()
-
-        return Response()
-
-
 @api_view(['POST'])
 def signup(request):
     from utils.mailer import EmailHelper
@@ -481,6 +350,7 @@ def apilogin(request):
 
     return Response({
         'authorization': AuthUser.authorization(request),
+        'has_questions': AuthUser.authorization(request) > 0 and True,
         'user': UserSerializer(user, many=False).data if request.user.is_authenticated else None
     })
 

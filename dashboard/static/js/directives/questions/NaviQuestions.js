@@ -23,12 +23,11 @@ export default function(){
         `,
         scope: {
             items:'=',
-            target:'='
+            wizardid:'='
         },
         controller : ['$scope','$rootScope', function($scope, $rootScope){
             
-            $scope.wizard_name = 'wizard.'+$scope.target
-            
+            $scope.wizard_name = 'wizard.'+$scope.wizardid
             $scope.is_start = true
             $scope.is_end = false
             $scope.current = 0;

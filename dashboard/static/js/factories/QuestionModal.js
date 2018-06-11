@@ -1,13 +1,14 @@
 
 let template = `
     <div class="modal-body padding-5-perc">
-        <wizard questions="preset" action="action"></wizard>
+        <wizard questions="preset"></wizard>
     </div>
 `
 
 export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     let F = {
         open: (ev,preset,action=null)=>{
+            console.log(action);
             F.modalInstance = $uibModal.open({
                 template: template,
                 backdrop: true,
@@ -16,7 +17,8 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 controller: ['$scope', '$http', function($scope, $http){
                     $scope.preset=preset
                     $scope.action=action
-                    // Get questions from backend if not provided to directive
+                    // Get questions from backend if not provided
+                    console.log('MODAL ACTION', action);
                     !$scope.preset && $http
                         .get('/api/v1.4/questions/' + ( $scope.action ? '?action='+$scope.action : '') )
                         .then(res=>$scope.preset=res.data.questions)

@@ -99,7 +99,7 @@ app.component('question', require('./directives/questions/Question').default )
 app.directive('chatbot', require('./directives/questions/Chatbot').default )
 
 app.directive('naviQuestions', require('./directives/questions/NaviQuestions').default )
-// app.component('naviChatbot', require('./directives/questions/NaviChatbot').default )
+app.directive('naviChatbot', require('./directives/questions/NaviChatbot').default )
 
 app.component('activityQuestion', require('./directives/partials/ActivityQuestion').default )
 

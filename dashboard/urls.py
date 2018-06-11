@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 
-from . import views, authentication, api, static, api14
+from . import views, authentication, api, static, api14, questions
 
 app_name = 'dashboard'
 
@@ -108,7 +108,7 @@ urlpatterns = [
     url(r'^api/v1.4/signup/$', api14.signup, name='user_signup'),
     url(r'^api/v1.4/authorization/$', api14.authorization, name='get_user_authorization'),
 
-    url(r'^api/v1.4/questions/$', api14.questions.as_view(), name='questions'),
+    url(r'^api/v1.4/questions/$', questions.questions.as_view(), name='questions'),
 
     url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 

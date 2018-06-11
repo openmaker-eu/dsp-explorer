@@ -1,5 +1,6 @@
 let _ =  require('lodash')
 let template = `
+
     <entity-loading
             ng-if="!questions || loading"
             class="text-center"
@@ -14,16 +15,10 @@ let template = `
     </form>
     
     <div class="col-md-12 step-navigation" ng-show="questions">
-        
-        <navi-questions ng-if="!action" items="questions" target="$id"></navi-questions>
-        
-        <div ng-if="action='chatbot.question.simple'" style="display: flex; flex-direction:row; justify-content: center; padding-bottom:3%;">
-            <div ng-repeat="act in questions[0].calltoaction" style="padding:1%;">
-                <button class="btn btn-danger pull-left" >{$ act.label $}</button>
-            </div>
-        </div>
-        
+        <navi-questions items="questions" wizardid="$id" ng-show="!action" ></navi-questions>
+        <navi-chatbot   items="questions" wizardid="$id" ng-show="action='chatbot'" ></navi-chatbot>
     </div>
+    
 `
 
 let wizard_directive =
@@ -32,14 +27,14 @@ let wizard_directive =
     scope: {
         questions : '=',
         action : '@',
-        loadingmessage : '@'
+        loadingmessage : '@',
+        onend : '@'
     },
     controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
-        // Wizard Unique id
-        $scope.wizard_name = 'wizard.'+$scope.$id
         
         // Models
         $scope.wizard = {form:{}, formmodel:{}}
+        $scope.wizard_name = 'wizard.'+$scope.$id
         
         // Status variables
         $scope.loading = false
@@ -62,6 +57,7 @@ let wizard_directive =
         
         // Trigger validation and return bool
         $scope.isSubformValid = (subform) => {
+            if(!subform || !subform.hasOwnProperty('$$element')) return true
             // Display form errors
             subform.$$element.addClass('subform-submitted')
             // Trigger validation on Next
@@ -96,8 +92,10 @@ let wizard_directive =
             }
             
         })
+        
         $rootScope.$on($scope.wizard_name+'.prev',()=>$scope.slickConfig.method.slickPrev())
-        $rootScope.$on($scope.wizard_name+'.end', ()=>$rootScope.$emit('question.modal.close'))
+        $rootScope.$on($scope.wizard_name+'.end', ()=>$rootScope.$emit($scope.onend || 'question.modal.close'))
+        
     }]
 }
 
