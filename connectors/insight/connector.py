@@ -9,6 +9,10 @@ class InsightConnectorV10(object):
         return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod
+    def feedback(cls, crm_id, temp_id, feedback):
+        return cls.get('/feedback/send_feedback', {'crm_id': crm_id, 'temp_id': crm_id, 'feedback':feedback})
+
+    @classmethod
     def get(cls, endpoint, querydict={}):
         querydict['api_key'] = settings.INSIGHT_API_KEY
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''

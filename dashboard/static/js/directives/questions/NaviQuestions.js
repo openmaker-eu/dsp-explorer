@@ -47,7 +47,7 @@ export default function(){
                 //slick.slickGoTo($scope.current);
             })
             
-            window.onkeypress = (e)=> { e.which=== 13 && $scope.next()}
+            //window.onkeypress = (e)=> { e.which=== 13 && $scope.next()}
     
         }]
     }

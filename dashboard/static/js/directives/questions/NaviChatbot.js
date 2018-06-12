@@ -3,7 +3,7 @@ export default function(){
         template:`
             <div ng-if="action='chatbot.question.simple'" style="display: flex; flex-direction:row; justify-content: center; padding-bottom:3%;">
                 <div ng-repeat="act in items[current].actions.options" style="padding:1%;">
-                    <button class="btn btn-danger pull-left" ng-click="next()">{$ act.label $}</button>
+                    <button class="btn btn-danger pull-left" ng-click="next(act.value || act.label)">{$ act.label $}</button>
                 </div>
             </div>
         `,
@@ -18,8 +18,11 @@ export default function(){
             $scope.current = 0;
             
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
-            $scope.next=()=>
-                $scope.is_end ? $scope.end(): $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
+            $scope.next=(value)=> {
+                $scope.items[$scope.current].feedback = value
+                $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
+                $scope.is_end && $scope.end()
+            }
             
             $scope.end=()=>$rootScope.$emit($scope.wizard_name+'.end', $scope.current)
             

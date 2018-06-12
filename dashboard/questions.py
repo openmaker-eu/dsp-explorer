@@ -10,29 +10,52 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
+from connectors.insight.connector import InsightConnectorV10 as Insight
 
 
 class questions(APIView):
 
-    parser_classes = (MultiPartParser,)
+    parser_classes = (MultiPartParser, JSONParser)
     questions = []
 
-    def get(self, request):
+    def get(self, request, action=None):
 
-        action = request.query_params.get('action', None)
+        #action = request.query_params.get('action', None)
 
         # Request for signup questions
         not request.user.is_authenticated and not action and self.signup_questions(request)
         # Request for edit profile
         request.user.is_authenticated and action == 'edit-profile' and self.edit_profile_questions(request)
         # Request for chatbot
-        action == 'chatbot.question' and self.chatbot_question(request)
+        action == 'chatbot' and self.chatbot_question(request)
 
         return Response({'questions': self.questions})
 
-    def post(self, request):
+    def post(self, request, action=None):
+        '''
 
-        self.update_user(request)
+        :param request:
+        :param action:
+        :return:
+            200 code for success
+            403 if there is an error + {'error': [Error description]}
+        '''
+
+        try:
+            # Send Chatbot Feedback to Insight
+            if action == 'chatbot':
+                response = Insight.feedback(
+                    temp_id=request.data.get('temp_id', None),
+                    crm_id=request.user.profile.crm_id,
+                    feedback=request.data.get('temp_id', None),
+                )
+                print(response.status_code)
+                print(response.body)
+            # Update User
+            not action and self.update_user(request)
+
+        except Exception as e:
+            Response(data={'error': 'error send feedback'}, status=403)
 
         return Response()
 
@@ -53,10 +76,10 @@ class questions(APIView):
         ]
 
     def chatbot_question(self, request):
-        from connectors.insight.connector import InsightConnectorV10 as Insight
 
         try:
-            crm_id = request.user.profile.crm_id or '145489262'
+            # or '145489262'
+            crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
             if response.status_code < 205:
                 res_dict = response.json()

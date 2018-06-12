@@ -13,14 +13,14 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     },
                 })
                 .then(
-                    n=> {F.refresh_auth(n)} ,
+                    n=>$rootScope.$emit('authorization.refresh'),
                     n=>console.log(n)
                 )
         },
         logout : ()=>{
             $http.post('/api/v1.4/logout/')
                 .then(
-                    n=>F.refresh_auth(n),
+                    n=>$rootScope.$emit('authorization.refresh'),
                     n=>console.log(n)
                 )
         },

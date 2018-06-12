@@ -16,9 +16,8 @@ let template = `
     
     <div class="col-md-12 step-navigation" ng-show="questions">
         <navi-questions items="questions" wizardid="$id" ng-show="!action" ></navi-questions>
-        <navi-chatbot   items="questions" wizardid="$id" ng-show="action='chatbot'" ></navi-chatbot>
+        <navi-chatbot   items="questions" wizardid="$id" ng-show="action=='chatbot'" ></navi-chatbot>
     </div>
-    
 `
 
 let wizard_directive =
@@ -57,7 +56,7 @@ let wizard_directive =
         
         // Trigger validation and return bool
         $scope.isSubformValid = (subform) => {
-            if(!subform || !subform.hasOwnProperty('$$element')) return true
+            if(!subform || !subform.hasOwnProperty('$$element')) return false
             // Display form errors
             subform.$$element.addClass('subform-submitted')
             // Trigger validation on Next
@@ -70,11 +69,14 @@ let wizard_directive =
             let question = _.get($scope , 'questions['+current+']')
             let subform = $scope.wizard.form[question.name]
     
+            
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
                 // Perform apicall
                 if (question && question.apicall) {
                     $scope.loading = true;
+                    let url =  _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/'
+                    $scope.action && (url = url + $scope.action + '/')
                     $http
                         .post(
                             _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/',
@@ -89,6 +91,13 @@ let wizard_directive =
                         .finally(()=>$scope.loading=false)
                 }
                 else $scope.slickConfig.method.slickNext()
+            }
+            else if($scope.action==='chatbot'){
+                $http
+                    .post('/api/v1.4/questions/chatbot/', question)
+                    .then(res=>{$scope.slickConfig.method.slickNext()})
+                    .catch(res=>question.error=res.data.error)
+                    .finally(()=>$scope.loading=false)
             }
             
         })

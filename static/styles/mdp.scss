@@ -450,7 +450,7 @@ main {
   .modal-dialog {
 
     width:100%;
-    height:100%;
+    //height:100%;
     z-index: 2000;
 
     @media all and (max-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 2%; width: 96%; height: 96%;}
@@ -461,14 +461,14 @@ main {
     .modal-content {
 
       width: 100%;
-      height: 100%;
+      //height: 100%;
 
       .modal-body, wizard {
         display: flex !important;
         flex-direction: column;
         justify-content: space-between;
         align-content: center;
-        height: 100%;
+        //height: 100%;
 
         .modal-slider{flex-grow: 1;}
         .slick-list,.slick-track {height: 100%;}

@@ -1,7 +1,7 @@
 
 let template = `
     <div class="modal-body padding-5-perc">
-        <wizard questions="preset"></wizard>
+        <wizard questions="preset" action="none"></wizard>
     </div>
 `
 
@@ -20,7 +20,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     // Get questions from backend if not provided
                     console.log('MODAL ACTION', action);
                     !$scope.preset && $http
-                        .get('/api/v1.4/questions/' + ( $scope.action ? '?action='+$scope.action : '') )
+                        .get('/api/v1.4/questions/' + ( $scope.action ? $scope.action+'/' : '') )
                         .then(res=>$scope.preset=res.data.questions)
                 }]
             });
