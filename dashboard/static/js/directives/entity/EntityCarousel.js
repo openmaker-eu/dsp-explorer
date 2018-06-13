@@ -3,7 +3,7 @@ let template = `
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
         
             <div class="entity-carousel__header">
-                <h3 ng-if="!title"><a href="/{$ entityname $}_list">{$ entityname $}</a></h3>
+                <h3 ng-if="!title"><a href="/entity/{$ entityname $}">{$ entityname $}</a></h3>
                 <h3 ng-if="title" ng-bind-html="title"></h3>
             </div>
             

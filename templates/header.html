@@ -50,10 +50,10 @@
 
             <!--VISITORS-->
             <ul ng-if="$root.authorization < 10" class="nav navbar-nav navbar-right friends">
-                <li><a  ng-click="login()">Login</a></li>
+                <li><a  ng-click="$root.login($event)">Login</a></li>
                 <li><a>|</a></li>
                 <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
-                    <a ng-click="open_signup($event)" class="pointer">Signup</a>
+                    <a ng-click="$root.open_signup($event)" class="pointer">Signup</a>
                 </li>
             </ul>
 
@@ -63,7 +63,7 @@
                     {$ $root.user.first_name+' '+$root.user.last_name $}
                 </a></li>
                 <li class="hidden-xs"><a>|</a></li>
-                <li><a ng-click="logout($event)">Logout</a></li>
+                <li><a ng-click="$root.logout($event)">Logout</a></li>
             </ul>
             <ul ng-if="$root.authorization >= 10" class="nav navbar-nav navbar-right">
 

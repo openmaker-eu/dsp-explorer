@@ -24,31 +24,14 @@
 
 </head>
 
-<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController" style=""
-      ng-init="
-          toastrMessage = [
-                 {% for message in messages %}
-                     {
-                         {% if message.tags %}
-                            message : '{{ message }}',
-                            tags: '{{ message.tags }}'
-                         {% endif %}
-                     },
-                {% endfor %}
-          ];
-
-          $root.authorization = {{om_authorization}};
-          $root.user = {};
-          {% if user.is_authenticated %}
-          $root.user.first_name = '{{user.first_name}}';
-          $root.user.last_name = '{{user.last_name}}';
-          $root.user.email = '{{user.email}}';
-          $root.user.profile = {{user.profile.id}};
-          {% endif %}
-      "
-      style="position: relative;"
+<!--<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController" style=""-->
+<body
+        ng-app="{{ request.resolver_match.app_name }}"
+        base-app
+        user="{{json_user}}"
+        authorization="{{om_authorization}}"
+        pageinfo="{{page_info}}"
 >
-
 <div id="cover-filter"></div>
     <div class="om-main-wrapper">
         <header>
@@ -67,7 +50,6 @@
         <main ng-show="$root.authorization!==undefined">
             {% block container %}
             {% endblock %}
-
         </main>
 
         <footer class="container-fluid" id="footer" style="z-index: 10000; position: relative;">
@@ -91,8 +73,6 @@
 
     </div>
 </div>
-
-
 {% include "./modals/login.html" %}
 {% include "./modals/feedback.html" %}
 

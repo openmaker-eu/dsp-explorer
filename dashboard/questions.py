@@ -20,8 +20,8 @@ class questions(APIView):
 
     def get(self, request, action=None):
 
-        #action = request.query_params.get('action', None)
-        print(action)
+        entity_name = request.query_params.get('entity_name', None)
+        entity_id = request.query_params.get('entity_id', None)
 
         # Request for signup questions
         not request.user.is_authenticated and not action and self.signup_questions(request)
@@ -29,6 +29,8 @@ class questions(APIView):
         request.user.is_authenticated and action == 'profileedit' and self.edit_profile_questions(request)
         # Request for chatbot
         action == 'chatbot' and self.chatbot_question(request)
+        # Feedback
+        entity_name and entity_id and self.feedback_questions(request, entity_name, entity_id)
 
         return Response({'questions': self.questions})
 
@@ -57,6 +59,17 @@ class questions(APIView):
             Response(data={'error': 'error send feedback'}, status=403)
 
         return Response()
+
+    def feedback_questions(self, request, entity_name, entity_id):
+        self.questions = [
+            {
+                "type": 'question',
+                "temp_id": entity_id,
+                "question": "How much you lile the " + entity_name + " on this page?",
+                "text": "Click on the star to rate from 1 to 5",
+                "actions": {'type': 'stars', 'amount': 5}
+            },
+        ]
 
     def signup_questions(self, request):
         self.questions = [
@@ -88,18 +101,7 @@ class questions(APIView):
 
         except Exception as e:
             print(e)
-            self.questions = [
-                self.make('question', 'message', 'Random question?',
-                          actions={
-                              'type': 'buttons',
-                              'options':
-                                  [
-                                      {'value': 'agree', 'label': 'Agree'},
-                                      {'value': 'disagree', 'label': 'Disagree'},
-                                      {'value': 'notsure', 'label': 'Not Sure'}
-                                  ]
-                          }
-                          )]
+            self.questions = None
 
     def edit_profile_questions(self, request):
 

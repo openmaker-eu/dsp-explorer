@@ -29,80 +29,37 @@ from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
+    messages.warning(request, 'Some error occurs!')
     return HttpResponseRedirect(reverse('dashboard:login'))
 
-def news_list(request):
-    context = {
-        'entity': 'news',
-        'slider': 'events-projects'
+def entity_context(entity_name, entity_id=None):
+    context_list = {
+        'news': {'slider': 'events-projects'},
+        'events': {'slider': 'news-projects'},
+        'projects': {'slider': 'news-events'},
+        'challenges': {'slider': 'news-events'}
     }
-    return render(request, 'dashboard/entity_list.html', context)
+    context = context_list[entity_name]
+    context['entity'] = entity_name
+    if entity_id:
+        context['entity'] = entity_name if entity_name != 'challenges' else 'projects'
+        context['entity_id'] = entity_id
+        context['slider'] = entity_name+'-'+context['slider']
+    return context
 
-def event_list(request):
-    context = {
-        'entity': 'events',
-        'slider': 'news-projects'
-    }
-    return render(request, 'dashboard/entity_list.html', context)
-
-
-def project_list(request):
-    context = {
-        'entity': 'projects',
-        'slider': 'news-events'
-    }
+def entity_list(request, entity_name):
+    context = entity_context(entity_name)
     return render(request, 'dashboard/entity_list.html', context)
 
 
-def news_detail(request, entity_id):
-    context = {
-        'entity': 'news',
-        'entity_id': entity_id,
-        'slider': 'news-events-projects'
-    }
-    return render(request, 'dashboard/entity_detail.html', context)
-
-
-def project_detail(request, entity_id):
-    context = {
-        'entity': 'projects',
-        'entity_id': entity_id,
-        'slider': 'projects-news-events'
-    }
-    return render(request, 'dashboard/entity_detail.html', context)
-
-
-def challenge_detail(request, entity_id):
-    context = {
-        'entity': 'challenges',
-        'entity_id': entity_id,
-        'slider': 'projects-news-events'
-    }
-    return render(request, 'dashboard/entity_detail.html', context)
-
-
-def event_detail(request, entity_id):
-    context = {
-        'entity': 'events',
-        'entity_id': entity_id,
-        'slider': 'events-news-projects'
-    }
+def entity_detail(request, entity_name, entity_id):
+    context = entity_context(entity_name, entity_id)
     return render(request, 'dashboard/entity_detail.html', context)
 
 
 def profile_detail(request, entity_id=None):
-
-    if not entity_id and isinstance(request.user, User):
-        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id': request.user.profile.id}))
-    if not entity_id and request.user:
-        return HttpResponseForbidden()
-
-    context = {
-        'entity': 'profile',
-        'entity_id': entity_id,
-        'slider': 'loved-lovers'
-    }
     return render(request, 'dashboard/profile_detail.html', context)
+
 
 @login_required()
 def insight(request, user_twitter_username=None):

@@ -7,7 +7,6 @@ var angular = require('../../node_modules/angular/angular')
 import moment from '../../node_modules/moment/min/moment-with-locales';
 window.moment = moment
 
-
 // Import angular google maps
 require('../../node_modules/ngmap')
 // Import bootstrap sass
@@ -25,7 +24,7 @@ export function angularBase(app=null){
     app && app.factory('ModalFactory', require('./factories/modal.factory').default )
     app && app.factory('LoginService', require('./factories/LoginService').default )
     app && app.factory('MessageModal', require('./factories/message.modal.factory').default )
-    app && app.controller('baseController', require('./controllers/base.controller').default )
+    app && app.directive('baseApp', require('./directives/BaseApp').default )
     return this
 }
 

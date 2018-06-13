@@ -4,6 +4,7 @@ from . import views, authentication, api, static, api14, questions
 
 app_name = 'dashboard'
 
+
 urlpatterns = [
 
     # Auth
@@ -17,22 +18,25 @@ urlpatterns = [
     ###################################### MDP ROUTES
     # Article list
 
-    url(r'^news_list/$', views.news_list, name='news_list'),
-    url(r'^news/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
-
-    url(r'^articles_list/$', views.news_list, name='news_list'),
-    url(r'^article/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
-
-    url(r'^events_list/$', views.event_list, name='event_list'),
-    url(r'^events/(?P<entity_id>(\d+))/$', views.event_detail, name='event_detail'),
-
-    url(r'^projects_list/$', views.project_list, name='prj_list'),
-    url(r'^projects/(?P<entity_id>[0-9]+)$', views.project_detail, name='prj_detail'),
-
-    url(r'^challenges/(?P<entity_id>[0-9]+)$', views.challenge_detail, name='prj_detail'),
-
+    # url(r'^news_list/$', views.news_list, name='news_list'),
+    # url(r'^news/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news'),
+    #
+    # url(r'^articles_list/$', views.news_list, name='news_list'),
+    # url(r'^article/(?P<entity_id>[0-9]+)/$', views.news_detail, name='news_detail'),
+    #
+    # url(r'^events_list/$', views.event_list, name='event_list'),
+    # url(r'^events/(?P<entity_id>(\d+))/$', views.event_detail, name='event'),
+    #
+    # url(r'^projects_list/$', views.project_list, name='prj_list'),
+    # url(r'^projects/(?P<entity_id>[0-9]+)$', views.project_detail, name='project_detail'),
+    #
+    # url(r'^challenges/(?P<entity_id>[0-9]+)$', views.challenge_detail, name='project'),
+    #
     url(r'^profile/(?P<entity_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
     url(r'^profile/$', views.profile_detail, name='profile_detail'),
+
+    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/$', views.entity_detail, name='entity_list'),
+    url(r'^entity/(?P<entity_name>\w+)/$', views.entity_list, name='entity_detail'),
 
 
     ###################################### MDP ROUTES

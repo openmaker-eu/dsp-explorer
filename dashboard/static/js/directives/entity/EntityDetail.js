@@ -7,7 +7,7 @@ let template = `
         }">
         
         <div ng-class="{'force-square': preview}" ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture">
-            <a href="/profile/{$ entity.id $}">
+            <a href="/entity/profile/{$ entity.id $}">
                 <img ng-src="{$ entity.picture || 'media/images/profile/other.svg' $}" alt="" style="width:100%;">
             </a>
         </div>
@@ -17,7 +17,7 @@ let template = `
         <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
             
             <!--Fade container-->
-            <a href="/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>
+            <a href="/entity/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>
             
             <div class="entity-detail__content entity-detail-padding" >
                 
@@ -45,7 +45,7 @@ let template = `
                 </div>
   
                 <!--Read more-->
-                <a ng-if="entityid && preview" href="/{$ entityname $}/{$ entityid $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
+                <a ng-if="entityid && preview" href="/entity/{$ entityname $}/{$ entityid $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
 
                 <!-- Show Full text if exist-->
                 <!--<div>-->

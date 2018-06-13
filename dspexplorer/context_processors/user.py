@@ -1,4 +1,5 @@
 from ..site_helpers import User
+from dashboard.serializer import UserSerializer
 
 def authorization(request):
     '''
@@ -6,4 +7,14 @@ def authorization(request):
     :param request:
     :return: authorization dictionary
     '''
-    return {'om_authorization': User.authorization(request)}
+    context = {
+        'om_authorization': User.authorization(request),
+        'page_info': {
+            'name': request.resolver_match.url_name,
+            'options': request.resolver_match.kwargs
+        }
+    }
+    if request.user.is_authenticated:
+        context['json_user'] = UserSerializer(request.user).data
+
+    return context
