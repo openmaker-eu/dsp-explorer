@@ -1,27 +1,31 @@
 
 let template = `
     <div class="modal-body padding-5-perc">
-        <wizard questions="preset" action="none"></wizard>
+        <wizard questions="questions" wizardid="$id"></wizard>
+        <navi-questions items="questions" wizardid="$id"></navi-questions>
     </div>
 `
 
 export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     let F = {
-        open: (ev,preset,action=null)=>{
-            console.log(action);
+        open: (ev, questions, action=null)=>{
             F.modalInstance = $uibModal.open({
                 template: template,
                 backdrop: true,
                 windowClass: 'signup-modal',
                 transclude:true,
-                controller: ['$scope', '$http', function($scope, $http){
-                    $scope.preset=preset
+                controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
+                    $scope.questions=questions
                     $scope.action=action
+                    
                     // Get questions from backend if not provided
-                    console.log('MODAL ACTION', action);
-                    !$scope.preset && $http
+                    !$scope.questions && $http
                         .get('/api/v1.4/questions/' + ( $scope.action ? $scope.action+'/' : '') )
-                        .then(res=>$scope.preset=res.data.questions)
+                        .then(res=>$scope.questions=res.data.questions)
+                    
+                    $rootScope.$on('wizard.'+$scope.$id+'.end', F.close)
+                    $rootScope.$on('question.modal.close', F.close)
+                    
                 }]
             });
         },
@@ -29,7 +33,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     }
     
     $rootScope.$on('question.modal.open', F.open)
-    $rootScope.$on('question.modal.close', F.close)
     
     return F
 

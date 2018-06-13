@@ -10,7 +10,7 @@ class InsightConnectorV10(object):
 
     @classmethod
     def feedback(cls, crm_id, temp_id, feedback):
-        return cls.get('/feedback/send_feedback', {'crm_id': crm_id, 'temp_id': crm_id, 'feedback':feedback})
+        return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
 
     @classmethod
     def get(cls, endpoint, querydict={}):
@@ -18,7 +18,7 @@ class InsightConnectorV10(object):
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
         url = settings.INSIGHT_API + 'v1.0/' + endpoint + querydict
         try:
-            response = requests.get(url, timeout=8)
+            response = requests.get(url, params=querydict, timeout=8)
         except Exception as e:
             print(e)
         return response

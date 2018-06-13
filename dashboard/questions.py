@@ -21,11 +21,12 @@ class questions(APIView):
     def get(self, request, action=None):
 
         #action = request.query_params.get('action', None)
+        print(action)
 
         # Request for signup questions
         not request.user.is_authenticated and not action and self.signup_questions(request)
         # Request for edit profile
-        request.user.is_authenticated and action == 'edit-profile' and self.edit_profile_questions(request)
+        request.user.is_authenticated and action == 'profileedit' and self.edit_profile_questions(request)
         # Request for chatbot
         action == 'chatbot' and self.chatbot_question(request)
 
@@ -47,10 +48,8 @@ class questions(APIView):
                 response = Insight.feedback(
                     temp_id=request.data.get('temp_id', None),
                     crm_id=request.user.profile.crm_id,
-                    feedback=request.data.get('temp_id', None),
+                    feedback=request.data.get('feedback', None),
                 )
-                print(response.status_code)
-                print(response.body)
             # Update User
             not action and self.update_user(request)
 

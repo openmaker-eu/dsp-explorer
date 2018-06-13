@@ -46,9 +46,6 @@ export default [function(){
             
             $scope.$watch('entity_list.data',  (a, b)=>{
                 $scope.reload = true;
-                console.log('TEST: ',  a);
-                console.log($scope.entity_list);
-    
                 $timeout(function(a){ $scope.reload=false, $scope.nodata= !a || a.length===0 },1000);
             })
     

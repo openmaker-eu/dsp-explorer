@@ -13,11 +13,6 @@ let template = `
             <question ng-repeat="question in questions" data="question" model="wizard.formmodel" ></question>
         </slick>
     </form>
-    
-    <div class="col-md-12 step-navigation" ng-show="questions">
-        <navi-questions items="questions" wizardid="$id" ng-show="!action" ></navi-questions>
-        <navi-chatbot   items="questions" wizardid="$id" ng-show="action=='chatbot'" ></navi-chatbot>
-    </div>
 `
 
 let wizard_directive =
@@ -27,13 +22,13 @@ let wizard_directive =
         questions : '=',
         action : '@',
         loadingmessage : '@',
-        onend : '@'
+        wizardid : '='
     },
     controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
         
         // Models
         $scope.wizard = {form:{}, formmodel:{}}
-        $scope.wizard_name = 'wizard.'+$scope.$id
+        $scope.wizard_name = 'wizard.'+($scope.wizardid ||$scope.$id)
         
         // Status variables
         $scope.loading = false
@@ -66,9 +61,12 @@ let wizard_directive =
         }
     
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
+            
+            console.log('WIZARD: ', $scope.wizardid);
+            console.log('WIZARD ACTION: ', $scope.action);
+            
             let question = _.get($scope , 'questions['+current+']')
             let subform = $scope.wizard.form[question.name]
-    
             
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
@@ -90,7 +88,7 @@ let wizard_directive =
                         .catch(res=>question.error=res.data.error)
                         .finally(()=>$scope.loading=false)
                 }
-                else $scope.slickConfig.method.slickNext()
+                else { question.emitevent && $rootScope.$emit(question.emitevent, {}) ; $scope.slickConfig.method.slickNext() }
             }
             else if($scope.action==='chatbot'){
                 $http
@@ -103,7 +101,8 @@ let wizard_directive =
         })
         
         $rootScope.$on($scope.wizard_name+'.prev',()=>$scope.slickConfig.method.slickPrev())
-        $rootScope.$on($scope.wizard_name+'.end', ()=>$rootScope.$emit($scope.onend || 'question.modal.close'))
+        $rootScope.$on($scope.wizard_name+'.goto',(ev,val)=>$scope.slickConfig.method.slickGoTo(val))
+        $rootScope.$on($scope.wizard_name+'.end', ()=>null)
         
     }]
 }
