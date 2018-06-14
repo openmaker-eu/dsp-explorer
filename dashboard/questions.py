@@ -47,48 +47,42 @@ class questions(APIView):
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot':
-                response = Insight.feedback(
+                return Response(Insight.feedback(
                     temp_id=request.data.get('temp_id', None),
                     crm_id=request.user.profile.crm_id,
                     feedback=request.data.get('feedback', None),
-                )
+                ))
             # Update User
             not action and self.update_user(request)
 
         except Exception as e:
-            Response(data={'error': 'error send feedback'}, status=403)
+            return Response(data={'error': 'error send feedback'}, status=403)
 
         return Response()
 
     def feedback_questions(self, request, entity_name, entity_id):
         self.questions = [
-            {
-                "type": 'question',
-                "temp_id": entity_id,
-                "question": "How much you lile the " + entity_name + " on this page?",
-                "text": "Click on the star to rate from 1 to 5",
-                "actions": {'type': 'stars', 'amount': 5}
-            },
+            self.question('rate_entity', entity_name=entity_name, entity_id=entity_id),
+            self.question('rate_bye', entity_name=entity_name, first_name=request.user.first_name),
         ]
 
     def signup_questions(self, request):
         self.questions = [
-            self.make('register', 'message', 'Signup', value='Signup to Openmaker Explorer'),
-            self.make('name', 'name', 'Who are you?'),
-            self.make('gender', 'select', 'What is your gender?',
-                      options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
-                      ),
-            self.make('birthdate', 'date', 'What is your birthdate?', max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))),
-            self.make('city', 'city', 'What is your city?'),
-            self.make('occupation', 'text', 'What is your occupation?'),
-            self.make('activity-question', 'activity-question', 'What is your activity?'),
-            self.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
-            self.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
-            self.make('sugnup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),
+            self.question('signup_welcome'),
+            self.question('user_full_name'),
+            self.question('user_gender'),
+            self.question('user_birthdate'),
+            self.question('user_city'),
+            self.question('user_occupation'),
+            self.question('activity-question'),
+            self.question('user_tags'),
+            self.question('user_signup_data'),
+            self.question('signup_bye'),
         ]
 
     def chatbot_question(self, request):
-
+        welcome = self.question('welcome', first_name=request.user.first_name)
+        bye = self.question('nice_talking', first_name=request.user.first_name)
         try:
             # or '145489262'
             crm_id = request.user.profile.crm_id
@@ -97,8 +91,7 @@ class questions(APIView):
                 res_dict = response.json()
                 questions = res_dict['users'][0]['questions']
                 type = res_dict['users'][0]['feedback_type']
-                self.questions = [self.map_questions(q, type) for q in questions]
-
+                self.questions = [welcome] + [self.map_remote_to_local_questions(q, type) for q in questions] + [bye]
         except Exception as e:
             print(e)
             self.questions = None
@@ -146,25 +139,13 @@ class questions(APIView):
 
         self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
 
-
-    def map_questions(self, question, feedback_type='disagree_notsure_agree'):
+    def map_remote_to_local_questions(self, question, feedback_type='disagree_notsure_agree'):
         if feedback_type == 'disagree_notsure_agree':
             question['actions'] = {
                 'type': 'buttons',
-                'options':
-                    [
-                        {'value': 'agree', 'label': 'Agree'},
-                        {'value': 'disagree', 'label': 'Disagree'},
-                        {'value': 'notsure', 'label': 'Not Sure'}
-                    ]
+                'options': ['agree', 'disagree', 'notsure']
             }
             return self.make(name='', type='question', **question)
-
-    def make(self, name, type, label='', **kwargs):
-        question = {'name': name, 'type': type, 'label': label}
-        for key, arg in kwargs.items():
-            question[key] = arg
-        return question
 
     def update_user(self, request):
         user = request.user
@@ -198,3 +179,61 @@ class questions(APIView):
         except Exception as error:
             return Response(data={'error': error}, status=403)
 
+    @classmethod
+    def question(cls, question, **kwargs):
+
+        first_name = kwargs.get('first_name', '')
+
+        static_questions = {
+            'welcome': {
+                'type': "question",
+                'question': 'Hi, '+first_name+'!',
+                'text': "Do you have time for some questions?",
+                'actions': {'options': [{'label': 'yes, sure!'},  {'value': 'goto:last', 'label': 'no, thanks'}]}
+            },
+            'nice_talking': {
+                'type': "question",
+                'question': "Nice talking "+first_name+"!",
+                'text': "Have a nice day",
+                'actions': {'options': ['  Bye!  ']}
+            },
+            'rate_entity': {
+                "type": 'question',
+                "temp_id": kwargs.get('entity_id', ''),
+                "question": "How much you like the " + kwargs.get('entity_name', '') + " on this page?",
+                "text": "Click on the star to rate from 1 to 5",
+                "actions": {'type': 'stars', 'amount': 5}
+            },
+            'rate_bye': {
+                'type': "question",
+                'question': 'Thank you!, '+first_name+'!',
+                'text': "Now i will be able to show you more interesting " + kwargs.get('entity_name', ''),
+                'actions': {'options': ['  Tank you!  ']}
+            },
+        }
+
+        form_questions = {
+            'signup_welcome': cls.make('signup', 'message', 'Signup', value='Signup to Openmaker Explorer'),
+            'user_full_name': cls.make('name', 'name', 'Who are you?'),
+            'user_gender': cls.make('gender', 'select', 'What is your gender?',
+                 options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
+            ),
+            'user_birthdate': cls.make('birthdate', 'date', 'What is your birthdate?',
+                 max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d'))
+            ),
+            'user_city': cls.make('city', 'city', 'What is your city?'),
+            'user_occupation': cls.make('occupation', 'text', 'What is your occupation?'),
+            'activity-question': cls.make('activity-question', 'activity-question', 'What is your activity?'),
+            'user_tags': cls.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
+            'user_signup_data': cls.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
+            'signup_bye': cls.make('signup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),
+        }
+
+        return static_questions.get(question, None) or form_questions.get(question, None)
+
+    @classmethod
+    def make(cls, name, type, label='', **kwargs):
+        question = {'name': name, 'type': type, 'label': label}
+        for key, arg in kwargs.items():
+            question[key] = arg
+        return question

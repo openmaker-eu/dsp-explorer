@@ -22,7 +22,7 @@ let chatbot_directive =
 {
     template:template,
     scope: {},
-    controller: ['$scope', '$rootScope', '$http', '$timeout', function($scope, $rootScope, $http, $timeout){
+    controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider){
         $('chatbot').css('bottom', $('footer').height()+'px')
         
         $scope.questions= null
@@ -30,15 +30,6 @@ let chatbot_directive =
         $scope.wizardid = $scope.$id
         
         $scope.toggle_bot = ()=>($scope.opened=!$scope.opened)
-    
-        $scope.welcome_question = {
-            name:'welcome',
-            type: "question",
-            question: 'Hi, '+_.get($rootScope, 'user.first_name')+'!',
-            text: "Do you have time for some questions?",
-            actions:{options:[{label:'yes, sure!'},  {value:'goto:last', label:'no, thanks'}]}
-        }
-        $scope.end_question = {type: "question", question: "Nice talking "+_.get($rootScope, 'user.first_name')+"!", text:"Have a nice day", actions:{options:['  Bye!  ']}}
     
         $scope.get = ()=> {
             $scope.opened = false
@@ -49,16 +40,18 @@ let chatbot_directive =
         }
         
         $scope.url = ()=>{
+            console.log(EntityProvider);
             let page_options = _.get($rootScope, 'page_info.options')
             let url = '/api/v1.4/questions/chatbot/'
             page_options.hasOwnProperty('entity_name') && (url += '?entity_name='+page_options['entity_name'])
             page_options.hasOwnProperty('entity_id') && (url += '&entity_id='+page_options['entity_id'])
+            page_options.hasOwnProperty('temp_id') && (url += '&temp_id='+page_options['temp_id'])
             return url
         }
         
         $scope.handle_response = (res)=>{
             if(_.isArray(res.data.questions) && res.data.questions.length > 0) {
-                $scope.questions =  _($scope.welcome_question).concat(res.data.questions).concat($scope.end_question).value()
+                $scope.questions = res.data.questions
                 $timeout(function(a){ $scope.opened = true }, 5000)
             }
             

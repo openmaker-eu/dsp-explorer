@@ -7,6 +7,7 @@ def authorization(request):
     :param request:
     :return: authorization dictionary
     '''
+
     context = {
         'om_authorization': User.authorization(request),
         'page_info': {
