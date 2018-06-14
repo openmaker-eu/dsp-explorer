@@ -1,6 +1,6 @@
 let template = `
     <div class="col-md-12">
-        <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}">
+        <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}"            >
         
             <div class="entity-carousel__header">
                 <h3 ng-if="!title"><a href="/entity/{$ entityname $}">{$ entityname $}</a></h3>
@@ -14,7 +14,10 @@ let template = `
                 error="entity_list && !entity_list.loading && entity_list.data && entity_list.data.length===0"
              ></entity-loading>
             
-            <div class="entity-carousel__body" ng-if="entity_list && !entity_list.loading && entity_list.data.length!==0">
+            <div
+                class="entity-carousel__body"
+                ng-class="{'small-slider': entityperslide > 1}"
+                ng-if="entity_list && !entity_list.loading && entity_list.data.length!==0">
                 <slick settings="slickConfig">
                     <div ng-repeat="entity in entity_list.data | limitTo: (limit || 20)" style="width: 90%;">
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
@@ -51,7 +54,7 @@ export default [function(){
     
             $scope.slickConfig ={
                 slidesToShow: $scope.entityperslide || 1,
-                slidesToScroll: 1,
+                slidesToScroll: $scope.entityperslide || 1,
                 prevArrow: '<i class="fas fa-chevron-left slick-arrow--custom prev"></i>',
                 nextArrow: '<i class="fas fa-chevron-right slick-arrow--custom next"></i>',
     

@@ -48,6 +48,7 @@ def entity_context(entity_name, entity_id=None, entity_temp_id=None):
         context['slider'] = entity_name+'-'+context['slider']
     return context
 
+
 def entity_list(request, entity_name):
     context = entity_context(entity_name)
     return render(request, 'dashboard/entity_list.html', context)

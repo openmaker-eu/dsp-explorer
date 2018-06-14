@@ -4,7 +4,7 @@ import {TemplateLoader} from '../../classes/TemplateLoader'
 let template = `
      <div ng-form="{$ x.name $}" class="signup-template">
         <div class="" style="padding:5%;">
-            <h1 class="signup-template__label">{$ x.label $}</h1>
+            <h1 ng-if="x.label" class="signup-template__label">{$ x.label $}</h1>
             <br>
             <div class="signup-input"></div>
             <h3 ng-if="x.error" class=" signup-template__label text-red">{$ x.error $}</h3>

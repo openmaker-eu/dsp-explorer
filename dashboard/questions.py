@@ -64,7 +64,7 @@ class questions(APIView):
         self.questions = [] \
             if entity_name in ['challenges', 'projects'] \
             else [
-                self.question('rate_entity', entity_name=entity_name, entity_id=entity_id),
+                self.question('rate_entity', entity_name=entity_name, entity_id=entity_id, first_name=request.user.first_name),
                 self.question('rate_bye', entity_name=entity_name, first_name=request.user.first_name)
             ]
 
@@ -183,8 +183,11 @@ class questions(APIView):
 
     @classmethod
     def question(cls, question, **kwargs):
+        from dashboard.models import EntityProxy
 
         first_name = kwargs.get('first_name', '')
+        entity_id = kwargs.get('entity_id', '')
+        entity_name = kwargs.get('entity_name', '')
 
         static_questions = {
             'welcome': {
@@ -201,15 +204,16 @@ class questions(APIView):
             },
             'rate_entity': {
                 "type": 'question',
-                "temp_id": kwargs.get('entity_id', ''),
-                "question": "How much you like the " + kwargs.get('entity_name', '') + " on this page?",
-                "text": "Click on the star to rate from 1 to 5",
+                "temp_id": entity_id,
+                "super_text": "Hi! " + first_name + "",
+                "question": "How much you like the " + EntityProxy.singular_name(entity_name) + " on this page?",
+                "text": "Click on the stars to rate from 1 to 5",
                 "actions": {'type': 'stars', 'amount': 5}
             },
             'rate_bye': {
                 'type': "question",
                 'question': 'Thank you!, '+first_name+'!',
-                'text': "Now i will be able to show you more interesting " + kwargs.get('entity_name', ''),
+                'text': "Now i will be able to show you more interesting " + entity_name,
                 'actions': {'options': ['  Tank you!  ']}
             },
         }

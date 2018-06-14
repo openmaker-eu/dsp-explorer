@@ -6,6 +6,7 @@ let template = `
   
             <entity-carousel
                 entityname="{$ slider_name $}"
+                entityperslide="{$ $index == 0 ? 1 : 2 $}"
                 userid="{$ userid $}"
                 class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
             ></entity-carousel>

@@ -17,7 +17,7 @@ let template = `
         <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
             
             <!--Fade container-->
-            <a ng-href="{$ enitity_link() $}" ng-if="preview" class="fade"></a>
+            <a ng-href="{$ entity_link() $}" ng-if="preview" class="fade"></a>
             
             <div class="entity-detail__content entity-detail-padding" >
                 

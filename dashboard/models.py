@@ -823,9 +823,10 @@ class Invitation(models.Model):
 
 class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(_('Title'), max_length=100)
-    message_text = models.TextField(_('Message'), max_length=500)
+    title = models.CharField(max_length=100)
+    message_text = models.TextField(max_length=500)
     created_at = models.DateTimeField(default=dt.now)
+    # type = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         ordering = ('created_at', 'title',)
@@ -1009,4 +1010,4 @@ class EntityProxy(models.Model):
 
     @classmethod
     def singular_name(cls, name=None):
-        return re.sub(r'^(?!news)(\w+)s$', r'\1', name) if name else None
+        return re.sub(r'^(?!news)(\w+)s$', r'\1', name) if name else ''
