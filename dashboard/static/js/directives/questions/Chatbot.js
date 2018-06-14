@@ -40,12 +40,11 @@ let chatbot_directive =
         }
         
         $scope.url = ()=>{
-            console.log(EntityProvider);
             let page_options = _.get($rootScope, 'page_info.options')
             let url = '/api/v1.4/questions/chatbot/'
             page_options.hasOwnProperty('entity_name') && (url += '?entity_name='+page_options['entity_name'])
             page_options.hasOwnProperty('entity_id') && (url += '&entity_id='+page_options['entity_id'])
-            page_options.hasOwnProperty('temp_id') && (url += '&temp_id='+page_options['temp_id'])
+            page_options.hasOwnProperty('entity_temp_id') && (url += '&entity_temp_id='+page_options['entity_temp_id'])
             return url
         }
         

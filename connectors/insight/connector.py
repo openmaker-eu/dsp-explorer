@@ -13,6 +13,18 @@ class InsightConnectorV10(object):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
 
     @classmethod
+    def reccomended_entity(cls, crm_id, entity_name):
+        allowed_entities = ['news', 'events']
+        try:
+            results = cls.get('recommendation/'+entity_name, {'crm_ids': [crm_id]}) if entity_name in allowed_entities else {}
+            json_decoded = results.json() if results.status_code < 205 else []
+            reccomendations = json_decoded['users'][0][entity_name]
+            return reccomendations
+        except Exception as e:
+            print(e)
+            return []
+
+    @classmethod
     def get(cls, endpoint, querydict={}):
         querydict['api_key'] = settings.INSIGHT_API_KEY
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''

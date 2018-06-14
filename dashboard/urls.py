@@ -4,7 +4,6 @@ from . import views, authentication, api, static, api14, questions
 
 app_name = 'dashboard'
 
-
 urlpatterns = [
 
     # Auth
@@ -35,8 +34,9 @@ urlpatterns = [
     url(r'^profile/(?P<entity_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
     url(r'^profile/$', views.profile_detail, name='profile_detail'),
 
-    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/$', views.entity_detail, name='entity_list'),
-    url(r'^entity/(?P<entity_name>\w+)/$', views.entity_list, name='entity_detail'),
+    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/(?P<entity_temp_id>[0-9]+)/$$', views.entity_detail, name='entity_detail'),
+    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/$', views.entity_detail, name='entity_detail'),
+    url(r'^entity/(?P<entity_name>\w+)/$', views.entity_list, name='entity_list'),
 
 
     ###################################### MDP ROUTES
@@ -104,20 +104,17 @@ urlpatterns = [
     url(r'^api/v1.4/user/interest/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.my_interest, name='get_interested'),
     url(r'^api/v1.4/interested/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.interested, name='get_interested'),
     url(r'^api/v1.4/interested/(?P<entity>\w+)/$', api14.interested, name='get_interested'),
-
     url(r'^api/v1.4/interests/$', api14.get_interests, name='get_bookmark'),
 
+    # Auht
     url(r'^api/v1.4/login/$', api14.apilogin, name='user_login'),
     url(r'^api/v1.4/logout/$', api14.apilogout, name='user_logout'),
     url(r'^api/v1.4/signup/$', api14.signup, name='user_signup'),
     url(r'^api/v1.4/authorization/$', api14.authorization, name='get_user_authorization'),
 
+    # Questions
     url(r'^api/v1.4/questions/(?P<action>\w+)/$', questions.questions.as_view(), name='questions'),
     url(r'^api/v1.4/questions/$', questions.questions.as_view(), name='questions'),
-
-    url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
-
-    url(r'^api/v1.4/(?P<entity>\w+)/details/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='entity_detail'),
 
     # Projects
     url(r'^api/v1.4/user/(?P<profile_id>\w+)/project/$', api14.user_projects, name='user_projects'),
@@ -126,7 +123,9 @@ urlpatterns = [
     # Entity with user id (Tailored)
     url(r'^api/v1.4/user/(?P<user_id>\w+)/(?P<entity>\w+)/$', api14.entity.as_view(), name='user_entity'),
 
-
+    # Entity
+    url(r'^api/v1.4/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='api_14_entity_detail'),
+    url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 
 
     # API v1.3
@@ -194,3 +193,4 @@ urlpatterns = [
     url(r'^api/v1.1/invitation/csv$', api.get_invitation_csv, name='get_invitation_csv'),
 
 ]
+

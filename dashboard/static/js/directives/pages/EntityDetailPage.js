@@ -75,23 +75,24 @@ let template = `
     </div>
 `
 
-export default [function(){
+export default function(){
     return {
         template:template,
         scope: {
-            entityname: '@',
-            entityid : '@',
-            slider: '@'
+            'entityname': '@',
+            'entityid' : '@',
+            'entitytempid' : '@',
+            'slider': '@'
         },
-        controller : ['$scope', '$http','EntityProvider', async function($scope, $http, EntityProvider) {
+        controller : ['$scope', '$http','EntityProvider', function($scope, $http, EntityProvider) {
             
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            $scope.entity = EntityProvider.make($scope.entityname,$scope.entityid)
+            $scope.entity = EntityProvider.make($scope.entityname, $scope.entityid)
             $scope.nodata = !$scope.entity.get()
 
         }]
     }
-}]
+}
 
 
 

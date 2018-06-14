@@ -32,7 +32,7 @@ def dashboard(request, topic_id=None):
     messages.warning(request, 'Some error occurs!')
     return HttpResponseRedirect(reverse('dashboard:login'))
 
-def entity_context(entity_name, entity_id=None):
+def entity_context(entity_name, entity_id=None, entity_temp_id=None):
     context_list = {
         'news': {'slider': 'events-projects'},
         'events': {'slider': 'news-projects'},
@@ -44,6 +44,7 @@ def entity_context(entity_name, entity_id=None):
     if entity_id:
         context['entity'] = entity_name if entity_name != 'challenges' else 'projects'
         context['entity_id'] = entity_id
+        context['entity_temp_id'] = entity_temp_id
         context['slider'] = entity_name+'-'+context['slider']
     return context
 
@@ -52,12 +53,23 @@ def entity_list(request, entity_name):
     return render(request, 'dashboard/entity_list.html', context)
 
 
-def entity_detail(request, entity_name, entity_id):
-    context = entity_context(entity_name, entity_id)
+def entity_detail(request, entity_name, entity_id, entity_temp_id=None):
+    context = entity_context(entity_name, entity_id, entity_temp_id)
     return render(request, 'dashboard/entity_detail.html', context)
 
 
 def profile_detail(request, entity_id=None):
+
+    if not entity_id and isinstance(request.user, User):
+        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id': request.user.profile.id}))
+    if not entity_id and request.user:
+        return HttpResponseForbidden()
+
+    context = {
+        'entity': 'profile',
+        'entity_id': entity_id,
+        'slider': 'loved-lovers'
+    }
     return render(request, 'dashboard/profile_detail.html', context)
 
 

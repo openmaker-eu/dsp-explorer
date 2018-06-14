@@ -17,7 +17,7 @@ let template = `
         <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
             
             <!--Fade container-->
-            <a href="/entity/{$ entityname $}/{$ entityid || entity.id || entity.link_id $}" ng-if="preview" class="fade"></a>
+            <a ng-href="{$ enitity_link() $}" ng-if="preview" class="fade"></a>
             
             <div class="entity-detail__content entity-detail-padding" >
                 
@@ -45,7 +45,7 @@ let template = `
                 </div>
   
                 <!--Read more-->
-                <a ng-if="entityid && preview" href="/entity/{$ entityname $}/{$ entityid $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
+                <a ng-if="entityid && preview" ng-href="{$ entity_link() $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
 
                 <!-- Show Full text if exist-->
                 <!--<div>-->
@@ -82,6 +82,7 @@ let template = `
         </div>
     </div>
 `
+
 export default [function(){
     return {
         template:template,
@@ -94,7 +95,10 @@ export default [function(){
         controller : ['$scope', '$sce', function($scope, $sce) {
             
             $scope.entity.details = $sce.trustAsHtml($scope.entity.details);
-            
+            $scope.entity_link = ()=> '/entity/' +
+                $scope.entityname + '/' +
+                ($scope.entityid || $scope.entity.id || $scope.entity.link_id ) + '/' +
+                ($scope.entity.temp_id || '' )
         }]
     }
 }]

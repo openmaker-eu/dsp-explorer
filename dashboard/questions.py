@@ -22,6 +22,7 @@ class questions(APIView):
 
         entity_name = request.query_params.get('entity_name', None)
         entity_id = request.query_params.get('entity_id', None)
+        temp_id = request.query_params.get('entity_temp_id', None)
 
         # Request for signup questions
         not request.user.is_authenticated and not action and self.signup_questions(request)
@@ -30,7 +31,7 @@ class questions(APIView):
         # Request for chatbot
         action == 'chatbot' and self.chatbot_question(request)
         # Feedback
-        entity_name and entity_id and self.feedback_questions(request, entity_name, entity_id)
+        entity_name and temp_id and self.feedback_questions(request, entity_name, temp_id)
 
         return Response({'questions': self.questions})
 
@@ -57,14 +58,15 @@ class questions(APIView):
 
         except Exception as e:
             return Response(data={'error': 'error send feedback'}, status=403)
-
         return Response()
 
     def feedback_questions(self, request, entity_name, entity_id):
-        self.questions = [
-            self.question('rate_entity', entity_name=entity_name, entity_id=entity_id),
-            self.question('rate_bye', entity_name=entity_name, first_name=request.user.first_name),
-        ]
+        self.questions = [] \
+            if entity_name in ['challenges', 'projects'] \
+            else [
+                self.question('rate_entity', entity_name=entity_name, entity_id=entity_id),
+                self.question('rate_bye', entity_name=entity_name, first_name=request.user.first_name)
+            ]
 
     def signup_questions(self, request):
         self.questions = [

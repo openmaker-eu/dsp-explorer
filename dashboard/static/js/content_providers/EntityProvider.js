@@ -16,14 +16,14 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             this.data = entityid ? null : []
             
             this.url += userid ? `/user/${userid}` : ''
-            this.url += `/${entityname}/${entityid ? 'details/'+entityid+'/' : ''}`
+            this.url += `/${entityname}/${ entityid ? entityid+'/' : ''}`
         }
 
         get = (force=false)=>{
             if(this.loading || !force && this.data && this.data.length > 0) return new Promise(s=>s(this))
             
             this.loading = true;
-            let prom = $http.get(this.url, {timeout: 10000})
+            let prom = $http.get(this.url, {timeout: 20000})
             prom
                 .then(
                     (res)=>{this.data = res.data, $rootScope.$emit('entitiy.'+this.entityname+'.new')},

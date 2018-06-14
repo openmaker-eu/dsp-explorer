@@ -31,6 +31,7 @@ from dashboard.serializer import UserSerializer, TagSerializer, ProfileSerialize
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
+from connectors.insight.connector import InsightConnectorV10 as Insight
 
 def __wrap_response(*args, **kwargs):
     try:
@@ -260,9 +261,10 @@ class entity(APIView):
                     results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
                     results = results[:5]
                 else:
+                    reccomended = Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity)
                     for index,topic_id in enumerate(topics_id_list):
                         results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
-                    results = mix_result_round_robin(*results)
+                    results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException:
                 pass
             except AttributeError as a:
@@ -273,6 +275,7 @@ class entity(APIView):
 
 class entity_details(APIView):
     def get(self, request, entity='news', entity_id=None):
+
         results = []
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)
