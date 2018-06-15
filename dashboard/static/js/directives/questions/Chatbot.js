@@ -28,7 +28,7 @@ let chatbot_directive =
     template:template,
     scope: {},
     controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider){
-        $('chatbot').css('bottom', $('footer').height()+'px')
+        //$('chatbot').css('bottom', $('footer').height()+'px')
         
         $scope.questions= null
         $scope.opened= true
@@ -66,9 +66,6 @@ let chatbot_directive =
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')
-        
-        console.log($rootScope);
-    
     
     }]
 }

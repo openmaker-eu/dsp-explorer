@@ -103,7 +103,15 @@ body, html {
 
 }
 
+footer {
+  padding:0.5% 0;
+  * { color: $color-white;}
+}
+
 header .navbar.navbar-default{
+
+  padding: 0!important;
+  padding-top:10px!important;
 
   &, & *:not(.glyphicon):not(.fa):not(.far):not(.fas) { @extend .cairo; }
   i, span {
@@ -227,7 +235,7 @@ main {
     border-radius: 8px 8px 0 0;
     text-align: center;
     h3 {
-      margin:0; padding: 8% 0;
+      margin:0; padding: 6% 0;
       text-transform: uppercase;
     }
   }
@@ -697,7 +705,7 @@ main {
 }
                                                                                 
 chatbot {
-  position:absolute; right:5%; width:30%; z-index:1000000;
+  position:fixed; right:5%; bottom:0; width:30%; z-index:1000000;
 
   .chatbot{
     &__container{background: white; border-radius: 8px 8px 0 0; overflow: hidden; box-shadow: 0 0 2px #a3a3a3;}
