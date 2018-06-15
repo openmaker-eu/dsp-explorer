@@ -83,9 +83,10 @@ class questions(APIView):
         ]
 
     def chatbot_question(self, request):
-        welcome = self.question('welcome', first_name=request.user.first_name)
-        bye = self.question('nice_talking', first_name=request.user.first_name)
         try:
+            welcome = self.question('welcome', first_name=request.user.first_name)
+            bye = self.question('nice_talking', first_name=request.user.first_name)
+
             # or '145489262'
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
@@ -206,7 +207,7 @@ class questions(APIView):
                 "type": 'question',
                 "temp_id": entity_id,
                 "super_text": "Hi! " + first_name + "",
-                "question": "How much you like the " + EntityProxy.singular_name(entity_name) + " on this page?",
+                "question": "Do you like the " + EntityProxy.singular_name(entity_name) + " on this page?",
                 "text": "Click on the stars to rate from 1 to 5",
                 "actions": {'type': 'stars', 'amount': 5}
             },

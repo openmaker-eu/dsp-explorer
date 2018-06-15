@@ -25,7 +25,7 @@ export default function(){
                             ng-mouseover="rating.value=$index"
                             ng-mouseleave="rating.value=-1"
                             ng-class="{'fas': $index<=rating.value, 'far':$index>rating.value}"
-                            class="fa-star fa-3x text-red pointer"
+                            class="fa-star fa-2x text-red pointer"
                         ></span>
                     </div>
                 </div>

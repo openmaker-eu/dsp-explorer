@@ -464,7 +464,6 @@ main {
   .modal-dialog {
 
     width:100%;
-    //height:100%;
     z-index: 2000;
 
     @media all and (max-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 2%; width: 96%; height: 96%;}
@@ -698,5 +697,11 @@ main {
 }
 
 chatbot {
-  position:absolute; right:2%; width:30%; z-index:1000000; background: white; box-shadow: 0 0 1px #efefef;
+  position:absolute; right:5%; width:30%; z-index:1000000; background: white; box-shadow: 0 0 2px #a3a3a3;
+
+  @media all and(min-width: 768px){ width:50%; }
+  @media all and(max-width: 768px){ width:90%; }
+  @media all and(min-width: 992px){ width:25%; }
+  @media all and(min-width: 1170px){ width:20%; }
+
 }

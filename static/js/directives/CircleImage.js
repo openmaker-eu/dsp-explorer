@@ -4,7 +4,7 @@ let template = `
     </a>
 
     <style>
-        .profile-image-static { border-radius:50%; overflow: hidden; z-index:1000; }
+        .profile-image-static { border-radius:50%; overflow: hidden; z-index:1000;s}
         .not-pointer , .not-pointer *{ cursor:default!important; }
         .circle-image { position:absolute; }
         .landscape { height:100%!important; width:auto!important;  }

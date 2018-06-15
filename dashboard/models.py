@@ -704,6 +704,17 @@ class Profile(models.Model):
         self.crm_id = crm_id
         self.save()
 
+    def get_crm_id_and_save(self, force=False):
+        from crmconnector.models import CRMConnector
+        try:
+            if not self.crm_id or force:
+                print('no_crmid')
+                crm_user = CRMConnector.search_party_by_email(self.user.email)
+                self.crm_id = crm_user['id'] if 'id' in crm_user else None
+                self.save()
+        except Exception as e:
+            print(e)
+
 
 class Invitation(models.Model):
 

@@ -339,7 +339,6 @@ def authorization(request):
         'user': UserSerializer(request.user, many=False).data if request.user.is_authenticated else None
     })
 
-
 @api_view(['POST'])
 def apilogin(request):
     user = authenticate(

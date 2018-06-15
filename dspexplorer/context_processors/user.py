@@ -17,5 +17,6 @@ def authorization(request):
     }
     if request.user.is_authenticated:
         context['json_user'] = UserSerializer(request.user).data
+        request.user.profile.get_crm_id_and_save()
 
     return context
