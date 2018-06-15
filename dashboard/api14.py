@@ -234,13 +234,11 @@ class entity(APIView):
             return interest(request._request, entity='profile', user_id=user_id)
         elif entity == 'lovers':
             return interested(request._request, entity='profile', entity_id=user_id)
-        elif entity == 'projects':
+        elif entity == 'projects' or entity == 'challenges':
             local_entities = Project.objects.order_by('-end_date')
-            # local_entities = Project.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
             results = results+ProjectSerializer(local_entities, many=True).data
-            # local_entities = Challenge.objects.order_by('-end_date')
             local_entities = Challenge.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
@@ -274,8 +272,8 @@ class entity(APIView):
 
 
 class entity_details(APIView):
-    def get(self, request, entity='news', entity_id=None):
-
+    def get(self, request, entity, entity_id):
+        print(entity)
         results = []
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)
@@ -341,6 +339,7 @@ def authorization(request):
 
 @api_view(['POST'])
 def apilogin(request):
+    from crmconnector.models import CRMConnector
     user = authenticate(
         username=request.data.get('username', False),
         password=request.data.get('password', False)
@@ -349,6 +348,14 @@ def apilogin(request):
         login(request, user)
     else:
         return Response(data={'error': 'Username or password are wrong'}, status=401)
+
+    try:
+        print('crmid')
+        if not user.profile.crm_id:
+            crm_user = CRMConnector.search_party_by_email(profile.user.email)
+
+    except Exception as e:
+        print(e)
 
     return Response({
         'authorization': AuthUser.authorization(request),

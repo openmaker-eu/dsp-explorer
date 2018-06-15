@@ -27,12 +27,15 @@ $color-events--light : #9dbd5c;
 
 $color-white: #fff;
 
+$color-yellow: #ffff00;
+
 $color_list : (
         'news': $color-news,
         'news--light': $color-news--light,
 
         'projects': $color-projects,
         'project--light': $color-projects--light,
+        'projects--light': $color-projects--light,
         'project': $color-projects,
 
         'challenges': $color-projects,
@@ -64,7 +67,8 @@ $color_list : (
         'matches':$color-red,
 
         'black':$color-black,
-        'white':$color-white
+        'white':$color-white,
+        'yellow':$color-yellow
 );
 
 $om_breakpoints: (
@@ -234,7 +238,7 @@ main {
   &__header {
     border-radius: 8px 8px 0 0;
     text-align: center;
-    h3 {
+    h5, h4, h3, h2, h1 {
       margin:0; padding: 6% 0;
       text-transform: uppercase;
     }
@@ -284,7 +288,7 @@ main {
       .entity-carousel__header {
         background: #{$entity_color}!important;
         color:#fff!important;
-        * { color:#fff!important; }
+        * { color:#fff }
       }
     }
   }

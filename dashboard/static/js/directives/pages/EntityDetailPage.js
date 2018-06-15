@@ -1,5 +1,6 @@
 let template = `
-    <div class="container ">
+    <div class="container"
+>
         <div class="row">
             
             <!--Entity Heading-->
@@ -79,13 +80,14 @@ export default function(){
     return {
         template:template,
         scope: {
-            'entityname': '@',
+
             'entityid' : '@',
             'entitytempid' : '@',
             'slider': '@'
         },
-        controller : ['$scope', '$http','EntityProvider', function($scope, $http, EntityProvider) {
+        controller : ['$scope', '$rootScope', '$http','EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
             
+            $scope.entityname = $rootScope.page_info.options.entity_name
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.entity = EntityProvider.make($scope.entityname, $scope.entityid)
             $scope.nodata = !$scope.entity.get()

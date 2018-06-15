@@ -1,10 +1,10 @@
 let template = `
     <div class="col-md-12">
-        <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}"            >
+        <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}" >
         
             <div class="entity-carousel__header">
-                <h3 ng-if="!title"><a href="/entity/{$ entityname $}">{$ entityname $}</a></h3>
-                <h3 ng-if="title" ng-bind-html="title"></h3>
+                <h4 ng-if="!title"><a href="/entity/{$ entityname $}" ng-bind-html="entitiy_title()"></a></h4>
+                <h4 ng-if="title" ng-bind-html="title"></h4>
             </div>
             
             <entity-loading
@@ -46,6 +46,10 @@ export default [function(){
             
             $scope.entity_list = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
             $scope.entity_list.get()
+            
+            $scope.entitiy_title= ()=> ['challenges', 'projects'].includes($scope.entityname)
+                ? '<span>Projects</span><span></span>&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
+                : $scope.entityname
             
             $scope.$watch('entity_list.data',  (a, b)=>{
                 $scope.reload = true;

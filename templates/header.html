@@ -11,8 +11,11 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand logo text-red" href="/">
-                <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left" style="height:120%; margin-top:-2%;">
-                <span class="pull-left text-red" style="font-weight: 900;">OM<span>explorer</span></span>
+                <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left"
+                     style="height:160%; margin-top:-2%;">&nbsp;
+                <span class="pull-left" >
+                    <span class="text-red" style="font-weight: 500;">OM<small class="text-white" style="font-weight: 300; text-transform: lowercase;">explorer</small></span>
+                </span>
             </a>
         </div>
 
@@ -27,9 +30,9 @@
                 <li  ng-if="$root.authorization >= 1000"
                      class="dropdown {% if current_url == 'pss:application' or current_url == 'pss:application_result' %}liactive{% endif %}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="text-red bold" style="font-size:190%;">Admin&nbsp;
+                        <small class="text-red bold" style="font-size:130%">Admin&nbsp;
                             <span class="far fas fa-caret-down text-white">
-                        </span></span>
+                        </span></small>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/admin">Admin area</a></li>
