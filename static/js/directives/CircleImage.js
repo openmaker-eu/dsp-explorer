@@ -17,7 +17,7 @@ export default {
     template: template,
     bindings: {
         src: '<',
-        href: '<',
+        href: '@'
     },
     controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
         

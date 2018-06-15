@@ -103,7 +103,17 @@ class questions(APIView):
 
         user = request.user
         profile = request.user.profile
+        print('acitivity')
+        print(profile.domain)
         questions = [
+            self.make('activity-question', 'activity-question', 'What is your activity?',
+                      value={
+                          "domain": profile.domain and profile.domain.split(",") ,
+                          "area": profile.area and profile.area.split(","),
+                          "technology": profile.technology and profile.technology.split(","),
+                          "skills": profile.technology and profile.skills.split(",")
+                      }
+                      ),
             self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
             self.make('gender', 'select', 'What is your gender?',
                       options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})
@@ -118,14 +128,7 @@ class questions(APIView):
                       options=[x.name for x in Tag.objects.all()],
                       value=[x.name for x in profile.tags.all()],
                       ),
-            self.make('activity-question', 'activity-question', 'What is your activity?',
-                      value={
-                          "domain": profile.domain.split(","),
-                          "area": profile.area.split(","),
-                          "technology": profile.technology.split(","),
-                          "skills": profile.skills.split(",")
-                      }
-                      ),
+
             self.make('statement', 'textarea', 'Short description about you (optional)'),
             self.make('picture', 'imageupload', 'Upload you profile image (optional)',
                       value=profile.picture.url if profile.picture else None,

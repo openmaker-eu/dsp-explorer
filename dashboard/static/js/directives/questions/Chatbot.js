@@ -4,7 +4,12 @@ let $ = require('jquery')
 let template = `
     <div class="chatbot" ng-if="$root.authorization > 0">
         <div class="chatbot__container">
-            <div class="chatbot__header" style="width: 100%; height:50px; background: #f00;"></div>
+            <div class="chatbot__header" >
+                <h2 ng-if="entityname && entityid">
+                    <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                    <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                </h2>
+            </div>
             <div class="chatbot__body" ng-if="opened" style="background: white;">
                 <wizard
                     questions="questions"
@@ -58,6 +63,12 @@ let chatbot_directive =
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ console.log('CHAtbot END', $scope.$id); $scope.opened=false })
         $rootScope.$on('authorization.refresh', $scope.get())
+    
+        $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
+        $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')
+        
+        console.log($rootScope);
+    
     
     }]
 }

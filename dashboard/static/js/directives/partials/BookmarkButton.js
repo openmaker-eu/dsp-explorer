@@ -5,7 +5,7 @@ export default function(){
             ng-click="bookmark()"
             ng-if="$root.authorization >= 10"
             class="far pointer"
-            ng-class="{'text-red': bookmarked, 'visible fa-bookmark': entityname !== 'events', 'visible fa-bell': entityname === 'events'}"
+            ng-class="{'text-white': bookmarked, 'visible fa-bookmark': entityname !== 'events', 'visible fa-bell': entityname === 'events'}"
         ></i>
 `,
         scope: {

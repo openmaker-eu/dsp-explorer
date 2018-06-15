@@ -8,9 +8,9 @@ let template = `
                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
                        <span class="entity-detail__title">{$ entityname $}</span>
                        <span class="pull-right">
-                           <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
-                           &nbsp;&nbsp;
-                           <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                           <!--<bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>-->
+                           <!--&nbsp;&nbsp;-->
+                           <!--<interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>-->
                        </span>
                    <h1>
                    <h1>&nbsp;</h1>
@@ -37,7 +37,7 @@ let template = `
                         <br>
                         <br>
                         
-                        <entity-interested  entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
+                        <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                         
                     </div>
                     <div class="col-md-4">

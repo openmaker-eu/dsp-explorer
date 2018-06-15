@@ -5,7 +5,7 @@ export default function(){
                 ng-click="interest()"
                 ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
                 class="far pointer"
-                ng-class="{'text-red': interested, 'fa-star':entityname!=='profile', 'fa-heart': entityname==='profile' }"
+                ng-class="{'text-white': interested, 'fa-star':entityname!=='profile', 'fa-heart': entityname==='profile' }"
             ></i>
         `,
         scope: {

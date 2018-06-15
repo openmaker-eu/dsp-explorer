@@ -11,7 +11,10 @@ export default [function(){
                         <circle-image
                             src="inter.picture || '/media/images/profile/female.svg'"
                             class="col-md-11 col-sm-12"
+                            href="/profile/{$ inter.id $}"
+
                         ></circle-image>
+                        
                     <!--</a>-->
                 </a>
             </div>
@@ -38,7 +41,6 @@ export default [function(){
             
             // Reload on change
             $rootScope.$on('interested.new', $scope.check)
-            
         }]
     }
 }]

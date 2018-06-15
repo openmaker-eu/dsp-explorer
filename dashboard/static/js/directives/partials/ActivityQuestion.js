@@ -10,7 +10,7 @@ let activities = {
 
 let template = `
     <style> .activities-form .ui-select-match {font-size:80%;} </style>
-    <div ng-repeat="(key,activity) in activities" class="activities-form" ng-init="data[key] || (data[key]='')">
+    <div ng-repeat="(key,activity) in activities" class="activities-form" >
         <label for="" class="capitalize">{$ key $}</label>
         <ui-select
             multiple
@@ -39,10 +39,6 @@ export default {
         this.$onChanges = function (changes) {
             $scope.data = changes.data && changes.data.currentValue || undefined
             $scope.activities = activities
-            // $scope.x = this.model
-        
-            console.log('Model', $scope.data);
-        
         }
         
     }]
