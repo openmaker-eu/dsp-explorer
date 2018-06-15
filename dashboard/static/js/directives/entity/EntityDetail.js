@@ -7,7 +7,7 @@ let template = `
         }">
         
         <div ng-class="{'force-square': preview}" ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture">
-            <a href="/entity/profile/{$ entity.id $}">
+            <a href="/profile/{$ entity.id $}">
                 <img ng-src="{$ entity.picture || 'media/images/profile/other.svg' $}" alt="" style="width:100%;">
             </a>
         </div>
