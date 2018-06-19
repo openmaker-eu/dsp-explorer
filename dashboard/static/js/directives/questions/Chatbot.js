@@ -5,10 +5,26 @@ let template = `
     <div class="chatbot" ng-if="$root.authorization > 0">
         <div class="chatbot__container">
             <div class="chatbot__header" >
-                <h2 ng-if="entityname && entityid">
-                    <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
-                    <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                <h2>
+                    <div class="entity-actions" ng-if="entityname && entityid">
+                        <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                        <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                    </div>
+                    
+                    <div
+                        class="chatbot__toggler"
+                    >
+                        <span
+                            class="fas fa-chevron-up text-white"
+                            ng-class="{'fa-chevron-down':opened, 'fa-chevron-up':!opened}"
+                            ng-click="toggle_bot()"
+                        ></span>
+                    </div>
+                    
+
+                    
                 </h2>
+                
             </div>
             <div class="chatbot__body" ng-if="opened" style="background: white;">
                 <wizard
