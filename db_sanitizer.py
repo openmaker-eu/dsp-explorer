@@ -48,10 +48,18 @@ def deobfuscate_invitation(user):
         print('Error Deobfuscation')
         print(e)
 
+
+def add_crm_id_to_profile(user):
+    try:
+        user.profile.get_crm_id_and_save()
+    except Exception as e:
+        print(e)
+
 if __name__ == "__main__":
     users = User.objects.all()
     for user in users:
-        sanitize_place(user)
-        add_location_to_user(user)
-        deobfuscate_invitation(user)
+            sanitize_place(user)
+            add_location_to_user(user)
+            deobfuscate_invitation(user)
+            add_crm_id_to_profile(user)
 

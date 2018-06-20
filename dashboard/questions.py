@@ -26,12 +26,16 @@ class questions(APIView):
 
         # Request for signup questions
         not request.user.is_authenticated and not action and self.signup_questions(request)
+        # Chatbot for visitors
+        not request.user.is_authenticated and action == 'chatbot' and self.visitor_questions(request)
         # Request for edit profile
         request.user.is_authenticated and action == 'profileedit' and self.edit_profile_questions(request)
         # Request for chatbot
-        action == 'chatbot' and self.chatbot_question(request)
+        request.user.is_authenticated and action == 'chatbot' and self.chatbot_question(request)
         # Feedback
         entity_name and temp_id and self.feedback_questions(request, entity_name, temp_id)
+
+
 
         return Response({'questions': self.questions})
 
@@ -47,7 +51,7 @@ class questions(APIView):
 
         try:
             # Send Chatbot Feedback to Insight
-            if action == 'chatbot':
+            if action == 'chatbot' and request.user.is_authenticated:
                 return Response(Insight.feedback(
                     temp_id=request.data.get('temp_id', None),
                     crm_id=request.user.profile.crm_id,
@@ -67,6 +71,12 @@ class questions(APIView):
                 self.question('rate_entity', entity_name=entity_name, entity_id=entity_id, first_name=request.user.first_name),
                 self.question('rate_bye', entity_name=entity_name, first_name=request.user.first_name)
             ]
+
+    def visitor_questions(self, request):
+        self.questions = [
+            self.question('signup_proposal'),
+            self.question('signup_proposal_2')
+        ]
 
     def signup_questions(self, request):
         self.questions = [
@@ -217,10 +227,23 @@ class questions(APIView):
                 'text': "Now i will be able to show you more interesting " + entity_name,
                 'actions': {'options': ['  Tank you!  ']}
             },
+            'signup_proposal': {
+                'type': "question",
+                'question': 'Hi visitor!',
+                'text': "Do you know that signed users have access to more content than you?",
+                'actions': {'options': ['Tel me more',  {'value': 'event:chatbot.close', 'label': 'I dont mind'}]}
+            },
+            'signup_proposal_2': {
+                'type': "question",
+                "super text": 'You can view only 5 contents per day',
+                'question': 'If you signup you will have full access to the site contents.' ,
+                'text': "Do you Want to signup?",
+                'actions': {'options': [{'value': 'event:question.modal.open', 'label': 'Yes'}, 'Not now' ]}
+            },
         }
 
         form_questions = {
-            'signup_welcome': cls.make('signup', 'message', 'Signup', value='Signup to Openmaker Explorer'),
+            'signup_welcome': cls.make('signup_welcome', 'message', 'Signup', value='Signup to Openmaker Explorer'),
             'user_full_name': cls.make('name', 'name', 'Who are you?'),
             'user_gender': cls.make('gender', 'select', 'What is your gender?',
                  options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})

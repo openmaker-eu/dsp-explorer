@@ -2,7 +2,7 @@ let _ = require('lodash')
 let $ = require('jquery')
 
 let template = `
-    <div class="chatbot" ng-if="$root.authorization > 0">
+    <div class="chatbot">
         <div class="chatbot__container">
             <div class="chatbot__header" >
                 <h2>
@@ -11,18 +11,14 @@ let template = `
                         <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                     </div>
                     
-                    <div
-                        class="chatbot__toggler"
-                    >
+                    <div class="chatbot__toggler pointer">
                         <span
                             class="fas fa-chevron-up text-white"
                             ng-class="{'fa-chevron-down':opened, 'fa-chevron-up':!opened}"
                             ng-click="toggle_bot()"
                         ></span>
                     </div>
-                    
 
-                    
                 </h2>
                 
             </div>
@@ -30,7 +26,7 @@ let template = `
                 <wizard
                     questions="questions"
                     action="chatbot"
-                    loadingmessage="Chatbot is writing"
+                    loadingmessage="I'm writing"
                     wizardid="wizardid"
                 ></wizard>
                 <navi-chatbot items="questions" wizardid="wizardid"></navi-chatbot>
@@ -63,9 +59,11 @@ let chatbot_directive =
         $scope.url = ()=>{
             let page_options = _.get($rootScope, 'page_info.options')
             let url = '/api/v1.4/questions/chatbot/'
-            page_options.hasOwnProperty('entity_name') && (url += '?entity_name='+page_options['entity_name'])
-            page_options.hasOwnProperty('entity_id') && (url += '&entity_id='+page_options['entity_id'])
-            page_options.hasOwnProperty('entity_temp_id') && (url += '&entity_temp_id='+page_options['entity_temp_id'])
+            if(page_options.hasOwnProperty('entity_name')){
+                url += '?entity_name='+page_options['entity_name']
+                page_options.hasOwnProperty('entity_id') && (url += '&entity_id='+page_options['entity_id'])
+                page_options.hasOwnProperty('entity_temp_id') && (url += '&entity_temp_id='+page_options['entity_temp_id'])
+            }
             return url
         }
         
@@ -77,7 +75,7 @@ let chatbot_directive =
             
         }
     
-        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ console.log('CHAtbot END', $scope.$id); $scope.opened=false })
+        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $scope.opened=false })
         $rootScope.$on('authorization.refresh', $scope.get())
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')

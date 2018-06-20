@@ -62,9 +62,6 @@ let wizard_directive =
     
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
             
-            console.log('WIZARD: ', $scope.wizardid);
-            console.log('WIZARD ACTION: ', $scope.action);
-            
             let question = _.get($scope , 'questions['+current+']')
             let subform = $scope.wizard.form[question.name]
             
@@ -97,6 +94,7 @@ let wizard_directive =
                     .catch(res=>question.error=res.data.error)
                     .finally(()=>$scope.loading=false)
             }
+
             
         })
         
