@@ -26,6 +26,7 @@ from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
 import os
 from collections import Counter
+from connectors.insight.connector import InsightConnectorV10 as Insight
 
 class ModelHelper:
 
@@ -320,6 +321,15 @@ class Profile(models.Model):
         blank=True,
         default='[{"name":"twitter","link":""},{"name":"google-plus","link":""},{"name":"facebook","link":""}]'
     )
+
+    def reccomended(self):
+        try:
+            res = Insight.reccomended_user(self.crm_id)
+            users_ids = res.json()['users'][0]['recommended_users']
+            profiles = Profile.objects.filter(crm_id__in=users_ids)
+            return profiles
+        except:
+            pass
 
     def best_matches(self):
         all_matches = [y.pk for x in self.tags.all() for y in x.profile_tags.all() if y.pk!=self.pk]

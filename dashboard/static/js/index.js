@@ -97,6 +97,7 @@ app.directive('entityLoading', require('./directives/partials/EtityLoading').def
 app.directive('wizard', require('./directives/questions/Wizard').default )
 app.component('question', require('./directives/questions/Question').default )
 app.directive('chatbot', require('./directives/questions/Chatbot').default )
+app.directive('profileQuestions', require('./directives/questions/ProfileQuestions').default )
 
 app.directive('naviQuestions', require('./directives/questions/NaviQuestions').default )
 app.directive('naviChatbot', require('./directives/questions/NaviChatbot').default )

@@ -31,7 +31,7 @@ urlpatterns = [
     #
     # url(r'^challenges/(?P<entity_id>[0-9]+)$', views.challenge_detail, name='project'),
     #
-    url(r'^profile/(?P<entity_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
+    url(r'^profile/(?P<profile_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
     url(r'^profile/$', views.profile_detail, name='profile_detail'),
 
     url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/(?P<entity_temp_id>[0-9]+)/$$', views.entity_detail, name='entity_detail'),
@@ -112,7 +112,7 @@ urlpatterns = [
     url(r'^api/v1.4/signup/$', api14.signup, name='user_signup'),
     url(r'^api/v1.4/authorization/$', api14.authorization, name='get_user_authorization'),
 
-    # Questions
+    # Questions (Bot and wizard)
     url(r'^api/v1.4/questions/(?P<action>\w+)/$', questions.questions.as_view(), name='questions'),
     url(r'^api/v1.4/questions/$', questions.questions.as_view(), name='questions'),
 
@@ -120,7 +120,7 @@ urlpatterns = [
     url(r'^api/v1.4/user/(?P<profile_id>\w+)/project/$', api14.user_projects, name='user_projects'),
     url(r'^api/v1.4/user/project/$', api14.user_projects, {'profile_id': None}, name='logged_user_projects'),
 
-    # Entity with user id (Tailored)
+    # Entity - with user id (Tailored)
     url(r'^api/v1.4/user/(?P<user_id>\w+)/(?P<entity>\w+)/$', api14.entity.as_view(), name='user_entity'),
 
     # Entity

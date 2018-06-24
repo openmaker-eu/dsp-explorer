@@ -18,9 +18,8 @@ let template = `
                             ng-click="toggle_bot()"
                         ></span>
                     </div>
-
                 </h2>
-                
+               
             </div>
             <div class="chatbot__body" ng-if="opened" style="background: white;">
                 <wizard

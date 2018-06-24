@@ -60,16 +60,18 @@ def entity_detail(request, entity_name, entity_id, entity_temp_id=None):
     return render(request, 'dashboard/entity_detail.html', context)
 
 
-def profile_detail(request, entity_id=None):
+def profile_detail(request, profile_id=None):
 
-    if not entity_id and isinstance(request.user, User):
-        return HttpResponseRedirect(reverse('dashboard:profile_detail', kwargs={'entity_id': request.user.profile.id}))
-    if not entity_id and request.user:
+    if not profile_id and isinstance(request.user, User):
+        return HttpResponseRedirect(
+            reverse('dashboard:profile_detail', kwargs={'profile_id': request.user.profile.id})
+        )
+    if not profile_id and request.user:
         return HttpResponseForbidden()
 
     context = {
         'entity': 'profile',
-        'entity_id': entity_id,
+        'profile_id': profile_id,
         'slider': 'loved-lovers'
     }
     return render(request, 'dashboard/profile_detail.html', context)

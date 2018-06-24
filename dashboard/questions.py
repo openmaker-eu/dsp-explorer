@@ -23,19 +23,25 @@ class questions(APIView):
         entity_name = request.query_params.get('entity_name', None)
         entity_id = request.query_params.get('entity_id', None)
         temp_id = request.query_params.get('entity_temp_id', None)
+        profile_id = request.query_params.get('profile_id', None)
 
-        # Request for signup questions
-        not request.user.is_authenticated and not action and self.signup_questions(request)
-        # Chatbot for visitors
-        not request.user.is_authenticated and action == 'chatbot' and self.visitor_questions(request)
-        # Request for edit profile
-        request.user.is_authenticated and action == 'profileedit' and self.edit_profile_questions(request)
-        # Request for chatbot
-        request.user.is_authenticated and action == 'chatbot' and self.chatbot_question(request)
-        # Feedback
-        entity_name and temp_id and self.feedback_questions(request, entity_name, temp_id)
+        print('action')
+        print(action)
 
+        if request.user.is_authenticated:
+            # Request for edit profile
+            action == 'profileedit' and self.edit_profile_questions(request)
+            # Request for chatbot
+            action == 'chatbot' and self.chatbot_question(request)
+            # Feedback
+            entity_name and temp_id and self.feedback_questions(request, entity_name, temp_id)
+            action == 'profile' and self.profile_questions(request, profile_id)
 
+        else:
+            # Request for signup questions
+            not action and self.signup_questions(request)
+            # Chatbot for visitors
+            action == 'chatbot' and self.visitor_questions(request)
 
         return Response({'questions': self.questions})
 
@@ -77,6 +83,32 @@ class questions(APIView):
             self.question('signup_proposal'),
             self.question('signup_proposal_2')
         ]
+
+    def profile_questions(self, request, profile_id):
+        try:
+            crm_ids = [
+                Profile.objects.filter(pk=request.user.profile.id).first().crm_id,
+                Profile.objects.filter(pk=profile_id).first().crm_id
+            ]
+            questions = Insight.profile_questions(crm_ids)
+
+            self.questions = {
+                x['temp_id']: x.update({'feedback': [x['feedback']]}) or x
+                for x in questions[0]['questions']
+            }
+
+            if crm_ids[0] != crm_ids[1]:
+                for question in questions[1]['questions']:
+                    temp_id = question['temp_id']
+                    crm_id = questions[1]['crm_id']
+                    if temp_id in self.questions:
+                        self.questions[temp_id]['feedback'].append(question['feedback'])
+
+            self.questions = self.questions.values()
+
+        except Exception as e:
+            print(e)
+
 
     def signup_questions(self, request):
         self.questions = [

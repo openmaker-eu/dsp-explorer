@@ -13,7 +13,7 @@ class InsightConnectorV10(object):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
 
     @classmethod
-    def user_questions(cls, crm_id):
+    def profile_questions(cls, crm_ids):
         '''
 
         :param crm_id:
@@ -22,11 +22,13 @@ class InsightConnectorV10(object):
 
         # @TODO: this is a FAKE response since there is no user questions API available
         try:
-            response = cls.get('recommendation/questions', {"crm_ids": [crm_id]})
+            response = cls.get('recommendation/questions', {"crm_ids": crm_ids})
             json_decoded = response.json() if response.status_code < 205 else []
 
-            results = json_decoded['users'][0]['questions']
-            [x.update({'feedback': 'agree'}) for x in results]
+            import random
+            results = json_decoded['users']
+            for user in results:
+                [x.update({'feedback': random.choice(['agree', 'disagree', 'notsure'])}) for x in user['questions']]
 
         except Exception as e:
             results = []
@@ -49,7 +51,7 @@ class InsightConnectorV10(object):
     @classmethod
     def reccomended_user(cls, crm_id):
         results = cls.get('recommendation/users', {'crm_ids': [crm_id]})
-        print(results)
+        return results
 
 
     @classmethod
