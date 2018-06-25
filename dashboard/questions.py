@@ -90,19 +90,24 @@ class questions(APIView):
                 Profile.objects.filter(pk=request.user.profile.id).first().crm_id,
                 Profile.objects.filter(pk=profile_id).first().crm_id
             ]
-            questions = Insight.profile_questions(crm_ids)
 
+            questions = Insight.profile_questions(crm_ids)
             self.questions = {
                 x['temp_id']: x.update({'feedback': [x['feedback']]}) or x
                 for x in questions[0]['questions']
             }
 
             if crm_ids[0] != crm_ids[1]:
-                for question in questions[1]['questions']:
-                    temp_id = question['temp_id']
-                    crm_id = questions[1]['crm_id']
-                    if temp_id in self.questions:
-                        self.questions[temp_id]['feedback'].append(question['feedback'])
+                for question in questions[0]['questions']:
+                    question['feedback'].append('agree')
+
+                # for question in questions[1]['questions']:
+                    #     print(question)
+                    #     temp_id = question['temp_id']
+                    #     crm_id = questions[1]['crm_id']
+                    #     print(temp_id)
+                    #     if temp_id in self.questions:
+                    #         self.questions[temp_id]['feedback'].append(question['feedback'])
 
             self.questions = self.questions.values()
 

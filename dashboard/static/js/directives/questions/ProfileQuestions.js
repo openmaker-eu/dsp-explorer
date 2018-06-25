@@ -8,9 +8,20 @@ let template = `
             class="col-md-4"
         >
             <div class="background-white" style="padding:5%; border:solid 1px #bbb;">
+                
                 <h4 class="text-brown">{$ question.question $}</h4>
                 <p>{$ question.text $}</p>
-                <p>{$ question.feedback[0] $}</p>
+                
+                <hr>
+                
+                <p ng-if="!question.feedback[1]" class="text-red">{$ question.feedback[0] $}</p>
+                <p ng-if="question.feedback[1]" class="text-brown">
+                    <strong>{$ profile.data.user.first_name $}:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedback[0] $}
+                </p>
+                <p ng-if="question.feedback[1]" class="text-red">
+                    <strong>You:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedback[1] $}
+                </p>
+                
             </div>
         
         </div>
@@ -20,7 +31,9 @@ let template = `
 let profile_question_directive =
 {
     template:template,
-    scope: {},
+    scope: {
+        profile : '='
+    },
     controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider){
         
         $scope.profileid = _.get($rootScope, 'page_info.options.profile_id')
@@ -39,7 +52,7 @@ let profile_question_directive =
         $scope.get()
     
         $rootScope.$on('authorization.refresh', ()=>{})
-    
+        console.log('Profile object', $scope.profile);
     
     }]
 }
