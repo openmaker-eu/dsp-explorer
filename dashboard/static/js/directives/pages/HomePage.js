@@ -1,6 +1,10 @@
 
 let template = /*html*/`
     <div class="container home-page">
+        <h3 class="row margin-top-5-perc ">
+            <a class="text-red" href="/manifesto">OM Manifesto</a>
+        </h3>
+
         <div class="row margin-top-5-perc margin-bottom-5-perc">
             <div>
                 <div ng-repeat="entity_name in entities_names" class="col-md-4">
@@ -11,7 +15,7 @@ let template = /*html*/`
                 </div>
             </div>
         </div>
-    </div>
+    </h3>
 `
 
 export default [function(){ 

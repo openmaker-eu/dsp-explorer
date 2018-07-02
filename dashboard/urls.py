@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),
+    url(r'^manifesto/$', views.manifesto, name='manifesto'),
 
     ###################################### MDP ROUTES
     # Article list

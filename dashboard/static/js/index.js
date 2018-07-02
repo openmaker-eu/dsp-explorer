@@ -75,6 +75,7 @@ app.directive('homePage', require('./directives/pages/HomePage').default )
 app.directive('entityListPage', require('./directives/pages/EntityListPage').default )
 app.directive('entityDetailPage', require('./directives/pages/EntityDetailPage').default )
 app.directive('profileDetailPage', require('./directives/pages/ProfileDetailPage').default )
+app.directive('manifestoPage', require('./directives/pages/ManifestoPage').default )
 
 // Page Blocks
 app.directive('entityCarousel', require('./directives/entity/EntityCarousel').default )

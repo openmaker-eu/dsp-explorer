@@ -32,6 +32,8 @@ def dashboard(request, topic_id=None):
     messages.warning(request, 'Some error occurs!')
     return HttpResponseRedirect(reverse('dashboard:login'))
 
+def manifesto(request):
+    return render(request, 'dashboard/manifesto.html', {})
 
 def entity_context(entity_name, entity_id=None, entity_temp_id=None):
     context_list = {
