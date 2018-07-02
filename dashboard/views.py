@@ -33,7 +33,7 @@ def dashboard(request, topic_id=None):
     return HttpResponseRedirect(reverse('dashboard:login'))
 
 def manifesto(request):
-    return render(request, 'dashboard/manifesto.html', {})
+    return render(request, 'dashboard/manifesto.html', {'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),})
 
 def entity_context(entity_name, entity_id=None, entity_temp_id=None):
     context_list = {
