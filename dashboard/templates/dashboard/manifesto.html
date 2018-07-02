@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block container %}
 <div>
+
 <div class="container" style="font-size:120%;">
         <div class="row">
                 <div id="col-md-12">
@@ -50,19 +51,19 @@
                                 spirit of the Maker Movement.
                                 If you have questions about the platform, you can email info@openmaker.eu
                         </small></p>
-
                 </div>
-
         </div>
 
         <div class="row">
            <div
               class="col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0 margin-top-5-perc margin-bottom-5-perc">
               <tag-bubbles
+
                 class="background-white"
                 tags="{{ hot_tags }}"
                 maxtags="20"
-                isstandalone="true"
+                isstandalone="$root.authorization >= 10"
+                isstatic="$root.authorization < 10"
               ></tag-bubbles>
             </div>
         </div>
