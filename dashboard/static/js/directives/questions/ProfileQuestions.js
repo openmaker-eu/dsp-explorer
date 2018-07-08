@@ -12,9 +12,10 @@ let template = `
     <div ng-if="questions" class="profile-questions">
         <div
             ng-repeat="question in questions"
-            class="col-md-3"
+            class="col-md-4"
+            ng-class="{'col-md-6': question.is_edit}"
         >
-            <div class="background-white" style="padding:5%; border:solid 1px #efefef;">
+            <div class="background-white" style="padding:10%; border:solid 1px #efefef;">
                 
                 <div
                     class="profile-question__actions"
@@ -30,7 +31,8 @@ let template = `
                     <h3
                         class="fas fa-fw fa-edit text-red background-white pointer"
                         style="position: absolute; bottom:10%; right:10%;"
-                        ng-click="edit_question()"
+                        ng-click="question.is_edit = !question.is_edit"
+                        ng-show="!question.is_edit"
                     ></h3>
                 </div>
                 
@@ -48,10 +50,36 @@ let template = `
                     <strong>You:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedback[1] $}
                 </p>
                 
+                <div ng-show="question.is_edit" style="
+                    width:100%;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-around;
+                    align-items: center;
+                    background: #fff;
+                    padding:5% 0 0 0;
+                    "
+                >
+                    
+                    <div
+                    <div
+                        ng-if="!question.actions.type || question.actions.type == 'buttons'"
+                        ng-repeat="act in question.actions.options"
+                        style="padding:1%; z-index:10000;"
+                    >
+                        <button
+                            class="btn btn-danger pull-left capitalize pointer"
+                            ng-click="edit_question(question, act.label || act.value || act)"
+                        >{$ act.label || act.value || act $}</button>
+                    </div>
+                </div>
+               
             </div>
-        
+
         </div>
+
     </div>
+    
 `
 
 let profile_question_directive =
@@ -64,6 +92,9 @@ let profile_question_directive =
         
         $scope.profileid = _.get($rootScope, 'page_info.options.profile_id')
         $scope.questions = null
+        $scope.wizard_id = $scope.$id;
+        $scope.wizard_name = 'wizard.'+$scope.wizard_id;
+        
         
         console.log('profile id', $scope.profileid);
         $scope.get = ()=>{
@@ -72,17 +103,23 @@ let profile_question_directive =
                 .then((r)=>{
                     console.log('PROFILE Q UESTIOONS : ',r);
                     $scope.questions = r.data.questions || null
+                    console.log($scope.questions);
                 })
         }
         
         $scope.get()
     
         $rootScope.$on('authorization.refresh', ()=>{})
-        console.log('Profile object', $scope.profile);
         
-        $scope.toggle_show = (q)=>{q.visible=!q.visible}
-        $scope.edit_question = ()=>{}
-    
+        $scope.toggle_show =  (q)=> {q.visible=!q.visible}
+        
+        $scope.edit_question = async(question, feedback)=>{
+            let q = {...question}
+            q.feedback = feedback || q.feedback
+            let res= await $http.post('/api/v1.4/questions/chatbot/', q)
+            $scope.get()
+        }
+
     }]
 }
 

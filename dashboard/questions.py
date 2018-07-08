@@ -109,7 +109,7 @@ class questions(APIView):
                     #     if temp_id in self.questions:
                     #         self.questions[temp_id]['feedback'].append(question['feedback'])
 
-            self.questions = self.questions.values()
+            self.questions = [ self.map_remote_to_local_questions(q) for q in self.questions.values()]
 
         except Exception as e:
             print(e)

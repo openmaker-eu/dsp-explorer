@@ -44,12 +44,16 @@ export default function(){
             
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
-                
+    
+    
                 if(value === 'goto:last') $scope.goto($scope.items.length-1)
                 if(value.includes('event:')) $rootScope.$emit(value.split(':')[1])
                 
                 $scope.items[$scope.current].feedback = value
                 $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
+                
+                console.log('wizardname', $scope.wizard_name);
+    
                 $scope.is_end && $scope.end()
             }
             
@@ -64,6 +68,7 @@ export default function(){
             $scope.get_stars = (amount)=>[...new Array(amount)]
     
             $rootScope.$on('chatbot.close',()=>$scope.end())
+            
     
         }]
     }
