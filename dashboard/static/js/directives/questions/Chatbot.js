@@ -7,7 +7,7 @@ let template = `
             <div class="chatbot__header" >
                 <h2>
                     <div class="entity-actions" ng-if="entityname && entityid">
-                        <bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
+                        <bookmark-button ng-if="entityname !== 'profile'"  entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>
                         <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                     </div>
                     
@@ -79,6 +79,16 @@ let chatbot_directive =
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')
+    
+        // Profile page case
+        if(
+            _.get($rootScope, 'page_info.name') === 'profile_detail' &&
+            _.get($rootScope, 'user.profile') != _.get($rootScope, 'page_info.options.profile_id')
+        )
+        {
+            $scope.entityname = 'profile'
+            $scope.entityid = _.get($rootScope, 'page_info.options.profile_id')
+        }
     
     }]
 }
