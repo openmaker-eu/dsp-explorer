@@ -10,12 +10,13 @@ let activities = {
 
 let template = `
     <style> .activities-form .ui-select-match {font-size:80%;} </style>
+    <span ng-init="activity = {}" ></span>
     <div ng-repeat="(key,activity) in activities" class="activities-form" >
-        <label for="" class="capitalize">{$ key $}</label>
+        <label for="" class="capitalize">{$ key $} data: {$ data[key] $}</label>
         <ui-select
             multiple
             class="form-control"
-            ng-model="data[key]"
+            ng-model="activity[key]"
             title="Write here to search available {$ key $}"
         >
             <ui-select-match placeholder="Type to search for {$ key $}">{$ $item $}</ui-select-match>
@@ -24,7 +25,7 @@ let template = `
                 <div>{$ activ $}</div>
             </ui-select-choices>
         </ui-select><br/>
-        <input type="hidden" ng-model="data[key]" ng-value="data[key]" name="{$ key $}" required/>
+        <input type="hidden" ng-model="activity[key]" ng-value="activity[key]" name="{$ key $}" required/>
     </div>
 `
 
