@@ -239,11 +239,11 @@ class User(User):
         try:
             print('1')
             user = User.objects.create_user(
-                username=kwargs.get('email', False)[0],
-                email=kwargs.get('email', False)[0],
-                password=kwargs.get('password', False)[0],
-                first_name=kwargs.get('first_name', False)[0],
-                last_name=kwargs.get('last_name', False)[0]
+                username=kwargs.get('email', False),
+                email=kwargs.get('email', False),
+                password=kwargs.get('password', False),
+                first_name=kwargs.get('first_name', False),
+                last_name=kwargs.get('last_name', False)
             )
             print('2')
             user.is_active = False

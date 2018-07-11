@@ -87,6 +87,14 @@ class Party(object):
 
     def get_custom_field(self, user):
         import datetime
+        print(type(user.profile.birthdate))
+        print(user.profile.birthdate)
+        birthdate = ''
+
+        try:
+            birthdate = user.profile.birthdate if isinstance(user.profile.birthdate, str) else user.profile.birthdate.strftime("%Y-%m-%d")
+        except:
+            pass
 
         custom_fields = {
             '444006': user.profile.city,
@@ -181,12 +189,14 @@ class Party(object):
         remote_custom_fields = self.get_custom_field_definitions()
         for field in self.fields:
             customs = filter(lambda x: x['id'] == field['definition']['id'], remote_custom_fields)
-            if len(customs) > 0:
+            try:
                 custom = customs[0]
                 if custom['type'] == 'list' and not field['value'] in custom['options']:
                     print(Colorizer.Yellow('Excluding field : {} ',format(field)))
                     self.fields.remove(field)
                     print(Colorizer.Yellow('Field Excluded'))
+            except:
+                pass
 
     # CRM does not check for duplicated on some fields
     # Those methods find match between local and CRM data an merge in unique object without duplicates
@@ -200,8 +210,10 @@ class Party(object):
         if self.__capsule_party and len(self.__capsule_party['emailAddresses']) > 0:
             self.emailAddresses = self.__capsule_party['emailAddresses']
             email_match = filter(lambda x: x['address'] == self.__local_user.email, self.__capsule_party['emailAddresses'])
-            if len(email_match) == 0:
+            try:
                 self.emailAddresses.append({'address': self.__local_user.email})
+            except:
+                pass
 
     # Set delete flag to remote websites and add local to websites field
     # Will remove all websites on capsule crm
@@ -221,9 +233,11 @@ class Party(object):
 
     def __get_merged_websites(self, local_social):
         match = filter(lambda x: x['service'] == local_social['service'], self.__capsule_party['websites'])
-        if len(match) > 0:
+        try:
             match[0]['address'] = local_social['address']
             return match[0]
+        except:
+            pass
         return local_social
 
     # ###############

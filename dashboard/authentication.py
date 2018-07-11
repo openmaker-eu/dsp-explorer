@@ -256,6 +256,9 @@ def onboarding(request):
 
 def onboarding_confirmation(request, token):
     # Check for token
+
+    print(' ################ confirmation')
+
     try:
         profile = Profile.objects.get(reset_token=token)
     except Profile.DoesNotExist:
@@ -265,11 +268,13 @@ def onboarding_confirmation(request, token):
     except Exception as e:
         print('other error')
         print(e)
+
     # update on crm
     try:
         party = Party(profile.user)
         result = party.create_or_update()
         party_crm_id = result['party']['id']
+
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
         print(e)
@@ -279,6 +284,7 @@ def onboarding_confirmation(request, token):
         print(e)
         logger.debug('CRM CREATION USER ERROR %s' % e)
         return HttpResponseRedirect(reverse('dashboard:profile'))
+
     profile.user.is_active = True
     profile.set_crm_id(party_crm_id)
     profile.user.save()
@@ -298,7 +304,10 @@ def onboarding_confirmation(request, token):
            '<div class="col-md-6 text-center">' \
            '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
            '</div>' \
-           '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
+           '</div></div>'.format(
+                EXPLORE_LINK=reverse('dashboard:dashboard'),
+                INVITE_LINK=reverse('dashboard:invite')
+                )
 
     modal_options = {
         "title": "Welcome onboard %s!" % profile.user.first_name,
@@ -306,7 +315,7 @@ def onboarding_confirmation(request, token):
         "footer": False
     }
     messages.info(request, json.dumps(modal_options), extra_tags='modal')
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    return HttpResponseRedirect(reverse('dashboard:login'))
 
 
 def om_confirmation(
@@ -351,14 +360,14 @@ def om_confirmation(
     }
 
     # Send email to receiver only the first time
-    if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
+    #if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
         # Send email for the first time
-        EmailHelper.email(
-            template_name='invitation_email_receiver',
-            title='You are invited to join the OpenMaker community!',
-            vars=email_vars,
-            receiver_email=receiver_email
-        )
+    EmailHelper.email(
+        template_name='invitation_email_receiver',
+        title='You are invited to join the OpenMaker community!',
+        vars=email_vars,
+        receiver_email=receiver_email
+    )
     # Send mail to sender
     EmailHelper.email(
         template_name='invitation_email_confirmed',
