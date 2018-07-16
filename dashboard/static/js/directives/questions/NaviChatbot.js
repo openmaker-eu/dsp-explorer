@@ -8,16 +8,16 @@ export default function(){
                     ng-if="action='chatbot.question.simple'"
                     style="display: flex; flex-direction: row; justify-content: center; align-items: center; padding-bottom:5%;"
                 >
-                    
                     <div
                         ng-if="!items[current].actions.type || items[current].actions.type == 'buttons'"
-                        ng-repeat="act in items[current].actions.options"
-                        style="padding:1%;"
+                        style="display:flex; flex-wrap:wrap; flex-direction: row; justify-content: center; align-items: center;"
                     >
-                        <button
-                            class="btn btn-danger pull-left capitalize"
-                            ng-click="next(act.value || act.label || act)"
-                        >{$ act.label || act.value || act $}</button>
+                        <span ng-repeat="act in items[current].actions.options" style="padding:5px;">
+                            <button
+                                class="btn btn-danger pull-left capitalize "
+                                ng-click="next(act.value || act.label || act)"
+                            >{$ act.label || act.value || act $}</button>
+                        </span>
                     </div>
                     
                     <div ng-if="items[current].actions.type == 'stars'" ng-init="rating={value:-1}">

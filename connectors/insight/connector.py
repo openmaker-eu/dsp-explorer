@@ -5,17 +5,17 @@ from urllib.parse import urlencode
 class InsightConnectorV10(object):
 
     @classmethod
-    def questions(cls, crm_ids, entity_name=None, entity_id=None):
-        if entity_name is not None:
-            context = {entity_name: entity_name}
-        if entity_id is not None:
-            context['entity_id'] = entity_id
-
+    def questions(cls, crm_ids):
+        print(crm_ids)
         return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod
     def feedback(cls, crm_id, temp_id, feedback):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
+
+    @classmethod
+    def question_feedback(cls, crm_id, question_id, answer_id):
+        return cls.get('feedback/question', {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id})
 
     @classmethod
     def profile_questions(cls, crm_ids):

@@ -55,11 +55,17 @@ class questions(APIView):
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
-                return Response(Insight.feedback(
-                    temp_id=request.data.get('temp_id', None),
-                    crm_id=request.user.profile.crm_id,
-                    feedback=request.data.get('feedback', None),
-                ))
+
+                crm_id = request.user.profile.crm_id
+                temp_id = request.data.get('temp_id', None)
+                question_id = request.data.get('question_id', None)
+                feedback = request.data.get('feedback', None)
+
+                if temp_id is not None:
+                    return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
+                if question_id is not None:
+                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback))
+
             # Update User
             not action and self.update_user(request)
 
@@ -130,10 +136,10 @@ class questions(APIView):
 
     def chatbot_question(self, request):
 
-        # entity_name = request.query_params.get('entity_name', None)
-        # entity_id = request.query_params.get('entity_id', None)
-        # temp_id = request.query_params.get('entity_temp_id', None)
-        # profile_id = request.query_params.get('profile_id', None)
+        entity_name = request.query_params.get('entity_name', None)
+        entity_id = request.query_params.get('entity_id', None)
+        temp_id = request.query_params.get('entity_temp_id', None)
+        profile_id = request.query_params.get('profile_id', None)
 
         try:
             welcome = self.question('welcome', first_name=request.user.first_name)
@@ -143,10 +149,13 @@ class questions(APIView):
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
 
+            print('im in')
             if response.status_code < 205:
                 res_dict = response.json()
-
+                print('dict')
+                print(res_dict)
                 questions = res_dict['users'][0]['questions']
+                print('questions')
                 print(questions)
                 self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
 

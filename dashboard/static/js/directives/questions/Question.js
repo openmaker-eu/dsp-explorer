@@ -3,12 +3,13 @@ import {TemplateLoader} from '../../classes/TemplateLoader'
 
 let template = `
      <div ng-form="{$ x.name $}" class="signup-template">
-        <div class="" style="padding:5%;">
+        <div style="padding:5%; display: flex; flex-direction: column; justify-content: center; align-items: center">
             <h1 ng-if="x.label" class="signup-template__label">{$ x.label $}</h1>
-            <h5 ng-if="x.question_text" class="text-brown"><i>{$ x.question_text $}</i></h5>
+            <h4 ng-if="x.question_text" class="text-brown">{$ x.question_text $}</h4>
             <h3 ng-if="x.subtext">{$ x.subtext $}</h3>
             <br>
-            <div class="signup-input"></div>
+            <!--<div ng-if="x.question || x.super_text || x.text" class="signup-input"></div>-->
+            <div class="signup-input" style="width:100%;"></div>
             <h3 ng-if="x.error" class=" signup-template__label text-red">{$ x.error $}</h3>
         </div>
      <div>
@@ -35,7 +36,10 @@ export default {
             
             // Compile template
             $scope.$applyAsync(()=>{
+                
                 $scope.template = angular.element( TemplateLoader.load(fields, $scope.x.type) )
+                
+                console.log('$scope.template', $scope.template);
                 $element.find('.signup-input').html( $scope.template )
                 $scope.template = $compile( $scope.template )($scope)
             });

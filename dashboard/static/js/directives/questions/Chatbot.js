@@ -45,7 +45,9 @@ let chatbot_directive =
         $scope.opened= true
         $scope.wizardid = $scope.$id
         
-        $scope.toggle_bot = ()=>($scope.opened=!$scope.opened)
+        $scope.toggle_bot = ()=>(
+            $scope.questions && ($scope.opened=!$scope.opened)
+        )
     
         $scope.get = ()=> {
             $scope.opened = false
