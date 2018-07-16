@@ -25,9 +25,6 @@ class questions(APIView):
         temp_id = request.query_params.get('entity_temp_id', None)
         profile_id = request.query_params.get('profile_id', None)
 
-        print('action')
-        print(action)
-
         if request.user.is_authenticated:
             # Request for edit profile
             action == 'profileedit' and self.edit_profile_questions(request)
@@ -109,7 +106,8 @@ class questions(APIView):
                     #     if temp_id in self.questions:
                     #         self.questions[temp_id]['feedback'].append(question['feedback'])
 
-            self.questions = [ self.map_remote_to_local_questions(q) for q in self.questions.values()]
+            self.questions = [self.map_remote_to_local_questions(q) for q in self.questions.values()]
+            print(self.questions)
 
         except Exception as e:
             print(e)
@@ -131,6 +129,12 @@ class questions(APIView):
         ]
 
     def chatbot_question(self, request):
+
+        # entity_name = request.query_params.get('entity_name', None)
+        # entity_id = request.query_params.get('entity_id', None)
+        # temp_id = request.query_params.get('entity_temp_id', None)
+        # profile_id = request.query_params.get('profile_id', None)
+
         try:
             welcome = self.question('welcome', first_name=request.user.first_name)
             bye = self.question('nice_talking', first_name=request.user.first_name)
@@ -138,11 +142,14 @@ class questions(APIView):
             # or '145489262'
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
+
             if response.status_code < 205:
                 res_dict = response.json()
+
                 questions = res_dict['users'][0]['questions']
-                type = res_dict['users'][0]['feedback_type']
-                self.questions = [welcome] + [self.map_remote_to_local_questions(q, type) for q in questions] + [bye]
+                print(questions)
+                self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
+
         except Exception as e:
             print(e)
             self.questions = None
@@ -194,11 +201,10 @@ class questions(APIView):
 
         self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
 
-    def map_remote_to_local_questions(self, question, feedback_type='disagree_notsure_agree'):
-        if feedback_type == 'disagree_notsure_agree':
+    def map_remote_to_local_questions(self, question):
             question['actions'] = {
                 'type': 'buttons',
-                'options': ['agree', 'disagree', 'notsure']
+                'options': [{'label': k, 'value': v} for k, v in question['answers'].items()]
             }
             return self.make(name='', type='question', **question)
 

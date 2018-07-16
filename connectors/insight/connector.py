@@ -5,7 +5,12 @@ from urllib.parse import urlencode
 class InsightConnectorV10(object):
 
     @classmethod
-    def questions(cls, crm_ids):
+    def questions(cls, crm_ids, entity_name=None, entity_id=None):
+        if entity_name is not None:
+            context = {entity_name: entity_name}
+        if entity_id is not None:
+            context['entity_id'] = entity_id
+
         return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod

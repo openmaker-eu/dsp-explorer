@@ -9,7 +9,7 @@ urlpatterns = [
     # Auth
     url(r'^test/$', views.test, name='test'),
 
-    url(r'^$', authentication.login_page, name='login'),
+    url(r'^$', authentication.login_page, name='homepage'),
     url(r'^logout/$', authentication.logout_page, name='logout'),
     url(r'^reset_password/(?P<reset_token>[\w\-]+)$', authentication.reset_pwd, name='reset_pwd'),
     url(r'^recover/$', authentication.recover_pwd, name='recover_pwd'),

@@ -29,12 +29,12 @@ from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvit
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 
 def login_page(request):
     #if request.user.is_authenticated:
-    #    return HttpResponseRedirect(reverse('dashboard:login'))
+    #    return HttpResponseRedirect(reverse('dashboard:homepage'))
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
@@ -49,7 +49,7 @@ def login_page(request):
                     profile.crm_id = crm_user['id'] if crm_user and 'id' in crm_user else None
                     profile.save()
                 messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
-                return HttpResponseRedirect(reverse('dashboard:login'))
+                return HttpResponseRedirect(reverse('dashboard:homepage'))
             else:
                 messages.error(request, 'User Invalid')
         else:
@@ -74,7 +74,7 @@ def recover_pwd(request):
             if not profile.user.is_active:
                 messages.error(request, 'Your user is not yet active, '
                                'please complete the activation process before requesting a new password')
-                return HttpResponseRedirect(reverse('dashboard:login'))
+                return HttpResponseRedirect(reverse('dashboard:homepage'))
 
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
@@ -99,10 +99,10 @@ def recover_pwd(request):
             )
 
             messages.success(request, 'You will receive an email with a link to reset your password!')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
         except Profile.DoesNotExist:
             messages.error(request, 'User not Found.')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
     return render(request, 'dashboard/recover_pwd.html', {})
 
 
@@ -119,11 +119,11 @@ def reset_pwd(request, reset_token):
         profile = Profile.objects.filter(reset_token=reset_token).get()
     except Profile.DoesNotExist:
         messages.error(request, 'User Not Found!')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     seven_days_ago = timezone.now() - dt.timedelta(days=7)
     if profile.ask_reset_at < seven_days_ago:
         messages.error(request, 'Token Expired, Please try asking to reset your password.')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     
     if request.POST:
         password = request.POST['password']
@@ -139,7 +139,7 @@ def reset_pwd(request, reset_token):
         if not profile.user.is_active:
             messages.error(request, 'Your user is not yet active, '
                            'please complete the activation process before requesting a new password')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
 
         profile.user.set_password(password)
         profile.user.is_active = True
@@ -149,7 +149,7 @@ def reset_pwd(request, reset_token):
         profile.update_token_at = dt.datetime.now()
         profile.save()
         messages.success(request, 'Password reset completed!')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     return render(request, 'dashboard/reset_pwd.html', {"profile": profile, "reset_token": reset_token})
 
 
@@ -157,7 +157,7 @@ def reset_pwd(request, reset_token):
 def onboarding(request):
 
     if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     if request.method == 'POST':
         try:
             email = request.POST['email'].lower()
@@ -261,7 +261,7 @@ def onboarding_confirmation(request, token):
     except Profile.DoesNotExist:
         print('no exist')
         messages.error(request, 'Your token is expired please try to login or recover your password')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
         print('other error')
         print(e)
@@ -276,12 +276,12 @@ def onboarding_confirmation(request, token):
         print('crm NotFound')
         print(e)
         logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
         print('crm Exception')
         print(e)
         logger.debug('CRM CREATION USER ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
 
     profile.user.is_active = True
     profile.set_crm_id(party_crm_id)
@@ -314,8 +314,8 @@ def onboarding_confirmation(request, token):
     # }
     # messages.info(request, json.dumps(modal_options), extra_tags='modal')
 
-    messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community.')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community')
+    return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 
 # THIS IS NOT USED ANYMORE
@@ -382,4 +382,4 @@ def om_confirmation(
 
 def csrf_failure(request, reason=''):
     messages.warning(request, 'Some error occurs!')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return HttpResponseRedirect(reverse('dashboard:homepage'))

@@ -89,6 +89,8 @@ let chatbot_directive =
             $scope.entityname = 'profile'
             $scope.entityid = _.get($rootScope, 'page_info.options.profile_id')
         }
+        
+        console.log('page_name' , $rootScope.page_info);
     
     }]
 }
