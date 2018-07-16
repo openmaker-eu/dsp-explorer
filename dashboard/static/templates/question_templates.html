@@ -13,7 +13,7 @@
         <div ng-bind-html="tag.value.label | highlight: $select.search"></div>
     </ui-select-choices>
 </ui-select>
-<input type="hidden" ng-model="m[x.name]" name="{$ x.name $}" required/>
+<input type="hidden" ng-model="m[x.name]" ng-value="m[x.name]" name="{$ x.name $}" required/>
 
 [slider]
 <input name="{$ x.name $}" type="range" min="0" max="100" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>`,
@@ -58,8 +58,11 @@ required>
 
 <input type="hidden" ng-model="m[x.name]" ng-value="m[x.name]" name="{$ x.name $}" required/>
 
-[activity-question]
-<activity-question data="x.value"></activity-question>
+[activity-question-1]
+<activity-question data="x.value" activityfilter="['domain', 'area']" ></activity-question>
+
+[activity-question-2]
+<activity-question data="x.value" activityfilter="['technology', 'skills']" ></activity-question>
 
 [question]
 <h3 class="text-brown text-center"><i>{$ x.super_text $}</i></h3>

@@ -65,8 +65,6 @@ let wizard_directive =
             let question = _.get($scope , 'questions['+current+']')
             let subform = $scope.wizard.form[question.name]
             
-            console.log('question', question);
-            console.log('wizard', subform);
             
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {

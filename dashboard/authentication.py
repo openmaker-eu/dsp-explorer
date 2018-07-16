@@ -153,7 +153,9 @@ def reset_pwd(request, reset_token):
     return render(request, 'dashboard/reset_pwd.html', {"profile": profile, "reset_token": reset_token})
 
 
+# THIS IS NOT USED ANYMORE
 def onboarding(request):
+
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if request.method == 'POST':
@@ -232,19 +234,14 @@ def onboarding(request):
         # send e-mail
         confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
 
-        subject = 'Onboarding... almost done!'
-        content = "{0}{1}{2}".format(
-            invitation_base_template_header,
-            onboarding_email_template.format(
-                FIRST_NAME=first_name.encode('utf-8'),
-                LAST_NAME=last_name.encode('utf-8'),
-                CONFIRMATION_LINK=confirmation_link,
-            ),
-            invitation_base_template_footer)
-
-        EmailHelper.send_email(
-            message=content,
-            subject=subject,
+        EmailHelper.email(
+            template_name='onboarding_email_template',
+            title='Openmaker - confirm your email',
+            vars={
+                'FIRST_NAME': first_name.encode('utf-8'),
+                'LAST_NAME': last_name.encode('utf-8'),
+                'CONFIRMATION_LINK': confirmation_link
+            },
             receiver_email=email
         )
 
@@ -295,30 +292,33 @@ def onboarding_confirmation(request, token):
     Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
 
     # Modal creation after first login
-    body = '' \
-           '<div class="row">' \
-           '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
-           '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
-           '<div class="col-md-6 text-center">' \
-           '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
-           '</div>' \
-           '<div class="col-md-6 text-center">' \
-           '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
-           '</div>' \
-           '</div></div>'.format(
-                EXPLORE_LINK=reverse('dashboard:dashboard'),
-                INVITE_LINK=reverse('dashboard:invite')
-                )
+    # body = '' \
+    #        '<div class="row">' \
+    #        '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
+    #        '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
+    #        '<div class="col-md-6 text-center">' \
+    #        '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
+    #        '</div>' \
+    #        '<div class="col-md-6 text-center">' \
+    #        '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
+    #        '</div>' \
+    #        '</div></div>'.format(
+    #             EXPLORE_LINK=reverse('dashboard:dashboard'),
+    #             INVITE_LINK=reverse('dashboard:invite')
+    #             )
+    #
+    # modal_options = {
+    #     "title": "Welcome onboard %s!" % profile.user.first_name,
+    #     "body": escape_html(body),
+    #     "footer": False
+    # }
+    # messages.info(request, json.dumps(modal_options), extra_tags='modal')
 
-    modal_options = {
-        "title": "Welcome onboard %s!" % profile.user.first_name,
-        "body": escape_html(body),
-        "footer": False
-    }
-    messages.info(request, json.dumps(modal_options), extra_tags='modal')
+    messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community.')
     return HttpResponseRedirect(reverse('dashboard:login'))
 
 
+# THIS IS NOT USED ANYMORE
 def om_confirmation(
         request,
         sender_first_name,

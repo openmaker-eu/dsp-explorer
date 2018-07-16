@@ -123,8 +123,9 @@ class questions(APIView):
             self.question('user_birthdate'),
             self.question('user_city'),
             self.question('user_occupation'),
-            self.question('activity_question'),
-            self.question('user_tags'),
+            self.question('activity_question_1'),
+            self.question('activity_question_2'),
+            #self.question('user_tags'),
             self.question('user_signup_data'),
             self.question('signup_bye'),
         ]
@@ -161,14 +162,18 @@ class questions(APIView):
                       value=profile.birthdate.strftime('%Y/%m/%d'),
                       ),
             self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
-            self.make('tags', 'multi_select', 'Choose 3 tags',
-                      options=[x.name for x in Tag.objects.all()],
-                      value=[x.name for x in profile.tags.all()],
-                      ),
-            self.make('activity-question', 'activity-question', 'What is your activity?',
+            # self.make('tags', 'multi_select', 'Choose 3 tags',
+            #           options=[x.name for x in Tag.objects.all()],
+            #           value=[x.name for x in profile.tags.all()],
+            #           ),
+            self.make('activity-question-1', 'activity-question-1', 'What is your activity?',
                       value={
-                          "domain": profile.domain and profile.domain.split(",") ,
+                          "domain": profile.domain and profile.domain.split(","),
                           "area": profile.area and profile.area.split(","),
+                      }
+                      ),
+            self.make('activity-question-2', 'activity-question-2', 'What is your activity?',
+                      value={
                           "technology": profile.technology and profile.technology.split(","),
                           "skills": profile.technology and profile.skills.split(",")
                       }
@@ -272,7 +277,7 @@ class questions(APIView):
             },
             'signup_proposal_2': {
                 'type': "question",
-                "super text": 'You can view only 5 contents per day',
+                "super_text": 'You can view only 5 contents per day',
                 'question': 'If you signup you will have full access to the site contents.' ,
                 'text': "Do you Want to signup?",
                 'actions': {'options': [{'value': 'event:question.modal.open', 'label': 'Yes'}, 'Not now' ]}
@@ -290,7 +295,8 @@ class questions(APIView):
             ),
             'user_city': cls.make('city', 'city', 'What is your city?'),
             'user_occupation': cls.make('occupation', 'text', 'What is your occupation?'),
-            'activity_question': cls.make('activity_question', 'activity-question', 'What is your activity?'),
+            'activity_question_1': cls.make('activity-question-1', 'activity-question-1', 'What is your activity? (1 of 2)'),
+            'activity_question_2': cls.make('activity-question-2', 'activity-question-2', 'What is your activity? (2 of 2)'),
             'user_tags': cls.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
             'user_signup_data': cls.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
             'signup_bye': cls.make('signup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),

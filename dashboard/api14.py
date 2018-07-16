@@ -295,7 +295,6 @@ class entity_details(APIView):
 
         return Response(results)
 
-
 @api_view(['POST'])
 def signup(request):
     from utils.mailer import EmailHelper
@@ -320,7 +319,7 @@ def signup(request):
 
     EmailHelper.email(
         template_name='onboarding_email_template',
-        title='OpenMaker Nomination done!',
+        title='OpenMaker - Confirm your email',
         vars={
             'FIRST_NAME': user.first_name.encode('utf-8'),
             'LAST_NAME': user.last_name.encode('utf-8'),
