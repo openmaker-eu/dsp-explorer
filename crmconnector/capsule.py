@@ -111,6 +111,8 @@ class CRMConnector(object):
 
     @staticmethod
     def update_party(party_id, party):
+        print(type(party))
+        print(party)
         party = json.dumps(party)
         return CRMConnector._perform_post(settings.CAPSULE_BASE_URL_PARTIES + '/' + str(party_id), party)
 

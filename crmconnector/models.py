@@ -49,7 +49,7 @@ class Party(object):
 
         # Standard Optional Fields
         if len(user.profile.tags.all()) > 0:
-            self.tags = [lambda x: {'name': x.name} for x in user.profile.tags.all()]
+            self.tags = [{'name': x.name} for x in user.profile.tags.all()]
         if user.profile.organization:
             self.organisation = {'name': user.profile.organization}
 

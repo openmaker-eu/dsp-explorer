@@ -263,8 +263,8 @@ def onboarding_confirmation(request, token):
         profile = Profile.objects.get(reset_token=token)
     except Profile.DoesNotExist:
         print('no exist')
-        messages.error(request, 'Token expired')
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        messages.error(request, 'Your token is expired please try to login or recover your password')
+        return HttpResponseRedirect(reverse('dashboard:login'))
     except Exception as e:
         print('other error')
         print(e)
@@ -274,16 +274,17 @@ def onboarding_confirmation(request, token):
         party = Party(profile.user)
         result = party.create_or_update()
         party_crm_id = result['party']['id']
-
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
+        print('crm NotFound')
         print(e)
         logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:profile'))
+        return HttpResponseRedirect(reverse('dashboard:login'))
     except Exception as e:
+        print('crm Exception')
         print(e)
         logger.debug('CRM CREATION USER ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:profile'))
+        return HttpResponseRedirect(reverse('dashboard:login'))
 
     profile.user.is_active = True
     profile.set_crm_id(party_crm_id)

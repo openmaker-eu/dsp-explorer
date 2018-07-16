@@ -306,7 +306,6 @@ class Profile(models.Model):
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
-
     interest = GenericRelation('Interest')
 
     domain = models.TextField(blank=True)
