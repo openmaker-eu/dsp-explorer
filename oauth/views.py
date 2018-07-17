@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import Twitter, TwitterProfile
 from dashboard.models import Profile
@@ -12,7 +13,6 @@ import json
 from utils.helpers import get_host
 
 
-@login_required
 def twitter_sign_in(request):
     # DOC https://dev.twitter.com/web/sign-in/implementing
     url = "https://api.twitter.com/oauth/request_token"
@@ -20,7 +20,6 @@ def twitter_sign_in(request):
     oauth = OAuth1(twitter.app_id, client_secret=twitter.app_secret)
     response = requests.post(url=url, auth=oauth)
     credentials = parse_qs(response.text)
-    print(credentials)
     oauth_callback_confirmed = credentials.get('oauth_callback_confirmed')[0]
     if not oauth_callback_confirmed:
         messages.warning(request, 'Error during Twitter login.')
@@ -30,11 +29,10 @@ def twitter_sign_in(request):
     return HttpResponseRedirect(redirect_url)
 
 
-@login_required
 def twitter_redirect(request):
     twitter = Twitter.objects.first()
     try:
-        oauth_token, oauth_token_secret = _exchange_code_for_twitter_token(twitter.app_id,
+        oauth_token, oauth_token_secret, user_id = _exchange_code_for_twitter_token(twitter.app_id,
                                                                            twitter.app_secret,
                                                                            request.GET.get('oauth_token'),
                                                                            request.GET.get('oauth_verifier'))
@@ -45,9 +43,18 @@ def twitter_redirect(request):
         messages.success(request, 'Error during Twitter login.')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    profile = Profile.objects.filter(user__email=request.user.email).first()
-    twitter_profile = TwitterProfile.create(profile, oauth_token, oauth_token_secret)
-    messages.success(request, 'Link with your Twitter profile completed.')
+    twitter_profile = TwitterProfile.objects.filter(user_id=user_id).first()
+    if twitter_profile:
+        if not request.user.is_authenticated:
+            #login
+            login(request, twitter_profile.profile.user)
+    else:
+        if request.user.is_authenticated:
+            # bind profile
+            profile = Profile.objects.filter(user__email=request.user.email).first()
+            twitter_profile = TwitterProfile.create(profile, user_id, oauth_token, oauth_token_secret)
+            messages.success(request, 'Link with your Twitter profile completed.')
+
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
@@ -60,14 +67,12 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
                        resource_owner_secret=resource_owner_secret)
         response = requests.post(url=url, auth=oauth, data={"oauth_verifier": resource_owner_secret})
         credentials = parse_qs(response.text)
-        print("###########")
-        print(credentials)
-        print("###########")
         oauth_token = credentials.get('oauth_token')[0]
         oauth_token_secret = credentials.get('oauth_token_secret')[0]
+        user_id = credentials.get('user_id')[0]
     except Exception as e:
         raise e
-    return oauth_token, oauth_token_secret
+    return oauth_token, oauth_token_secret, user_id
 
 
 def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
