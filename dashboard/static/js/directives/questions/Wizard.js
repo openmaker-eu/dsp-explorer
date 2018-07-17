@@ -42,6 +42,7 @@ let wizard_directive =
             draggable: false,
             autoplay: false,
             infinite: false,
+            adaptiveHeight:true,
             event: {
                 afterChange: (event, slick, currentSlide, nextSlide)=>
                     $rootScope.$emit($scope.wizard_name+'.afterChange', {event, slick, currentSlide, nextSlide}),

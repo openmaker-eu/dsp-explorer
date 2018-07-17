@@ -23,8 +23,8 @@ let template = `
                 >
                     <h3
                         class="far fa-fw text-red background-white pointer"
-                        ng-class="{'fa-eye': question.visible, 'fa-eye-slash':!question.visible }"
-                        ng-if="!question.feedback[1]"
+                        ng-class="{'fa-eye': !question.is_private, 'fa-eye-slash':question.is_private }"
+                        ng-if="!question.feedbacks[1]"
                         style=" position: absolute; top:5%; right:10%;"
                         ng-click="toggle_show(question)"
                     ></h3>
@@ -37,17 +37,17 @@ let template = `
                 </div>
                 
                 <h4 class="text-brown">{$ question.question $}</h4>
-                <p>{$ question.text $}</p>
+                <p>{$ question.question_text $}</p>
                 
                 <hr>
                 
-                <p ng-if="!question.feedback[1]" class="text-red">{$ question.feedback[0] $}</p>
-                <p ng-if="question.feedback[1]" class="text-brown">
-                    <strong>{$ profile.data.user.first_name $}:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedback[0] $}
+                <p ng-if="!question.feedbacks[1]" class="text-red">{$ question.feedbacks[0].label $}</p>
+                <p ng-if="question.feedbacks[1]" class="text-brown">
+                    <strong>{$ profile.data.user.first_name $}:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
                 </p>
                 
-                <p ng-if="question.feedback[1]" class="text-red">
-                    <strong>You:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedback[1] $}
+                <p ng-if="question.feedbacks[1]" class="text-red">
+                    <strong>You:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[1].label $}
                 </p>
                 
                 <div ng-show="question.is_edit" style="
@@ -60,17 +60,14 @@ let template = `
                     padding:5% 0 0 0;
                     "
                 >
-                    
                     <div
-                    <div
-                        ng-if="!question.actions.type || question.actions.type == 'buttons'"
-                        ng-repeat="act in question.actions.options"
+                        ng-repeat="(act, k) in question.answers"
                         style="padding:1%; z-index:10000;"
                     >
                         <button
                             class="btn btn-danger pull-left capitalize pointer"
-                            ng-click="edit_question(question, act.label || act.value || act)"
-                        >{$ act.label || act.value || act $}</button>
+                            ng-click="edit_question(question, k)"
+                        >{$ act $}</button>
                     </div>
                 </div>
                
@@ -95,23 +92,20 @@ let profile_question_directive =
         $scope.wizard_id = $scope.$id;
         $scope.wizard_name = 'wizard.'+$scope.wizard_id;
         
-        
         console.log('profile id', $scope.profileid);
         $scope.get = ()=>{
             $scope.profileid &&
             $http.get(`/api/v1.4/questions/profile?profile_id=${$scope.profileid}`)
-                .then((r)=>{
-                    console.log('PROFILE Q UESTIOONS : ',r);
-                    $scope.questions = r.data.questions || null
-                    console.log($scope.questions);
-                })
+                .then((r)=>{$scope.questions = r.data.questions || null})
         }
         
         $scope.get()
-    
         $rootScope.$on('authorization.refresh', ()=>{})
         
-        $scope.toggle_show =  (q)=> {q.visible=!q.visible}
+        $scope.toggle_show =  async(q)=> {
+            let res= await $http.post('/api/v1.4/questions/chatbot/', q)
+            q.is_private = !q.is_private
+        }
         
         $scope.edit_question = async(question, feedback)=>{
             let q = {...question}

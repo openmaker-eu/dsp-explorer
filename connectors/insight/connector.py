@@ -6,16 +6,29 @@ class InsightConnectorV10(object):
 
     @classmethod
     def questions(cls, crm_ids):
-        print(crm_ids)
-        return cls.get('recommendation/questions', {"crm_ids": crm_ids})
+        crm_ids = cls.merge_ids(crm_ids)
+        return cls.get('recommendation/questions', {"crm_ids": ','.join([str(x) for x in crm_ids])})
 
     @classmethod
     def feedback(cls, crm_id, temp_id, feedback):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
 
     @classmethod
-    def question_feedback(cls, crm_id, question_id, answer_id):
-        return cls.get('feedback/question', {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id})
+    def question_feedback(cls, crm_id, question_id, answer_id, is_private):
+        context = {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id}
+        if is_private is not None:
+            context['is_private'] = is_private
+        return cls.get('feedback/question', context)
+
+    @classmethod
+    def question_contents(cls, question_ids):
+        question_ids = cls.merge_ids(question_ids)
+        return cls.get('recommendation/get_questions_contents', {'question_ids': question_ids})    \
+
+    @classmethod
+    def question_privacy(cls, crm_id, question_ids, is_private):
+        question_ids = cls.merge_ids(question_ids)
+        return cls.get('feedback/change_privacy', {'crm_id': crm_id, 'question_ids': question_ids, 'is_private': is_private})
 
     @classmethod
     def profile_questions(cls, crm_ids):
@@ -27,16 +40,12 @@ class InsightConnectorV10(object):
 
         # @TODO: this is a FAKE response since there is no user questions API available
         try:
-            response = cls.get('recommendation/questions', {"crm_ids": crm_ids})
+            response = cls.get('feedback/get_feedbacks', {"crm_ids": crm_ids})
             json_decoded = response.json() if response.status_code < 205 else []
-
-            import random
             results = json_decoded['users']
-            for user in results:
-                [x.update({'feedback': random.choice(['agree', 'disagree', 'notsure'])}) for x in user['questions']]
-
         except Exception as e:
             results = []
+            print('Error get profile questions')
             print(e)
 
         return results
@@ -50,6 +59,7 @@ class InsightConnectorV10(object):
             reccomendations = json_decoded['users'][0][entity_name]
             return reccomendations
         except Exception as e:
+            print('Error get reccomended entities')
             print(e)
             return []
 
@@ -65,7 +75,12 @@ class InsightConnectorV10(object):
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
         url = settings.INSIGHT_API + 'v1.0/' + endpoint + querydict
         try:
-            response = requests.get(url, params=querydict, timeout=8)
+            return requests.get(url, params=querydict, timeout=8)
         except Exception as e:
             print(e)
-        return response
+            return False
+
+    @classmethod
+    def merge_ids(cls, ids):
+        return ','.join([str(x) for x in ids]) if len(ids) > 1 else str(ids[0])+','
+
