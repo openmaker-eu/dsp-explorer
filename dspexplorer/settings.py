@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'dspconnector.apps.DspconnectorConfig',
+    'oauth.apps.OauthConfig',
     'pss.apps.PssConfig',
     'froala_editor',
     'django.contrib.admin',
