@@ -498,7 +498,7 @@ main {
         //height: 100%;
 
         .modal-slider{flex-grow: 1;}
-        .slick-list,.slick-track {height: 100%;}
+        .slick-list,.slick-track {height: 100%!important;}
         .slick-track {
           display: flex;
           align-items: center;

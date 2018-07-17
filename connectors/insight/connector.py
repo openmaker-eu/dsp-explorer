@@ -7,7 +7,8 @@ class InsightConnectorV10(object):
     @classmethod
     def questions(cls, crm_ids):
         crm_ids = cls.merge_ids(crm_ids)
-        return cls.get('recommendation/questions', {"crm_ids": ','.join([str(x) for x in crm_ids])})
+        print(crm_ids)
+        return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod
     def feedback(cls, crm_id, temp_id, feedback):

@@ -29,7 +29,6 @@ from utils.GoogleHelper import GoogleHelper
 
 @login_required()
 def dashboard(request, topic_id=None):
-    messages.warning(request, 'Some error occurs!')
     return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 def manifesto(request):

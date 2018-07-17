@@ -15,7 +15,7 @@ export default [function(){
             
             // GLOBAL ACTIONS
             $rootScope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
-            $rootScope.logout =()=>LoginService.logout()
+            $rootScope.logout =LoginService.logout
             $rootScope.login =()=>$rootScope.$emit('question.modal.open', [
                 {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
                 {name:'end', type:'success', label: 'Successful login', }

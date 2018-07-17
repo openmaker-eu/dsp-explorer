@@ -62,13 +62,13 @@ class questions(APIView):
                 feedback = request.data.get('feedback', None)
                 is_private = request.data.get('is_private', None)
 
-                print('is_private')
-                print(is_private)
-
+                # Entity Feedback
                 if temp_id is not None:
                     return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
+                # Change Question privacy
                 elif is_private is not None and question_id is not None:
                     return Response(Insight.question_privacy(crm_id=crm_id, question_ids=[question_id], is_private=is_private))
+                # Send answer to question
                 elif question_id is not None:
                     return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback))
 
@@ -111,6 +111,8 @@ class questions(APIView):
                 self.questions = self.merge_question_and_feedback(profile_page_feedbacks)
                 if crm_ids[0] != crm_ids[1]:
                     self.questions = self.merge_question_and_feedback(logged_user_feedbacks, self.questions)
+                    self.questions = [v for k, v in self.questions.items() if not v['is_private']]
+
 
         except KeyboardInterrupt as e:
             print(e)
@@ -164,12 +166,15 @@ class questions(APIView):
             welcome = self.question('welcome', first_name=request.user.first_name)
             bye = self.question('nice_talking', first_name=request.user.first_name)
 
-            # or '145489262'
+
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
-
+            print('response')
+            print(response)
             if response.status_code < 205:
                 res_dict = response.json()
+                print('res_dict')
+                print(res_dict)
                 questions = res_dict['users'][0]['questions']
                 self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
 
