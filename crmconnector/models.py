@@ -49,7 +49,7 @@ class Party(object):
 
         # Standard Optional Fields
         if len(user.profile.tags.all()) > 0:
-            self.tags = map(lambda x: {'name': x.name}, user.profile.tags.all())
+            self.tags = [{'name': x.name} for x in user.profile.tags.all()]
         if user.profile.organization:
             self.organisation = {'name': user.profile.organization}
 
@@ -87,6 +87,12 @@ class Party(object):
 
     def get_custom_field(self, user):
         import datetime
+        birthdate = ''
+
+        try:
+            birthdate = user.profile.birthdate if isinstance(user.profile.birthdate, str) else user.profile.birthdate.strftime("%Y-%m-%d")
+        except:
+            pass
 
         custom_fields = {
             '444006': user.profile.city,
@@ -114,7 +120,7 @@ class Party(object):
             '450900': user.profile.sector_other,
 
             # @TODO: make methods in model that saves and retrieve this
-            '444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None
+            #'444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None
         }
 
         return dict((k, v) for k, v in custom_fields.items() if v)
@@ -181,12 +187,14 @@ class Party(object):
         remote_custom_fields = self.get_custom_field_definitions()
         for field in self.fields:
             customs = filter(lambda x: x['id'] == field['definition']['id'], remote_custom_fields)
-            if len(customs) > 0:
+            try:
                 custom = customs[0]
                 if custom['type'] == 'list' and not field['value'] in custom['options']:
                     print(Colorizer.Yellow('Excluding field : {} ',format(field)))
                     self.fields.remove(field)
                     print(Colorizer.Yellow('Field Excluded'))
+            except:
+                pass
 
     # CRM does not check for duplicated on some fields
     # Those methods find match between local and CRM data an merge in unique object without duplicates
@@ -200,13 +208,15 @@ class Party(object):
         if self.__capsule_party and len(self.__capsule_party['emailAddresses']) > 0:
             self.emailAddresses = self.__capsule_party['emailAddresses']
             email_match = filter(lambda x: x['address'] == self.__local_user.email, self.__capsule_party['emailAddresses'])
-            if len(email_match) == 0:
+            try:
                 self.emailAddresses.append({'address': self.__local_user.email})
+            except:
+                pass
 
     # Set delete flag to remote websites and add local to websites field
     # Will remove all websites on capsule crm
     def __delete_remote_websites_and_add_local(self):
-        self.websites = self.websites + map(lambda x: x.update({'_delete': True}) or x, self.__capsule_party['websites'])
+        self.websites = self.websites + [x.update({'_delete': True}) or x for x in self.__capsule_party['websites']]
 
     # Merge remote websites with local
     # Will keep remote websites and update with local values if local name match
@@ -214,16 +224,16 @@ class Party(object):
         for key in self.__capsule_party['websites'].iterkeys():
             self.__capsule_party['websites'][key]['_delete'] = True
         if self.__capsule_party and len(self.__capsule_party['websites']) > 0 and len(self.websites) > 0:
-            self.websites = map(
-                lambda x: self.__get_merged_websites(x),
-                self.websites
-            )
+            self.websites = [self.__get_merged_websites(x) for x in self.websites ]
 
     def __get_merged_websites(self, local_social):
         match = filter(lambda x: x['service'] == local_social['service'], self.__capsule_party['websites'])
-        if len(match) > 0:
+        try:
             match[0]['address'] = local_social['address']
             return match[0]
+        except Exception as e:
+            print(e)
+            pass
         return local_social
 
     # ###############

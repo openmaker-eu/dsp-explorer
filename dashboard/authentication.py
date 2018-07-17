@@ -29,12 +29,12 @@ from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvit
 def logout_page(request):
     logout(request)
     messages.success(request, 'Bye Bye!')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 
 def login_page(request):
     #if request.user.is_authenticated:
-    #    return HttpResponseRedirect(reverse('dashboard:login'))
+    #    return HttpResponseRedirect(reverse('dashboard:homepage'))
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
@@ -49,7 +49,7 @@ def login_page(request):
                     profile.crm_id = crm_user['id'] if crm_user and 'id' in crm_user else None
                     profile.save()
                 messages.info(request, 'Welcome %s' % user.first_name.encode('utf-8'))
-                return HttpResponseRedirect(reverse('dashboard:login'))
+                return HttpResponseRedirect(reverse('dashboard:homepage'))
             else:
                 messages.error(request, 'User Invalid')
         else:
@@ -74,7 +74,7 @@ def recover_pwd(request):
             if not profile.user.is_active:
                 messages.error(request, 'Your user is not yet active, '
                                'please complete the activation process before requesting a new password')
-                return HttpResponseRedirect(reverse('dashboard:login'))
+                return HttpResponseRedirect(reverse('dashboard:homepage'))
 
             profile.reset_token = Profile.get_new_reset_token()
             profile.ask_reset_at = dt.datetime.now()
@@ -99,10 +99,10 @@ def recover_pwd(request):
             )
 
             messages.success(request, 'You will receive an email with a link to reset your password!')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
         except Profile.DoesNotExist:
             messages.error(request, 'User not Found.')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
     return render(request, 'dashboard/recover_pwd.html', {})
 
 
@@ -119,11 +119,11 @@ def reset_pwd(request, reset_token):
         profile = Profile.objects.filter(reset_token=reset_token).get()
     except Profile.DoesNotExist:
         messages.error(request, 'User Not Found!')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     seven_days_ago = timezone.now() - dt.timedelta(days=7)
     if profile.ask_reset_at < seven_days_ago:
         messages.error(request, 'Token Expired, Please try asking to reset your password.')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     
     if request.POST:
         password = request.POST['password']
@@ -139,7 +139,7 @@ def reset_pwd(request, reset_token):
         if not profile.user.is_active:
             messages.error(request, 'Your user is not yet active, '
                            'please complete the activation process before requesting a new password')
-            return HttpResponseRedirect(reverse('dashboard:login'))
+            return HttpResponseRedirect(reverse('dashboard:homepage'))
 
         profile.user.set_password(password)
         profile.user.is_active = True
@@ -149,13 +149,15 @@ def reset_pwd(request, reset_token):
         profile.update_token_at = dt.datetime.now()
         profile.save()
         messages.success(request, 'Password reset completed!')
-        return HttpResponseRedirect(reverse('dashboard:login'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     return render(request, 'dashboard/reset_pwd.html', {"profile": profile, "reset_token": reset_token})
 
 
+# THIS IS NOT USED ANYMORE
 def onboarding(request):
+
     if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     if request.method == 'POST':
         try:
             email = request.POST['email'].lower()
@@ -232,19 +234,14 @@ def onboarding(request):
         # send e-mail
         confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
 
-        subject = 'Onboarding... almost done!'
-        content = "{0}{1}{2}".format(
-            invitation_base_template_header,
-            onboarding_email_template.format(
-                FIRST_NAME=first_name.encode('utf-8'),
-                LAST_NAME=last_name.encode('utf-8'),
-                CONFIRMATION_LINK=confirmation_link,
-            ),
-            invitation_base_template_footer)
-
-        EmailHelper.send_email(
-            message=content,
-            subject=subject,
+        EmailHelper.email(
+            template_name='onboarding_email_template',
+            title='Openmaker - confirm your email',
+            vars={
+                'FIRST_NAME': first_name.encode('utf-8'),
+                'LAST_NAME': last_name.encode('utf-8'),
+                'CONFIRMATION_LINK': confirmation_link
+            },
             receiver_email=email
         )
 
@@ -256,15 +253,19 @@ def onboarding(request):
 
 def onboarding_confirmation(request, token):
     # Check for token
+
+    print(' ################ confirmation')
+
     try:
         profile = Profile.objects.get(reset_token=token)
     except Profile.DoesNotExist:
         print('no exist')
-        messages.error(request, 'Token expired')
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        messages.error(request, 'Your token is expired please try to login or recover your password')
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
         print('other error')
         print(e)
+
     # update on crm
     try:
         party = Party(profile.user)
@@ -272,13 +273,16 @@ def onboarding_confirmation(request, token):
         party_crm_id = result['party']['id']
     except NotFound as e:
         messages.error(request, 'There was some connection problem, please try again')
+        print('crm NotFound')
         print(e)
         logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:profile'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
+        print('crm Exception')
         print(e)
         logger.debug('CRM CREATION USER ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:profile'))
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
+
     profile.user.is_active = True
     profile.set_crm_id(party_crm_id)
     profile.user.save()
@@ -288,27 +292,33 @@ def onboarding_confirmation(request, token):
     Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
 
     # Modal creation after first login
-    body = '' \
-           '<div class="row">' \
-           '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
-           '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
-           '<div class="col-md-6 text-center">' \
-           '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
-           '</div>' \
-           '<div class="col-md-6 text-center">' \
-           '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
-           '</div>' \
-           '</div></div>'.format(EXPLORE_LINK=reverse('dashboard:dashboard'), INVITE_LINK=reverse('dashboard:invite'))
+    # body = '' \
+    #        '<div class="row">' \
+    #        '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
+    #        '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
+    #        '<div class="col-md-6 text-center">' \
+    #        '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
+    #        '</div>' \
+    #        '<div class="col-md-6 text-center">' \
+    #        '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
+    #        '</div>' \
+    #        '</div></div>'.format(
+    #             EXPLORE_LINK=reverse('dashboard:dashboard'),
+    #             INVITE_LINK=reverse('dashboard:invite')
+    #             )
+    #
+    # modal_options = {
+    #     "title": "Welcome onboard %s!" % profile.user.first_name,
+    #     "body": escape_html(body),
+    #     "footer": False
+    # }
+    # messages.info(request, json.dumps(modal_options), extra_tags='modal')
 
-    modal_options = {
-        "title": "Welcome onboard %s!" % profile.user.first_name,
-        "body": escape_html(body),
-        "footer": False
-    }
-    messages.info(request, json.dumps(modal_options), extra_tags='modal')
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+    messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community')
+    return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 
+# THIS IS NOT USED ANYMORE
 def om_confirmation(
         request,
         sender_first_name,
@@ -351,14 +361,14 @@ def om_confirmation(
     }
 
     # Send email to receiver only the first time
-    if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
+    #if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
         # Send email for the first time
-        EmailHelper.email(
-            template_name='invitation_email_receiver',
-            title='You are invited to join the OpenMaker community!',
-            vars=email_vars,
-            receiver_email=receiver_email
-        )
+    EmailHelper.email(
+        template_name='invitation_email_receiver',
+        title='You are invited to join the OpenMaker community!',
+        vars=email_vars,
+        receiver_email=receiver_email
+    )
     # Send mail to sender
     EmailHelper.email(
         template_name='invitation_email_confirmed',
@@ -372,4 +382,4 @@ def om_confirmation(
 
 def csrf_failure(request, reason=''):
     messages.warning(request, 'Some error occurs!')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return HttpResponseRedirect(reverse('dashboard:homepage'))

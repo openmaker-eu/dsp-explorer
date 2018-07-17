@@ -6,11 +6,16 @@ class InsightConnectorV10(object):
 
     @classmethod
     def questions(cls, crm_ids):
+        print(crm_ids)
         return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod
     def feedback(cls, crm_id, temp_id, feedback):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
+
+    @classmethod
+    def question_feedback(cls, crm_id, question_id, answer_id):
+        return cls.get('feedback/question', {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id})
 
     @classmethod
     def profile_questions(cls, crm_ids):

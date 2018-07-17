@@ -25,9 +25,6 @@ class questions(APIView):
         temp_id = request.query_params.get('entity_temp_id', None)
         profile_id = request.query_params.get('profile_id', None)
 
-        print('action')
-        print(action)
-
         if request.user.is_authenticated:
             # Request for edit profile
             action == 'profileedit' and self.edit_profile_questions(request)
@@ -58,11 +55,17 @@ class questions(APIView):
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
-                return Response(Insight.feedback(
-                    temp_id=request.data.get('temp_id', None),
-                    crm_id=request.user.profile.crm_id,
-                    feedback=request.data.get('feedback', None),
-                ))
+
+                crm_id = request.user.profile.crm_id
+                temp_id = request.data.get('temp_id', None)
+                question_id = request.data.get('question_id', None)
+                feedback = request.data.get('feedback', None)
+
+                if temp_id is not None:
+                    return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
+                if question_id is not None:
+                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback))
+
             # Update User
             not action and self.update_user(request)
 
@@ -109,7 +112,8 @@ class questions(APIView):
                     #     if temp_id in self.questions:
                     #         self.questions[temp_id]['feedback'].append(question['feedback'])
 
-            self.questions = [ self.map_remote_to_local_questions(q) for q in self.questions.values()]
+            self.questions = [self.map_remote_to_local_questions(q) for q in self.questions.values()]
+            print(self.questions)
 
         except Exception as e:
             print(e)
@@ -123,13 +127,20 @@ class questions(APIView):
             self.question('user_birthdate'),
             self.question('user_city'),
             self.question('user_occupation'),
-            self.question('activity-question'),
-            self.question('user_tags'),
+            self.question('activity_question_1'),
+            self.question('activity_question_2'),
+            #self.question('user_tags'),
             self.question('user_signup_data'),
             self.question('signup_bye'),
         ]
 
     def chatbot_question(self, request):
+
+        entity_name = request.query_params.get('entity_name', None)
+        entity_id = request.query_params.get('entity_id', None)
+        temp_id = request.query_params.get('entity_temp_id', None)
+        profile_id = request.query_params.get('profile_id', None)
+
         try:
             welcome = self.question('welcome', first_name=request.user.first_name)
             bye = self.question('nice_talking', first_name=request.user.first_name)
@@ -137,11 +148,17 @@ class questions(APIView):
             # or '145489262'
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
+
+            print('im in')
             if response.status_code < 205:
                 res_dict = response.json()
+                print('dict')
+                print(res_dict)
                 questions = res_dict['users'][0]['questions']
-                type = res_dict['users'][0]['feedback_type']
-                self.questions = [welcome] + [self.map_remote_to_local_questions(q, type) for q in questions] + [bye]
+                print('questions')
+                print(questions)
+                self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
+
         except Exception as e:
             print(e)
             self.questions = None
@@ -161,14 +178,18 @@ class questions(APIView):
                       value=profile.birthdate.strftime('%Y/%m/%d'),
                       ),
             self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
-            self.make('tags', 'multi_select', 'Choose 3 tags',
-                      options=[x.name for x in Tag.objects.all()],
-                      value=[x.name for x in profile.tags.all()],
-                      ),
-            self.make('activity-question', 'activity-question', 'What is your activity?',
+            # self.make('tags', 'multi_select', 'Choose 3 tags',
+            #           options=[x.name for x in Tag.objects.all()],
+            #           value=[x.name for x in profile.tags.all()],
+            #           ),
+            self.make('activity-question-1', 'activity-question-1', 'What is your activity?',
                       value={
-                          "domain": profile.domain and profile.domain.split(",") ,
+                          "domain": profile.domain and profile.domain.split(","),
                           "area": profile.area and profile.area.split(","),
+                      }
+                      ),
+            self.make('activity-question-2', 'activity-question-2', 'What is your activity?',
+                      value={
                           "technology": profile.technology and profile.technology.split(","),
                           "skills": profile.technology and profile.skills.split(",")
                       }
@@ -189,11 +210,10 @@ class questions(APIView):
 
         self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
 
-    def map_remote_to_local_questions(self, question, feedback_type='disagree_notsure_agree'):
-        if feedback_type == 'disagree_notsure_agree':
+    def map_remote_to_local_questions(self, question):
             question['actions'] = {
                 'type': 'buttons',
-                'options': ['agree', 'disagree', 'notsure']
+                'options': [{'label': k, 'value': v} for k, v in question['answers'].items()]
             }
             return self.make(name='', type='question', **question)
 
@@ -272,7 +292,7 @@ class questions(APIView):
             },
             'signup_proposal_2': {
                 'type': "question",
-                "super text": 'You can view only 5 contents per day',
+                "super_text": 'You can view only 5 contents per day',
                 'question': 'If you signup you will have full access to the site contents.' ,
                 'text': "Do you Want to signup?",
                 'actions': {'options': [{'value': 'event:question.modal.open', 'label': 'Yes'}, 'Not now' ]}
@@ -290,7 +310,8 @@ class questions(APIView):
             ),
             'user_city': cls.make('city', 'city', 'What is your city?'),
             'user_occupation': cls.make('occupation', 'text', 'What is your occupation?'),
-            'activity-question': cls.make('activity-question', 'activity-question', 'What is your activity?'),
+            'activity_question_1': cls.make('activity-question-1', 'activity-question-1', 'What is your activity? (1 of 2)'),
+            'activity_question_2': cls.make('activity-question-2', 'activity-question-2', 'What is your activity? (2 of 2)'),
             'user_tags': cls.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
             'user_signup_data': cls.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
             'signup_bye': cls.make('signup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),

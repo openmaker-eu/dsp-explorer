@@ -13,7 +13,7 @@
         <div ng-bind-html="tag.value.label | highlight: $select.search"></div>
     </ui-select-choices>
 </ui-select>
-<input type="hidden" ng-model="m[x.name]" name="{$ x.name $}" required/>
+<input type="hidden" ng-model="m[x.name]" ng-value="m[x.name]" name="{$ x.name $}" required/>
 
 [slider]
 <input name="{$ x.name $}" type="range" min="0" max="100" value="{$ x.value $}" class="form-control" ng-model="m[x.name]" required>`,
@@ -31,6 +31,7 @@
 <input
        class="form-control"
        ng-model="m[x.name]"
+       name="{$ x.name $}"
        moment-picker="x.value"
        format="YYYY-MM-DD"
        placeholder="Select a date..."
@@ -57,8 +58,11 @@ required>
 
 <input type="hidden" ng-model="m[x.name]" ng-value="m[x.name]" name="{$ x.name $}" required/>
 
-[activity-question]
-<activity-question data="x.value"></activity-question>
+[activity-question-1]
+<activity-question data="x.value" activityfilter="['domain', 'area']" ></activity-question>
+
+[activity-question-2]
+<activity-question data="x.value" activityfilter="['technology', 'skills']" ></activity-question>
 
 [question]
 <h3 class="text-brown text-center"><i>{$ x.super_text $}</i></h3>
@@ -161,7 +165,7 @@ required>
             <input type="checkbox" ng-model="tac" required="required" class="fake-check">
             &nbsp;You agree to the conditions
         </span>
-        (<a target="_blank" href="{% url 'dashboard:express_acceptance' %}">Express Acceptance</a>)
+        (<a target="_blank" href="/terms/">Express Acceptance</a>)
     </span>
     <br>
     <span class="pointer" style="cursor:pointer;">
@@ -171,15 +175,15 @@ required>
             &nbsp;You agree to use your data to allow us to map the community of makers and encourage the meeting between
             representatives of the makers' community and the manufacturing industry By registering you agree to the following conditions
         </span>
-        (<a target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
+        (<a target="_blank" href="/terms/">Terms of service</a>)
         <span ng-click="privacy=!privacy;" >, You consent to the use of your data in accordance with the privacy policy</span>
-            (<a target="_blank" href="{% url 'dashboard:privacy' %}">Privacy policy</a>)
+            (<a target="_blank" href="/privacy/">Privacy policy</a>)
         <span ng-click="privacy=!privacy;" >you ask to use our service.You will receive an email to confirm your registration.</span>
     </span>
     <br><br>
     <span>
          The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
-         (<a target="_blank" href="{% url 'dashboard:terms_conditions' %}">terms and the conditions</a>)
+         (<a target="_blank" href="/terms/">terms and the conditions</a>)
     </span>
 </div>
 

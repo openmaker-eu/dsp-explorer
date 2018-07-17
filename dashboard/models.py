@@ -239,11 +239,11 @@ class User(User):
         try:
             print('1')
             user = User.objects.create_user(
-                username=kwargs.get('email', False)[0],
-                email=kwargs.get('email', False)[0],
-                password=kwargs.get('password', False)[0],
-                first_name=kwargs.get('first_name', False)[0],
-                last_name=kwargs.get('last_name', False)[0]
+                username=kwargs.get('email', False),
+                email=kwargs.get('email', False),
+                password=kwargs.get('password', False),
+                first_name=kwargs.get('first_name', False),
+                last_name=kwargs.get('last_name', False)
             )
             print('2')
             user.is_active = False
@@ -306,7 +306,6 @@ class Profile(models.Model):
     source_of_inspiration = models.ManyToManyField(SourceOfInspiration, related_name='profile_sourceofinspiration')
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
-
     interest = GenericRelation('Interest')
 
     domain = models.TextField(blank=True)
@@ -359,6 +358,12 @@ class Profile(models.Model):
         profile.occupation = kwargs.get('occupation', None)
         profile.place = kwargs.get('place', None)
         profile.city = kwargs.get('city', None)
+
+        profile.city = kwargs.get('area', None)
+        profile.city = kwargs.get('domain', None)
+        profile.city = kwargs.get('technology', None)
+        profile.city = kwargs.get('skills', None)
+
         profile.reset_token = Profile.get_new_reset_token()
         profile.save()
 

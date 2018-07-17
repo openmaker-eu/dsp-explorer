@@ -30,7 +30,7 @@ from utils.GoogleHelper import GoogleHelper
 @login_required()
 def dashboard(request, topic_id=None):
     messages.warning(request, 'Some error occurs!')
-    return HttpResponseRedirect(reverse('dashboard:login'))
+    return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 def manifesto(request):
     return render(request, 'dashboard/manifesto.html', {'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),})

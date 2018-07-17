@@ -80,7 +80,7 @@ def application(request):
     #
     # return render(request, 'pss/application.html', {'les_choices': Application.les_choices})
 
-@staff_member_required(login_url='dashboard:login')
+@staff_member_required(login_url='dashboard:homepage')
 def application_result(request):
 
     sortedapps = Application.objects.all()\

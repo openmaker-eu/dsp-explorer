@@ -1,3 +1,5 @@
+let _ = require('lodash')
+
 export default function(){
     return {
         template:`
@@ -6,16 +8,16 @@ export default function(){
                     ng-if="action='chatbot.question.simple'"
                     style="display: flex; flex-direction: row; justify-content: center; align-items: center; padding-bottom:5%;"
                 >
-                    
                     <div
                         ng-if="!items[current].actions.type || items[current].actions.type == 'buttons'"
-                        ng-repeat="act in items[current].actions.options"
-                        style="padding:1%;"
+                        style="display:flex; flex-wrap:wrap; flex-direction: row; justify-content: center; align-items: center;"
                     >
-                        <button
-                            class="btn btn-danger pull-left capitalize"
-                            ng-click="next(act.value || act.label || act)"
-                        >{$ act.label || act.value || act $}</button>
+                        <span ng-repeat="act in items[current].actions.options" style="padding:5px;">
+                            <button
+                                class="btn btn-danger pull-left capitalize "
+                                ng-click="next(act.value || act.label || act)"
+                            >{$ act.label || act.value || act $}</button>
+                        </span>
                     </div>
                     
                     <div ng-if="items[current].actions.type == 'stars'" ng-init="rating={value:-1}">
@@ -45,9 +47,9 @@ export default function(){
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
     
-    
+                console.log('value', value);
                 if(value === 'goto:last') $scope.goto($scope.items.length-1)
-                if(value.includes('event:')) $rootScope.$emit(value.split(':')[1])
+                if( _.isString(value) && value.includes('event:')) $rootScope.$emit(value.split(':')[1])
                 
                 $scope.items[$scope.current].feedback = value
                 $rootScope.$emit($scope.wizard_name+'.next', $scope.current)

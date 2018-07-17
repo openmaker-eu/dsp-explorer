@@ -24,7 +24,6 @@
 
 </head>
 
-<!--<body ng-app="{{ request.resolver_match.app_name }}" ng-controller="baseController" style=""-->
 <body
         ng-app="{{ request.resolver_match.app_name }}"
         base-app
@@ -35,10 +34,22 @@
 <div id="cover-filter"></div>
     <div class="om-main-wrapper">
         <header>
+
             {% with current_url=request.resolver_match.view_name  %}
                 {% include "header.html" %}
             {% endwith %}
-           <!--<h1>AUTH: {$ $root.authorization $}</h1><h1>USER: {$ $root.user $}</h1>-->
+
+            {% for message in messages %}
+                <div
+                        class="alert alert-dismissible text-center {% if message.tags != 'error' %}alert-danger{% else %}alert-{{message.tags}}{% endif %}"
+                        role="alert"
+                >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4>{{ message }}</h4>
+                </div>
+
+            {% endfor %}
+
         </header>
 
         <entity-loading

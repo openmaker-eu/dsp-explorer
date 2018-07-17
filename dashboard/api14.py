@@ -295,14 +295,15 @@ class entity_details(APIView):
 
         return Response(results)
 
-
 @api_view(['POST'])
 def signup(request):
     from utils.mailer import EmailHelper
 
-    email = request.data.get('email', False)
-    password = request.data.get('password', False)
-    password_confirm = request.data.get('password_confirm', False)
+    data = {key: value for (key, value) in request.data.items()}
+
+    email = data.get('email', False)
+    password = data.get('password', False)
+    password_confirm = data.get('password_confirm', False)
 
     if len(User.objects.filter(email=email)) > 0:
         return Response(data={'error': 'User already exist'}, status=401)
@@ -310,15 +311,15 @@ def signup(request):
     if not password or password != password_confirm:
         return Response(data={'error': 'Password and password confirm don\'t match'}, status=401)
 
-    user = User.create(**request.data)
-    profile = Profile.create(user=user, **request.data)
+    user = User.create(**data)
+    profile = Profile.create(user=user, **data)
 
     # Send email
     confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=profile.reset_token))
 
     EmailHelper.email(
         template_name='onboarding_email_template',
-        title='OpenMaker Nomination done!',
+        title='OpenMaker - Confirm your email',
         vars={
             'FIRST_NAME': user.first_name.encode('utf-8'),
             'LAST_NAME': user.last_name.encode('utf-8'),
@@ -352,7 +353,7 @@ def apilogin(request):
     try:
         print('crmid')
         if not user.profile.crm_id:
-            crm_user = CRMConnector.search_party_by_email(profile.user.email)
+            crm_user = CRMConnector.search_party_by_email(user.profile.user.email)
 
     except Exception as e:
         print(e)
