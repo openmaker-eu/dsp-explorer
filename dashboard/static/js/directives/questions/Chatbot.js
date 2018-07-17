@@ -73,7 +73,6 @@ let chatbot_directive =
                 $scope.questions = res.data.questions
                 $timeout(function(a){ $scope.opened = true }, 5000)
             }
-            
         }
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $scope.opened=false })

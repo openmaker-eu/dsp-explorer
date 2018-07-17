@@ -91,20 +91,24 @@ let profile_question_directive =
         $scope.questions = null
         $scope.wizard_id = $scope.$id;
         $scope.wizard_name = 'wizard.'+$scope.wizard_id;
+        // $scope.is_my_profile = profile.data.user.first_name
         
         console.log('profile id', $scope.profileid);
         $scope.get = ()=>{
             $scope.profileid &&
             $http.get(`/api/v1.4/questions/profile?profile_id=${$scope.profileid}`)
-                .then((r)=>{$scope.questions = r.data.questions || null})
+                .then((r)=>{$scope.questions = r.data.questions || null;  console.log($scope.questions);})
         }
         
         $scope.get()
         $rootScope.$on('authorization.refresh', ()=>{})
         
-        $scope.toggle_show =  async(q)=> {
-            let res= await $http.post('/api/v1.4/questions/chatbot/', q)
+        $scope.toggle_show = async(q)=> {
+            console.log(q);
             q.is_private = !q.is_private
+            let res= await $http.post('/api/v1.4/questions/chatbot/', q)
+            //$scope.get()
+            
         }
         
         $scope.edit_question = async(question, feedback)=>{

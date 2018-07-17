@@ -65,16 +65,18 @@ class questions(APIView):
                 print('is_private')
                 print(is_private)
 
-
                 if temp_id is not None:
                     return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
-                if question_id is not None:
-                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback, is_private=is_private))
+                elif is_private is not None and question_id is not None:
+                    return Response(Insight.question_privacy(crm_id=crm_id, question_ids=[question_id], is_private=is_private))
+                elif question_id is not None:
+                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback))
 
             # Update User
             not action and self.update_user(request)
 
         except Exception as e:
+            print(e)
             return Response(data={'error': 'error send feedback'}, status=403)
         return Response()
 
@@ -131,6 +133,7 @@ class questions(APIView):
             if id in user_questions:
                 fb = [{'label': feedback['answer_value'], 'value': feedback['answer_id']}]
                 user_questions[id]['feedbacks'] = fb if not'feedbacks' in user_questions[id] else user_questions[id]['feedbacks'] + fb
+                user_questions[id]['is_private'] = feedback['is_private']
 
         return user_questions
 

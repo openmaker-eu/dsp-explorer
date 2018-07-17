@@ -14,10 +14,8 @@ class InsightConnectorV10(object):
         return cls.get('feedback/send_feedback', {'crm_id': crm_id, 'temp_id': temp_id, 'feedback': feedback})
 
     @classmethod
-    def question_feedback(cls, crm_id, question_id, answer_id, is_private):
+    def question_feedback(cls, crm_id, question_id, answer_id):
         context = {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id}
-        if is_private is not None:
-            context['is_private'] = is_private
         return cls.get('feedback/question', context)
 
     @classmethod
@@ -28,6 +26,7 @@ class InsightConnectorV10(object):
     @classmethod
     def question_privacy(cls, crm_id, question_ids, is_private):
         question_ids = cls.merge_ids(question_ids)
+        is_private = 'True' if is_private else 'False'
         return cls.get('feedback/change_privacy', {'crm_id': crm_id, 'question_ids': question_ids, 'is_private': is_private})
 
     @classmethod
