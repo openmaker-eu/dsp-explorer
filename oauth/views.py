@@ -19,7 +19,8 @@ def twitter_sign_in(request):
     twitter = Twitter.objects.first()
     oauth = OAuth1(twitter.app_id, client_secret=twitter.app_secret)
     response = requests.post(url=url, auth=oauth)
-    credentials = parse_qs(response.content)
+    credentials = parse_qs(response.text)
+    print(credentials)
     oauth_callback_confirmed = credentials.get('oauth_callback_confirmed')[0]
     if not oauth_callback_confirmed:
         messages.warning(request, 'Attenzione, errore durante l\'autenticazione con Twitter.')
@@ -38,20 +39,15 @@ def twitter_redirect(request):
                                                                            request.GET.get('oauth_token'),
                                                                            request.GET.get('oauth_verifier'))
     except Exception as e:
-        messages.error(request, 'Errore durante il Login, per favore riprova!')
+        messages.error(request, 'Errore durante il Login, per favore riprova1!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if not oauth_token_secret or not oauth_token:
-        messages.success(request, 'Errore durante il Login, per favore riprova!')
+        messages.success(request, 'Errore durante il Login, per favore riprova2!')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
     profile = Profile.objects.filter(user__email=request.user.email).first()
     twitter_profile = TwitterProfile.create(profile, oauth_token, oauth_token_secret)
-    try:
-        #_twitter_get_data(twitter_profile.profile.user_id, twitter.app_id,
-                          #twitter.app_secret, oauth_token, oauth_token_secret)
-        messages.success(request, 'Collegamento con Twitter completato!')
-    except Exception as e:
-        messages.warning(request, 'Login completato, Attenzione: Errore durante il recupero delle informazioni.')
+    messages.success(request, 'Collegamento con Twitter completato!')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
@@ -63,7 +59,7 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         oauth = OAuth1(app_id, app_secret, resource_owner_key=resource_owner_key,
                        resource_owner_secret=resource_owner_secret)
         response = requests.post(url=url, auth=oauth, data={"oauth_verifier": resource_owner_secret})
-        credentials = parse_qs(response.content)
+        credentials = parse_qs(response.text)
         oauth_token = credentials.get('oauth_token')[0]
         oauth_token_secret = credentials.get('oauth_token_secret')[0]
     except Exception as e:
