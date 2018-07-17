@@ -13,6 +13,7 @@ static_root/
 # Environment
 env
 backup
+.python-version
 
 # MAC stuff
 .DS_Store

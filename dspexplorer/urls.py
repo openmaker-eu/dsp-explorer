@@ -20,6 +20,7 @@ from django.views.static import serve
 
 urlpatterns = [
     url(r'^', include('dashboard.urls')),
+    url(r'^oauth/', include('oauth.urls')),
     url(r'^application/', include('pss.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {
@@ -27,5 +28,4 @@ urlpatterns = [
     }),
     url(r'^froala_editor/', include('froala_editor.urls')),
     url(r'^select2/', include('django_select2.urls')),
-
 ]

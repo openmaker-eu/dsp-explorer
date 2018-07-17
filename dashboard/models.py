@@ -120,7 +120,7 @@ class Country(models.Model):
     @classmethod
     def create(cls, code, alias):
         existing = Country.objects.filter(code=code)
-        
+
         if len(existing):
             return existing
 
@@ -286,6 +286,8 @@ class Profile(models.Model):
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
     twitter_username = models.TextField(_('Twitter Username'), max_length=100, blank=True, null=True)
+    twitter = models.BooleanField(default=False)
+
     place = models.TextField(default=None, null=True)
 
     statement = models.TextField(_('Statement'), blank=True, null=True)
@@ -767,7 +769,7 @@ class Invitation(models.Model):
         #     raise UserAlreadyInvited
         # except Invitation.DoesNotExist:
         #     pass
-            
+
         invitation = cls(
             profile=profile,
             sender_email=HashHelper.md5_hash(sender_email) if not profile else sender_email,
