@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import Twitter, TwitterProfile
 from dashboard.models import Profile
@@ -12,7 +13,6 @@ import json
 from utils.helpers import get_host
 
 
-@login_required
 def twitter_sign_in(request):
     # DOC https://dev.twitter.com/web/sign-in/implementing
     url = "https://api.twitter.com/oauth/request_token"
@@ -20,34 +20,41 @@ def twitter_sign_in(request):
     oauth = OAuth1(twitter.app_id, client_secret=twitter.app_secret)
     response = requests.post(url=url, auth=oauth)
     credentials = parse_qs(response.text)
-    print(credentials)
     oauth_callback_confirmed = credentials.get('oauth_callback_confirmed')[0]
     if not oauth_callback_confirmed:
-        messages.warning(request, 'Attenzione, errore durante l\'autenticazione con Twitter.')
+        messages.warning(request, 'Error during Twitter login.')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     oauth_token = credentials.get('oauth_token')[0]
     redirect_url = "https://api.twitter.com/oauth/authenticate?oauth_token={}".format(oauth_token)
     return HttpResponseRedirect(redirect_url)
 
 
-@login_required
 def twitter_redirect(request):
     twitter = Twitter.objects.first()
     try:
-        oauth_token, oauth_token_secret = _exchange_code_for_twitter_token(twitter.app_id,
+        oauth_token, oauth_token_secret, user_id = _exchange_code_for_twitter_token(twitter.app_id,
                                                                            twitter.app_secret,
                                                                            request.GET.get('oauth_token'),
                                                                            request.GET.get('oauth_verifier'))
     except Exception as e:
-        messages.error(request, 'Errore durante il Login, per favore riprova1!')
+        messages.error(request, 'Error during Twitter login.')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
     if not oauth_token_secret or not oauth_token:
-        messages.success(request, 'Errore durante il Login, per favore riprova2!')
+        messages.success(request, 'Error during Twitter login.')
         return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
-    profile = Profile.objects.filter(user__email=request.user.email).first()
-    twitter_profile = TwitterProfile.create(profile, oauth_token, oauth_token_secret)
-    messages.success(request, 'Collegamento con Twitter completato!')
+    twitter_profile = TwitterProfile.objects.filter(user_id=user_id).first()
+    if twitter_profile:
+        if not request.user.is_authenticated:
+            #login
+            login(request, twitter_profile.profile.user)
+    else:
+        if request.user.is_authenticated:
+            # bind profile
+            profile = Profile.objects.filter(user__email=request.user.email).first()
+            twitter_profile = TwitterProfile.create(profile, user_id, oauth_token, oauth_token_secret)
+            messages.success(request, 'Link with your Twitter profile completed.')
+
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
@@ -62,9 +69,10 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         credentials = parse_qs(response.text)
         oauth_token = credentials.get('oauth_token')[0]
         oauth_token_secret = credentials.get('oauth_token_secret')[0]
+        user_id = credentials.get('user_id')[0]
     except Exception as e:
         raise e
-    return oauth_token, oauth_token_secret
+    return oauth_token, oauth_token_secret, user_id
 
 
 def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
@@ -83,13 +91,12 @@ def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
 
 @login_required()
 def deactivate_account(request, social):
-    # TODO Notify Facebook
     profile = Profile.objects.filter(user__email=request.user.email).first()
     if social == 'twitter':
         profile.twitter = False
         profile.save()
         TwitterProfile.objects.filter(profile=profile).delete()
-    messages.success(request, 'Hai scollegato il tuo account %s' % social.capitalize())
+    messages.success(request, 'You have unlinked your profile')
     return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 # Create your views here.
