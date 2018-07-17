@@ -63,21 +63,11 @@ export default {
     controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
     
         $scope.m = {}
-        
         $scope.on_remove = (selected)=>{}
-        console.log('$scope.activities_filter', $scope.activities_filter);
-        
         this.$onChanges = (changes)=>{
-            
             $scope.data = changes.data && changes.data.currentValue || undefined
-            console.log('data', $scope.data);
-            
             $scope.activityfilter = changes.activityfilter && changes.activityfilter.currentValue || undefined
-            console.log(changes);
-            
-            console.log('$scope.activities_filter', $scope.activityfilter);
             $scope.activityfilter && ( $scope.activities = _.pick(activities, $scope.activityfilter ) )
-            
         }
         
         

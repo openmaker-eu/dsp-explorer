@@ -65,9 +65,9 @@ required>
 <activity-question data="x.value" activityfilter="['technology', 'skills']" ></activity-question>
 
 [question]
-<h3 class="text-brown text-center"><i>{$ x.super_text $}</i></h3>
-<h4 class="text-brown text-center"><i>{$ x.question $}</i></h4>
-<h5 class="text-brown text-center"><i>{$ x.text $}</i></h5>
+<h3 class="text-brown text-center" ng-if="x.super_text" ><i>{$ x.super_text $}</i></h3>
+<h4 class="text-brown text-center" ng-if="x.question"><i>{$ x.question $}</i></h4>
+<h5 class="text-brown text-center" ng-if="x.text"><i>{$ x.text $}</i></h5>
 
 [tags_select]
 <ui-select

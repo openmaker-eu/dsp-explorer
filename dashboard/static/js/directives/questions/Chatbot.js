@@ -41,7 +41,7 @@ let chatbot_directive =
     controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider){
         //$('chatbot').css('bottom', $('footer').height()+'px')
         
-        $scope.questions= null
+        $scope.questions = null
         $scope.opened= true
         $scope.wizardid = $scope.$id
         

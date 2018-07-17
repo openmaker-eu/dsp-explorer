@@ -60,11 +60,16 @@ class questions(APIView):
                 temp_id = request.data.get('temp_id', None)
                 question_id = request.data.get('question_id', None)
                 feedback = request.data.get('feedback', None)
+                is_private = request.data.get('is_private', None)
+
+                print('is_private')
+                print(is_private)
+
 
                 if temp_id is not None:
                     return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
                 if question_id is not None:
-                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback))
+                    return Response(Insight.question_feedback(crm_id=crm_id, question_id=question_id, answer_id=feedback, is_private=is_private))
 
             # Update User
             not action and self.update_user(request)
@@ -93,30 +98,41 @@ class questions(APIView):
                 Profile.objects.filter(pk=request.user.profile.id).first().crm_id,
                 Profile.objects.filter(pk=profile_id).first().crm_id
             ]
+            feedbacks = Insight.profile_questions(crm_ids)
 
-            questions = Insight.profile_questions(crm_ids)
-            self.questions = {
-                x['temp_id']: x.update({'feedback': [x['feedback']]}) or x
-                for x in questions[0]['questions']
-            }
+            logged_user_feedbacks = feedbacks[0]['feedbacks']['questions']
+            profile_page_feedbacks = feedbacks[1]['feedbacks']['questions']
 
-            if crm_ids[0] != crm_ids[1]:
-                for question in questions[0]['questions']:
-                    question['feedback'].append('agree')
+            if len(profile_page_feedbacks) < 1:
+                self.questions = []
+            else:
+                self.questions = self.merge_question_and_feedback(profile_page_feedbacks)
+                if crm_ids[0] != crm_ids[1]:
+                    self.questions = self.merge_question_and_feedback(logged_user_feedbacks, self.questions)
 
-                # for question in questions[1]['questions']:
-                    #     print(question)
-                    #     temp_id = question['temp_id']
-                    #     crm_id = questions[1]['crm_id']
-                    #     print(temp_id)
-                    #     if temp_id in self.questions:
-                    #         self.questions[temp_id]['feedback'].append(question['feedback'])
-
-            self.questions = [self.map_remote_to_local_questions(q) for q in self.questions.values()]
-            print(self.questions)
-
-        except Exception as e:
+        except KeyboardInterrupt as e:
             print(e)
+
+    def merge_question_and_feedback(self, fedbacks=None, questions=None):
+        from itertools import groupby
+        # Get feedbacks
+        user_fedbacks = fedbacks
+
+        # Remove duplicates from feedback
+        grouped = [x for x in groupby(user_fedbacks, lambda x: x['q_id'])]
+        user_fedbacks = [list(v).pop() for k, v in grouped]
+
+        # Get questions
+        ids = [k for k, v in grouped]
+        user_questions = questions or Insight.question_contents(ids).json()
+
+        for feedback in user_fedbacks:
+            id = str(feedback['q_id'])
+            if id in user_questions:
+                fb = [{'label': feedback['answer_value'], 'value': feedback['answer_id']}]
+                user_questions[id]['feedbacks'] = fb if not'feedbacks' in user_questions[id] else user_questions[id]['feedbacks'] + fb
+
+        return user_questions
 
 
     def signup_questions(self, request):
@@ -149,14 +165,9 @@ class questions(APIView):
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
 
-            print('im in')
             if response.status_code < 205:
                 res_dict = response.json()
-                print('dict')
-                print(res_dict)
                 questions = res_dict['users'][0]['questions']
-                print('questions')
-                print(questions)
                 self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
 
         except Exception as e:
