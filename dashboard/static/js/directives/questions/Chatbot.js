@@ -45,10 +45,8 @@ let chatbot_directive =
         $scope.opened= false
         $scope.wizardid = $scope.$id
         
-        $scope.toggle_bot = ()=>(
-            $scope.questions && ($scope.opened=!$scope.opened)
-        )
-    
+        $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
+        
         $scope.get = ()=> {
             console.log('chatbot get');
             $scope.opened = false
@@ -93,7 +91,7 @@ let chatbot_directive =
             $scope.entityid = _.get($rootScope, 'page_info.options.profile_id')
         }
         
-        console.log('page_name' , $rootScope.page_info);
+        $scope.get()
     
     }]
 }

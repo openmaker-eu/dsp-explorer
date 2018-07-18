@@ -15,7 +15,7 @@ export default function(){
                         <span ng-repeat="act in items[current].actions.options" style="padding:5px;">
                             <button
                                 class="btn btn-danger pull-left capitalize "
-                                ng-click="next(act.value || act.label || act)"
+                                ng-click="next(act.hasOwnProperty('value')? act.value: act.label||act )"
                             >{$ act.label || act.value || act $}</button>
                         </span>
                     </div>
@@ -44,6 +44,8 @@ export default function(){
             $scope.is_end = $scope.items && $scope.items.length < 2
             $scope.current = 0;
             
+            
+            
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
     
@@ -54,8 +56,6 @@ export default function(){
                 $scope.items[$scope.current].feedback = value
                 $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
                 
-                console.log('wizardname', $scope.wizard_name);
-    
                 $scope.is_end && $scope.end()
             }
             
@@ -65,6 +65,8 @@ export default function(){
             $rootScope.$on($scope.wizard_name+'.afterChange',(ev, {event, slick, currentSlide, nextSlide})=>{
                 $scope.current = currentSlide;
                 $scope.is_end = currentSlide === $scope.items.length-1
+                console.log('options', $scope.items[$scope.current].actions.options);
+    
             })
             
             $scope.get_stars = (amount)=>[...new Array(amount)]

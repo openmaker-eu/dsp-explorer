@@ -19,11 +19,22 @@ class questions(APIView):
     questions = []
 
     def get(self, request, action=None):
+        '''
+
+        :param request:
+        :param action:
+        :return:
+            200 code for success + question list
+            403 if there is an error + {'error': [Error description]}
+        '''
 
         entity_name = request.query_params.get('entity_name', None)
         entity_id = request.query_params.get('entity_id', None)
         temp_id = request.query_params.get('entity_temp_id', None)
         profile_id = request.query_params.get('profile_id', None)
+
+        print('action')
+        print(action)
 
         if request.user.is_authenticated:
             # Request for edit profile
@@ -52,18 +63,32 @@ class questions(APIView):
             403 if there is an error + {'error': [Error description]}
         '''
 
+        crm_id = request.user.profile.crm_id
+        temp_id = request.data.get('temp_id', None)
+        question_id = request.data.get('question_id', None)
+        feedback = request.data.get('feedback', None)
+        is_private = request.data.get('is_private', None)
+
+        print('crm_id')
+        print(crm_id)
+
+        print('feedback')
+        print(feedback)
+
+        print('question_id')
+        print(question_id)
+
+        print('is_private')
+        print(is_private)
+
+        print('temp_id')
+        print(temp_id)
+
+        return Response()
+
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
-
-                crm_id = request.user.profile.crm_id
-                temp_id = request.data.get('temp_id', None)
-                question_id = request.data.get('question_id', None)
-                feedback = request.data.get('feedback', None)
-                is_private = request.data.get('is_private', None)
-
-                print('feedback id')
-                print(feedback)
 
                 # Entity Feedback
                 if temp_id is not None:
@@ -84,6 +109,13 @@ class questions(APIView):
         return Response()
 
     def feedback_questions(self, request, entity_name, entity_id):
+        '''
+
+        :param request:
+        :param entity_name:
+        :param entity_id:
+        :return: void - it's only modify self.questions
+        '''
         self.questions = [] \
             if entity_name in ['challenges', 'projects'] \
             else [
@@ -98,22 +130,36 @@ class questions(APIView):
         ]
 
     def profile_questions(self, request, profile_id):
+        '''
+
+        :param request:
+        :param profile_id:
+        :return: void - it's only modify self.questions
+        '''
         try:
             crm_ids = [
                 Profile.objects.filter(pk=request.user.profile.id).first().crm_id,
                 Profile.objects.filter(pk=profile_id).first().crm_id
             ]
+
+            are_the_same_profiles = crm_ids[0] == crm_ids[1]
+
+            # Get feedbacks from insight
             feedbacks = Insight.profile_questions(crm_ids)
 
+            # check if the response from insight is ok
             if len(feedbacks) > 0:
                 logged_user_feedbacks = feedbacks[0]['feedbacks']['questions']
-                profile_page_feedbacks = feedbacks[1]['feedbacks']['questions']
+                target_user_feedbacks = feedbacks[1]['feedbacks']['questions']
 
-                if len(profile_page_feedbacks) < 1:
+                # if the target user does not have questions stop the execution
+                if len(target_user_feedbacks) < 1:
                     self.questions = []
+                    return
+                # Create list of merged questions
                 else:
-                    self.questions = self.merge_question_and_feedback(profile_page_feedbacks)
-                    if crm_ids[0] != crm_ids[1]:
+                    self.questions = self.merge_question_and_feedback(target_user_feedbacks)
+                    if not are_the_same_profiles:
                         self.questions = self.merge_question_and_feedback(logged_user_feedbacks, self.questions)
                         self.questions = [v for k, v in self.questions.items() if not v['is_private']]
             else:
@@ -123,6 +169,12 @@ class questions(APIView):
             print(e)
 
     def merge_question_and_feedback(self, fedbacks=None, questions=None):
+        '''
+
+        :param fedbacks:
+        :param questions:
+        :return: void - it's only modify self.questions
+        '''
         from itertools import groupby
         # Get feedbacks
         user_fedbacks = fedbacks
@@ -135,17 +187,24 @@ class questions(APIView):
         ids = [k for k, v in grouped]
         user_questions = questions or Insight.question_contents(ids).json()
 
+        # For every question adds a feedback property containing a list of the answers of both the users
         for feedback in user_fedbacks:
             id = str(feedback['q_id'])
             if id in user_questions:
                 fb = [{'label': feedback['answer_value'], 'value': feedback['answer_id']}]
-                user_questions[id]['feedbacks'] = fb if not'feedbacks' in user_questions[id] else user_questions[id]['feedbacks'] + fb
-                user_questions[id]['is_private'] = feedback['is_private']
+                user_questions[id]['feedbacks'] = fb if not 'feedbacks' in user_questions[id] else user_questions[id]['feedbacks'] + fb
+                if questions is None:
+                    user_questions[id]['is_private'] = feedback['is_private']
 
         return user_questions
 
 
     def signup_questions(self, request):
+        '''
+
+        :param request:
+        :return: void - it's only modify self.questions
+        '''
         self.questions = [
             self.question('signup_welcome'),
             self.question('user_full_name'),
@@ -161,6 +220,11 @@ class questions(APIView):
         ]
 
     def chatbot_question(self, request):
+        '''
+
+        :param request:
+        :return: void - it's only modify self.questions
+        '''
 
         entity_name = request.query_params.get('entity_name', None)
         entity_id = request.query_params.get('entity_id', None)
@@ -170,7 +234,6 @@ class questions(APIView):
         try:
             welcome = self.question('welcome', first_name=request.user.first_name)
             bye = self.question('nice_talking', first_name=request.user.first_name)
-
 
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
@@ -188,7 +251,11 @@ class questions(APIView):
             self.questions = None
 
     def edit_profile_questions(self, request):
+        '''
 
+        :param request:
+        :return: void - it's only modify self.questions
+        '''
         user = request.user
         profile = request.user.profile
         questions = [
@@ -235,13 +302,23 @@ class questions(APIView):
         self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
 
     def map_remote_to_local_questions(self, question):
-            question['actions'] = {
-                'type': 'buttons',
-                'options': [{'label': k, 'value': v} for k, v in question['answers'].items()]
-            }
-            return self.make(name='', type='question', **question)
+        '''
+
+        :param question:
+        :return: list of questions each added with 'options' key
+        '''
+        question['actions'] = {
+            'type': 'buttons',
+            'options': [{'label': k, 'value': v} for k, v in question['answers'].items()]
+        }
+        return self.make(name='', type='question', **question)
 
     def update_user(self, request):
+        '''
+
+        :param request:
+        :return: SUCCESS : void ; ERROR : 403 response
+        '''
         user = request.user
         profile = request.user.profile
 
@@ -275,6 +352,12 @@ class questions(APIView):
 
     @classmethod
     def question(cls, question, **kwargs):
+        '''
+        Convenience method to easy build a question
+        :param question: name of the question
+        :param kwargs: a list of params needed to build the question (eg: if the text require the user name)
+        :return: the requested question if exists else return None
+        '''
         from dashboard.models import EntityProxy
 
         first_name = kwargs.get('first_name', '')
@@ -345,6 +428,14 @@ class questions(APIView):
 
     @classmethod
     def make(cls, name, type, label='', **kwargs):
+        '''
+
+        :param name:
+        :param type:
+        :param label:
+        :param kwargs:
+        :return:
+        '''
         question = {'name': name, 'type': type, 'label': label}
         for key, arg in kwargs.items():
             question[key] = arg
