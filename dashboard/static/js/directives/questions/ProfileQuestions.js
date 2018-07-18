@@ -48,7 +48,7 @@ let template = `
                 <hr>
                 
                 <!--OTHER USER-->
-                <p ng-if="!is_my_profile && !question.feedbacks[1]" class="text-brown">
+                <p ng-if="!is_my_profile" class="text-brown">
                     <strong>{$ profile.data.user.first_name $}'s answer:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
                 </p>
                 
@@ -128,7 +128,7 @@ let profile_question_directive =
         
         $scope.edit_question = async(question, feedback)=>{
             let q = {...question}
-            q.feedback = feedback || q.feedback
+            q.feedback = feedback
             let res= await $http.post('/api/v1.4/questions/chatbot/', q)
             $scope.get()
         }

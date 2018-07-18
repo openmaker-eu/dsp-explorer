@@ -24,6 +24,8 @@ export default [function(){
             $rootScope.authorization=$scope.authorization
             $rootScope.user=$scope.user
             $rootScope.page_info=$scope.pageinfo
+    
+            $rootScope.$on('authorization.refresh', ()=>console.log('main auth refresh'))
             
             console.log($scope.pageinfo);
             

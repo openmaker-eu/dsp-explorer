@@ -7,7 +7,6 @@ class InsightConnectorV10(object):
     @classmethod
     def questions(cls, crm_ids):
         crm_ids = cls.merge_ids(crm_ids)
-        print(crm_ids)
         return cls.get('recommendation/questions', {"crm_ids": crm_ids})
 
     @classmethod
@@ -17,12 +16,13 @@ class InsightConnectorV10(object):
     @classmethod
     def question_feedback(cls, crm_id, question_id, answer_id):
         context = {'crm_id': crm_id, 'question_id': question_id, 'answer_id': answer_id}
-        return cls.get('feedback/question', context)
+        response = cls.get('feedback/question', context)
+        return response
 
     @classmethod
     def question_contents(cls, question_ids):
         question_ids = cls.merge_ids(question_ids)
-        return cls.get('recommendation/get_questions_contents', {'question_ids': question_ids})    \
+        return cls.get('recommendation/get_questions_contents', {'question_ids': question_ids})
 
     @classmethod
     def question_privacy(cls, crm_id, question_ids, is_private):
@@ -75,7 +75,7 @@ class InsightConnectorV10(object):
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
         url = settings.INSIGHT_API + 'v1.0/' + endpoint + querydict
         try:
-            return requests.get(url, params=querydict, timeout=8)
+            return requests.get(url, timeout=8)
         except Exception as e:
             print(e)
             return False

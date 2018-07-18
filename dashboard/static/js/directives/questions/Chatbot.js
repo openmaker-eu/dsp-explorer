@@ -42,7 +42,7 @@ let chatbot_directive =
         //$('chatbot').css('bottom', $('footer').height()+'px')
         
         $scope.questions = null
-        $scope.opened= true
+        $scope.opened= false
         $scope.wizardid = $scope.$id
         
         $scope.toggle_bot = ()=>(
@@ -50,6 +50,7 @@ let chatbot_directive =
         )
     
         $scope.get = ()=> {
+            console.log('chatbot get');
             $scope.opened = false
             $http
                 .get($scope.url())
@@ -73,10 +74,11 @@ let chatbot_directive =
                 $scope.questions = res.data.questions
                 $timeout(function(a){ $scope.opened = true }, 5000)
             }
+            else $scope.questions = null
         }
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $scope.opened=false })
-        $rootScope.$on('authorization.refresh', $scope.get())
+        $rootScope.$on('authorization.refresh', $scope.get)
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')

@@ -62,11 +62,14 @@ class questions(APIView):
                 feedback = request.data.get('feedback', None)
                 is_private = request.data.get('is_private', None)
 
+                print('feedback id')
+                print(feedback)
+
                 # Entity Feedback
                 if temp_id is not None:
                     return Response(Insight.feedback(temp_id=temp_id, crm_id=crm_id, feedback=feedback))
                 # Change Question privacy
-                elif is_private is not None and question_id is not None:
+                elif feedback is None and is_private is not None:
                     return Response(Insight.question_privacy(crm_id=crm_id, question_ids=[question_id], is_private=is_private))
                 # Send answer to question
                 elif question_id is not None:
@@ -102,17 +105,19 @@ class questions(APIView):
             ]
             feedbacks = Insight.profile_questions(crm_ids)
 
-            logged_user_feedbacks = feedbacks[0]['feedbacks']['questions']
-            profile_page_feedbacks = feedbacks[1]['feedbacks']['questions']
+            if len(feedbacks) > 0:
+                logged_user_feedbacks = feedbacks[0]['feedbacks']['questions']
+                profile_page_feedbacks = feedbacks[1]['feedbacks']['questions']
 
-            if len(profile_page_feedbacks) < 1:
-                self.questions = []
+                if len(profile_page_feedbacks) < 1:
+                    self.questions = []
+                else:
+                    self.questions = self.merge_question_and_feedback(profile_page_feedbacks)
+                    if crm_ids[0] != crm_ids[1]:
+                        self.questions = self.merge_question_and_feedback(logged_user_feedbacks, self.questions)
+                        self.questions = [v for k, v in self.questions.items() if not v['is_private']]
             else:
-                self.questions = self.merge_question_and_feedback(profile_page_feedbacks)
-                if crm_ids[0] != crm_ids[1]:
-                    self.questions = self.merge_question_and_feedback(logged_user_feedbacks, self.questions)
-                    self.questions = [v for k, v in self.questions.items() if not v['is_private']]
-
+                self.questions = []
 
         except KeyboardInterrupt as e:
             print(e)

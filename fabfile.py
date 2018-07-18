@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
-from fabric.api import *
+from fabric import *
 
 ####################################
 # DJANGO UTILS                     #
@@ -52,34 +52,35 @@ def start():
     local('npm run dev &')
     local('python manage.py runserver 0.0.0.0:8000')
 
-
-def init():
-    local('npm run dev &')
-    local('python manage.py migrate')
-    local('python ./manage.py loaddata db.json')
-    local('python manage.py runserver 0.0.0.0:8000')
-
-
-@hosts(['topix@dspexplorer.top-ix.org'])
-def deploy_dev():
-    with cd('/var/www/dsp-explorer'):
-        run('git checkout .')
-        run('git pull')
-        run('npm run prod')
-        run('fab install_static')
-        run('service apache2 reload')
+@task
+def init(c):
+    with Connection('0.0.0.0') as c:
+        c.local('npm run dev &')
+        c.local('python manage.py migrate')
+        c.local('python ./manage.py loaddata db.json')
+        c.local('python manage.py runserver 0.0.0.0:8000')
 
 
-@hosts(['topix@dspexplorer.top-ix.org'])
-def deploy_branch(branch):
-    with cd('/var/www/dsp-explorer'):
-        run('git checkout %s' % branch)
-        run('git pull')
-        run('fab install')
-        run('fab migrate')
-        run('npm run prod')
-        run('fab install_static')
-        run('service apache2 reload')
+# @hosts(['topix@dspexplorer.top-ix.org'])
+# def deploy_dev():
+#     with cd('/var/www/dsp-explorer'):
+#         run('git checkout .')
+#         run('git pull')
+#         run('npm run prod')
+#         run('fab install_static')
+#         run('service apache2 reload')
+#
+#
+# @hosts(['topix@dspexplorer.top-ix.org'])
+# def deploy_branch(branch):
+#     with cd('/var/www/dsp-explorer'):
+#         run('git checkout %s' % branch)
+#         run('git pull')
+#         run('fab install')
+#         run('fab migrate')
+#         run('npm run prod')
+#         run('fab install_static')
+#         run('service apache2 reload')
 
 
 # fab release:'RELEASE-COMMIT-MESSAGE'
