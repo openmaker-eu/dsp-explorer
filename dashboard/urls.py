@@ -69,7 +69,7 @@ urlpatterns = [
 
     # Search
     url(r'^search/members/$', views.community, name='community'),
-    url(r'^search/members/(?P<search_string>[\w\-]+)/$', views.community, name='community'),
+    url(r'^search/members/(?P<search_string>[\w\- :]+)/$', views.community, name='community'),
 
     # Invite
     url(r'^invite/$', views.invite, name='invite'),

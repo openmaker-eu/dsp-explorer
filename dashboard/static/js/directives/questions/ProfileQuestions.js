@@ -117,7 +117,7 @@ let profile_question_directive =
         }
         
         $scope.get()
-        $rootScope.$on('authorization.refresh', ()=>{})
+        $rootScope.$on('authorization.refresh', $scope.get)
         
         $scope.toggle_show = async(q)=> {
             q.is_private = !q.is_private

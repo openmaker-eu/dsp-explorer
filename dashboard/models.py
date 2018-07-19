@@ -98,16 +98,17 @@ class ModelHelper:
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, blank=False)
+    type = models.CharField(max_length=50, null=True, default=None)
 
     @classmethod
-    def create(cls, name):
-        tag = Tag(name=name)
+    def create(cls, name, type=None):
+        tag = Tag(name=name, type=type)
         tag.save()
         return tag
 
     @classmethod
-    def create_or_update(cls, tag):
-       return Tag.objects.filter(name=tag).first() or Tag.create(name=tag) if isinstance(tag, str) else None
+    def create_or_update(cls, tag, tag_type=None):
+        return Tag.objects.filter(name=tag, type=tag_type).first() or Tag.create(name=tag, type=tag_type) if isinstance(tag, str) else None
 
     def __str__(self):
         return self.name
@@ -310,10 +311,29 @@ class Profile(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
     interest = GenericRelation('Interest')
 
-    domain = models.TextField(blank=True)
-    area = models.TextField(blank=True)
-    technology = models.TextField(blank=True)
-    skills = models.TextField(blank=True)
+    # domain = models.TextField(blank=True)
+    # area = models.TextField(blank=True)
+    # technology = models.TextField(blank=True)
+    # skills = models.TextField(blank=True)
+
+    def activity(self, tag_type, tags=None):
+        '''
+
+        :param tag_type:
+        :param tags:
+        :return:
+            if tags are not provided return the tags
+            if tags are provided create/update the relation
+        '''
+
+        # Get tags
+        if tags is None:
+            relat = Tag.objects.filter(profile_tags=self.pk, type=tag_type).values()
+            return relat
+        # Create if not exist and then relate/unrelate to this profile
+        else:
+            return self.tags_create_or_update(tags=tags, clear=True, tag_type=tag_type)
+
 
     socialLinks = models.TextField(
         _('Social Links'),
@@ -373,13 +393,21 @@ class Profile(models.Model):
 
         return profile
 
-    def tags_create_or_update(self, tags, clear=False):
+    def tags_create_or_update(self, tags, clear=False, tag_type=None):
         if not tags:
             return False
-        tags = [x.lower().capitalize() for x in tags.split(",")] if isinstance(tags, str) else tags
-        clear and self.tags.clear()
+        #tags = [x.lower().capitalize() for x in tags.split(",")] if isinstance(tags, str) else tags
+        tags = [x for x in tags.split(",")] if isinstance(tags, str) else tags
+
+        print('##### tags original')
+        print(tags)
+        print('##### tags')
+        print([x for x in Tag.objects.filter(profile_tags=self.pk, type=tag_type)])
+
+        clear and [self.tags.remove(x) for x in Tag.objects.filter(profile_tags=self.pk, type=tag_type)]
+
         for tag in tags:
-            tagInstance = Tag.create_or_update(tag)
+            tagInstance = Tag.create_or_update(tag, tag_type)
             tagInstance and self.tags.add(tagInstance)
         tags and self.save()
 

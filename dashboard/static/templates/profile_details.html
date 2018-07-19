@@ -10,14 +10,18 @@
                                    <!--entityid="{$ entityid $}"-->
                            <!--&gt;</interest-button>-->
                        <!--</span>-->
-                    <h1>
+                </h1>
             </div>
         </div>
 
         <div class="col-md-9 user-detail">
             <div class="user-detail__header">
-                <div ng-click="is_my_profile && edit()" ng-class="{'pointer': is_my_profile}"
-                     uib-tooltip-html="is_my_profile && tooltip_template" tooltip-placement="top-right" tooltip-class="profile-edit__tooltip"
+                <div
+                        ng-click="is_my_profile && edit()"
+                        ng-class="{'pointer': is_my_profile}"
+                        uib-tooltip-html="is_my_profile && tooltip_template"
+                        tooltip-placement="top-right"
+                        tooltip-class="profile-edit__tooltip"
                 >
                     <div><div class="col-md-2 col-md-offset-5">
                         <circle-image src="entity.data.picture" style="min-width:100%;" ></circle-image>
@@ -37,8 +41,13 @@
                                     <span><i class="fa fa-fw fa-birthday-cake"></i>&nbsp;&nbsp;{$ entity.data.birthdate | date:'d MMMM yyyy' $}</span>
                                 </span><br>
                             <span>
-                                    <span><i class="fa fa-fw fa-hashtag"></i>&nbsp;&nbsp;<span ng-repeat="tag in entity.data.tags">{$ tag.name $}&nbsp;</span></span>
-                                </span>
+                            <span style="margin-top:2%;">
+                                <div class="pull-left" ng-repeat="tag in entity.data.tags">
+                                    <span style="line-height: 150%;" class="text-grey">#</span>{$ tag.name $}&nbsp;&nbsp;
+                                </div>
+                            </span>
+
+                            </span>
                         </h5>
                     </div>
 

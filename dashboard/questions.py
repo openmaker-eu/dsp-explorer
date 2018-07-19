@@ -33,9 +33,6 @@ class questions(APIView):
         temp_id = request.query_params.get('entity_temp_id', None)
         profile_id = request.query_params.get('profile_id', None)
 
-        print('action')
-        print(action)
-
         if request.user.is_authenticated:
             # Request for edit profile
             action == 'profileedit' and self.edit_profile_questions(request)
@@ -68,23 +65,6 @@ class questions(APIView):
         question_id = request.data.get('question_id', None)
         feedback = request.data.get('feedback', None)
         is_private = request.data.get('is_private', None)
-
-        print('crm_id')
-        print(crm_id)
-
-        print('feedback')
-        print(feedback)
-
-        print('question_id')
-        print(question_id)
-
-        print('is_private')
-        print(is_private)
-
-        print('temp_id')
-        print(temp_id)
-
-        return Response()
 
         try:
             # Send Chatbot Feedback to Insight
@@ -237,12 +217,8 @@ class questions(APIView):
 
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id])
-            print('response')
-            print(response)
             if response.status_code < 205:
                 res_dict = response.json()
-                print('res_dict')
-                print(res_dict)
                 questions = res_dict['users'][0]['questions']
                 self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
 
@@ -275,14 +251,13 @@ class questions(APIView):
             #           ),
             self.make('activity-question-1', 'activity-question-1', 'What is your activity?',
                       value={
-                          "domain": profile.domain and profile.domain.split(","),
-                          "area": profile.area and profile.area.split(","),
-                      }
-                      ),
+                          "domain": [x['name'] for x in profile.activity('domain')],
+                          "area": [x['name'] for x in profile.activity('area')]
+                      }),
             self.make('activity-question-2', 'activity-question-2', 'What is your activity?',
                       value={
-                          "technology": profile.technology and profile.technology.split(","),
-                          "skills": profile.technology and profile.skills.split(",")
+                          "technology": [x['name'] for x in profile.activity('technology')],
+                          "skills": [x['name'] for x in profile.activity('skills')]
                       }
                       ),
             self.make('statement', 'textarea', 'Short description about you (optional)'),
@@ -335,10 +310,10 @@ class questions(APIView):
             profile.statement = request.data.get('statement', profile.statement)
 
             # Activity
-            profile.domain = request.data.get('domain', profile.domain)
-            profile.area = request.data.get('area', profile.area)
-            profile.technology = request.data.get('technology', profile.technology)
-            profile.skills = request.data.get('skills', profile.skills)
+            profile.activity('area', request.data.get('area', None))
+            profile.activity('technology', request.data.get('technology', None))
+            profile.activity('skills', request.data.get('skills', None))
+            profile.activity('domain', request.data.get('domain', None))
 
             # Profile Extra
             profile.tags_create_or_update(request.data.get('tags', None), clear=True)
@@ -348,6 +323,7 @@ class questions(APIView):
             profile.save()
 
         except Exception as error:
+            print(error)
             return Response(data={'error': error}, status=403)
 
     @classmethod
