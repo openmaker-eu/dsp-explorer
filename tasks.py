@@ -23,7 +23,7 @@ def create_setting(c):
     c.run('cp dspexplorer/c.run_settings.py-example dspexplorer/c.run_settings.py')
 
 @task
-def req_pop(c):
+def freeze(c):
     c.run('pip freeze > requirements.txt')
 
 @task

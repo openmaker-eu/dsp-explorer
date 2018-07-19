@@ -178,3 +178,5 @@ FROALA_EDITOR_OPTIONS = {
         'OM Light': 'color:#ccc'
     }
 }
+
+AES_KEY = '32 bytes long key'

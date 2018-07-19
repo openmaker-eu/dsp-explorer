@@ -230,6 +230,15 @@ main {
 
 }
 
+.btn {
+  $color-twitter:#00a3f0;
+  &-twitter {
+    background:$color-twitter;
+    color:$color-white;
+  }
+
+}
+
 .entity-carousel{
 
   background: #fff;

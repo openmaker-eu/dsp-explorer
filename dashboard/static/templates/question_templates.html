@@ -144,11 +144,35 @@ required>
 
 
 [login]
+<h1 style="text-align:center;" ng-if="!$root.twitter_auth">
+    <div>
+        <a href="/oauth/twitter_sign_in/" class="btn btn--big btn-twitter">
+            <span style="font-size: 120%;"><i class="fab fa-twitter"></i>&nbsp;&nbsp;&nbsp;<span>Twitter Login</span></span>
+        </a>
+    </div>
+</h1>
+<div ng-if="$root.twitter_auth" style="text-align: center;">
+    <br>
+    <div class="alert alert-info" role="alert">
+        <h3>You have already register your twitter account!</h3>
+        <p style="font-size:120%;">
+            You only need to login once with your <strong>USERNAME</strong> and <strong>PASSWORD</strong>
+            to link your <strong>Twitter Account</strong> with your <strong>Openmaker Account</strong>
+        </p>
+        <br>
+        <br>
+        <a href="/oauth/twitter_sign_in" class="btn  btn-twitter">
+            <span ><i class="fab fa-twitter"></i>&nbsp;&nbsp;&nbsp;<span>Retry twitter</span></span>
+        </a>
+    </div>
+</div>
+<hr>
 <label class="signup-template__label" for="email">email</label>
 <input name="username" type="email" value="{$ x.value $}" ng-model="m['username']" class="form-control" required><br>
 <label class="signup-template__label" for="password">password</label>
 <input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" required><br>
 <i class="signup-template__label text-brown"><a href="/recover/"><strong>Password forgotten? Click here</strong></a></i>
+
 
 [signup]
 <label class="signup-template__label" for="email">email</label>

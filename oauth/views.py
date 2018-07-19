@@ -31,32 +31,40 @@ def twitter_sign_in(request):
 
 def twitter_redirect(request):
     twitter = Twitter.objects.first()
+    response = HttpResponseRedirect(reverse('dashboard:dashboard'))
     try:
-        oauth_token, oauth_token_secret, user_id = _exchange_code_for_twitter_token(twitter.app_id,
-                                                                           twitter.app_secret,
-                                                                           request.GET.get('oauth_token'),
-                                                                           request.GET.get('oauth_verifier'))
+        oauth_token, oauth_token_secret, user_id = _exchange_code_for_twitter_token(
+            twitter.app_id,
+            twitter.app_secret,
+            request.GET.get('oauth_token'),
+            request.GET.get('oauth_verifier')
+        )
     except Exception as e:
         messages.error(request, 'Error during Twitter login.')
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        return response
     if not oauth_token_secret or not oauth_token:
         messages.success(request, 'Error during Twitter login.')
-        return HttpResponseRedirect(reverse('dashboard:dashboard'))
+        return response
 
     twitter_profile = TwitterProfile.objects.filter(user_id=user_id).first()
-    if twitter_profile:
+    if twitter_profile and twitter_profile.profile_id:
         if not request.user.is_authenticated:
-            #login
             login(request, twitter_profile.profile.user)
+            response.delete_cookie('twitter_oauth')
     else:
-        if request.user.is_authenticated:
-            # bind profile
-            profile = Profile.objects.filter(user__email=request.user.email).first()
-            twitter_profile = TwitterProfile.create(profile, user_id, oauth_token, oauth_token_secret)
+        profile = Profile.objects.filter(user__email=request.user.email).first() if request.user.is_authenticated else None
+        twitter_profile = TwitterProfile.create(
+            profile=profile,
+            user_id=user_id,
+            access_token=oauth_token,
+            secret_access_token=oauth_token_secret
+        )
+        if not request.user.is_authenticated:
+            response.set_cookie('twitter_oauth', twitter_profile.pk)
+            messages.error(request, 'You need to link you twitter acocunt...')
+        else:
             messages.success(request, 'Link with your Twitter profile completed.')
-
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
-
+    return response
 
 def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owner_key=None, resource_owner_secret=None):
     if not resource_owner_key or not resource_owner_secret:
@@ -74,7 +82,6 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         raise e
     return oauth_token, oauth_token_secret, user_id
 
-
 def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
     import tweepy
     try:
@@ -84,7 +91,7 @@ def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
         user = api.me()
         user_object = user._json
         user_object['friends_list'] = [f.screen_name for f in api.friends()]
-        MongoWrapper.update_user(user_id, {"twitter": user_object})
+        #MongoWrapper.update_user(user_id, {"twitter": user_object})
     except Exception as e:
         raise e
 

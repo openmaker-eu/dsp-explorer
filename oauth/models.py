@@ -11,7 +11,7 @@ class Twitter(models.Model):
 
 
 class TwitterProfile(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, blank=True, null=True)
     user_id = models.CharField(max_length=200, default='-1')
     access_token = models.CharField(max_length=200)
     secret_access_token = models.CharField(max_length=200)
@@ -23,8 +23,11 @@ class TwitterProfile(models.Model):
 
     @classmethod
     def create(cls, profile, user_id, access_token, secret_access_token):
-        profile.twitter = True
-        profile.save()
+
+        if profile:
+            profile.twitter = True
+            profile.save()
+
         twitter_profile = cls(profile=profile)
         twitter_profile.user_id = user_id
         twitter_profile.access_token = access_token

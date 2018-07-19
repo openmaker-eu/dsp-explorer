@@ -8,6 +8,7 @@ export default [function(){
         transclude:true,
         scope:{
             authorization:'=',
+            twitterauth:'=',
             user:'=',
             pageinfo:'='
         },
@@ -17,17 +18,18 @@ export default [function(){
             $rootScope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
             $rootScope.logout =LoginService.logout
             $rootScope.login =()=>$rootScope.$emit('question.modal.open', [
-                {name:'login', type:'login', label:'Insert your credentials', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
+                {name:'login', type:'login', label:'Login', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
                 {name:'end', type:'success', label: 'Successful login', }
             ])
             
             $rootScope.authorization=$scope.authorization
+            $rootScope.twitter_auth=$scope.twitterauth
             $rootScope.user=$scope.user
             $rootScope.page_info=$scope.pageinfo
     
             $rootScope.$on('authorization.refresh', ()=>console.log('main auth refresh'))
             
-            console.log($scope.pageinfo);
+            $rootScope.twitter_auth && $rootScope.page_info.name === "homepage" && $rootScope.login()
             
         }]
     }

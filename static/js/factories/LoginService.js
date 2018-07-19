@@ -27,6 +27,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         refresh_auth : async(res)=> {
             res = res || await $http.get('/api/v1.4/authorization/')
             $rootScope.authorization = res.data.authorization;
+            $rootScope.twitter_auth = res.data.twitter_auth;
             $rootScope.user = res.data.user || {};
         }
     }

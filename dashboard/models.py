@@ -398,10 +398,6 @@ class Profile(models.Model):
             return False
         #tags = [x.lower().capitalize() for x in tags.split(",")] if isinstance(tags, str) else tags
         tags = [x for x in tags.split(",")] if isinstance(tags, str) else tags
-
-        print('##### tags original')
-        print(tags)
-        print('##### tags')
         print([x for x in Tag.objects.filter(profile_tags=self.pk, type=tag_type)])
 
         clear and [self.tags.remove(x) for x in Tag.objects.filter(profile_tags=self.pk, type=tag_type)]

@@ -1,5 +1,7 @@
 from ..site_helpers import User
 from dashboard.serializer import UserSerializer
+from utils.helpers import encrypt, decrypt
+
 
 def authorization(request):
     '''
@@ -10,6 +12,7 @@ def authorization(request):
 
     context = {
         'om_authorization': User.authorization(request),
+        'twitter_auth': not not request.COOKIES.get('twitter_oauth', None),
         'page_info': {
             'name': request.resolver_match.url_name,
             'options': request.resolver_match.kwargs

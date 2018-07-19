@@ -7,7 +7,7 @@ let template = `
             <div class="row">
 
                 <div ng-if="entities.length > 0">
-                <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
+                <div class="col-md-12" style=""></div>
 
                 <div
                     class="col-lg-3 col-md-6 col-sm-12 col-xs-12 "

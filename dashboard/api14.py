@@ -341,29 +341,46 @@ def authorization(request):
 @api_view(['POST'])
 def apilogin(request):
     from crmconnector.models import CRMConnector
+    from oauth.models import TwitterProfile
+
     user = authenticate(
         username=request.data.get('username', False),
         password=request.data.get('password', False)
     )
+    twitter_auth = request.COOKIES.get('twitter_oauth', None)
+    delete_twitter_coookie = False
+
+    # Check authentication status
     if user is not None:
         login(request, user)
+        if twitter_auth:
+            try:
+                twitter_profile = TwitterProfile.objects.filter(pk=twitter_auth).first()
+                twitter_profile.profile_id = user.profile.id
+                twitter_profile.save()
+                delete_twitter_coookie = True
+            except Exception as e:
+                print('error twitter auth')
+                print(e)
     else:
         return Response(data={'error': 'Username or password are wrong'}, status=401)
 
-    try:
-        print('crmid')
-        if not user.profile.crm_id:
+    # Try to fill crm_id if not present
+    if not user.profile.crm_id:
+        try:
             crm_user = CRMConnector.search_party_by_email(user.profile.user.email)
+        except Exception as e:
+            print(e)
 
-    except Exception as e:
-        print(e)
-
-    return Response({
+    # Build Response
+    response = Response({
         'authorization': AuthUser.authorization(request),
         'has_questions': AuthUser.authorization(request) > 0 and True,
         'user': UserSerializer(user, many=False).data if request.user.is_authenticated else None
     })
-
+    delete_twitter_coookie and True
+    response.delete_cookie('twitter_oauth')
+    return response
 
 @api_view(['POST'])
 def apilogout(request):
