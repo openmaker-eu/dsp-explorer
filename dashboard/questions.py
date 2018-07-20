@@ -167,7 +167,6 @@ class questions(APIView):
 
         user_fedbacks = [list(v).pop() for v in groups if len(list(v)) > 0]
 
-
         # Get questions
         ids = [k for k, v in grouped]
         user_questions = questions or Insight.question_contents(ids).json()
