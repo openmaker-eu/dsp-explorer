@@ -28,7 +28,7 @@ export default [function(){
             $rootScope.page_info=$scope.pageinfo
     
             $rootScope.$on('authorization.refresh', ()=>console.log('main auth refresh'))
-            
+            console.log('twitter_auth', $rootScope.twitter_auth);
             $rootScope.twitter_auth && $rootScope.page_info.name === "homepage" && $rootScope.login()
             
         }]

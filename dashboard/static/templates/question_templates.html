@@ -154,16 +154,15 @@ required>
 <div ng-if="$root.twitter_auth" style="text-align: center;">
     <br>
     <div class="alert alert-info" role="alert">
-        <h3>You have already register your twitter account!</h3>
+        <button  class="btn btn-twitter disabled">
+            <span><i class="fab fa-twitter"></i>&nbsp;&nbsp;&nbsp;<span>Twitter Login</span></span>
+        </button>
+        <br>
+        <h3>Registration successfull with your twitter account!</h3>
         <p style="font-size:120%;">
-            You only need to login once with your <strong>USERNAME</strong> and <strong>PASSWORD</strong>
-            to link your <strong>Twitter Account</strong> with your <strong>Openmaker Account</strong>
+            We need you to login <strong>ONCE</strong> with your <strong>USERNAME</strong> and <strong>PASSWORD</strong>
+            so we can make sure that your Twitter Account and your Openmaker Account belongs to you
         </p>
-        <br>
-        <br>
-        <a href="/oauth/twitter_sign_in" class="btn  btn-twitter">
-            <span ><i class="fab fa-twitter"></i>&nbsp;&nbsp;&nbsp;<span>Retry twitter</span></span>
-        </a>
     </div>
 </div>
 <hr>

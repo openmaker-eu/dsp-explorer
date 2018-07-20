@@ -61,7 +61,7 @@ def twitter_redirect(request):
         )
         if not request.user.is_authenticated:
             response.set_cookie('twitter_oauth', twitter_profile.pk)
-            messages.error(request, 'You need to link you twitter acocunt...')
+            #messages.error(request, 'You need to link you twitter acocunt...')
         else:
             messages.success(request, 'Link with your Twitter profile completed.')
     return response
@@ -81,6 +81,7 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
     except Exception as e:
         raise e
     return oauth_token, oauth_token_secret, user_id
+
 
 def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
     import tweepy

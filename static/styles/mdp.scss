@@ -226,15 +226,18 @@ main {
       z-index: -1;
     }
   }
-
-
 }
 
 .btn {
   $color-twitter:#00a3f0;
   &-twitter {
     background:$color-twitter;
-    color:$color-white;
+    color:$color-white!important;
+
+    &.disabled{
+      &:hover{color:$color-white!important;}
+    }
+
   }
 
 }

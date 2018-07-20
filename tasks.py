@@ -16,7 +16,7 @@ def dumpdata(c):
 
 @task
 def loaddata(c):
-    c.run('python ./manage.py loaddata db.json')
+    c.run('python ./manage.py loaddata db.json --ignorenonexistent')
 
 @task
 def create_setting(c):

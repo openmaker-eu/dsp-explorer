@@ -7,10 +7,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             $http({
                     method: 'POST',
                     url: '/api/v1.4/login/',
-                    data: {
-                        username: username,
-                        password: password
-                    },
+                    data: { username: username, password: password },
                 })
                 .then(
                     n=>$rootScope.$emit('authorization.refresh'),

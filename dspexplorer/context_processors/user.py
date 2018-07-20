@@ -3,6 +3,7 @@ from dashboard.serializer import UserSerializer
 from utils.helpers import encrypt, decrypt
 
 
+
 def authorization(request):
     '''
     Define user page level authorization(@TODO: EX badge system)
@@ -10,9 +11,11 @@ def authorization(request):
     :return: authorization dictionary
     '''
 
+    twitter_cookie = request.COOKIES.get('twitter_oauth', None)
+
     context = {
         'om_authorization': User.authorization(request),
-        'twitter_auth': not not request.COOKIES.get('twitter_oauth', None),
+        'twitter_auth': twitter_cookie,
         'page_info': {
             'name': request.resolver_match.url_name,
             'options': request.resolver_match.kwargs

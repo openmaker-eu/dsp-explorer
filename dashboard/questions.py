@@ -159,9 +159,14 @@ class questions(APIView):
         # Get feedbacks
         user_fedbacks = fedbacks
 
+        groups = []
         # Remove duplicates from feedback
         grouped = [x for x in groupby(user_fedbacks, lambda x: x['q_id'])]
-        user_fedbacks = [list(v).pop() for k, v in grouped]
+        for k, g in groupby(user_fedbacks, lambda x: x['q_id']):
+            groups.append(list(g))
+
+        user_fedbacks = [list(v).pop() for v in groups if len(list(v)) > 0]
+
 
         # Get questions
         ids = [k for k, v in grouped]

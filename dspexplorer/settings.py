@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dspexplorer.middleware.user.UserMiddleware'
 ]
 
 ROOT_URLCONF = 'dspexplorer.urls'
