@@ -30,10 +30,6 @@ export default {
         // Wait for controller to init
         this.$onInit = ()=>{
             
-            console.log('data', $scope.data);
-            console.log('model', $scope.model);
-            console.log('scope', $scope);
-            
             // Add binding data to $scope
             $scope.x = this.data
             $scope.m = this.model

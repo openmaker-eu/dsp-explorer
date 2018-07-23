@@ -13,9 +13,8 @@ let template = `
         </div>
         
         <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">Profile Page</div>
-        
         <div ng-class="{'force-square': preview}" ng-if="['projects','challenges','news','events'].includes(entityname)">
-            
+          
             <!--Fade container-->
             <a ng-href="{$ entity_link() $}" ng-if="preview" class="fade"></a>
             
@@ -23,8 +22,9 @@ let template = `
                 
                 <!--Entity Detail Title-->
                 <h3 class="text-{$ entityname $}">
-                    <span>{$ entity.title || entity.name | limitTo: ( preview == true ? 20 : ''  ) $}</span>
-                    <span ng-if="entity.title.length > 20">...</span>
+                    <!--<span>{$ entity.title || entity.name | limitTo: ( preview ? 50 : '' ) $}</span>-->
+                    <!--<span ng-if="preview && entity.title.length > 20">...</span>-->
+                    <span>{$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}</span>
                 </h3>
                 <br>
                 
@@ -48,7 +48,6 @@ let template = `
                 <a ng-if="entityid && preview" ng-href="{$ entity_link() $}" class="read-more entity-detail-padding"><h4>READ MORE</h4></a>
 
                 <!-- Show Full text if exist-->
-                <!--<div>-->
                 
                     <!--News-->
                     <p ng-if="entity.full_text">
@@ -75,8 +74,6 @@ let template = `
                     <p ng-if="!preview && (entity.link || entity.source)" class="text-red">
                         <a href="{$ entity.link || entity.url $}" target="_blank">Got to source</a>
                     </p>
-                
-                <!--</div>-->
    
             </div>
         </div>

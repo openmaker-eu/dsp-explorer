@@ -60,23 +60,21 @@ let wizard_directive =
             // Return validation status
             return _.get(subform, '$valid')
         }
-    
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
             
             let question = _.get($scope , 'questions['+current+']')
-            let subform = $scope.wizard.form[question.name]
-            
-            
+            let subform = question.name && $scope.wizard.form[question.name]
+    
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
                 // Perform apicall
                 if (question && question.apicall) {
                     $scope.loading = true;
-                    let url =  _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/'
+                    let url =  question.apicall && _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/'
                     $scope.action && (url = url + $scope.action + '/')
                     $http
                         .post(
-                            _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/',
+                            url,
                             new FormData($('.wizard-form')[0]),
                             {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
                         )
@@ -90,6 +88,8 @@ let wizard_directive =
                 else { question.emitevent && $rootScope.$emit(question.emitevent, {}) ; $scope.slickConfig.method.slickNext() }
             }
             else if($scope.action==='chatbot'){
+                console.log('chatbot ###########');
+                
                 $http
                     .post('/api/v1.4/questions/chatbot/', question)
                     .then(res=>{$scope.slickConfig.method.slickNext()})

@@ -325,7 +325,8 @@ def profile(request, profile_id=None, action=None):
 
 @login_required()
 def community(request, search_string=''):
-    json.dumps([t[0] for t in Profile.get_hot_tags(30)])
+    print('usera count')
+    print(Profile.objects.count())
     return render(request, 'dashboard/community.html', {
         'search_string': search_string,
         'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),

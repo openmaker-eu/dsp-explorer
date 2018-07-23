@@ -33,7 +33,7 @@ let template = `
                         
                         <!-- Enitiy details -->
                         <div ng-if="entity.data !== null">
-                            <entity-detail entity="entity.data" entityid="{$ entityid $}" entityname="{$ entityname $}" ></entity-preview>
+                            <entity-detail entity="entity.data" entityid="{$ entityid $}" entityname="{$ entityname $}"></entity-detail>
                         </div>
                         <br>
                         <br>
@@ -91,7 +91,7 @@ export default function(){
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.entity = EntityProvider.make($scope.entityname, $scope.entityid)
             $scope.nodata = !$scope.entity.get()
-
+            
         }]
     }
 }

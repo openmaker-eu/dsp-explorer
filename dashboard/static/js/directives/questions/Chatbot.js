@@ -48,7 +48,6 @@ let chatbot_directive =
         $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
         
         $scope.get = ()=> {
-            console.log('chatbot get');
             $scope.opened = false
             $http
                 .get($scope.url())
@@ -75,7 +74,7 @@ let chatbot_directive =
             else $scope.questions = null
         }
     
-        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $scope.opened=false })
+        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{$rootScope.emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('authorization.refresh', $scope.get)
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')

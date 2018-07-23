@@ -260,7 +260,7 @@ class entity(APIView):
                     results = results[:5]
                 else:
                     reccomended = Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity)
-                    for index,topic_id in enumerate(topics_id_list):
+                    for index, topic_id in enumerate(topics_id_list):
                         results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
                     results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException:

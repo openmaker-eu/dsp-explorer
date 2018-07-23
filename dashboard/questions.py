@@ -60,7 +60,6 @@ class questions(APIView):
             403 if there is an error + {'error': [Error description]}
         '''
 
-        crm_id = request.user.profile.crm_id
         temp_id = request.data.get('temp_id', None)
         question_id = request.data.get('question_id', None)
         feedback = request.data.get('feedback', None)
@@ -69,6 +68,7 @@ class questions(APIView):
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
+                crm_id = request.user.profile.crm_id
 
                 # Entity Feedback
                 if temp_id is not None:
@@ -116,12 +116,13 @@ class questions(APIView):
         :param profile_id:
         :return: void - it's only modify self.questions
         '''
+
+
         try:
             crm_ids = [
                 Profile.objects.filter(pk=request.user.profile.id).first().crm_id,
                 Profile.objects.filter(pk=profile_id).first().crm_id
             ]
-
             are_the_same_profiles = crm_ids[0] == crm_ids[1]
 
             # Get feedbacks from insight
@@ -159,20 +160,17 @@ class questions(APIView):
         # Get feedbacks
         user_fedbacks = fedbacks
 
-        groups = []
-        # Remove duplicates from feedback
-        grouped = [x for x in groupby(user_fedbacks, lambda x: x['q_id'])]
-        for k, g in groupby(user_fedbacks, lambda x: x['q_id']):
-            groups.append(list(g))
-
-        user_fedbacks = [list(v).pop() for v in groups if len(list(v)) > 0]
+        f_sorted = sorted(user_fedbacks, key=lambda k: k['q_id'])
+        grouped = groupby(f_sorted, lambda x: x['q_id'])
+        groups = {k: list(v).pop() for k, v in grouped}
 
         # Get questions
-        ids = [k for k, v in grouped]
+        ids = list(groups.keys())
         user_questions = questions or Insight.question_contents(ids).json()
 
         # For every question adds a feedback property containing a list of the answers of both the users
-        for feedback in user_fedbacks:
+        for k, feedback in groups.items():
+            print(feedback)
             id = str(feedback['q_id'])
             if id in user_questions:
                 fb = [{'label': feedback['answer_value'], 'value': feedback['answer_id']}]
@@ -181,7 +179,6 @@ class questions(APIView):
                     user_questions[id]['is_private'] = feedback['is_private']
 
         return user_questions
-
 
     def signup_questions(self, request):
         '''
@@ -278,6 +275,8 @@ class questions(APIView):
                                 or getattr(profile, question['name'], None) \
                                 or getattr(user, question['name'], None)
 
+            question['apicall'] = True
+
         self.questions = questions + [self.make('edit_end', 'success', 'Profile updated'), ]
 
     def map_remote_to_local_questions(self, question):
@@ -301,17 +300,23 @@ class questions(APIView):
         user = request.user
         profile = request.user.profile
 
+
+        city = request.data.get('city', profile.city)
+        place = request.data.get('city', profile.place)
+
         try:
             # User
             user.first_name = request.data.get('first_name', user.first_name)
             user.last_name = request.data.get('last_name', user.last_name)
 
             # Profile
-            profile.city = request.data.get('city', profile.city)
+            profile.city = city if not not city else profile.city
             profile.place = json.loads(request.data.get('place', profile.place))
+
             profile.birthdate = request.data.get('birthdate', profile.birthdate)
             profile.occupation = request.data.get('occupation', profile.occupation)
             profile.statement = request.data.get('statement', profile.statement)
+            profile.gender = request.data.get('gender', profile.statement)
 
             # Activity
             profile.activity('area', request.data.get('area', None))

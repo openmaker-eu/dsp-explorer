@@ -13,8 +13,9 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 template: template,
                 backdrop: true,
                 windowClass: 'signup-modal',
-                transclude:true,
+                transclude: true,
                 controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
+                    
                     $scope.questions=questions
                     $scope.action=action
                     
@@ -28,11 +29,17 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     
                 }]
             });
+    
+            F.modalInstance.closed.then(n=>{
+                $rootScope.$emit('entity.change.all') ;
+                $rootScope.$emit('authorization.refresh')
+            })
         },
         close:()=>F.modalInstance.close()
     }
     
     $rootScope.$on('question.modal.open', F.open)
+    
     
     return F
 

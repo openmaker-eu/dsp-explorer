@@ -1,37 +1,50 @@
 let _ = require('lodash')
 let $ = require('jquery')
 
-let template = `
+
+let style= `
     <style>
         .profile-question__actions { display:flex; flex-direction: row; justify-content: flex-end;}
         .profile-question__actions > * { display:none; }
-        .profile-question__actions:hover > * { display:block; margin:2%;}
+        .profile-question__actions:hover > * { display:block;}
+        .profile-question__actions--edit > *{ display:block}
+        .profile-question--edit {position: absolute;z-index: 1000000;box-shadow: 0 0 3px #000;left: -10%;}
     </style>
-    
+`
+let template = `
     <div ng-if="questions" class="profile-questions">
         <div
             ng-repeat="question in questions"
-            class="col-md-4"
-            ng-class="{'col-md-6': question.is_edit}"
+            class="col-md-4 margin-bottom-1-perc"
+            style="position: relative"
         >
-            <div class="background-white" style="padding:10%; border:solid 1px #efefef;">
-                
+            <div class="background-white" ng-class="{'profile-question--edit': question.is_edit}" style="padding:10%; border:solid 1px #efefef;">
                 <div
                     class="profile-question__actions"
+                    ng-class="{'profile-question__actions--edit': question.is_edit}"
                     style="position: absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;"
                 >
                     <h3
                         class="far fa-fw text-red background-white pointer"
                         ng-class="{'fa-eye': !question.is_private, 'fa-eye-slash':question.is_private }"
-                        ng-if="!question.feedbacks[1]"
-                        style=" position: absolute; top:5%; right:10%;"
+                        ng-if="!question.feedbacks[1] && !question.is_edit"
+                        style=" position: absolute; top:0%; right:10%;"
                         ng-click="toggle_show(question)"
+                        uib-tooltip-html="'Show/hide yor answer to other people'"
+                    ></h3>
+                    <h3
+                        class="far fa-fw fa-times-circle text-red background-white pointer"
+                        ng-if="question.is_edit"
+                        style="position: absolute; top:0%; right:5%;"
+                        ng-click="toggle_edit(question)"
+                        uib-tooltip-html="'Exit from edit mode'"
                     ></h3>
                     <h3
                         class="fas fa-fw fa-edit text-red background-white pointer"
                         style="position: absolute; bottom:10%; right:10%;"
                         ng-click="question.is_edit = !question.is_edit"
                         ng-show="!question.is_edit && !(is_my_profile && question.feedbacks[1])"
+                        uib-tooltip-html="'Edit your answer'"
                     ></h3>
                     <button
                         ng-show="!question.is_edit && !is_my_profile && !question.feedbacks[1]"
@@ -39,14 +52,10 @@ let template = `
                         class="btn btn-danger btn-small pointer"
                         ng-click="question.is_edit = !question.is_edit"
                     >Answer this question!</button>
-                    
                 </div>
-                
                 <h4 class="text-brown">{$ question.question $}</h4>
                 <p>{$ question.question_text $}</p>
-                
                 <hr>
-                
                 <!--OTHER USER-->
                 <p ng-if="!is_my_profile" class="text-brown">
                     <strong>{$ profile.data.user.first_name $}'s answer:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
@@ -60,9 +69,6 @@ let template = `
                 <p ng-if="is_my_profile" class="text-red">
                     <strong>Your answer:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
                 </p>
-                
-                
-                
                 <div ng-show="question.is_edit" style="
                     width:100%;
                     display: flex;
@@ -73,28 +79,21 @@ let template = `
                     padding:5% 0 0 0;
                     "
                 >
-                    <div
-                        ng-repeat="(act, k) in question.answers"
-                        style="padding:1%; z-index:10000;"
-                    >
+                    <div ng-repeat="(act, k) in question.answers" style="padding:2px; z-index:10000;" >
                         <button
                             class="btn btn-danger pull-left capitalize pointer"
                             ng-click="edit_question(question, k)"
                         >{$ act $}</button>
                     </div>
                 </div>
-               
             </div>
-
         </div>
-
     </div>
-    
 `
 
 let profile_question_directive =
 {
-    template:template,
+    template:style+template,
     scope: {
         profile : '='
     },
@@ -118,6 +117,7 @@ let profile_question_directive =
         
         $scope.get()
         $rootScope.$on('authorization.refresh', $scope.get)
+        $rootScope.$on('chatbot.next', $scope.get)
         
         $scope.toggle_show = async(q)=> {
             q.is_private = !q.is_private
@@ -131,6 +131,10 @@ let profile_question_directive =
             q.feedback = feedback
             let res= await $http.post('/api/v1.4/questions/chatbot/', q)
             $scope.get()
+        }
+    
+        $scope.toggle_edit = (question)=>{
+            question.is_edit = !question.is_edit
         }
 
     }]

@@ -15,7 +15,7 @@ export default function(){
                         <span ng-repeat="act in items[current].actions.options" style="padding:5px;">
                             <button
                                 class="btn btn-danger pull-left capitalize "
-                                ng-click="next(act.hasOwnProperty('value')? act.value: act.label||act )"
+                                ng-click=" next( act.hasOwnProperty('value')? act.value: act.label || act )"
                             >{$ act.label || act.value || act $}</button>
                         </span>
                     </div>
@@ -44,17 +44,14 @@ export default function(){
             $scope.is_end = $scope.items && $scope.items.length < 2
             $scope.current = 0;
             
-            
-            
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
-    
-                console.log('value', value);
+                
                 if(value === 'goto:last') $scope.goto($scope.items.length-1)
                 if( _.isString(value) && value.includes('event:')) $rootScope.$emit(value.split(':')[1])
-                
                 $scope.items[$scope.current].feedback = value
                 $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
+                $rootScope.$emit('chatbot.next', $scope.current)
                 
                 $scope.is_end && $scope.end()
             }
