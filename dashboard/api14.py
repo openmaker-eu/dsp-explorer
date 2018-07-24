@@ -32,6 +32,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from connectors.insight.connector import InsightConnectorV10 as Insight
+from django.core.paginator import Paginator
+
 
 def __wrap_response(*args, **kwargs):
     try:
@@ -224,6 +226,9 @@ class entity(APIView):
         profile = None
         results = []
         local_entities = None
+        # page = request.GET.get('page', None)
+        page = 1
+
         try:
             profile = request.user.profile
         except:
@@ -259,7 +264,10 @@ class entity(APIView):
                     results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
                     results = results[:5]
                 else:
-                    reccomended = Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity)
+                    reccomended = \
+                        Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
+                        if not page or int(page) == 1 \
+                        else []
                     for index, topic_id in enumerate(topics_id_list):
                         results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
                     results = reccomended + mix_result_round_robin(*results)
@@ -268,12 +276,16 @@ class entity(APIView):
             except AttributeError as a:
                 pass
 
-        return Response(results[:20] if len(results) > 20 else results)
+        per_page = 100
+        paginator = Paginator(results, per_page)
+        paginated_results = paginator.page(page)
+
+        # return Response(results if len(results) > 20 else results)
+        return Response(paginated_results.object_list)
 
 
 class entity_details(APIView):
     def get(self, request, entity, entity_id):
-        print(entity)
         results = []
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)

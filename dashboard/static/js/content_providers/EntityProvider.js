@@ -19,10 +19,12 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             this.url += `/${entityname}/${ entityid ? entityid+'/' : ''}`
         }
 
-        get = (force=false)=>{
+        get = (force=false, page=null)=>{
             if(this.loading || !force && this.data && this.data.length > 0) return new Promise(s=>s(this))
             
             this.loading = true;
+            page && (this.url = this.url+`&page=${page}`)
+            
             let prom = $http.get(this.url, {timeout: 20000})
             prom
                 .then(

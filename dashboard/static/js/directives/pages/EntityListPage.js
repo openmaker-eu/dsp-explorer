@@ -60,6 +60,16 @@ let template = /*html*/`
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <simple-pagination
+                                prevfunction="search_factory.prev_page"
+                                nextfunction="search_factory.next_page"
+                                currentpagenumber="search_factory.page"
+                                maxpagenumber="search_factory.max_page"
+                        ></simple-pagination>
+                    </div>
+                </div>
             </div>
         
             <!--Right sidebar-->
@@ -68,6 +78,7 @@ let template = /*html*/`
             </div>
             
         </div>
+
     </div>
 `
 

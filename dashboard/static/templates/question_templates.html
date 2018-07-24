@@ -28,6 +28,7 @@
 <h3 class="text-brown text-center"><i>{$ x.value $}</i></h3>
 
 [date]
+<h3 style="text-align:center;">{$ m[x.name].toDate() | date: 'dd/MM/yyyy' $}</h3>
 <input
        class="form-control"
        ng-model="m[x.name]"
@@ -39,6 +40,7 @@
        inline="true"
        max-date="x.max"
        validate="true"
+       style="display: none;"
 required>
 
 [multi_select]

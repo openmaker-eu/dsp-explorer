@@ -170,7 +170,6 @@ class questions(APIView):
 
         # For every question adds a feedback property containing a list of the answers of both the users
         for k, feedback in groups.items():
-            print(feedback)
             id = str(feedback['q_id'])
             if id in user_questions:
                 fb = [{'label': feedback['answer_value'], 'value': feedback['answer_id']}]
