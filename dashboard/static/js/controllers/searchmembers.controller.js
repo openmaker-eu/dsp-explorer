@@ -30,4 +30,7 @@ export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', funct
 
     $scope.clearAll = () => { $scope.results = []; $scope.search_factory.search_filter = ''}
     
+    // $scope.tag_template = (tags) => '<div class="tag-tooltip">'+tags.reduce( (acc, tag) => acc+`<span><strong>#</strong>${tag.name}</span><span>&nbsp;&nbsp;</span>`, '')+'</div>'
+    $scope.tag_template = (tags) => tags.reduce((acc,tag)=>acc+`<span><strong>#</strong>${tag.name}</span><span>&nbsp;&nbsp;</span>`, '')
+    
 }]

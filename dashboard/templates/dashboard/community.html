@@ -44,28 +44,35 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 user-card" style="margin-bottom: 3%;" ng-repeat="data in results">
-                    <div class="row">
-                        <div class="col-md-4 col-xs-4">
+                <div class="col-md-4 user-card"  style="margin-bottom: 3%;" ng-repeat="data in results">
+                    <div
+                            class="row"
+                            style="display: flex; flex-direction: row; justify-content: center; align-items: center;"
+                    >
+                        <div
+                                class="col-md-4 col-xs-4"
+                                tooltip-class="tag-tooltip"
+                                tooltip-placement="right"
+                                uib-tooltip-html="tag_template(data.tags)"
+                        >
                             <circle-image src="data.picture" href="{$ '/profile/'+data['id'] $}" ></circle-image>
                         </div>
 
-                        <div class="col-md-8 col-xs-8">
-                            <a href="/profile/{$data['id']$}">
+                        <div class="col-md-8 col-xs-8" >
+                            <a href="/profile/{$ data['id'] $}">
                                 <strong><span ng-bind-html="highlight((data.user.first_name +' '+data.user.last_name), search_factory.search_filter)"></span></strong>
                             </a>
                             <br><span ng-bind-html="highlight((data.city), search_factory.search_filter)"></span>
                             <br><span ng-bind-html="highlight((data.occupation), search_factory.search_filter)"></span>
                             <br>
-
-                            <i
-                                    ng-repeat="tag in data.tags"
-                                    ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"
-                                    ng-click="search_factory.search_switch(tag.name)"
-                                    class="pointer"
-                            >
-                                <strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;
-                            </i>
+                            <!--<i-->
+                                    <!--ng-repeat="tag in data.tags | limitTo : 3 "-->
+                                    <!--ng-class="{ 'text-red' : search_factory.search_filter === tag.name }"-->
+                                    <!--ng-click="search_factory.search_switch(tag.name)"-->
+                                    <!--class="pointer"-->
+                            <!--&gt;-->
+                                <!--<strong>#</strong><span ng-bind-html="highlight((tag.name), search_factory.search_filter)"></span></i>&nbsp;&nbsp;-->
+                            <!--</i>-->
 
                         </div>
                     </div>

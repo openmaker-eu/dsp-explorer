@@ -758,11 +758,14 @@ chatbot {
     }
 
   }
-
-
   @media all and(min-width: 768px){ width:50%; }
   @media all and(max-width: 768px){ width:90%; }
   @media all and(min-width: 992px){ width:25%; }
   @media all and(min-width: 1170px){ width:20%; }
 
+}
+
+.tag-tooltip * { word-wrap: break-word!important; }
+.tooltip-inner {
+  word-wrap: break-word!important;
 }

@@ -3,8 +3,7 @@ from invoke import task, Collection
 
 @task
 def start(c):
-    c.run('npm run dev &')
-    c.run('python manage.py runserver 0.0.0.0:8000')
+    c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
 
 @task
 def init(c, colored=True):
@@ -19,7 +18,7 @@ def loaddata(c):
     c.run('python ./manage.py loaddata db.json --ignorenonexistent')
 
 @task
-def create_setting(c):
+def createsetting(c):
     c.run('cp dspexplorer/c.run_settings.py-example dspexplorer/c.run_settings.py')
 
 @task
@@ -40,7 +39,7 @@ def install(c):
     c.run('npm install')
 
 @task
-def install_static(c):
+def installstatic(c):
     c.run('python ./manage.py collectstatic')
 
 @task

@@ -217,7 +217,7 @@ class questions(APIView):
             bye = self.question('nice_talking', first_name=request.user.first_name)
 
             crm_id = request.user.profile.crm_id
-            response = Insight.questions(crm_ids=[crm_id])
+            response = Insight.questions(crm_ids=[crm_id], amount=10)
             if response.status_code < 205:
                 res_dict = response.json()
                 questions = res_dict['users'][0]['questions']

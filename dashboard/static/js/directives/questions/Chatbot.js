@@ -68,13 +68,25 @@ let chatbot_directive =
         
         $scope.handle_response = (res)=>{
             if(_.isArray(res.data.questions) && res.data.questions.length > 0) {
-                $scope.questions = res.data.questions
+                
+                let next_question = {
+                    actions:{options:[{label: 'Yes! please', value:''},{label: 'No! stop!', value: 'goto:last'}]},
+                    question :"More questions?",
+                    type : "question"
+                }
+                
+                $scope.questions = _(res.data.questions)
+                    .map((a, i)=> i>1 && i<res.data.questions.length-1 ? [next_question, a] : [a] )
+                    .flatten()
+                    .value()
+                
+                console.log($scope.questions);
                 $timeout(function(a){ $scope.opened = true }, 5000)
             }
             else $scope.questions = null
         }
     
-        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{$rootScope.emit('chatbot.closed'); $scope.opened=false;  })
+        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('authorization.refresh', $scope.get)
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')

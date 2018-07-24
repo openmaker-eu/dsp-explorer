@@ -5,10 +5,10 @@ from urllib.parse import urlencode
 class InsightConnectorV10(object):
 
     @classmethod
-    def questions(cls, crm_ids):
+    def questions(cls, crm_ids, amount=1):
         crm_ids = cls.merge_ids(crm_ids)
-        res = cls.get('recommendation/questions', {"crm_ids": crm_ids})
-        print(res)
+        res = cls.get('recommendation/questions', {"crm_ids": crm_ids, 'count': amount})
+        print(res.json())
         return res
 
     @classmethod

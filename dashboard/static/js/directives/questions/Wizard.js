@@ -10,7 +10,7 @@ let template = `
     
     <form name="wizard.form" ng-if="questions" ng-show="questions && !loading" class="wizard-form" enctype="multipart/form-data">
         <slick class="col-md-12 modal-slider" settings="slickConfig" prev-arrow=".sup-prev" next-arrow=".sup-next">
-            <question ng-repeat="question in questions" data="question" model="wizard.formmodel" ></question>
+            <question ng-repeat="question in questions track by $index" data="question" model="wizard.formmodel" ></question>
         </slick>
     </form>
 `
