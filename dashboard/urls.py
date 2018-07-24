@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^profile/(?P<profile_id>[0-9]+)$', views.profile_detail, name='profile_detail'),
     url(r'^profile/$', views.profile_detail, name='profile_detail'),
 
-    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/(?P<entity_temp_id>[0-9]+)/$$', views.entity_detail, name='entity_detail'),
+    url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/(?P<entity_temp_id>[0-9]+)/$', views.entity_detail, name='entity_detail'),
     url(r'^entity/(?P<entity_name>\w+)/(?P<entity_id>[0-9]+)/$', views.entity_detail, name='entity_detail'),
     url(r'^entity/(?P<entity_name>\w+)/$', views.entity_list, name='entity_list'),
 

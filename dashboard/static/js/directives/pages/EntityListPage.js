@@ -32,14 +32,14 @@ let template = /*html*/`
                     <div class="col-md-12">
     
                         <entity-loading
-                            loading="entities.data.length==0 && !nodata"
+                            loading="entities.data.length==0 && !nodata || force_loading"
                             error="nodata"
                             entityname="{$ entityname $}"
                         ></entity-loading>
                         
                     </div>
     
-                    <div ng-if="entities.data.length > 0" >
+                    <div ng-if="entities.data.length > 0 && !force_loading" >
                     
                         <bookmarked-stripe entityname="{$ entityname $}"></bookmarked-stripe>
                     
@@ -62,13 +62,16 @@ let template = /*html*/`
                 </div>
                 <div class="row">
                     <div class="col-md-12">
+                        <br><br>
                         <simple-pagination
-                                prevfunction="search_factory.prev_page"
-                                nextfunction="search_factory.next_page"
-                                currentpagenumber="search_factory.page"
-                                maxpagenumber="search_factory.max_page"
+                                prevfunction="prev"
+                                nextfunction="next"
+                                nextcursor="nextcursor"
+                                prevcursor="prevcursor"
                         ></simple-pagination>
+                        <br><br>
                     </div>
+                    
                 </div>
             </div>
         
@@ -91,8 +94,40 @@ export default [function(){
             slider : '@'
         },
         controller : ['$scope', '$http', 'EntityProvider', async function($scope, $http, EntityProvider) {
+            
+            // PAGINATION
+            $scope.page = 0
+            $scope.nextcursor = _.get($scope.entities, 'is_last_page')
+            $scope.prevcursor = -1
+            $scope.force_loading = false
+            
+            $scope.prev=()=>{
+                $scope.page = $scope.page-1
+                $scope.get_data()
+            }
+            
+            $scope.next=()=>{
+                $scope.page = $scope.page+1
+                $scope.get_data()
+            }
+            
+            $scope.get_data = ()=>{
+                $scope.force_loading = true
+                var response = $scope.entities.get(true , $scope.page)
+                response.then((res)=>{
+                    $scope.nextcursor = _.get($scope.entities, 'is_last_page') ? 0: 1
+                    $scope.prevcursor = $scope.page
+                    console.log('res', res);
+                    console.log('is_last', $scope.nextcursor);
+                    $scope.force_loading = false
+                })
+                return response
+            }
+    
+    
             $scope.entities = EntityProvider.make($scope.entityname)
-            $scope.nodata = !$scope.entities.get()
+            $scope.nodata = !$scope.get_data()
+            
         }]
     }
 }]

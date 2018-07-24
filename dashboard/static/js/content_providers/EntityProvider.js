@@ -14,6 +14,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             this.entityid = entityid
             this.userid = userid
             this.data = entityid ? null : []
+            this.is_last_page = false
             
             this.url += userid ? `/user/${userid}` : ''
             this.url += `/${entityname}/${ entityid ? entityid+'/' : ''}`
@@ -23,12 +24,15 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             if(this.loading || !force && this.data && this.data.length > 0) return new Promise(s=>s(this))
             
             this.loading = true;
-            page && (this.url = this.url+`&page=${page}`)
-            
-            let prom = $http.get(this.url, {timeout: 20000})
+            let new_url = page && (this.url+`?page=${page}`) || this.url
+            let prom = $http.get(new_url, {timeout: 20000})
             prom
                 .then(
-                    (res)=>{this.data = res.data, $rootScope.$emit('entitiy.'+this.entityname+'.new')},
+                    (res)=>{
+                        console.log('STATUS', res.status);
+                        this.is_last_page = res.status === 202
+                        this.data = res.data, $rootScope.$emit('entitiy.'+this.entityname+'.new')
+                    },
                     (err)=>console.log('error', err)
                 )
                 .finally(()=>this.loading = false)

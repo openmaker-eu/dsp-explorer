@@ -49,13 +49,15 @@ export default [function(){
         controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
             
             $scope.$watch('[currentpagenumber, maxpagenumber, nextcursor, prevcursor]', (new_val, old_val)=>{
+                
+                console.log('$scope.nextcursor', $scope.nextcursor);
                 // Pagination uses cursor
-                $scope.is_min_page = $scope.nextcursor!==undefined && $scope.prevcursor === 0
+                $scope.is_min_page = $scope.prevcursor!==undefined && $scope.prevcursor === 0 || $scope.prevcursor === -1
                 $scope.is_max_page = $scope.nextcursor!==undefined && $scope.nextcursor === 0 || $scope.nextcursor === -1
                 
                 // Pagination uses pagenumber
-                if($scope.maxpagenumber && $scope.currentpagenumber) $scope.is_max_page = $scope.maxpagenumber === $scope.currentpagenumber
-                if ($scope.currentpagenumber) $scope.is_min_page = $scope.currentpagenumber <= 1
+                // if($scope.maxpagenumber && $scope.currentpagenumber) $scope.is_max_page = $scope.maxpagenumber === $scope.currentpagenumber
+                // if ($scope.currentpagenumber) $scope.is_min_page = $scope.currentpagenumber <= 1
 
             })
     

@@ -226,8 +226,10 @@ class entity(APIView):
         profile = None
         results = []
         local_entities = None
-        # page = request.GET.get('page', None)
-        page = 1
+        page = int(request.GET.get('page', 3))
+        per_page = 10
+        more_pages = 0
+        cursor = (page-1)*per_page
 
         try:
             profile = request.user.profile
@@ -258,7 +260,7 @@ class entity(APIView):
                 topics_list = DSPConnectorV12.get_topics()['topics']
                 topics_id_list = [x['topic_id'] for x in topics_list]
                 method_to_call = 'get_' + entity
-
+                reccomended = []
                 if not profile:
                     selected_topic = random.choice(topics_id_list)
                     results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
@@ -269,19 +271,27 @@ class entity(APIView):
                         if not page or int(page) == 1 \
                         else []
                     for index, topic_id in enumerate(topics_id_list):
-                        results.append(getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id)[entity])
-                    results = reccomended + mix_result_round_robin(*results)
-            except DSPConnectorException:
+                        entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
+                        next_cursor = entity_list.get('next_cursor', 0)
+                        res = entity_list.get(entity, [])
+                        if len(res) > 0:
+                            results.append(res)
+                        more_pages = more_pages + next_cursor
+
+                results = reccomended + mix_result_round_robin(*results)
+            except DSPConnectorException as e:
+                print(e)
                 pass
             except AttributeError as a:
+                print(a)
                 pass
 
-        per_page = 100
-        paginator = Paginator(results, per_page)
-        paginated_results = paginator.page(page)
+        # paginator = Paginator(results, per_page)
+        # paginated_results = paginator.page(page)
 
         # return Response(results if len(results) > 20 else results)
-        return Response(paginated_results.object_list)
+        status = 200 if more_pages > 0 else 202
+        return Response(data=results, status=status)
 
 
 class entity_details(APIView):
