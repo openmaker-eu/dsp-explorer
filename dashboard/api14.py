@@ -263,7 +263,7 @@ class entity(APIView):
                 reccomended = []
                 if not profile:
                     selected_topic = random.choice(topics_id_list)
-                    results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic)[entity]
+                    results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic, cursor=-1)[entity]
                     results = results[:5]
                 else:
                     reccomended = \
@@ -278,7 +278,7 @@ class entity(APIView):
                             results.append(res)
                         more_pages = more_pages + next_cursor
 
-                results = reccomended + mix_result_round_robin(*results)
+                    results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException as e:
                 print(e)
                 pass

@@ -7,7 +7,9 @@ def start(c):
 
 @task
 def init(c, colored=True):
-    c.run('npm run dev & python manage.py migrate & python ./manage.py loaddata db.json & python manage.py runserver 0.0.0.0:8000')
+    c.run('python manage.py migrate')
+    c.run('python ./manage.py loaddata db.json --ignorenonexistent')
+    c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
 
 @task
 def dumpdata(c):

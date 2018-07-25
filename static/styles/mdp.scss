@@ -83,14 +83,19 @@ $om_breakpoints: (
 */
 
 .light { font-weight: 300!important; }
+.extra-light { font-weight: 200!important; }
 .regular { font-weight: 400; }
-.semi-bold { font-weight: 700; }
+.semi-bold { font-weight: 600; }
 .bold { font-weight: 700; }
 .italic {font-style: italic; }
 
 .cairo { font-family: 'Cairo', sans-serif!important; }
 .zilla { font-family: 'Zilla Slab', serif; }
 
+h1,h2,h2,h4,h5,h6 {
+  letter-spacing: 2px;
+  //& * {letter-spacing: 2px!important;}
+}
 
 // BASE
 
@@ -102,7 +107,7 @@ body, html {
   background-color: $color-grey--light;
   height: 100%;
   width: 100%;
-  font-family: 'Cairo', sans-serif;
+  //font-family: 'Cairo', sans-serif;
   color: #333;
   font-weight: 400;
 
@@ -168,7 +173,7 @@ main {
       flex-grow:1;
   }
   .container{
-    & > .row { width:100%}
+    //& > .row { width:100%}
   }
 }
 
@@ -181,18 +186,19 @@ main {
     @extend .regular;
     padding:0 2%;
   }
+   margin-top:5%;
 }
 
 .home-page{
   &.container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
   }
-  .entity-carousel__header a {  @extend .light; font-size:150%;  }
+
+  .entity-carousel__header a {  @extend .extra-light;  font-size:150%;  }
   p { font-size:1.71rem; }
 }
-
 
 .entity-list, .entity-detail{
   &__title, &__title *:not(i){
@@ -254,7 +260,15 @@ main {
     h5, h4, h3, h2, h1 {
       margin:0; padding: 6% 0;
       text-transform: uppercase;
+      @extend .cairo;
+      @extend .light;
     }
+  }
+  .entity-detail__body{
+    @extend .zilla;
+    line-height: 2rem!important;
+    font-size:1.4rem!important;
+    * { font-size:1.4rem!important; }
   }
   &__body {
     position:relative; z-index:0;
@@ -463,12 +477,20 @@ $ombreakpoints: (
 .container {
   // hack bootstrap cointainer
   @each $size,$bk in $ombreakpoints {
-    //@media screen and (min-width: #{nth($bk, 1)}) {
-    //  background-color: #f00!important;
-    //  * {border:solid 3px #f00;}
-    //  * {color:#f00!important;}
-    //}
-    //@warn "Brekpoint: #{nth($bk, 1)} --";
+    @media screen and (min-width: #{nth($bk, 1)}) {
+      //background-color: #f00!important;
+      //* {border:solid 3px #f00;}
+      //* {color:#f00!important;}
+    }
+    @warn "Brekpoint: #{nth($bk, 1)} --";
+  }
+
+  @media all and (max-width: 768px) {
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%
   }
 }
 
@@ -477,6 +499,7 @@ $ombreakpoints: (
     width: 1480px!important;
   }
 }
+
 
 .overflow-here {
   overflow: hidden!important;

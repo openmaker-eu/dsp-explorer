@@ -11,11 +11,11 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand logo text-red" href="/">
-                <img src="/static/images/openmaker-logo-final.svg" class="img img-responsive pull-left"
+                <img src="/static/images/logo.svg" class="img img-responsive pull-left"
                      style="height:160%; margin-top:-2%;">&nbsp;
-                <span class="pull-left" >
-                    <span class="text-red" style="font-weight: 500;">OM<small class="text-white" style="font-weight: 300; text-transform: lowercase;">explorer</small></span>
-                </span>
+                <!--<span class="pull-left" >-->
+                    <!--<span class="text-white" style="font-weight: 500;">OM<small class="text-grey" style="font-weight: 300; text-transform: lowercase;">explorer</small></span>-->
+                <!--</span>-->
             </a>
         </div>
 
@@ -53,6 +53,7 @@
 
             <!--VISITORS-->
             <ul ng-if="$root.authorization < 10" class="nav navbar-nav navbar-right friends">
+
                 <li><a  ng-click="$root.login($event)">Login</a></li>
                 <li><a>|</a></li>
                 <li class="{% if current_url == 'dashboard:onboarding' %}liactive{% endif %}">
@@ -70,12 +71,14 @@
             </ul>
             <ul ng-if="$root.authorization >= 10" class="nav navbar-nav navbar-right">
 
-                <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
-                    <a href="{% url 'dashboard:community' %}">Community</a>
-                </li>
-
                 <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}" >
                     <a href="{% url 'dashboard:invite' %}" ><i class="fa fa-user-plus"></i></a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="{% if current_url == 'dashboard:community' %}liactive{% endif %}" >
+                    <a href="{% url 'dashboard:community' %}">Community</a>
                 </li>
             </ul>
 

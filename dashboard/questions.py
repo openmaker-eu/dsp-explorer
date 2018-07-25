@@ -379,7 +379,7 @@ class questions(APIView):
                 'type': "question",
                 'question': 'Hi visitor!',
                 'text': "Do you know that signed users have access to more content than you?",
-                'actions': {'options': ['Tel me more',  {'value': 'event:chatbot.close', 'label': 'I dont mind'}]}
+                'actions': {'options': ['Tell me more',  {'value': 'event:chatbot.close', 'label': 'I don\'t mind'}]}
             },
             'signup_proposal_2': {
                 'type': "question",

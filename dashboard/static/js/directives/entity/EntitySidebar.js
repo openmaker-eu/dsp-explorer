@@ -10,7 +10,7 @@ let template = `
                 entityname="{$ slider_name $}"
                 entityperslide="{$ slider_list.length < 3 && 1 || $index == 0 ? 1 : 2 $}"
                 userid="{$ userid $}"
-                class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                class="col-md-12 col-sm-12"
             ></entity-carousel>
             
         </div>

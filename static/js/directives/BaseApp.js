@@ -18,8 +18,15 @@ export default [function(){
             $rootScope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
             $rootScope.logout =LoginService.logout
             $rootScope.login =()=>$rootScope.$emit('question.modal.open', [
-                {name:'login', type:'login', label:'Login', apicall: '/api/v1.4/login/', emitevent:'authorization.refresh'},
-                {name:'end', type:'success', label: 'Successful login', }
+                {
+                    name:'login',
+                    type:'login',
+                    label:'Login',
+                    apicall: '/api/v1.4/login/',
+                    emitevent:'authorization.refresh',
+                    custom_next:`<h4>LOGIN&nbsp;&nbsp;</h4>`
+                },
+                {name:'end', type:'success', label: 'Successful login', custom_prev:null }
             ])
             
             $rootScope.authorization=$scope.authorization
