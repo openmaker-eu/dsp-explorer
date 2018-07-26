@@ -23,7 +23,7 @@ export default function(){
             $scope.interested = false;
     
             // Build url
-            let url=()=>`/api/v1.4/user/interest/${$scope.entityname}/${$scope.entityid}/`
+            let url=()=> $scope.entityid && `/api/v1.4/user/interest/${$scope.entityname}/${$scope.entityid}/`
     
             // Change bookmarked button color
             const change_status = res => {
@@ -41,26 +41,23 @@ export default function(){
             $rootScope.$on($scope.entityname+'.'+$scope.entityid+'.interest.change', (e, m)=>$scope.interested = _.get(m, 'interested'))
     
             // First check if is bookmarked
-            $http.get(url()).then(change_status)
+            url() && $http.get(url()).then(change_status)
     
             // Change bookmark on BE OR trigger bookmark action
             $scope.interest = () => {
     
                 let is_list = $rootScope.page_info.name == 'entity_list';
                 let is_this_entity = $rootScope.page_info.options.entity_name === $scope.entityname;
-    
                 console.log('is_list', is_list);
                 console.log('is_this_entity', is_this_entity);
                 console.log('$scope.isstatic', $scope.isstatic);
                 console.log('$scope.entityname', $scope.entityname);
     
-                // (!is_list || !is_this_entity ) && $scope.isstatic && (  );
                 if ( (!is_list || !is_this_entity) && $scope.isstatic){
-                    console.log('############ Page change !!');
                     $window.location.href = `/entity/${$scope.entityname}/?bookmark=true`
                 }
                 else if(!$scope.isstatic){
-                    $http.post(url()).then(change_status);
+                    url() && $http.post(url()).then(change_status);
                 }
                 else{
                     $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:!$scope.interested});

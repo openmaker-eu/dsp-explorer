@@ -131,8 +131,9 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
         entity = EntityProxy.singular_name(entity) if entity == 'projects' or entity == 'challenges' else entity
-        model_class = ModelHelper.get_by_name('EntityProxy' if entity == 'news' or entity == 'event' else entity.capitalize())
-        model_serializer = BookmarkSerializer if entity == 'news' or entity == 'events' else ModelHelper.get_serializer(entity.capitalize())
+
+        model_class = EntityProxy if entity in ['news', 'events'] else ModelHelper.get_by_name(entity.capitalize())
+        model_serializer = BookmarkSerializer if entity in ['news', 'events'] else ModelHelper.get_serializer(entity.capitalize())
 
         print(model_class)
         print(model_serializer)

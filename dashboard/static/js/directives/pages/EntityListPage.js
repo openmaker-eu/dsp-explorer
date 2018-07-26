@@ -131,7 +131,7 @@ export default [function(){
             
             $scope.data.then(
                 ()=> $timeout(function(a){
-                    $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:true})
+                    $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:$rootScope.page_info.bookmark})
                 },1000)
             )
     

@@ -60,7 +60,7 @@ export default function(){
             }
             $scope.get_data('/api/v1.4/interest/' + $scope.entityname + '/')
             
-            $rootScope.$on($scope.event_name, (n,a)=> { $scope.is_visible = a.visible ; console.log('dskjndsvjkndsvkjn'); }  )
+            $rootScope.$on($scope.event_name, (n,a)=> { $scope.is_visible = a.visible ;}  )
 
         }]
     }

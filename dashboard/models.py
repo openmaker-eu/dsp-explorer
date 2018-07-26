@@ -34,14 +34,12 @@ class ModelHelper:
     def get_by_name(model_name):
         try:
             ct_model = ContentType.objects.get(model=model_name)
+            return ct_model.model_class()
         except Exception as e:
             print(model_name)
-            print(EntityProxy.singular_name(model_name))
-
-            ct_model = ContentType.objects.get(model=EntityProxy.singular_name(model_name))
             print('error findig class')
             print(e)
-        return ct_model.model_class()
+
 
     @staticmethod
     def get_serializer(model):
