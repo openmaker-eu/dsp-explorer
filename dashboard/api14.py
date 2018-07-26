@@ -121,6 +121,7 @@ def interest(request, entity, user_id=None):
             return all the interest shown by specified user that belongs to specific entitiy type
             if no user id specified will use the logged user
     """
+    from dashboard.models import EntityProxy
     profile = request.user.profile if \
         request.user.is_authenticated and \
         not user_id else \
@@ -128,12 +129,16 @@ def interest(request, entity, user_id=None):
 
     if not profile:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
-
     try:
-        model_class = ModelHelper.get_by_name(entity.capitalize())
-        model_serializer = ModelHelper.get_serializer(entity.capitalize())
+        entity = EntityProxy.singular_name(entity) if entity == 'projects' or entity == 'challenges' else entity
+        model_class = ModelHelper.get_by_name('EntityProxy' if entity == 'news' or entity == 'event' else entity.capitalize())
+        model_serializer = BookmarkSerializer if entity == 'news' or entity == 'events' else ModelHelper.get_serializer(entity.capitalize())
+
+        print(model_class)
+        print(model_serializer)
+
         interest = profile.interests(model_class)
-        res = model_serializer(interest, many=True).data
+        res = model_serializer(interest[:3], many=True).data
         return Response(res)
     except Exception as e:
         print('Error')

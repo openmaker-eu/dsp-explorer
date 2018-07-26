@@ -18,7 +18,8 @@ def authorization(request):
         'twitter_auth': twitter_cookie,
         'page_info': {
             'name': request.resolver_match.url_name,
-            'options': request.resolver_match.kwargs
+            'options': request.resolver_match.kwargs,
+            'bookmark': request.GET.get('bookmark', None)
         }
     }
     if request.user.is_authenticated:

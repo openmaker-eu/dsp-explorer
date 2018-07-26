@@ -4,25 +4,24 @@
         <div class="col-md-12 entity-heading margin-bottom-1-perc">
             <div class="row">
                 <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
-                       <!--<span ng-if="!is_my_profile" class="pull-right">-->
-                           <!--<interest-button-->
-                                   <!--entityname="{$ entityname $}"-->
-                                   <!--entityid="{$ entityid $}"-->
-                           <!--&gt;</interest-button>-->
-                       <!--</span>-->
+                       <span ng-if="!is_my_profile" class="pull-right">
+                           <interest-button
+                                   entityname="{$ entityname $}"
+                                   entityid="{$ entityid $}"
+                           ></interest-button>
+                       </span>
+
+                    <div class="btn btn-danger pull-right" ng-if="is_my_profile" ng-click="edit()">
+                        <i class='fas fa-user-edit text-white'></i>&nbsp;&nbsp;Click here to edit
+                    </div>
+
                 </h1>
             </div>
         </div>
 
         <div class="col-md-9 user-detail">
             <div class="user-detail__header">
-                <div
-                        ng-click="is_my_profile && edit()"
-                        ng-class="{'pointer': is_my_profile}"
-                        uib-tooltip-html="is_my_profile && tooltip_template"
-                        tooltip-placement="top-right"
-                        tooltip-class="profile-edit__tooltip"
-                >
+                <div>
                     <div><div class="col-md-2 col-md-offset-5">
                         <circle-image src="entity.data.picture" style="min-width:100%;" ></circle-image>
                     </div></div>
@@ -51,10 +50,13 @@
                         </h5>
                     </div>
 
-                        <div ng-if="entity.data.statement" class="col-md-12">
+                        <div class="col-md-12">
                             <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
-                            <h4 class="text-center zilla light">{$ entity.data.statement $}</h4>
+                            <h4 class="text-center zilla light">{$ entity.data.statement ? entity.data.statement : 'No statement added yet...' $}</h4>
                             <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
+                            <h3 style="position:absolute; top:40%; right:10%; line-height: 0; margin:0; padding:0;">
+                                <interest-button  entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
+                            </h3>
                         </div>
 
                     </div></div>

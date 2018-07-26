@@ -46,7 +46,7 @@ export default function(){
             let url = ''
             $scope.entities = []
             $scope.nodata = false
-            $scope.is_visible = false
+            $scope.is_visible =  false
             $scope.event_name = 'bookmarked.' + $scope.entityname + '.visibility'
             
             $scope.get_data = (url) => {
@@ -58,8 +58,9 @@ export default function(){
                 err => $scope.nodata = true
                 )
             }
-            $scope.get_data('/api/v1.4/bookmarks/' + $scope.entityname + '/')
-            $rootScope.$on($scope.event_name, (n,a)=> a && ($scope.is_visible = a.visible) )
+            $scope.get_data('/api/v1.4/interest/' + $scope.entityname + '/')
+            
+            $rootScope.$on($scope.event_name, (n,a)=> { $scope.is_visible = a.visible ; console.log('dskjndsvjkndsvkjn'); }  )
 
         }]
     }

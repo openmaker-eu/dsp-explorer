@@ -234,6 +234,13 @@ main {
   }
 }
 
+.text-highlight {
+  color:$color-red!important;
+}
+.chatbot {
+  .text-highlight { color:$color-white!important; }
+}
+
 .btn {
   $color-twitter:#00a3f0;
   &-twitter {
@@ -310,6 +317,7 @@ main {
   &:hover .slick-arrow--custom {display: inline!important;}
 
   // TEMPLATING
+
   @each $entity_name, $entity_color in $color_list {
     &--#{$entity_name}{
       .entity-carousel__header {

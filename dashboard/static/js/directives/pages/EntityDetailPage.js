@@ -1,6 +1,5 @@
 let template = `
-    <div class="container"
->
+    <div class="container">
         <div class="row">
             
             <!--Entity Heading-->
@@ -11,7 +10,7 @@ let template = `
                        <span class="pull-right">
                            <!--<bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>-->
                            <!--&nbsp;&nbsp;-->
-                           <!--<interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>-->
+                           <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                        </span>
                    <h1>
                    <h1>&nbsp;</h1>
@@ -80,7 +79,6 @@ export default function(){
     return {
         template:template,
         scope: {
-
             'entityid' : '@',
             'entitytempid' : '@',
             'slider': '@'

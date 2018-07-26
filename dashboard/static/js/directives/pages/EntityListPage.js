@@ -1,4 +1,5 @@
 import * as _ from 'lodash'
+
 let template = /*html*/`
     <div class="container entity-list">
         <div class="row ">
@@ -8,7 +9,6 @@ let template = /*html*/`
                 <div class="row">
                     <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
                        <span class="entity-detail__title">
-           
                             <span ng-if="entityname !== 'projects'" >{$ entityname $}</span>
                             <span ng-if="entityname === 'projects'" >Projects / <span class="text-red">Challenges</span></span>
                        </span>
@@ -93,7 +93,7 @@ export default [function(){
             entityname : '@',
             slider : '@'
         },
-        controller : ['$scope', '$http', 'EntityProvider', async function($scope, $http, EntityProvider) {
+        controller : ['$scope', '$http', '$rootScope', 'EntityProvider', '$timeout', function($scope, $http, $rootScope, EntityProvider, $timeout) {
             
             // PAGINATION
             $scope.page = 0
@@ -117,17 +117,27 @@ export default [function(){
                 response.then((res)=>{
                     $scope.nextcursor = _.get($scope.entities, 'is_last_page') ? 0: 1
                     $scope.prevcursor = $scope.page
-                    console.log('res', res);
-                    console.log('is_last', $scope.nextcursor);
                     $scope.force_loading = false
                 })
                 return response
             }
     
-    
-            $scope.entities = EntityProvider.make($scope.entityname)
-            $scope.nodata = !$scope.get_data()
             
+            $scope.entities = EntityProvider.make($scope.entityname)
+            $scope.data = $scope.get_data()
+            $scope.nodata = !$scope.data
+            
+            console.log('bookmark', $rootScope.page_info.bookmark);
+            
+            $scope.data.then(
+                ()=> $timeout(function(a){
+                    $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:true})
+                },1000)
+            )
+    
+            // $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:true})
+    
+    
         }]
     }
 }]

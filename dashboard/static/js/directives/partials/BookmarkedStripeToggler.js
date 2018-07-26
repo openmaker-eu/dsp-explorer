@@ -16,8 +16,11 @@ export default function(){
             
             $scope.toggle = ()=>{
                 $scope.is_visible = !$scope.is_visible
-                $rootScope.$emit($scope.event_name, {visible:$scope.is_visible})
+                $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:$scope.is_visible})
             }
+    
+            // React to bookmark action
+            $rootScope.$on('bookmarked.'+$scope.entityname+'.visibility', (e, m)=>{ $scope.is_visible=m.visible })
             
         }]
     }
