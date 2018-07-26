@@ -83,7 +83,7 @@ export default function(){
             'entitytempid' : '@',
             'slider': '@'
         },
-        controller : ['$scope', '$rootScope', '$http','EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
+        controller : ['$scope', '$rootScope', '$http', 'EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
             
             $scope.entityname = $rootScope.page_info.options.entity_name
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []

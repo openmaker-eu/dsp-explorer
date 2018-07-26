@@ -255,6 +255,8 @@ main {
 
 }
 
+entity-carousel{ padding:0!important; width:109%!important;
+
 .entity-carousel{
 
   background: #fff;
@@ -329,6 +331,7 @@ main {
   }
 
 }
+}
 
 .entity-list{
   &__box {
@@ -373,9 +376,7 @@ main {
     width: 100%;
     z-index: 0;
 
-    @media all and (max-width: 768px) {
-      display: none;
-    }
+    @media all and (max-width: 768px) {display: none;}
 
   }
 }
@@ -760,23 +761,33 @@ $ombreakpoints: (
 }
                                                                                 
 chatbot {
-  position:fixed; right:5%; bottom:0; width:30%; z-index:1000000;
+  //position:fixed; right:5%; bottom:0; width:30%; z-index:1000000;
+  position:absolute; right:0; bottom:0; width:100%!important; z-index:1000000;
 
   .chatbot{
-    &__container{background: white; border-radius: 8px 8px 0 0; overflow: hidden; box-shadow: 0 0 2px #a3a3a3;}
+    width:100%;
+
+    &__container{background: white; border-radius: 5px 5px 0 0; overflow: hidden; box-shadow: 0 0 2px #a3a3a3;}
+
     &__header{
-      width: 100%; height:50px;
+      width: 100%; height:60px;
+      padding:10px;
       position: relative;
-      background: #f00;
+      background: $color-red;
       h1, h2, h3 ,h4, h5 { margin:0; padding:0; }
         .entity-actions {
           flex-grow:1;
           margin:0; height:100%;
           display: flex; flex-direction:row; justify-content: center; align-items: center;
-          & > * {margin:2%;}
+          & > * {margin:2% 3%; color:$color-red--dark;}
         }
     }
-    &__body{background: white;}
+    &__body{
+      background: white;
+      @extend .cairo; @extend .semi-bold;
+      letter-spacing: normal; line-height: normal;
+      text-align: center;
+    }
 
     &__toggler {
       right: 5%;
@@ -789,14 +800,35 @@ chatbot {
     }
 
   }
-  @media all and(min-width: 768px){ width:50%; }
-  @media all and(max-width: 768px){ width:90%; }
-  @media all and(min-width: 992px){ width:25%; }
-  @media all and(min-width: 1170px){ width:20%; }
+  //@media all and(min-width: 768px){ width:50%; }
+  //@media all and(max-width: 768px){ width:90%; }
+  //@media all and(min-width: 992px){ width:25%; }
+  //@media all and(min-width: 1170px){ width:20%; }
 
 }
 
-.tag-tooltip * { word-wrap: break-word!important; }
-.tooltip-inner {
-  word-wrap: break-word!important;
+.tag-tooltip * {word-wrap: break-word!important;}
+.tooltip-inner {word-wrap: break-word!important;}
+
+.profile-question {
+
+  &:nth-child(3n+4){ clear: both; }
+
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    & > * {display: none;}
+    &:hover > * {display: block;}
+    &--edit > * {display: block}
+  }
+
+  &--edit {
+    position: absolute;
+    z-index: 1000000;
+    box-shadow: 0 0 3px #000;
+    left: -10%;
+  }
+
 }

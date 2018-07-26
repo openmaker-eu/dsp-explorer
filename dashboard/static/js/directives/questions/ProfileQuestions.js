@@ -4,18 +4,14 @@ let $ = require('jquery')
 
 let style= `
     <style>
-        .profile-question__actions { display:flex; flex-direction: row; justify-content: flex-end;}
-        .profile-question__actions > * { display:none; }
-        .profile-question__actions:hover > * { display:block;}
-        .profile-question__actions--edit > *{ display:block}
-        .profile-question--edit {position: absolute;z-index: 1000000;box-shadow: 0 0 3px #000;left: -10%;}
+
     </style>
 `
 let template = `
     <div ng-if="questions" class="profile-questions">
         <div
             ng-repeat="question in questions"
-            class="col-md-4 margin-bottom-1-perc"
+            class="col-md-4 margin-bottom-1-perc profile-question"
             style="position: relative"
         >
             <div class="background-white" ng-class="{'profile-question--edit': question.is_edit}" style="padding:10%; border:solid 1px #efefef;">

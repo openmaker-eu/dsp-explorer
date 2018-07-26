@@ -4,6 +4,7 @@ let $ = require('jquery')
 let template = `
     <div class="chatbot">
         <div class="chatbot__container">
+            
             <div class="chatbot__header" >
                 <h2>
                     <div class="entity-actions" >
@@ -33,6 +34,8 @@ let template = `
                 ></wizard>
                 <navi-chatbot items="questions" wizardid="wizardid"></navi-chatbot>
             </div>
+            
+            
         </div>
     </div>
 `
