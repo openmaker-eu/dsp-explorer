@@ -61,7 +61,6 @@ let wizard_directive =
             return _.get(subform, '$valid')
         }
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
-            
             let question = _.get($scope , 'questions['+current+']')
             let subform = question.name && $scope.wizard.form[question.name]
     
@@ -88,16 +87,12 @@ let wizard_directive =
                 else { question.emitevent && $rootScope.$emit(question.emitevent, {}) ; $scope.slickConfig.method.slickNext() }
             }
             else if($scope.action==='chatbot'){
-                console.log('chatbot ###########');
-                
                 $http
                     .post('/api/v1.4/questions/chatbot/', question)
                     .then(res=>{$scope.slickConfig.method.slickNext()})
                     .catch(res=>question.error=res.data.error)
                     .finally(()=>$scope.loading=false)
             }
-
-            
         })
         
         $rootScope.$on($scope.wizard_name+'.prev',()=>$scope.slickConfig.method.slickPrev())

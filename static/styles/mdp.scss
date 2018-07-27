@@ -273,12 +273,6 @@ entity-carousel{ padding:0!important; width:109%!important;
       @extend .light;
     }
   }
-  .entity-detail__body{
-    @extend .zilla;
-    line-height: 2rem!important;
-    font-size:1.4rem!important;
-    * { font-size:1.4rem!important; }
-  }
   &__body {
     position:relative; z-index:0;
     padding-bottom:80%; overflow: hidden;
@@ -331,6 +325,14 @@ entity-carousel{ padding:0!important; width:109%!important;
   }
 
 }
+}
+
+
+.entity-detail__body{
+  @extend .zilla;
+  line-height: 2rem!important;
+  font-size:1.4rem!important;
+  * { font-size:1.4rem!important; }
 }
 
 .entity-list{

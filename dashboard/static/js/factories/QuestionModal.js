@@ -27,10 +27,15 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     $rootScope.$on('wizard.'+$scope.$id+'.end', F.close)
                     $rootScope.$on('question.modal.close', F.close)
                     
+                    // force chatbot to stay closed
+                    $rootScope.$emit('chatbot.force_close', true);
+    
                 }]
             });
     
             F.modalInstance.closed.then(n=>{
+                // Allow chatbot to open
+                $rootScope.$emit('chatbot.force_close', false);
                 $rootScope.$emit('entity.change.all') ;
                 $rootScope.$emit('authorization.refresh')
             })
@@ -39,8 +44,6 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
     }
     
     $rootScope.$on('question.modal.open', F.open)
-    
-    
     return F
 
 }]

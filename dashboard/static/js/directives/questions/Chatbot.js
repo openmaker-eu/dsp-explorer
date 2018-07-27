@@ -18,14 +18,14 @@ let template = `
                     <div class="chatbot__toggler pointer">
                         <span
                             class="fas fa-chevron-up text-white"
-                            ng-class="{'fa-chevron-down':opened, 'fa-chevron-up':!opened}"
+                            ng-class="{'fa-chevron-down':opened && !force_close, 'fa-chevron-up':!opened || force_close}"
                             ng-click="toggle_bot()"
                         ></span>
                     </div>
                 </h2>
                
             </div>
-            <div class="chatbot__body" ng-if="opened" style="background: white;">
+            <div class="chatbot__body" ng-if="opened && !force_close" style="background: white;">
                 <wizard
                     questions="questions"
                     action="chatbot"
@@ -50,6 +50,7 @@ let chatbot_directive =
         $scope.questions = null
         $scope.opened= false
         $scope.wizardid = $scope.$id
+        $scope.force_close = false
         
         $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
         
@@ -86,14 +87,18 @@ let chatbot_directive =
                     .flatten()
                     .value()
                 
-                console.log($scope.questions);
                 $timeout(function(a){ $scope.opened = true }, 5000)
             }
             else $scope.questions = null
         }
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
+        
+        $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ console.log('hide'); $scope.opened=false; })
+        $rootScope.$on('chatbot.force_close', (e, m)=>{ console.log('hide'); $scope.force_close=m; })
+        
         $rootScope.$on('authorization.refresh', $scope.get)
+ 
     
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')

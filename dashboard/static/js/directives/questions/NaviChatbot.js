@@ -57,18 +57,19 @@ export default function(){
             }
             
             $scope.end=()=>$rootScope.$emit($scope.wizard_name+'.end', $scope.current)
+            $scope.hide=()=>$rootScope.$emit($scope.wizard_name+'.hide', $scope.current)
+            $scope.hide=()=>$rootScope.$emit($scope.wizard_name+'.hide', $scope.current)
             $scope.goto=(question_index)=>$rootScope.$emit($scope.wizard_name+'.goto', question_index)
             
             $rootScope.$on($scope.wizard_name+'.afterChange',(ev, {event, slick, currentSlide, nextSlide})=>{
                 $scope.current = currentSlide;
                 $scope.is_end = currentSlide === $scope.items.length-1
-                console.log('options', $scope.items[$scope.current].actions.options);
-    
             })
             
             $scope.get_stars = (amount)=>[...new Array(amount)]
     
             $rootScope.$on('chatbot.close',()=>$scope.end())
+            $rootScope.$on('chatbot.hide',()=>$scope.hide())
             
     
         }]

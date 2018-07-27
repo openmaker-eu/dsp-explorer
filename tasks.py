@@ -8,7 +8,7 @@ def start(c):
 @task
 def init(c, colored=True):
     c.run('python manage.py migrate')
-    c.run('python ./manage.py loaddata db.json --ignorenonexistent')
+    c.run('python ./manage.py loaddata --ignorenonexistent db.json')
     c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
 
 @task
@@ -17,7 +17,7 @@ def dumpdata(c):
 
 @task
 def loaddata(c):
-    c.run('python ./manage.py loaddata db.json --ignorenonexistent')
+    c.run('python ./manage.py loaddata --ignorenonexistent db.json ')
 
 @task
 def createsetting(c):

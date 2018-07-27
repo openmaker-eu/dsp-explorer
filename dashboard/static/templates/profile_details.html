@@ -36,7 +36,8 @@
                             <span>
                             <span style="margin-top:2%;">
                                 <div class="pull-left" ng-repeat="tag in entity.data.tags">
-                                    <span style="line-height: 150%;" class="text-grey">#</span>{$ tag.name $}&nbsp;&nbsp;
+                                   <a href="/search/members/{$ tag.name $}#tags" class="pointer"><span style="line-height: 150%;" class="text-grey">#</span>{$ tag.name $}</a>
+                                    &nbsp;&nbsp;
                                 </div>
                             </span>
 
