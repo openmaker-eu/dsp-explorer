@@ -5,11 +5,12 @@ let template = /*html*/`
         <div class="row ">
         
             <!--Entity heading-->
+            <div class="mobile__padding">
             <div class="entity-list__title entity-heading col-md-12 col-sm-12">
                 <div class="row">
-                    <h1 class="col-md-9 col-sm-9 col-sm-offset-0">
+                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
                        <span class="entity-detail__title">
-                            <span ng-if="entityname !== 'projects'" >{$ entityname $}</span>
+                            <span ng-if="entityname !== 'projects'" ng-bind-html="entitiy_title()"></span>
                             <span ng-if="entityname === 'projects'" >Projects / <span class="text-red">Challenges</span></span>
                        </span>
                        
@@ -20,8 +21,8 @@ let template = /*html*/`
                        <span class="pull-right">
                             <bookmarked-stripe-toggler entityname="{$ entityname $}"></bookmarked-stripe-toggler>
                        </span>
-                       
-                   <h1>
+                       <h1>&nbsp;</h1>
+                   <h2>
                 </div>
             </div>
         
@@ -73,6 +74,7 @@ let template = /*html*/`
                     </div>
                     
                 </div>
+            </div>
             </div>
         
             <!--Right sidebar-->
@@ -136,7 +138,9 @@ export default [function(){
             )
     
             // $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:true})
-    
+            $scope.entitiy_title= ()=> ['challenges', 'projects'].includes($scope.entityname)
+                ? '<span>Projects</span><span></span>&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
+                : $scope.entityname == 'news' ? 'articles' : $scope.entityname
     
         }]
     }

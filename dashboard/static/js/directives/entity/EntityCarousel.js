@@ -49,7 +49,7 @@ export default [function(){
             
             $scope.entitiy_title= ()=> ['challenges', 'projects'].includes($scope.entityname)
                 ? '<span>Projects</span><span></span>&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
-                : $scope.entityname
+                : $scope.entityname == 'news' ? 'articles' : $scope.entityname
             
             $scope.$watch('entity_list.data',  (a, b)=>{
                 $scope.reload = true;

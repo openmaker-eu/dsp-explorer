@@ -2,11 +2,12 @@ let template = `
     <div class="container">
         <div class="row">
             
+           <div class="mobile__padding">
             <!--Entity Heading-->
             <div class="col-md-12 entity-heading margin-bottom-1-perc">
                 <div class="row">
                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
-                       <span class="entity-detail__title">{$ entityname $}</span>
+                       <a href="/entity/{$ entityname $}" class="entity-detail__title" ng-bind-html="entitiy_title()"></a>
                        <span class="pull-right">
                            <!--<bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>-->
                            <!--&nbsp;&nbsp;-->
@@ -65,6 +66,7 @@ let template = `
                     
                 </div>
             </div>
+            </div>
     
             <!--Right sidebar-->
             <div class="col-md-3">
@@ -89,6 +91,8 @@ export default function(){
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
             $scope.entity = EntityProvider.make($scope.entityname, $scope.entityid)
             $scope.nodata = !$scope.entity.get()
+    
+            $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname
             
         }]
     }

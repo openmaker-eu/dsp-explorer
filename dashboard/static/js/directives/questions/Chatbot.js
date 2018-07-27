@@ -5,14 +5,15 @@ let template = `
     <div class="chatbot">
         <div class="chatbot__container">
             
-            <div class="chatbot__header" >
-                <h2>
+            <div class="chatbot__header mobile__padding" >
+                <h2 class="chatbot__header__flex">
                     <div class="entity-actions" >
-                        <interest-button entityname="events" entityid="{$ entityid $}" isstatic="true"></interest-button>
                         <interest-button entityname="news" entityid="{$ entityid $}" isstatic="true"></interest-button>
                         <interest-button entityname="{$ entityname == 'challenges' ? 'challenges' : 'projects' $}"
                             entityid="{$ entityid $}" isstatic="true"
                         ></interest-button>
+                        <interest-button entityname="events" entityid="{$ entityid $}" isstatic="true"></interest-button>
+
                     </div>
                     
                     <div class="chatbot__toggler pointer">

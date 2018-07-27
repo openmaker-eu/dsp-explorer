@@ -1,6 +1,6 @@
 let _ =  require('lodash')
 let template = `
-
+    <h2 class="wizard__close" ng-click="close()"><i class="fas fa-times text-brown"></i></h2>
     <entity-loading
             ng-if="!questions || loading"
             class="text-center"
@@ -98,6 +98,8 @@ let wizard_directive =
         $rootScope.$on($scope.wizard_name+'.prev',()=>$scope.slickConfig.method.slickPrev())
         $rootScope.$on($scope.wizard_name+'.goto',(ev,val)=>$scope.slickConfig.method.slickGoTo(val))
         $rootScope.$on($scope.wizard_name+'.end', ()=>null)
+        
+        $scope.close = ()=>$rootScope.$emit($scope.wizard_name+'.end', $scope.current)
         
     }]
 }

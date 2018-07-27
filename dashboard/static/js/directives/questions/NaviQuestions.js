@@ -2,6 +2,7 @@ export default function(){
     return {
         template:`
             <div class="col-md-12 wizard-navi" ng-show="items">
+
                 <!--Standard prev button-->
                 <span ng-class="{'transparent':is_start}" ng-if="!is_custom_prev" class="pointer " ng-click="prev()">
                     <h1><i class="fas fa-chevron-left text-brown"></i></h1>
@@ -10,7 +11,7 @@ export default function(){
                  <!--Custom prev button-->
                 <span class="pointer" ng-if="is_custom_prev" ng-bind-html="custom_prev" ng-click="prev()"></span>
                 
-                <span style="text-align:center;">
+                <span class="no-mobile" style="text-align:center;">
                     <i
                         ng-repeat="(q_index, items) in [].constructor(items.length) track by $index"
                         class="fa-circle text-brown margin-10-perc"
