@@ -864,11 +864,31 @@ chatbot {
     &--edit > * {display: block}
   }
 
+  .profile-question {
+    padding:10%; border:solid 1px #efefef;
+    &__actions {
+      position: absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;
+    }
+    &__answers {
+      width:100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      background: #fff;
+      padding:5% 0 0 0;
+      flex-wrap: wrap;
+    }
+  }
+
   &--edit {
     position: absolute;
     z-index: 1000000;
     box-shadow: 0 0 3px #000;
     left: -10%;
+
+    @media all and(max-width: 768px){ left:0; max-width: 100%; }
+
   }
 
 }
@@ -887,9 +907,10 @@ chatbot {
   footer { position:fixed!important; bottom:0!important; height : 70px!important; }
   .chatbot_section { position:fixed!important; bottom:70px!important; }
   .hidden_space_bottom{ display: block; height: 130px;}
-
-  .mobile__padding{ padding-left: 2%; padding-right: 2%; }
+  .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
 
   .no-mobile {display: none!important;}
+
+  .mobile__row { margin-left:0!important; margin-right:0!important;}
 
 }

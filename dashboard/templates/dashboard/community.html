@@ -2,18 +2,17 @@
 {% block container %}
 <div>
 <div class="container" ng-controller="searchController" ng-init="search_factory.search('{{search_string}}')">
-    <div class="row">
+    <div class="row mobile__row">
 
-        <!--Entity Heading-->
-        <div class="col-md-12 entity-heading margin-bottom-1-perc">
+        <div class="col-md-8 user-detail mobile__padding">
             <div class="row">
-                <h1 class="margin-bottom-30">Community <small >&nbsp;we are <span>{{ n_registered_user }}</span> people</small></h1>
 
-            </div>
-        </div>
+                <!--Entity Heading-->
+                <div class="col-md-12 entity-heading margin-bottom-1-perc">
+                   <h1 class="margin-bottom-30">Community <small >&nbsp;we are <span>{{ n_registered_user }}</span> people</small></h1>
+                </div>
 
-        <div class="col-md-8 user-detail">
-            <div class="row">
+
                 <!--Anchor for members on page load-->
                 <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                 <div class="col-md-12">

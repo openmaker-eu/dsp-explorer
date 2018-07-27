@@ -14,11 +14,10 @@ let template = `
             class="col-md-4 margin-bottom-1-perc profile-question"
             style="position: relative"
         >
-            <div class="background-white" ng-class="{'profile-question--edit': question.is_edit}" style="padding:10%; border:solid 1px #efefef;">
+            <div class="profile-question background-white" ng-class="{'profile-question--edit': question.is_edit}">
                 <div
                     class="profile-question__actions"
                     ng-class="{'profile-question__actions--edit': question.is_edit}"
-                    style="position: absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;"
                 >
                     <h3
                         class="far fa-fw text-red background-white pointer"
@@ -65,16 +64,7 @@ let template = `
                 <p ng-if="is_my_profile" class="text-red">
                     <strong>Your answer:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
                 </p>
-                <div ng-show="question.is_edit" style="
-                    width:100%;
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-around;
-                    align-items: center;
-                    background: #fff;
-                    padding:5% 0 0 0;
-                    "
-                >
+                <div class="profile-question__answers" ng-show="question.is_edit">
                     <div ng-repeat="(act, k) in question.answers" style="padding:2px; z-index:10000;" >
                         <button
                             class="btn btn-danger pull-left capitalize pointer"
