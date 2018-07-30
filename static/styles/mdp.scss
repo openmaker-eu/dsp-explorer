@@ -71,12 +71,20 @@ $color_list : (
         'yellow':$color-yellow
 );
 
-$om_breakpoints: (
-        sm: (768, 100),
-        md: (992, 100),
-        lg: (1200, 90),
-        xl: (1650, 80),
+$ombreakpoints: (
+        sm: (768px, 100%),
+        md: (992px, 100%),
+        ml: (1000px, 100%),
+        lg: (1200px, 90%),
+        xl: (1650px, 80%),
 );
+
+$sm : nth(map-get($ombreakpoints,'sm'),1);
+$md : nth(map-get($ombreakpoints,'md'),1);
+$ml : nth(map-get($ombreakpoints,'ml'),1);
+$lg : nth(map-get($ombreakpoints,'lg'),1);
+$xl : nth(map-get($ombreakpoints,'xl'),1);
+
 
 /*
 * TYPHOGRAPHY
@@ -107,9 +115,14 @@ body, html {
   background-color: $color-grey--light;
   height: 100%;
   width: 100%;
-  //font-family: 'Cairo', sans-serif;
   color: #333;
   font-weight: 400;
+
+  @media all and (max-width: $sm) { font-size:14px;}
+  @media all and (min-width: $sm) { font-size:12px; }
+  @media all and (min-width: $md) { font-size:8px; }
+  @media all and (min-width: $lg) { font-size:10px ; }
+  @media all and (min-width: $xl) { font-size:12px ; }
 
 }
 
@@ -121,7 +134,7 @@ footer {
   position: relative;
   display: flex; flex-direction: row; justify-content: center; align-items: center;
   min-width: 100vw;
-  miax-width: 100vw;
+  max-width: 100vw;
 
 }
 
@@ -198,6 +211,8 @@ main {
 }
 
 
+.page_title { @extend .cairo; @extend .light; font-size:2.5rem;}
+
 .transparent {opacity:0; height:0; cursor:default;}
 
 .entity-carousel {
@@ -208,7 +223,6 @@ main {
   }
    margin-top:5%;
 }
-
 .home-page{
   &.container {
     display: flex;
@@ -216,7 +230,7 @@ main {
     justify-content: flex-start;
   }
 
-  .entity-carousel__header a {  @extend .extra-light;  font-size:150%;  }
+  .entity-carousel__header a {  @extend .extra-light;  font-size:2.2rem;  }
   p { font-size:1.71rem; }
 }
 
@@ -500,13 +514,6 @@ entity-carousel{ padding:0!important; width:109%!important;
   }
 }
 
-$ombreakpoints: (
-  sm: (768px, 100%),
-  md: (992px, 100%),
-  lg: (1200px, 90%),
-  xl: (1650px, 80%),
-);
-
 .container {
   // hack bootstrap cointainer
   @each $size,$bk in $ombreakpoints {
@@ -560,10 +567,10 @@ $ombreakpoints: (
     max-width: 100vw;
     height: 100vh;
 
-    @media all and (max-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 2%; width: 96%; height: 96%;}
-    @media all and (max-width: #{nth(map-get($om_breakpoints,'md'),1)}px) { height: 85%;}
-    @media all and (min-width: #{nth(map-get($om_breakpoints,'lg'),1)}px) { margin: 15%; width: 70%; height: 90%}
-    @media all and (min-width: #{nth(map-get($om_breakpoints,'xl'),1)}px) { margin: 20%; width: 60%; height: 85%;}
+    @media all and (max-width: #{nth(map-get($ombreakpoints,'lg'),1)}) { margin: 2%; width: 96%; height: 96%;}
+    @media all and (max-width: #{nth(map-get($ombreakpoints,'md'),1)}) { height: 85%;}
+    @media all and (min-width: #{nth(map-get($ombreakpoints,'lg'),1)}) { margin: 15%; width: 70%; height: 90%}
+    @media all and (min-width: #{nth(map-get($ombreakpoints,'xl'),1)}) { margin: 20%; width: 60%; height: 85%;}
 
     .modal-content {
 
@@ -840,11 +847,6 @@ chatbot {
     }
 
   }
-  //@media all and(min-width: 768px){ width:50%; }
-  //@media all and(max-width: 768px){ width:90%; }
-  //@media all and(min-width: 992px){ width:25%; }
-  //@media all and(min-width: 1170px){ width:20%; }
-
 }
 
 .tag-tooltip * {word-wrap: break-word!important;}
@@ -852,7 +854,9 @@ chatbot {
 
 .profile-question {
 
-  &:nth-child(3n+4){ clear: both; }
+  @media all and(min-width: #{ nth(map-get($ombreakpoints, lg), 1)} ){ &:nth-child(3n+4){ clear: both; }}
+  @media all and(max-width: #{ nth(map-get($ombreakpoints, lg), 1)} ){ &:nth-child(2n+3){ clear: both; } }
+
 
   &__actions {
     display: flex;

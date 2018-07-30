@@ -8,7 +8,7 @@ let template = /*html*/`
             <div class="mobile__padding">
             <div class="entity-list__title entity-heading col-md-12 col-sm-12">
                 <div class="row">
-                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
+                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0 page_title">
                        <span class="entity-detail__title">
                             <span ng-if="entityname !== 'projects'" ng-bind-html="entitiy_title()"></span>
                             <span ng-if="entityname === 'projects'" >Projects / <span class="text-red">Challenges</span></span>

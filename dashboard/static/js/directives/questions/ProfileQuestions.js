@@ -2,16 +2,11 @@ let _ = require('lodash')
 let $ = require('jquery')
 
 
-let style= `
-    <style>
-
-    </style>
-`
 let template = `
     <div ng-if="questions" class="profile-questions">
         <div
             ng-repeat="question in questions"
-            class="col-md-4 margin-bottom-1-perc profile-question"
+            class=" col-lg-4 col-md-6 col-sm-12 col-xs-12 margin-bottom-1-perc profile-question"
             style="position: relative"
         >
             <div class="profile-question background-white" ng-class="{'profile-question--edit': question.is_edit}">
@@ -51,6 +46,7 @@ let template = `
                 <h4 class="text-brown">{$ question.question $}</h4>
                 <p>{$ question.question_text $}</p>
                 <hr>
+                
                 <!--OTHER USER-->
                 <p ng-if="!is_my_profile" class="text-brown">
                     <strong>{$ profile.data.user.first_name $}'s answer:&nbsp;</strong>&nbsp;&nbsp;{$ question.feedbacks[0].label $}
@@ -79,7 +75,7 @@ let template = `
 
 let profile_question_directive =
 {
-    template:style+template,
+    template:template,
     scope: {
         profile : '='
     },
