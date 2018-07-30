@@ -19,7 +19,10 @@ let template = /*html*/`
                        </span>
                        
                        <span class="pull-right">
-                            <bookmarked-stripe-toggler entityname="{$ entityname $}"></bookmarked-stripe-toggler>
+                            <bookmarked-stripe-toggler
+                            tooltip-placement = 'bottom-left'
+                            uib-tooltip-html="'<big>Show/Hide bookmarked {$ entityname $}</big>'"
+                            entityname="{$ entityname $}"></bookmarked-stripe-toggler>
                        </span>
                        <h1>&nbsp;</h1>
                    <h2>

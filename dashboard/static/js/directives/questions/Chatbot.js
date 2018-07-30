@@ -8,9 +8,24 @@ let template = `
             <div class="chatbot__header mobile__padding" >
                 <h2 class="chatbot__header__flex">
                     <div class="entity-actions" ng-if="$root.authorization >= 10">
-                        <a href="/entity/news/?bookmark=true" class="far fa-bookmark pointer" ng-class="{'text-highlight': $root.bookmarks.news}"></a>
-                        <a href="/entity/projects/?bookmark=true" class="far fa-star pointer" ng-class="{'text-highlight': $root.bookmarks.projects}"></a>
-                        <a href="/entity/events/?bookmark=true" class="far fa-bell pointer" ng-class="{'text-highlight': $root.bookmarks.events}"></a>
+                        <a
+                            tooltip-append-to-body="true"
+                            uib-tooltip-html="'<big>Click to go to the news page</big>'"
+                            href="/entity/news/?bookmark=true"
+                            class="far fa-bookmark pointer" ng-class="{'text-highlight': $root.bookmarks.news}"
+                        ></a>
+                        <a
+                            tooltip-append-to-body="true"
+                            uib-tooltip-html="'<big>Click to go to the Projects/Challenges page</big>'"
+                            href="/entity/projects/?bookmark=true"
+                            class="far fa-star pointer" ng-class="{'text-highlight': $root.bookmarks.projects}"
+                        ></a>
+                        <a
+                            tooltip-append-to-body="true"
+                            uib-tooltip-html="'<big>Click to go to the Events page</big>'"
+                            href="/entity/events/?bookmark=true"
+                            class="far fa-bell pointer" ng-class="{'text-highlight': $root.bookmarks.events}"
+                        ></a>
                     </div>
                     <div class="chatbot__toggler pointer">
                         <span
@@ -89,10 +104,8 @@ let chatbot_directive =
         }
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
-        
         $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ console.log('hide'); $scope.opened=false; })
-        $rootScope.$on('chatbot.force_close', (e, m)=>{ console.log('hide'); $scope.force_close=m; })
-        
+        $rootScope.$on('chatbot.force_close', (e, m)=>{ $scope.force_close=m; })
         $rootScope.$on('authorization.refresh', $scope.get)
  
     
