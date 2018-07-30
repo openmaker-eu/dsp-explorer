@@ -4,6 +4,7 @@
   "description": "makers data explorer",
   "scripts": {
     "dev": "./node_modules/.bin/webpack --config webpack.config.js  --mode development --watch --progress",
+    "staging": "./node_modules/.bin/webpack --config webpack.config.js  --mode development --progress",
     "prod": "./node_modules/.bin/webpack --config webpack.config.js --mode production --progress"
   },
   "repository": {
