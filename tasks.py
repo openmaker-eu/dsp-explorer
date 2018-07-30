@@ -1,4 +1,4 @@
-from invoke import task, Collection
+from invoke import task, Collection, Responder
 # USAGE: invoke run [function_name]
 
 @task
@@ -55,10 +55,10 @@ def test_e2e(c):
 @task
 def staging(c):
     responder = Responder(
-        pattern=r".",
+        pattern=r"Type 'yes' to continue, or 'no' to cancel",
         response="yes\n",
     )
     c.run('python manage.py migrate')
-    c.run('npm run dev')
+    c.run('npm run staging')
     c.run('python ./manage.py collectstatic', watchers=[responder])
     c.run('service apache2 restart')
