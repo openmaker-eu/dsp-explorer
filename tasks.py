@@ -51,3 +51,14 @@ def test(c, filename=''):
 @task
 def test_e2e(c):
     c.run('protractor protractor-conf.js')
+
+@task
+def staging(c):
+    responder = Responder(
+        pattern=r".",
+        response="yes\n",
+    )
+    c.run('python manage.py migrate')
+    c.run('npm run dev')
+    c.run('python ./manage.py collectstatic', watchers=[responder])
+    c.run('service apache2 restart')
