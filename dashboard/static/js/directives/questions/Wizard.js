@@ -1,6 +1,7 @@
 let _ =  require('lodash')
 let template = `
     <h2 class="wizard__close" ng-click="close()"><i class="fas fa-times text-brown"></i></h2>
+    
     <entity-loading
             ng-if="!questions || loading"
             class="text-center"
@@ -69,12 +70,23 @@ let wizard_directive =
                 // Perform apicall
                 if (question && question.apicall) {
                     $scope.loading = true;
+                    
+                    // Generate url
                     let url =  question.apicall && _.isString(question.apicall) ? question.apicall : '/api/v1.4/questions/'
                     $scope.action && (url = url + $scope.action + '/')
+                    
+                    // Create form data
+                    let form_data = new FormData( $('.wizard-form')[0] )
+                    
+                    // SAFARI FIX : Remove picture if empty
+                    let picture = form_data.get('picture')
+                    picture && picture.size === 0 && form_data.delete('picture')
+                    
+                    // Post data to backend
                     $http
                         .post(
                             url,
-                            new FormData($('.wizard-form')[0]),
+                            form_data,
                             {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
                         )
                         .then(res=>{
@@ -83,6 +95,7 @@ let wizard_directive =
                         })
                         .catch(res=>question.error=res.data.error)
                         .finally(()=>$scope.loading=false)
+                    
                 }
                 else { question.emitevent && $rootScope.$emit(question.emitevent, {}) ; $scope.slickConfig.method.slickNext() }
             }

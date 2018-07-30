@@ -6,8 +6,8 @@ export default [function() {
         link: function (scope, element, attrs) {
             
                 element.bind('change',(event)=> {
-                    
                     let reader = new FileReader();
+                    
                     reader.onload = (readerEvent) => {
                         _.set(scope, attrs.inputFileModel, readerEvent.target.result)
                         scope.$apply(scope)

@@ -65,6 +65,8 @@ class questions(APIView):
         feedback = request.data.get('feedback', None)
         is_private = request.data.get('is_private', None)
 
+        print('im on post')
+
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
@@ -298,6 +300,7 @@ class questions(APIView):
         '''
         user = request.user
         profile = request.user.profile
+        print('im on user update')
 
 
         city = request.data.get('city', profile.city)
