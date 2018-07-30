@@ -93,7 +93,7 @@ $xl : nth(map-get($ombreakpoints,'xl'),1);
 .light { font-weight: 300!important; }
 .extra-light { font-weight: 200!important; }
 .regular { font-weight: 400; }
-.semi-bold { font-weight: 600; }
+.semi-bold { font-weight: 600!important; }
 .bold { font-weight: 700; }
 .italic {font-style: italic; }
 
@@ -236,7 +236,7 @@ main {
 
 .entity-list, .entity-detail{
   &__title, &__title *:not(i){
-    text-transform: uppercase;
+    //text-transform: uppercase;
     @extend .cairo;
     @extend .light;
   }
@@ -487,6 +487,7 @@ entity-carousel{ padding:0!important; width:109%!important;
       }
     }
   }
+
 }
 
 .challenges-detail-page {
@@ -523,7 +524,6 @@ entity-carousel{ padding:0!important; width:109%!important;
       //* {color:#f00!important;}
       width: #{ nth($bk, 2 )};
     }
-    @warn "Brekpoint: #{nth($bk, 1)} --";
   }
 
   @media all and (max-width: 768px) {

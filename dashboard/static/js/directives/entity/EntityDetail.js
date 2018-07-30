@@ -21,7 +21,7 @@ let template = `
             <div class="entity-detail__content entity-detail-padding" >
                 
                 <!--Entity Detail Title-->
-                <h3 class="text-{$ entityname $} semi-bold page_title" style="letter-spacing: 1px;">
+                <h3 class="text-{$ entityname $} entity-detail__title semi-bold" style="letter-spacing: 1px;">
                     <!--<span>{$ entity.title || entity.name | limitTo: ( preview ? 50 : '' ) $}</span>-->
                     <!--<span ng-if="preview && entity.title.length > 20">...</span>-->
                     <span>{$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}</span>
