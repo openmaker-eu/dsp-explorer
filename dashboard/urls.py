@@ -98,6 +98,7 @@ urlpatterns = [
     url(r'^api/v1.4/bookmarks/(?P<entity>\w+)/$', api14.get_bookmark_by_entities, name='get_bookmark_by_entities'),
     url(r'^api/v1.4/bookmarks/$', api14.get_bookmarks, name='get_bookmark'),
 
+    url(r'^api/v1.4/interest/chatbot/$', api14.chatbot_interests, name='chatbot_interests'),
     url(r'^api/v1.4/interest/(?P<entity>\w+)/(?P<user_id>\w+)/$', api14.interest, name='all_interest_of_user_in_entitiy'),
     url(r'^api/v1.4/interest/(?P<entity>\w+)/$', api14.interest, {'user_id': None}, name='all_interest_of_loggeduser_in_entitiy'),
     url(r'^api/v1.4/interest/$', api14.interest, {'entity': None, 'user_id': None}, name='all_interest_of_user'),

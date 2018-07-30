@@ -10,6 +10,7 @@ export default [function(){
             authorization:'=',
             twitterauth:'=',
             user:'=',
+            bookmarks:'=',
             pageinfo:'='
         },
         controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', function($scope, $rootScope, $http, LoginService, QuestionModal){
@@ -33,10 +34,13 @@ export default [function(){
             $rootScope.twitter_auth=$scope.twitterauth
             $rootScope.user=$scope.user
             $rootScope.page_info=$scope.pageinfo
+            $rootScope.bookmarks=$scope.bookmarks
     
             $rootScope.$on('authorization.refresh', ()=>console.log('main auth refresh'))
-            console.log('twitter_auth', $rootScope.page_info);
+            console.log('bookmarks', $rootScope.bookmarks);
             $rootScope.twitter_auth && $rootScope.page_info.name === "homepage" && $rootScope.login()
+            
+            
             
         }]
     }

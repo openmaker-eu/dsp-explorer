@@ -46,22 +46,14 @@ export default function(){
             // Change bookmark on BE OR trigger bookmark action
             $scope.interest = () => {
     
-                let is_list = $rootScope.page_info.name == 'entity_list';
-                let is_this_entity = $rootScope.page_info.options.entity_name === $scope.entityname;
-                console.log('is_list', is_list);
-                console.log('is_this_entity', is_this_entity);
-                console.log('$scope.isstatic', $scope.isstatic);
-                console.log('$scope.entityname', $scope.entityname);
-    
-                if ( (!is_list || !is_this_entity) && $scope.isstatic){
-                    $window.location.href = `/entity/${$scope.entityname}/?bookmark=true`
-                }
-                else if(!$scope.isstatic){
-                    url() && $http.post(url()).then(change_status);
-                }
-                else{
-                    $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:!$scope.interested});
-                }
+                //let is_list = $rootScope.page_info.name == 'entity_list';
+                //let is_this_entity = _.get($rootScope, 'page_info.options.entity_name') === $scope.entityname;
+                // if ( (!is_list || !is_this_entity) && $scope.isstatic){
+                //     $window.location.href = `/entity/${$scope.entityname}/?bookmark=true`
+                // }
+                // else
+                if(!$scope.isstatic){ url() && $http.post(url()).then(change_status); }
+                else{ $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:!$scope.interested}); }
 
                 
             }

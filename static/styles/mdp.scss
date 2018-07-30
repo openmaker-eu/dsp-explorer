@@ -210,8 +210,10 @@ main {
   }
 }
 
-
-.page_title { @extend .cairo; @extend .light; font-size:2.5rem;}
+.page-title {
+  @extend .cairo; @extend .light; font-size:2.5rem;
+  & , & * { text-transform: uppercase;}
+}
 
 .transparent {opacity:0; height:0; cursor:default;}
 

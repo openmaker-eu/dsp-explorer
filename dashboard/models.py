@@ -684,7 +684,12 @@ class Profile(models.Model):
 
     def get_interests(self, filter_class=None):
         interests = [x.get() for x in self.profile_interest.all()]
-        return ModelHelper.filter_instance_list_by_class(interests, filter_class)
+        if filter_class == 'events' or filter_class == 'news':
+            res = ModelHelper.filter_instance_list_by_class(interests, EntityProxy, filter_class)
+            return res
+        else:
+            filter_class = ModelHelper.get_by_name(EntityProxy.singular_name(filter_class))
+            return ModelHelper.filter_instance_list_by_class(interests, filter_class)
 
     def delete_interest(self, interest_obj, interest_id):
         # Get interest-related-model class type id
@@ -1059,7 +1064,7 @@ class EntityProxy(models.Model):
 
     def get_real_object(self):
         '''
-        You should be able to return a complete object frlom proxy using the external_id
+        You should be able to return a complete object from proxy using the external_id
         :return: complete object parsed by Watchtower
         '''
         method_to_call = 'get_' + self.type + '_detail'

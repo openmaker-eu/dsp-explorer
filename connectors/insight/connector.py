@@ -8,7 +8,7 @@ class InsightConnectorV10(object):
     def questions(cls, crm_ids, amount=1):
         crm_ids = cls.merge_ids(crm_ids)
         res = cls.get('recommendation/questions', {"crm_ids": crm_ids, 'count': amount})
-        print(res.json())
+        #print(res.json())
         return res
 
     @classmethod

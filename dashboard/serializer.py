@@ -121,7 +121,8 @@ class InterestSerializer(serializers.ModelSerializer):
         Because Interest is Polymorphic
         """
         if isinstance(obj, EntityProxy):
-            return EntityProxySerializer(obj).to_representation(obj)
+            return obj.get_real_object()[0]
+            # return EntityProxySerializer(obj).to_representation(obj)
         elif isinstance(obj, Project):
             return ProjectSerializer(obj).to_representation(obj)
         return super(InterestSerializer, self).to_representation(obj)

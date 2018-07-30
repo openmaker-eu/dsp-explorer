@@ -7,15 +7,11 @@ let template = `
             
             <div class="chatbot__header mobile__padding" >
                 <h2 class="chatbot__header__flex">
-                    <div class="entity-actions" >
-                        <interest-button entityname="news" entityid="{$ entityid $}" isstatic="true"></interest-button>
-                        <interest-button entityname="{$ entityname == 'challenges' ? 'challenges' : 'projects' $}"
-                            entityid="{$ entityid $}" isstatic="true"
-                        ></interest-button>
-                        <interest-button entityname="events" entityid="{$ entityid $}" isstatic="true"></interest-button>
-
+                    <div class="entity-actions" ng-if="$root.authorization >= 10">
+                        <a href="/entity/news/?bookmark=true" class="far fa-bookmark pointer" ng-class="{'text-highlight': $root.bookmarks.news}"></a>
+                        <a href="/entity/projects/?bookmark=true" class="far fa-star pointer" ng-class="{'text-highlight': $root.bookmarks.projects}"></a>
+                        <a href="/entity/events/?bookmark=true" class="far fa-bell pointer" ng-class="{'text-highlight': $root.bookmarks.events}"></a>
                     </div>
-                    
                     <div class="chatbot__toggler pointer">
                         <span
                             class="fas fa-chevron-up text-white"
@@ -24,7 +20,6 @@ let template = `
                         ></span>
                     </div>
                 </h2>
-               
             </div>
             <div class="chatbot__body" ng-if="opened && !force_close" style="background: white;">
                 <wizard
@@ -66,7 +61,7 @@ let chatbot_directive =
         $scope.url = ()=>{
             let page_options = _.get($rootScope, 'page_info.options')
             let url = '/api/v1.4/questions/chatbot/'
-            if(page_options.hasOwnProperty('entity_name')){
+            if(page_options && page_options.hasOwnProperty('entity_name')){
                 url += '?entity_name='+page_options['entity_name']
                 page_options.hasOwnProperty('entity_id') && (url += '&entity_id='+page_options['entity_id'])
                 page_options.hasOwnProperty('entity_temp_id') && (url += '&entity_temp_id='+page_options['entity_temp_id'])
@@ -115,6 +110,20 @@ let chatbot_directive =
         }
         
         $scope.get()
+    
+        $rootScope.$on('interested.new', ()=>{
+            $http
+                .get('/api/v1.4/interest/chatbot/')
+                .then((res)=>{
+                    if($rootScope.bookmarks && res.data)
+                    {
+                        $rootScope.bookmarks.news = res.data.news;
+                        $rootScope.bookmarks.events = res.data.events;
+                        $rootScope.bookmarks.projects = res.data.projects;
+                    }
+                })
+                .catch((e) => {console.log(e)})
+        })
     
     }]
 }

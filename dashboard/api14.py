@@ -130,16 +130,19 @@ def interest(request, entity, user_id=None):
     if not profile:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
-        entity = EntityProxy.singular_name(entity) if entity == 'projects' or entity == 'challenges' else entity
+        singular_entity = EntityProxy.singular_name(entity) if entity in ['projects', 'challenges'] else entity
+        #model_class = EntityProxy if entity in ['news', 'events'] else ModelHelper.get_by_name(entity.capitalize())
 
-        model_class = EntityProxy if entity in ['news', 'events'] else ModelHelper.get_by_name(entity.capitalize())
-        model_serializer = BookmarkSerializer if entity in ['news', 'events'] else ModelHelper.get_serializer(entity.capitalize())
+        model_serializer = InterestSerializer if entity in ['news', 'events'] \
+            else ModelHelper.get_serializer(singular_entity.capitalize())
 
-        print(model_class)
-        print(model_serializer)
+        interests = profile.get_interests(entity)
+        print(interests)
 
-        interest = profile.interests(model_class)
-        res = model_serializer(interest[:3], many=True).data
+        #interest = profile.interests(model_class)
+
+        res = model_serializer(interests, many=True).data
+        print(res)
         return Response(res)
     except Exception as e:
         print('Error')
@@ -201,7 +204,6 @@ def interested(request, entity='news', entity_id=None):
     except Exception as e:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
-
 def get_interests(request):
     try:
         profile = request.user.profile
@@ -216,6 +218,21 @@ def get_interests(request):
             'status': 'ko',
             'result': 'Unhautorized',
         }, status=403)
+
+@api_view(['GET'])
+def chatbot_interests(request):
+    try:
+        profile = request.user.profile
+        context = {
+            'news': len(profile.get_interests('news')),
+            'events': len(profile.get_interests('events')),
+            'projects': len(profile.get_interests('projects')) + len(profile.get_interests('challenges')),
+        }
+        return Response(data=context)
+    except Exception as e:
+        print('Error retrieving chatbot bookmark ')
+        print(e)
+        return Response(data={}, status=401)
 
 
 class entity(APIView):
@@ -232,7 +249,7 @@ class entity(APIView):
         profile = None
         results = []
         local_entities = None
-        page = int(request.GET.get('page', 3))
+        page = int(request.GET.get('page', 0))
         per_page = 10
         more_pages = 0
         cursor = (page-1)*per_page
@@ -267,24 +284,30 @@ class entity(APIView):
                 topics_id_list = [x['topic_id'] for x in topics_list]
                 method_to_call = 'get_' + entity
                 reccomended = []
+
                 if not profile:
                     selected_topic = random.choice(topics_id_list)
                     results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic, cursor=-1)[entity]
                     results = results[:5]
                 else:
-                    reccomended = \
-                        Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
-                        if not page or int(page) == 1 \
-                        else []
-                    for index, topic_id in enumerate(topics_id_list):
-                        entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
-                        next_cursor = entity_list.get('next_cursor', 0)
-                        res = entity_list.get(entity, [])
-                        if len(res) > 0:
-                            results.append(res)
-                        more_pages = more_pages + next_cursor
+                    if page == 0:
+                        reccomended = \
+                            Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
+                            if not page or int(page) == 1 \
+                            else []
+                        more_pages = 1
+                        results = reccomended
+                    else:
+                        for index, topic_id in enumerate(topics_id_list):
+                            entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
+                            next_cursor = entity_list.get('next_cursor', 0)
+                            res = entity_list.get(entity, [])
+                            if len(res) > 0:
+                                results.append(res)
+                            more_pages = more_pages + next_cursor
+                        results = mix_result_round_robin(*results)
 
-                    results = reccomended + mix_result_round_robin(*results)
+                    # results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException as e:
                 print(e)
                 pass
