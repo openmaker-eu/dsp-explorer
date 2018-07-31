@@ -42,6 +42,7 @@ let template = `
                     action="chatbot"
                     loadingmessage="I'm writing"
                     wizardid="wizardid"
+                    configuration="{verticalSwiping:true, cssEase:false}"
                 ></wizard>
                 <navi-chatbot items="questions" wizardid="wizardid"></navi-chatbot>
             </div>

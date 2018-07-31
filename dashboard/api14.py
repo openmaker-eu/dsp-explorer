@@ -131,18 +131,10 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
         singular_entity = EntityProxy.singular_name(entity) if entity in ['projects', 'challenges'] else entity
-        #model_class = EntityProxy if entity in ['news', 'events'] else ModelHelper.get_by_name(entity.capitalize())
-
         model_serializer = InterestSerializer if entity in ['news', 'events'] \
             else ModelHelper.get_serializer(singular_entity.capitalize())
-
         interests = profile.get_interests(entity)
-        print(interests)
-
-        #interest = profile.interests(model_class)
-
         res = model_serializer(interests, many=True).data
-        print(res)
         return Response(res)
     except Exception as e:
         print('Error')

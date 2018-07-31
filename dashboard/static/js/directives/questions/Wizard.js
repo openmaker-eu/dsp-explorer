@@ -23,7 +23,8 @@ let wizard_directive =
         questions : '=',
         action : '@',
         loadingmessage : '@',
-        wizardid : '='
+        wizardid : '=',
+        configuration : '='
     },
     controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
         
@@ -50,6 +51,8 @@ let wizard_directive =
                 init: (event, slick)=>$rootScope.$emit($scope.wizard_name+'.init')
             }
         }
+        
+        $scope.configuration && ($scope.slickConfig = Object.assign($scope.slickConfig, $scope.configuration))
         
         // Trigger validation and return bool
         $scope.isSubformValid = (subform) => {

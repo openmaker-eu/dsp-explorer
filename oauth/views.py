@@ -57,7 +57,8 @@ def twitter_redirect(request):
             profile=profile,
             user_id=user_id,
             access_token=oauth_token,
-            secret_access_token=oauth_token_secret
+            secret_access_token=oauth_token_secret,
+            screen_name=request.GET.get('screen_name', None)
         )
         if not request.user.is_authenticated:
             response.set_cookie('twitter_oauth', twitter_profile.pk)
@@ -74,6 +75,8 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         oauth = OAuth1(app_id, app_secret, resource_owner_key=resource_owner_key,
                        resource_owner_secret=resource_owner_secret)
         response = requests.post(url=url, auth=oauth, data={"oauth_verifier": resource_owner_secret})
+        print('response.text')
+        print(response.text)
         credentials = parse_qs(response.text)
         oauth_token = credentials.get('oauth_token')[0]
         oauth_token_secret = credentials.get('oauth_token_secret')[0]

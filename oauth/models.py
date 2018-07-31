@@ -17,6 +17,7 @@ class TwitterProfile(models.Model):
     secret_access_token = models.CharField(max_length=200)
     token_type = models.CharField(default="Bearer", max_length=30)
     expires_in = models.CharField(max_length=30)
+    screen_name = models.CharField(max_length=200, default=None)
 
     def __str__(self):
         return "Twitter Profile of %s" % self.profile
