@@ -41,8 +41,8 @@ let template = `
                         <br>
                         
                         <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
-                        
                     </div>
+                    
                     <div class="col-md-4">
                         <!--Challenges: Event details with icons-->
                         <div
@@ -96,8 +96,7 @@ export default function(){
     
             $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname
             
-            
-            console.log($rootScope);
+            console.log($scope.entity);
             
         }]
     }

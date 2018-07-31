@@ -29,13 +29,29 @@ let template = `
                 <br>
                 
                 <!--PROJECTS ONLY: Company title with icons-->
-                <div ng-if="entityname == 'challenges'" class="entity-detail__event-detail">
-                    <h4 style="margin:0; padding:0;">
-                        <img style="max-height: 30px;" ng-src="{$ entity.company.logo $}" alt="">&nbsp;
-                        <span>{$ entity.company.name $}</span>
-                    </h4>
+                <div ng-if="entityname == 'projects'"">
+                    <h5 ng-if="entity.profile.user">
+                        <i class="fas fa-fw fa-user-tie" style="font-size:120%;"></i>&nbsp;&nbsp;
+                        <span class="cairo">{$ entity.profile.user.first_name $} {$ entity.profile.user.last_name $} ({$ entity.creator_role $})</span>
+                    </h5>
+                    <h5>
+                        <i class="fas fa-fw fa-hashtag" style="font-size:120%;"></i>&nbsp;&nbsp;
+                        <span ng-repeat="tag in entity.tags" class="cairo">
+                             <span style="line-height: 150%;" class="text-grey--dark">#</span>{$tag.name$}</span>&nbsp;&nbsp;
+                        </span>
+                    </h5>
                     </br>
                 </div>
+                
+                <!--CHALLENGES ONLY: tags-->
+                <span ng-if="entityname == 'challenges'" class="entity-detail__event-detail">
+                    <span style="margin:0; padding:0;">
+                        <img style="max-height: 30px;" ng-src="{$ entity.company.logo $}" alt="">&nbsp;
+                        <span>{$ entity.company.name $}</span>
+                    </span>
+                    
+                    </br>
+                </span>
 
                 <!--EVENT ONLY: Event details with icons-->
                 <div ng-if="entityname == 'events'" class="entity-detail__event-detail entity-detail__body">
@@ -100,6 +116,9 @@ export default [function(){
                 $scope.entityname + '/' +
                 ($scope.entityid || $scope.entity.id || $scope.entity.link_id ) + '/' +
                 ($scope.entity.temp_id || '' )
+            
+            
+            console.log('entity', $scope.entity);
         }]
     }
 }]

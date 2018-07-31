@@ -64,6 +64,8 @@ let chatbot_directive =
         $scope.wizardid = $scope.$id
         $scope.force_close = false
         
+        console.log($rootScope);
+        
         $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
         
         $scope.get = ()=> {
@@ -99,10 +101,12 @@ let chatbot_directive =
                     .flatten()
                     .value()
                 
-                $timeout(function(a){ $scope.opened = true }, 5000)
+                $timeout(function(a){ $scope.should_open() && ($scope.opened = true) }, 5000)
             }
             else $scope.questions = null
         }
+        
+        $scope.should_open = ()=>!['project_create_update', 'invite'].includes(_.get($rootScope , 'page_info.name'))
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ console.log('hide'); $scope.opened=false; })
