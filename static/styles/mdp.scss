@@ -851,7 +851,10 @@ chatbot {
   }
 }
 
-.tooltip { z-index:300000000; }
+.tooltip {
+  z-index:300000000;
+  big {  }
+}
 .tag-tooltip * {word-wrap: break-word!important;}
 .tooltip-inner {word-wrap: break-word!important;}
 

@@ -10,19 +10,19 @@ let template = `
                     <div class="entity-actions" ng-if="$root.authorization >= 10">
                         <a
                             tooltip-append-to-body="true"
-                            uib-tooltip-html="'<big>Click to go to the news page</big>'"
+                            uib-tooltip-html="tooltip_html('news')"
                             href="/entity/news/?bookmark=true"
                             class="far fa-bookmark pointer" ng-class="{'text-highlight': $root.bookmarks.news}"
                         ></a>
                         <a
                             tooltip-append-to-body="true"
-                            uib-tooltip-html="'<big>Click to go to the Projects/Challenges page</big>'"
+                            uib-tooltip-html="tooltip_html('projects')"
                             href="/entity/projects/?bookmark=true"
                             class="far fa-star pointer" ng-class="{'text-highlight': $root.bookmarks.projects}"
                         ></a>
                         <a
                             tooltip-append-to-body="true"
-                            uib-tooltip-html="'<big>Click to go to the Events page</big>'"
+                            uib-tooltip-html="tooltip_html('events')"
                             href="/entity/events/?bookmark=true"
                             class="far fa-bell pointer" ng-class="{'text-highlight': $root.bookmarks.events}"
                         ></a>
@@ -138,6 +138,16 @@ let chatbot_directive =
                 })
                 .catch((e) => {console.log(e)})
         })
+        
+        $scope.tooltip_html = (entity_name)=>{
+            let bookmarks = _.get($rootScope, `bookmarks.${entity_name}`);
+            return `
+                <big>
+                    You have ${ bookmarks ? bookmarks+' Bookmarked '+entity_name : 'not bookmarked any '+entity_name+' yet'}
+                    <br>Click the icon to go to the ${entity_name} page
+                </big>
+            `
+        }
     
     }]
 }
