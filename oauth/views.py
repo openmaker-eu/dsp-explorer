@@ -33,7 +33,7 @@ def twitter_redirect(request):
     twitter = Twitter.objects.first()
     response = HttpResponseRedirect(reverse('dashboard:dashboard'))
     try:
-        oauth_token, oauth_token_secret, user_id = _exchange_code_for_twitter_token(
+        oauth_token, oauth_token_secret, user_id, screen_name = _exchange_code_for_twitter_token(
             twitter.app_id,
             twitter.app_secret,
             request.GET.get('oauth_token'),
@@ -75,15 +75,14 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         oauth = OAuth1(app_id, app_secret, resource_owner_key=resource_owner_key,
                        resource_owner_secret=resource_owner_secret)
         response = requests.post(url=url, auth=oauth, data={"oauth_verifier": resource_owner_secret})
-        print('response.text')
-        print(response.text)
         credentials = parse_qs(response.text)
         oauth_token = credentials.get('oauth_token')[0]
         oauth_token_secret = credentials.get('oauth_token_secret')[0]
         user_id = credentials.get('user_id')[0]
+        screen_name = credentials.get('screen_name')[0]
     except Exception as e:
         raise e
-    return oauth_token, oauth_token_secret, user_id
+    return oauth_token, oauth_token_secret, user_id, screen_name
 
 
 def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
