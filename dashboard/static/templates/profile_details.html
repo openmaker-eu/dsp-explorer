@@ -46,7 +46,25 @@
                     </div>
 
                         <div class="col-md-12">
+
                             <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
+                            <h4 ng-if="$root.authorization >= 10" class="text-center margin-bottom-3-perc">
+                                <a
+                                        uib-tooltip-html="'<big>Click to go to '+(is_my_profile? 'your': entity.data.user.first_name+'\'s')+' twitter homepage</big>'"
+                                        ng-if="entity.data.user.twitter_name"
+                                        target="_blank" ng-href="{$ 'https://twitter.com/'+entity.data.user.twitter_name $}"
+                                        class="fab fa-twitter"
+                                ></a>
+                                <a
+                                        uib-tooltip-html="'<big>Click to link your twitter account</big>'"
+                                        ng-if="!$root.user.twitter_name && is_my_profile"
+                                        ng-href="{$ '/oauth/twitter/' $}"
+                                        class="fab fa-twitter"
+                                ></a>
+                            </h4>
+
+
+
                             <h4 class="text-center zilla light" style="padding:0 10%;">{$ entity.data.statement ? entity.data.statement : 'No statement added yet...' $}</h4>
                             <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
                             <h3 style="position:absolute; top:40%; right:5%; line-height: 0; margin:0; padding:0;" ng-show="!is_my_profile">

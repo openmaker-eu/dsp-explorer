@@ -8,9 +8,14 @@ import json
 class UserSerializer(serializers.ModelSerializer):
 
     profile = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
+    twitter_name = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'profile')
+        fields = ('email', 'first_name', 'last_name', 'profile', 'twitter_name')
+
+    def get_twitter_name(self, obj):
+        return obj.profile.twitterprofile.screen_name if hasattr(obj.profile, 'twitterprofile') else None
 
 
 class TagSerializer(serializers.ModelSerializer):

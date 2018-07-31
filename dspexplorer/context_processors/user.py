@@ -20,7 +20,8 @@ def authorization(request):
             'options': request.resolver_match.kwargs,
             'bookmark': request.GET.get('bookmark', None)
         },
-        'bookmarks': {}
+        'bookmarks': {},
+
     }
     if request.user.is_authenticated:
         context['json_user'] = UserSerializer(request.user).data
@@ -32,7 +33,6 @@ def authorization(request):
             'events': len(profile.get_interests('events')),
             'projects': len(profile.get_interests('projects')) + len(profile.get_interests('challenges')),
         }
-
 
         #for res in results:
             #print(res.type)

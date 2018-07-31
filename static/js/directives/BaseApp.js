@@ -11,7 +11,8 @@ export default [function(){
             twitterauth:'=',
             user:'=',
             bookmarks:'=',
-            pageinfo:'='
+            pageinfo:'=',
+            twitterscreenname : '='
         },
         controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', function($scope, $rootScope, $http, LoginService, QuestionModal){
             

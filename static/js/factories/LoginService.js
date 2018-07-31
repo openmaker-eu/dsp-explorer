@@ -27,6 +27,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             $rootScope.twitter_auth = res.data.twitter_auth;
             $rootScope.user = res.data.user || {};
             $rootScope.bookmarks = _.get(res, 'bookmarks');
+            $rootScope.twitter_name = _.get(res, 'twitter_screen_name');
         }
     }
     
