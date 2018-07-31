@@ -3,6 +3,7 @@ from dashboard.models import Profile
 from django.db import models
 import datetime
 
+
 class Twitter(models.Model):
     app_id = models.CharField(max_length=200)
     app_secret = models.CharField(max_length=200)
@@ -23,7 +24,7 @@ class TwitterProfile(models.Model):
         return "Twitter Profile of %s" % self.profile
 
     @classmethod
-    def create(cls, profile, user_id, access_token, secret_access_token):
+    def create(cls, profile, user_id, access_token, secret_access_token, screen_name=None):
 
         if profile:
             profile.twitter = True
@@ -33,5 +34,6 @@ class TwitterProfile(models.Model):
         twitter_profile.user_id = user_id
         twitter_profile.access_token = access_token
         twitter_profile.secret_access_token = secret_access_token
+        twitter_profile.screen_name = screen_name
         twitter_profile.save()
         return twitter_profile
