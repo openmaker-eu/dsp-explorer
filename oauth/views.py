@@ -58,7 +58,7 @@ def twitter_redirect(request):
             user_id=user_id,
             access_token=oauth_token,
             secret_access_token=oauth_token_secret,
-            screen_name=request.GET.get('screen_name', None)
+            screen_name=screen_name
         )
         if not request.user.is_authenticated:
             response.set_cookie('twitter_oauth', twitter_profile.pk)
