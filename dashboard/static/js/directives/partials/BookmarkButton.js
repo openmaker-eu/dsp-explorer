@@ -17,15 +17,12 @@ export default function(){
         controller : ['$scope', '$rootScope', '$http', '$window', function($scope, $rootScope, $http, $window){
             // Default bookmarked status
             $scope.bookmarked = false;
-            console.log('entityname', $scope.entityname);
             // Build url
             let url = ()=>`/api/v1.4/bookmark/${$scope.entityname}/${$scope.entityid}/`
             
             // Change bookmarked button color
             const change_status = res => {
-                console.log('change');
                 if(res.status === 200) {
-                    console.log('chage success');
                     $scope.bookmarked = _.get(res, 'data', $scope.bookmarked)
                 }
                 $rootScope.$emit($scope.entityname+'.'+$scope.entityid+'.bookmark.change', {'interested':$scope.bookmarked})
@@ -41,12 +38,6 @@ export default function(){
                 let is_list = $rootScope.page_info.name == 'entity_list'
                 //let is_detail = $rootScope.page_info.name == 'entity_detail'
                 let is_this_entity = $rootScope.page_info.options.entity_name == $scope.entityname
-    
-                console.log('is_list', is_list);
-                console.log('is_this_entity', is_this_entity);
-                console.log('entity', $scope.entityname);
-    
-                // (!is_list || !is_this_entity) && $scope.isstatic && ($location.path(`/entity/${$scope.entityname}`))
     
                 (!is_list || !is_this_entity) && $scope.isstatic && ( $window.location.href = `/entity/${$scope.entityname}`)
                 

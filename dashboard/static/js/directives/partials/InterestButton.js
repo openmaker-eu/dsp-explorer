@@ -27,10 +27,7 @@ export default function(){
     
             // Change bookmarked button color
             const change_status = res => {
-                console.log('chage status');
                 if(res.status === 200){
-                    console.log('chage status success', res);
-                    
                     $scope.interested = _.get(res, 'data', $scope.interested)
                     $rootScope.$emit('interested.new')
                     $scope.entityname==='profile' && EntityProvider.entities['lovers'].get(true)

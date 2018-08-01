@@ -132,8 +132,6 @@ export default [function(){
             $scope.data = $scope.get_data()
             $scope.nodata = !$scope.data
             
-            console.log('bookmark', $rootScope.page_info.bookmark);
-            
             $scope.data.then(
                 ()=> $timeout(function(a){
                     $rootScope.$emit(`bookmarked.${$scope.entityname}.visibility`, {visible:$rootScope.page_info.bookmark})

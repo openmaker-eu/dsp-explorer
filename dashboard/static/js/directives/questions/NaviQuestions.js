@@ -57,7 +57,6 @@ export default function(){
                 $scope.custom_next = $scope.items[$scope.current]['custom_next']
                 $scope.custom_prev = $scope.items[$scope.current]['custom_prev']
                 
-                console.log('$scope.custom_button', $scope.custom_button);
             }
             
             $rootScope.$on($scope.wizard_name+'.afterChange',(ev, {event, slick, currentSlide, nextSlide})=>{

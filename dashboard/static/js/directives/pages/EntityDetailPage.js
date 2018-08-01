@@ -96,8 +96,6 @@ export default function(){
     
             $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname
             
-            console.log($scope.entity);
-            
         }]
     }
 }

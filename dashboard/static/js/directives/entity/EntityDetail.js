@@ -8,7 +8,7 @@ let template = `
         
         <div ng-class="{'force-square': preview}" ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture">
             <a href="/profile/{$ entity.id $}">
-                <img ng-src="{$ entity.picture || 'media/images/profile/other.svg' $}" alt="" style="width:100%;">
+                <img ng-src="{$ entity.picture || 'media/images/profile/other.svg' $}" alt="" style="width:100%; ">
             </a>
         </div>
         
@@ -122,8 +122,6 @@ export default [function(){
                 ($scope.entityid || $scope.entity.id || $scope.entity.link_id ) + '/' +
                 ($scope.entity.temp_id || '' )
             
-            
-            console.log('entity', $scope.entity);
         }]
     }
 }]

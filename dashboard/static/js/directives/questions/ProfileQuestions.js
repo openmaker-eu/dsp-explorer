@@ -88,9 +88,6 @@ let profile_question_directive =
         
         $scope.wizard_name = 'wizard.'+$scope.wizard_id;
         
-        console.log('$scope.profile', $scope.profile);
-        console.log('$rootScope.user', $rootScope.user);
-        console.log('profile id', $scope.profileid);
         $scope.get = ()=>{
             $scope.profileid &&
             $http.get(`/api/v1.4/questions/profile?profile_id=${$scope.profileid}`)

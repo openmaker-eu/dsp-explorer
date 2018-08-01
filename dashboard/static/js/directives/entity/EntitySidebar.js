@@ -4,7 +4,7 @@ let template = `
     <div class="entity-sidebar background-{$ entityname $}--light col-md-12">
         <span><small>&nbsp;</small></span>
 
-        <div class="row" ng-repeat="slider_name in slider_list track by $index">
+        <div class="row entity-sidebar__carousel" ng-repeat="slider_name in slider_list track by $index ">
         
             <entity-carousel
                 entityname="{$ slider_name $}"

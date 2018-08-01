@@ -12,13 +12,12 @@ export default [function(){
                             src="inter.picture || '/media/images/profile/female.svg'"
                             class="col-md-11 col-sm-12"
                             href="/profile/{$ inter.id $}"
-
                         ></circle-image>
                         
                     <!--</a>-->
                 </a>
             </div>
-            <div ng-if="$root.authorization<10">INTERESTED: {$ interested.interested_counter || 0 $}</div>
+            <div ng-if="$root.authorization<10"><h5>INTERESTED:&nbsp;&nbsp;<span style="font-size:120%;">{$ interested || 0 $}</span></h5></div>
         `,
         scope: {
             entityname : '@',

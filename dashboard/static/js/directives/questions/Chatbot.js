@@ -109,7 +109,7 @@ let chatbot_directive =
         $scope.should_open = ()=>!['project_create_update', 'invite'].includes(_.get($rootScope , 'page_info.name'))
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
-        $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ console.log('hide'); $scope.opened=false; })
+        $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })
         $rootScope.$on('chatbot.force_close', (e, m)=>{ $scope.force_close=m; })
         $rootScope.$on('authorization.refresh', $scope.get)
  

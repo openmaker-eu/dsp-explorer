@@ -419,6 +419,11 @@ entity-carousel{ padding:0!important; width:109%!important;
     @media all and (max-width: 768px) {display: none;}
 
   }
+
+  &__carousel {
+    margin-left:0; margin-right:0;
+  }
+
 }
 
 .entity-detail{

@@ -29,7 +29,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             prom
                 .then(
                     (res)=>{
-                        console.log('STATUS', res.status);
                         this.is_last_page = res.status === 202
                         this.data = res.data, $rootScope.$emit('entitiy.'+this.entityname+'.new')
                     },
