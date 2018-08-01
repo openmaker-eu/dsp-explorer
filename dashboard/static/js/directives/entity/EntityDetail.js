@@ -34,11 +34,16 @@ let template = `
                         <i class="fas fa-fw fa-user-tie" style="font-size:120%;"></i>&nbsp;&nbsp;
                         <span class="cairo">{$ entity.profile.user.first_name $} {$ entity.profile.user.last_name $} ({$ entity.creator_role $})</span>
                     </h5>
-                    <h5>
+                    <h5 ng-if="entity.tags">
                         <i class="fas fa-fw fa-hashtag" style="font-size:120%;"></i>&nbsp;&nbsp;
                         <span ng-repeat="tag in entity.tags" class="cairo">
                              <span style="line-height: 150%;" class="text-grey--dark">#</span>{$tag.name$}</span>&nbsp;&nbsp;
                         </span>
+                    </h5>
+                    <h5 ng-if="entity.project_url" ><a ng-href="{$ entity.project_url $}" target="_blank">
+                            <i class="fas fa-fw fa-link" style="font-size:120%;"></i>&nbsp;&nbsp;
+                            <span">{$ entity.project_url $}</span>
+                        </a>
                     </h5>
                     </br>
                 </div>
@@ -49,7 +54,6 @@ let template = `
                         <img style="max-height: 30px;" ng-src="{$ entity.company.logo $}" alt="">&nbsp;
                         <span>{$ entity.company.name $}</span>
                     </span>
-                    
                     </br>
                 </span>
 
@@ -62,6 +66,7 @@ let template = `
                     </p>
                     <p><i class="fas fa-map-marker-alt bold"></i>&nbsp;&nbsp;{$ entity.place | uppercase $}</p>
                     <p><a href="{$ entity.link $}" target="_blank"><i class="far fa-calendar-plus"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
+                    <br>
                 </div>
   
                 <!--Read more-->

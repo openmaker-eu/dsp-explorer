@@ -10,7 +10,7 @@ let template = `
                 <div class="col-md-12" style=""></div>
 
                 <div
-                    class="col-lg-3 col-md-6 col-sm-12 col-xs-12 "
+                    class="col-lg-4 col-md-6 col-sm-12 col-xs-12 "
                     ng-repeat="entity in entities | limitTo : 4"
                     style="margin-bottom:2%; margin-top: 2%;"
                 >
