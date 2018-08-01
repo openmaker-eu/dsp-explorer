@@ -914,13 +914,13 @@ chatbot {
 
 @media all and(max-width: 768px){
 
-  footer { position:fixed!important; bottom:0!important; height : 70px!important; }
+  footer { position:fixed!important; bottom:0!important; height: 70px!important; }
+  .footer__copy { padding:10%; }
   .chatbot_section { position:fixed!important; bottom:70px!important; }
   .hidden_space_bottom{ display: block; height: 130px;}
   .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
 
   .no-mobile {display: none!important;}
-
   .mobile__row { margin-left:0!important; margin-right:0!important;}
 
 }

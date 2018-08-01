@@ -1,5 +1,5 @@
 let template = `
-    <div class="col-md-12">
+    <div>
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}" >
         
             <div class="entity-carousel__header ">
