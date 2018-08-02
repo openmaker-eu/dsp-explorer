@@ -124,6 +124,14 @@ body, html {
   @media all and (min-width: $lg) { font-size:10px ; }
   @media all and (min-width: $xl) { font-size:12px ; }
 
+  &.disable-scroll {
+    width:100vw!important; height:100vh!important;
+    max-width:100vw!important; max-height:100vh!important;
+    min-width:100vw!important; min-height:100vh!important;
+    overflow: hidden;
+  }
+
+
 }
 
 footer {
@@ -927,5 +935,29 @@ chatbot {
 
   .no-mobile {display: none!important;}
   .mobile__row { margin-left:0!important; margin-right:0!important;}
+
+  .modal, .modal-dialog, .modal-content {
+    //display:flex;
+    width:100vw!important;
+    height: 100vh!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  .modal {
+
+    *:not(.slick-track) {
+      //max-width:100vw!important;
+      max-height: 100vh!important;
+    }
+
+    z-index:300000000;
+    //.wizard, form { padding:0; margin:0;}
+
+    .moment-picker-container {
+      font-size: 0.8em;
+      min-width: auto;
+    }
+  }
 
 }

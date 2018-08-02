@@ -5,7 +5,7 @@
     <meta charset=utf-8" />
 
     <title>Open Maker Explorer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width height=device-width initial-scale=1">
     <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAjp5-feM7TOCmk4smPZEQQnC8wzZk23MY"></script>
 
@@ -32,6 +32,8 @@
         pageinfo="{{page_info}}"
         twitterauth="{{twitter_auth}}"
         bookmarks="{{bookmarks}}"
+
+        ng-class="{'disable-scroll': $root.noscroll }"
 >
 <div id="cover-filter"></div>
     <div class="om-main-wrapper">

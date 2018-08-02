@@ -29,7 +29,8 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                     
                     // force chatbot to stay closed
                     $rootScope.$emit('chatbot.force_close', true);
-    
+                    
+                    $rootScope.noscroll = true
                 }]
             });
     
@@ -38,6 +39,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 $rootScope.$emit('chatbot.force_close', false);
                 $rootScope.$emit('entity.change.all') ;
                 $rootScope.$emit('authorization.refresh')
+                $rootScope.noscroll = false
             })
         },
         close:()=>F.modalInstance.close()
