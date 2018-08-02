@@ -64,7 +64,7 @@ let template = `
                     {$ entity.start_time | date:'MMMM' | uppercase  $}
                     {$ entity.start_time | date:'yyyy, EEEE' $}
                     </p>
-                    <p><i class="fas fa-map-marker-alt bold"></i>&nbsp;&nbsp;{$ entity.place | uppercase $}</p>
+                    <p ng-if="entity.place"><i class="fas fa-map-marker-alt bold"></i>&nbsp;&nbsp;{$ entity.place | uppercase $}</p>
                     <p><a href="{$ entity.link $}" target="_blank"><i class="far fa-calendar-plus"></i><span>&nbsp;&nbsp;REGISTER</span></a></p>
                     <br>
                 </div>
@@ -96,9 +96,10 @@ let template = `
                     <span class="entity-detail__body" ng-if="entity.details" ng-bind-html="entity.details"></span>
                     
                     <!--link to source-->
-                    <p ng-if="!preview && (entity.link || entity.source)" class="text-red">
-                        <a href="{$ entity.link || entity.url $}" target="_blank">Got to source</a>
-                    </p>
+                    <h5 ng-if="!preview && (entity.link || entity.source)" class="text-red">
+                    <br>
+                        <a href="{$ entity.link || entity.url $}" target="_blank">Go to source</a>
+                    </h5>
    
             </div>
         </div>

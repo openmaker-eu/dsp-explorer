@@ -68,6 +68,8 @@ let wizard_directive =
             let question = _.get($scope , 'questions['+current+']')
             let subform = question.name && $scope.wizard.form[question.name]
     
+            console.log('Action', $scope.action);
+            
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
                 // Perform apicall

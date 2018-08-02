@@ -1,7 +1,7 @@
 export default function(){
     return {
         template:`
-            <div class="col-md-12 wizard-navi" ng-show="items">
+            <div class="col-md-12 wizard-navi" ng-show="items" style="padding: 10% 5%;">
 
                 <!--Standard prev button-->
                 <span ng-class="{'transparent':is_start}" ng-if="!is_custom_prev" class="pointer " ng-click="prev()">

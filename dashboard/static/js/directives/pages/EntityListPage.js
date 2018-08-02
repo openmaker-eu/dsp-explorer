@@ -21,7 +21,7 @@ let template = /*html*/`
                        <span class="pull-right">
                             <bookmarked-stripe-toggler
                             tooltip-placement = 'bottom-left'
-                            uib-tooltip-html="'<big>Show/Hide bookmarked {$ entityname $}</big>'"
+                            uib-tooltip-html="'<big>Show/Hide bookmarked {$ entityname == 'news' ? 'articles' : entityname $}</big>'"
                             entityname="{$ entityname $}"></bookmarked-stripe-toggler>
                        </span>
                        <h1>&nbsp;</h1>
@@ -64,7 +64,7 @@ let template = /*html*/`
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" ng-if="$root.authorization >= 10">
                     <div class="col-md-12">
                         <br><br>
                         <simple-pagination

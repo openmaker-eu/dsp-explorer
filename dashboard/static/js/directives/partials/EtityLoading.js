@@ -5,7 +5,7 @@ export default function(){
                 <!--Loading Data-->
                 <div ng-if="loading" class="text-center">
                     <h4>
-                        <span ng-if="!custommessage">Loading <span class="capitalize">{$ entityname $}</span></span>
+                        <span ng-if="!custommessage">Loading <span class="capitalize">{$ entityname == 'news' ? 'articles': entityname $}</span></span>
                         <span ng-if="custommessage" >{$ custommessage $}</span>
                         <br><br>
                         

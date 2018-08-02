@@ -36,7 +36,7 @@ let template = `
                     </div>
                 </h2>
             </div>
-            <div class="chatbot__body" ng-if="opened && !force_close" style="background: white;">
+            <div class="chatbot__body" ng-if="opened && !force_close" style="background: white; padding-bottom:36px;">
                 <wizard
                     questions="questions"
                     action="chatbot"
@@ -106,7 +106,7 @@ let chatbot_directive =
             else $scope.questions = null
         }
         
-        $scope.should_open = ()=>!['project_create_update', 'invite'].includes(_.get($rootScope , 'page_info.name'))
+        $scope.should_open = ()=>!['project_create_update', 'invite', 'reset_pwd'].includes(_.get($rootScope , 'page_info.name'))
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })
@@ -145,10 +145,11 @@ let chatbot_directive =
         
         $scope.tooltip_html = (entity_name)=>{
             let bookmarks = _.get($rootScope, `bookmarks.${entity_name}`);
+            let entity_label = entity_name == 'news' ? 'articles': entity_name
             return `
                 <big>
-                    You have ${ bookmarks ? bookmarks+' Bookmarked '+entity_name : 'not bookmarked any '+entity_name+' yet'}
-                    <br>Click the icon to go to the ${entity_name} page
+                    You have ${ bookmarks ? bookmarks+' Bookmarked '+entity_label : 'not bookmarked any '+entity_label+' yet'}
+                    <br>Click the icon to go to the ${entity_label} page
                 </big>
             `
         }

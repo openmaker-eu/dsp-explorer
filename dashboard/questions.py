@@ -394,7 +394,7 @@ class questions(APIView):
         }
 
         form_questions = {
-            'signup_welcome': cls.make('signup_welcome', 'message', 'Signup', value='Signup to Openmaker Explorer'),
+            'signup_welcome': cls.make('signup_welcome', 'message', 'Signup', value='Signup to Open Maker Explorer'),
             'user_full_name': cls.make('name', 'name', 'Who are you?'),
             'user_gender': cls.make('gender', 'select', 'What is your gender?',
                  options=({'value': 'male', 'label': 'Male'}, {'value': 'female', 'label': 'Female'}, {'value': 'other', 'label': 'Does it matter?'})

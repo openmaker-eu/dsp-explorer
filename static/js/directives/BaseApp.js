@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 export default [function(){
  
     return {
-        template:`<ng-transclude></ng-transclude>`,
+        template:`<ng-transclude style="z-index:5000;"></ng-transclude>`,
         transclude:true,
         scope:{
             authorization:'=',

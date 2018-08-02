@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% block container %}
+<div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
                 <h2 class="text-xl" style="height: initial;">Recover Password</h2>
-                <p class="text-yellow-consel text-xs" style="height: initial;">Set your e-mail and reset you password</p>
+                <p class="text-yellow-consel text-xs" style="height: initial;">Set your email and reset your password</p>
             </div>
-            <div class="col-md-6 col-md-offset-3"><hr></div>
-            <div class="col-md-8">
+            <div class="col-md-6 col-md-offset-3 col-sm-12 col-sm-offset-0"><hr></div>
+            <div class="col-md-8 col-sm-12 col-sm-offset-0">
                 <div style="width: 100%; float: left;" class="border-dash margin-top-25 margin-bottom-25"></div>
             </div>
-            <div class="col-md-8 col-md-offset-2">
-                <div class="col-md-6 col-md-offset-3">
+            <div class="col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0">
+                <div class="col-md-6 col-md-offset-3 col-sm-12 col-sm-offset-0">
                     <form method="post" action="{% url 'dashboard:recover_pwd' %}">
                         {% csrf_token %}
                         <div class="form-group">
@@ -22,9 +23,10 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8 col-sm-12 col-sm-offset-0">
                 <div style="width: 100%; float: left;" class="border-dash margin-top-25 margin-bottom-25"></div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
