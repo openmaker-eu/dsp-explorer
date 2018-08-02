@@ -6,7 +6,7 @@ let template = `
     </div>
 `
 
-export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
+export default ['$rootScope', '$uibModal', '$document', function($rootScope, $uibModal, $document){
     
     let custom_resize = ()=>$('.modal, .modal-dialog, .modal-content, .modal-body')
         // .height(window.innerHeight+'px!important') && console.log('custom resize');
@@ -18,6 +18,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 backdrop: true,
                 windowClass: 'signup-modal',
                 transclude: true,
+                appendTo : $document.find('.modal__container').eq(0),
                 controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
                     
                     $scope.questions=questions
@@ -49,7 +50,7 @@ export default ['$rootScope', '$uibModal', function($rootScope, $uibModal){
                 $rootScope.noscroll = false
             })
     
-            F.modalInstance.rendered.then(custom_resize)
+            F.modalInstance.rendered.then(x=>x)
             F.modalInstance.opened.then(x=>x)
         },
         close:()=>F.modalInstance.close()

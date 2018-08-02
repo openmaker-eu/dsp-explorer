@@ -1,6 +1,6 @@
 let _ =  require('lodash')
 let template = `
-    <h2 class="wizard__close" ng-click="close()"><i class="fas fa-times text-brown"></i></h2>
+    <h2 class="wizard__close" ng-click="close()" ><i class="fas fa-times text-brown"></i></h2>
     
     <entity-loading
             ng-if="!questions || loading"
