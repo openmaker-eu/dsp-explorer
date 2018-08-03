@@ -1,7 +1,7 @@
 
 let template = /*html*/`
     <div class="container home-page">
-        <div class="row mobile__row">
+        <div class="row row--mobile">
             <h3 class="col-md-12 margin-top-2-perc"><a class="text-red cairo bold" href="/manifesto">OM MANIFESTO</a></h3>
         </div>
         <div class="row margin-top-2-perc margin-bottom-5-perc">

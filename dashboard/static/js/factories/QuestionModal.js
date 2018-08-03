@@ -2,17 +2,17 @@
 let template = `
     <div class="modal-body padding-5-perc">
         <wizard questions="questions" wizardid="$id" configuration="{swipe:false}"></wizard>
-        <navi-questions items="questions" wizardid="$id" ></navi-questions>
+        <navi-questions items="questions" wizardid="$id" nodots="action=='login'"></navi-questions>
     </div>
 `
 
 export default ['$rootScope', '$uibModal', '$document', function($rootScope, $uibModal, $document){
     
-    let custom_resize = ()=>$('.modal, .modal-dialog, .modal-content, .modal-body')
-        // .height(window.innerHeight+'px!important') && console.log('custom resize');
-    
     let F = {
         open: (ev, questions, action=null)=>{
+            
+            console.log('modal', ev, questions, action);
+            
             F.modalInstance = $uibModal.open({
                 template: template,
                 backdrop: true,
@@ -36,9 +36,7 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                     $rootScope.$emit('chatbot.force_close', true);
                     
                     $rootScope.noscroll = true
-                    
-                    custom_resize()
-                    $(window).on('resize', custom_resize)
+
                 }]
             });
     

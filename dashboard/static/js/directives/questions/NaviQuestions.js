@@ -11,7 +11,7 @@ export default function(){
                  <!--Custom prev button-->
                 <span class="pointer" ng-if="is_custom_prev" ng-bind-html="custom_prev" ng-click="prev()"></span>
                 
-                <span class="no-mobile" style="text-align:center;">
+                <span ng-show="!nodots" class="no-mobile" style="text-align:center;">
                     <i
                         ng-repeat="(q_index, items) in [].constructor(items.length) track by $index"
                         class="fa-circle text-brown margin-10-perc"
@@ -36,7 +36,8 @@ export default function(){
         `,
         scope: {
             items:'=',
-            wizardid:'='
+            wizardid:'=',
+            nodots:'='
         },
         controller : ['$scope','$rootScope', function($scope, $rootScope){
             $scope.wizard_name = 'wizard.'+$scope.wizardid
@@ -70,12 +71,7 @@ export default function(){
             $rootScope.$on($scope.wizard_name+'.init',(event, slick, currentSlide, nextSlide)=>{
                 custom_buttons()
             })
-            
-            
-            
-            
-            
-            //window.onkeypress = (e)=> { e.which=== 13 && $scope.next()}
+
         }]
     }
 }
