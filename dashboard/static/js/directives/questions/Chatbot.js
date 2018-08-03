@@ -56,15 +56,16 @@ let chatbot_directive =
 {
     template:template,
     scope: {},
-    controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider){
+    controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider',
+        function($scope, $rootScope, $http, $timeout, EntityProvider){
         //$('chatbot').css('bottom', $('footer').height()+'px')
         
         $scope.questions = null
         $scope.opened= false
-        $scope.wizardid = $scope.$id
+        $scope.wizardid = $scope.$id_
         $scope.force_close = false
         
-        console.log($rootScope);
+        //console.log('cookie', $cookies.getObject('chatbot_last_open_date'));
         
         $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
         
@@ -100,7 +101,7 @@ let chatbot_directive =
                     .map((a, i)=> i>1 && i<res.data.questions.length-1 ? [next_question, a] : [a] )
                     .flatten()
                     .value()
-                
+                //$cookies.putObject('chatbot_last_open_date', new Date())
                 $timeout(function(a){ $scope.should_open() && ($scope.opened = true) }, 5000)
             }
             else $scope.questions = null

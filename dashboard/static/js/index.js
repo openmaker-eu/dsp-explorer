@@ -29,6 +29,7 @@ var app = angular.module('dashboard', [
     'ngMap',
     'slickCarousel',
     'moment-picker'
+
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');
