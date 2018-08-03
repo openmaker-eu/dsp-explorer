@@ -959,6 +959,7 @@ chatbot {
   }
   .row--mobile-padding { padding :0 3%;}
 }
+
 @media all and(max-width: $sm){
 
   footer {position:relative!important; bottom:0!important; height: 70px!important;}
@@ -993,6 +994,11 @@ chatbot {
   entity-carousel {& > * {max-width: 100vw;} }
 
 
+}
+@media all and(max-width: 480px){
+  .entity-carousel__header {
+    &, * {font-size:1rem!important;}
+  }
 }
 
 .cc-window {z-index: 900000000000!important;}
