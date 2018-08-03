@@ -1,5 +1,6 @@
 let _ = require('lodash')
 let $ = require('jquery')
+let moment = require('moment')
 
 let template = `
     <div class="chatbot">
@@ -63,8 +64,7 @@ let chatbot_directive =
         $scope.opened= false
         $scope.wizardid = $scope.$id
         $scope.force_close = false
-        
-        console.log('cookie', $cookies.getObject('chatbot_last_open_date'));
+        $scope.last_open = $cookies.getObject('chatbot_last_open_date')
         
         $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
         
@@ -100,20 +100,25 @@ let chatbot_directive =
                     .map((a, i)=> i>1 && i<res.data.questions.length-1 ? [next_question, a] : [a] )
                     .flatten()
                     .value()
-                $cookies.putObject('chatbot_last_open_date', new Date())
-                $timeout(function(a){ $scope.should_open() && ($scope.opened = true) }, 5000)
+                
+                $timeout(function(a){
+                    $scope.should_open() &&
+                    ($scope.opened = true) &&
+                    $cookies.putObject('chatbot_last_open_date', moment())
+                }, 5000)
+                
             }
             else $scope.questions = null
         }
         
-        $scope.should_open = ()=>!['project_create_update', 'invite', 'reset_pwd', 'recover_pwd'].includes(_.get($rootScope , 'page_info.name'))
-    
-        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
-        $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })
-        $rootScope.$on('chatbot.force_close', (e, m)=>{ $scope.force_close=m; })
-        $rootScope.$on('authorization.refresh', $scope.get)
- 
-    
+        $scope.should_open = ()=> {
+            
+            let time = $rootScope.authorization >=10 ? 2 : 10
+            
+            return !['project_create_update', 'invite', 'reset_pwd', 'recover_pwd'].includes(_.get($rootScope , 'page_info.name'))
+            && !$scope.last_open || moment($scope.last_open, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').isBefore(moment().subtract(time, 'minutes'))
+        }
+        
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')
     
@@ -129,6 +134,11 @@ let chatbot_directive =
         
         $scope.get()
     
+    
+        $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
+        $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })
+        $rootScope.$on('chatbot.force_close', (e, m)=>{ $scope.force_close=m; })
+        $rootScope.$on('authorization.refresh', ()=>{  $scope.get() })
         $rootScope.$on('interested.new', ()=>{
             $http
                 .get('/api/v1.4/interest/chatbot/')
@@ -153,6 +163,8 @@ let chatbot_directive =
                 </big>
             `
         }
+        
+        
     
     }]
 }

@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 
-export default ['$http', '$rootScope',  function($http, $rootScope){
+export default ['$http', '$rootScope', '$cookies', function($http, $rootScope, $cookies){
     
     let F = {
         login : (username, password)=>{
@@ -13,6 +13,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     n=>{
                         $rootScope.$emit('authorization.refresh')
                         $rootScope.message = { text:'You have successfully login', type:'success'}
+                        $cookies.remove('chatbot_last_open_date');
                     },
                     n=>{ console.log(n); $rootScope.message = { text:'Some problem occour during login please try again', type:'danger'}}
                 )
@@ -23,6 +24,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     n=>{
                         $rootScope.$emit('authorization.refresh')
                         $rootScope.message = { text:'You have successfully logged out', type:'success'}
+                        $cookies.remove('chatbot_last_open_date');
                     },
                     n=>{ console.log(n); $rootScope.message = { text:'Some problem occour during logout please try again', type:'danger'}}
                 )
