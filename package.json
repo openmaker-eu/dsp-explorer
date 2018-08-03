@@ -50,6 +50,7 @@
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "angular": "^1.7.0",
     "angular-animate": "^1.6.5",
+    "angular-cookies": "^1.7.2",
     "angular-moment": "^1.2.0",
     "angular-moment-picker": "^0.10.2",
     "angular-motion": "^0.4.4",

@@ -2,6 +2,7 @@
 let baseImports = require("../../../static/js/index")
 
 require('../../../node_modules/angular-moment-picker/dist/angular-moment-picker')
+require('../../../node_modules/angular-cookies')
 require("../style/index.scss")
 
 // Angular form imports
@@ -28,8 +29,8 @@ var app = angular.module('dashboard', [
     'vsGoogleAutocomplete',
     'ngMap',
     'slickCarousel',
-    'moment-picker'
-
+    'moment-picker',
+    'ngCookies'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');

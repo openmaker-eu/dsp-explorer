@@ -46,9 +46,10 @@ export default function(){
             
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
-                
+                console.log('next', $scope.wizard_name+'.next', $scope.current);
                 if(value === 'goto:last') $scope.goto($scope.items.length-1)
                 if( _.isString(value) && value.includes('event:')) $rootScope.$emit(value.split(':')[1])
+                
                 $scope.items[$scope.current].feedback = value
                 $rootScope.$emit($scope.wizard_name+'.next', $scope.current)
                 $rootScope.$emit('chatbot.next', $scope.current)
