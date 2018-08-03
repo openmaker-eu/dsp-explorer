@@ -34,7 +34,6 @@
         pageinfo="{{page_info}}"
         twitterauth="{{twitter_auth}}"
         bookmarks="{{bookmarks}}"
-
         ng-class="{'disable-scroll': $root.noscroll }"
 >
 <div id="cover-filter"></div>
@@ -47,14 +46,20 @@
 
             {% for message in messages %}
                 <div
-                        class="alert alert-dismissible text-center {% if message.tags == 'error' %}alert-danger{% else %}alert-{{message.tags}}{% endif %}"
-                        role="alert"
+                    class="alert alert-dismissible text-center
+                    {% if message.tags == 'error' %}alert-danger{% else %}alert-{{message.tags}}{% endif %}"
+                    role="alert"
                 >
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
                     <h4>{{ message }}</h4>
                 </div>
 
             {% endfor %}
+
+            <div ng-if="$root.message" class="alert alert-dismissible text-center alert-{$ $root.message.type $}">
+                <button type="button" class="close" aria-label="Close" ng-click="$root.message=false;"><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                <h4>{$ $root.message.text $}</h4>
+            </div>
 
         </header>
 
@@ -69,6 +74,8 @@
             {% block container %}
             {% endblock %}
         </main>
+        <div class="container hidden_space_bottom" style="z-index:5; position: relative;"></div>
+
 
         <footer class="container-fluid" id="footer" style="z-index:10;">
             <div class="row back" style="width:100%;">
@@ -97,8 +104,8 @@
     </div>
 
     <div class="modal__container" style="z-index: 12;"></div>
-    <div class="container hidden_space_bottom" style="z-index:5; position: relative;"></div></div>
 
+    </div>
 </div>
 
 {% include "./modals/login.html" %}

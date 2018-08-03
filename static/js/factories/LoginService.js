@@ -10,15 +10,21 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                     data: { username: username, password: password },
                 })
                 .then(
-                    n=>$rootScope.$emit('authorization.refresh'),
-                    n=>console.log(n)
+                    n=>{
+                        $rootScope.$emit('authorization.refresh')
+                        $rootScope.message = { text:'You have successfully login', type:'success'}
+                    },
+                    n=>{ console.log(n); $rootScope.message = { text:'Some problem occour during login please try again', type:'danger'}}
                 )
         },
         logout : ()=>{
             $http.post('/api/v1.4/logout/')
                 .then(
-                    n=>$rootScope.$emit('authorization.refresh'),
-                    n=>console.log(n)
+                    n=>{
+                        $rootScope.$emit('authorization.refresh')
+                        $rootScope.message = { text:'You have successfully logout', type:'success'}
+                    },
+                    n=>{ console.log(n); $rootScope.message = { text:'Some problem occour during logout please try again', type:'danger'}}
                 )
         },
         refresh_auth : async(res)=> {

@@ -160,9 +160,9 @@ body, html {
 }
 
 footer {
-  padding:0.5% 0;
+  //padding:0.5% 0;
   * { color: $color-white;}
-
+  min-height: 40px;
   z-index: 500000000;
   position: relative;
   display: flex; flex-direction: row; justify-content: center; align-items: center;
@@ -170,6 +170,9 @@ footer {
   max-width: 100vw;
 
   a:active, a:hover, a:focus { color:$color-red!important; }
+  .footer__copy {
+    padding:0 10%;
+  }
 
 }
 
@@ -941,15 +944,16 @@ chatbot {
 
 
 // mobile styles
+
+
+@media all and(max-width: $md){
+  .chatbot_section { position:absolute!important; bottom:70px!important; }
+  .hidden_space_bottom{ display: block; height: 70px;}
+  footer {min-height: 70px; }
+}
 @media all and(max-width: $sm){
 
-  footer { position:fixed!important; bottom:0!important; height: 70px!important;  }
-  .footer__copy {
-    padding:0 10%;
-    //a { padding:5%; line-height: 3em;}
-  }
-  .chatbot_section { position:fixed!important; bottom:70px!important; }
-  .hidden_space_bottom{ display: block; height: 130px;}
+  footer { position:relative!important; bottom:0!important; height: 70px!important;  }
   .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
 
   .no-mobile {display: none!important;}
