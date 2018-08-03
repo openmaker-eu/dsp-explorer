@@ -7,7 +7,7 @@ import { debounce } from 'lodash'
 export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', function ($scope, $http, $sce, UserSearchFactory, $rootScope) {
     
     $scope.search_factory = UserSearchFactory
-    $scope.results_count = 0
+    $scope.results_count = undefined
     $scope.results = [];
     
     $scope.search_debounced = debounce($scope.search_factory.search.bind($scope.search_factory.search), 500)
@@ -34,3 +34,22 @@ export default ['$scope','$http','$sce','UserSearchFactory', '$rootScope', funct
     $scope.tag_template = (tags) => tags.reduce((acc,tag)=>acc+`<span><strong>#</strong>${tag.name}</span><span>&nbsp;&nbsp;</span>`, '')
     
 }]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

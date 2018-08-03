@@ -3,8 +3,8 @@ let template = `
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}" >
         
             <div class="entity-carousel__header ">
-                <h4 ng-if="!title"><a href="/entity/{$ entityname $}" ng-bind-html="entitiy_title()"></a></h4>
-                <h4 ng-if="title" ng-bind-html="title"></h4>
+                <h4 ng-if="!carouseltitle"><a href="/entity/{$ entityname $}" ng-bind-html="entitiy_title()"></a></h4>
+                <h4 ng-if="carouseltitle" ng-bind-html="carouseltitle"></h4>
             </div>
             
             <entity-loading
@@ -40,7 +40,7 @@ export default [function(){
             slider : '@',
             limit: '=',
             entityperslide: '@',
-            title : '@'
+            carouseltitle : '@'
         },
         controller : ['$scope', '$http', '$timeout', 'EntityProvider', function($scope, $http, $timeout, EntityProvider) {
             

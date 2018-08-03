@@ -106,7 +106,7 @@ let chatbot_directive =
             else $scope.questions = null
         }
         
-        $scope.should_open = ()=>!['project_create_update', 'invite', 'reset_pwd'].includes(_.get($rootScope , 'page_info.name'))
+        $scope.should_open = ()=>!['project_create_update', 'invite', 'reset_pwd', 'recover_pwd'].includes(_.get($rootScope , 'page_info.name'))
     
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })

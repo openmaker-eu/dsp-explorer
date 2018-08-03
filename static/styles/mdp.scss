@@ -945,15 +945,14 @@ chatbot {
   .chatbot & {display:none;}
 }
 
-
 // mobile styles
-
-
 @media all and(max-width: $md){
-  .chatbot_section { position:absolute!important; bottom:70px!important; }
-  .hidden_space_bottom{ display: block; height: 70px;}
+
+  .chatbot_section { position:absolute!important; bottom:100px!important; }
+  .hidden_space_bottom{ display: block; height: 170px;}
+
   footer {
-    min-height: 70px;
+    position:absolute!important; bottom:0!important; height: 100px!important;
     a { line-height: 1.8rem; }
     .footer__copy { padding:0 10%; text-align: center;}
   }
@@ -962,7 +961,6 @@ chatbot {
 
 @media all and(max-width: $sm){
 
-  footer {position:relative!important; bottom:0!important; height: 70px!important;}
   .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
   .no-mobile {display: none!important;}
   .row--mobile { margin-left:0!important; margin-right:0!important;}
@@ -1002,3 +1000,4 @@ chatbot {
 }
 
 .cc-window {z-index: 900000000000!important;}
+.cc-invisible { display: none; }

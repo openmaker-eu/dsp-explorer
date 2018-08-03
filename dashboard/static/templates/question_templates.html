@@ -178,10 +178,10 @@ required>
 [signup]
 <label class="signup-template__label" for="email">email</label>
 <input name="email" type="email" value="{$ x.value $}" ng-model="m['email']" class="form-control" required><br>
-<label class="signup-template__label" for="password">password</label>
-<input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" required><br>
-<label class="signup-template__label" for="password_confirm">repeat password</label>
-<input name="password_confirm" type="password" value="{$ x.value $}" ng-model="m['password_confirm']" class="form-control" required><br>
+<label class="signup-template__label" for="password" >password</label>
+<input name="password" type="password" value="{$ x.value $}" ng-model="m['password']" class="form-control" autocomplete="current-password" required><br>
+<label class="signup-template__label" for="password_confirm" >repeat password</label>
+<input name="password_confirm" type="password" value="{$ x.value $}" ng-model="m['password_confirm']" class="form-control" required autocomplete="current-password"><br>
 <br>
 <div class="form-group pivacy_check_form" ng-init="privacy=false; tac=false;">
     <span class="pointer" style="cursor:pointer;">

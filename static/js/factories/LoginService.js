@@ -22,7 +22,7 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
                 .then(
                     n=>{
                         $rootScope.$emit('authorization.refresh')
-                        $rootScope.message = { text:'You have successfully logout', type:'success'}
+                        $rootScope.message = { text:'You have successfully logged out', type:'success'}
                     },
                     n=>{ console.log(n); $rootScope.message = { text:'Some problem occour during logout please try again', type:'danger'}}
                 )
