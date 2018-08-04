@@ -51,7 +51,7 @@ let template = `
             <input type="text" class="form-control" id="role" placeholder="Insert your role" ng-model="data.creator_role" name="creator_role" required/>
         </div>
         <div class="col-md-12 form-group">
-            <input type="text" class="form-control" id="project_url" placeholder="Insert your project url" ng-model="data.project_url" name="project_url" required/>
+            <input type="url" class="form-control" id="project_url" placeholder="Insert your project url" ng-model="data.project_url" name="project_url" required/>
         </div>
         <div class="col-md-12 form-group">
             <p>Enter up to 5 keywords about your project</p>

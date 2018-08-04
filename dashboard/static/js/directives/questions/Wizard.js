@@ -60,15 +60,13 @@ let wizard_directive =
             // Display form errors
             subform.$$element.addClass('subform-submitted')
             // Trigger validation on Next
-            _.each(subform.$$controls, (field) => field.$validate())
+            _.each(subform.$$controls, (field) => {field.$validate()})
             // Return validation status
             return _.get(subform, '$valid')
         }
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
             let question = _.get($scope , 'questions['+current+']')
             let subform = question.name && $scope.wizard.form[question.name]
-    
-            console.log('Action', $scope.action);
             
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {

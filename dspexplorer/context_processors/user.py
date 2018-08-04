@@ -21,8 +21,8 @@ def authorization(request):
             'bookmark': request.GET.get('bookmark', None)
         },
         'bookmarks': {},
-
     }
+
     if request.user.is_authenticated:
         context['json_user'] = UserSerializer(request.user).data
         request.user.profile.get_crm_id_and_save()
@@ -33,10 +33,5 @@ def authorization(request):
             'events': len(profile.get_interests('events')),
             'projects': len(profile.get_interests('projects')) + len(profile.get_interests('challenges')),
         }
-
-        #for res in results:
-            #print(res.type)
-
-        #print(results)
 
     return context

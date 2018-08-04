@@ -40,7 +40,7 @@ let template = `
                              <span style="line-height: 150%;" class="text-grey--dark">#</span>{$tag.name$}</span>&nbsp;&nbsp;
                         </span>
                     </h5>
-                    <h5 ng-if="entity.project_url" ><a ng-href="{$ entity.project_url $}" target="_blank">
+                    <h5 ng-if="entity.project_url" ><a ng-href="{$ add_http_to_url(entity.project_url) $}" target="_blank">
                             <i class="fas fa-fw fa-link" style="font-size:120%;"></i>&nbsp;&nbsp;
                             <span">{$ entity.project_url $}</span>
                         </a>
@@ -122,6 +122,9 @@ export default [function(){
                 $scope.entityname + '/' +
                 ($scope.entityid || $scope.entity.id || $scope.entity.link_id ) + '/' +
                 ($scope.entity.temp_id || '' )
+            
+            $scope.add_http_to_url = (url)=>url.startsWith("http://") || url.startsWith("https://") ? url : 'http://'+url
+            
             
         }]
     }

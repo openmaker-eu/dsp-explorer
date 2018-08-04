@@ -30,9 +30,11 @@ let template = `
                     </div>
                     <div class="chatbot__toggler pointer">
                         <span
+                            tooltip-append-to-body="true"
+                            uib-tooltip-html="opened ?'<big>Close me!</big>': '<big>Talk with me!</big>' "
                             class="fas fa-chevron-up text-white"
                             ng-class="{'fa-chevron-down':opened && !force_close, 'fa-chevron-up':!opened || force_close}"
-                            ng-click="toggle_bot()"
+                            ng-click="user_toggle_bot()"
                         ></span>
                     </div>
                 </h2>
@@ -56,18 +58,22 @@ let chatbot_directive =
 {
     template:template,
     scope: {},
-    controller: ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', '$cookies',
-        function($scope, $rootScope, $http, $timeout, EntityProvider, $cookies){
-        //$('chatbot').css('bottom', $('footer').height()+'px')
+    controller:
+        ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', '$cookies',
+        function($scope, $rootScope, $http, $timeout, EntityProvider, $cookies)
+    {
         
+        // VARS
         $scope.questions = null
         $scope.opened= false
         $scope.wizardid = $scope.$id
         $scope.force_close = false
-        $scope.last_open = $cookies.getObject('chatbot_last_open_date')
-        
-        $scope.toggle_bot = ()=>$scope.questions && ($scope.opened=!$scope.opened)
-        
+        $scope.entityname = _.get($rootScope, 'page_info.options.entity_name') || 'profile'
+        $scope.entityid = _.get($rootScope, 'page_info.options.entity_id') || _.get($rootScope, 'page_info.options.profile_id')
+    
+        /*
+        *  NETWORK FUNCTIONS
+        * */
         $scope.get = ()=> {
             $scope.opened = false
             $http
@@ -75,7 +81,6 @@ let chatbot_directive =
                 .then($scope.handle_response)
                 .catch((e) => {console.log(e)})
         }
-        
         $scope.url = ()=>{
             let page_options = _.get($rootScope, 'page_info.options')
             let url = '/api/v1.4/questions/chatbot/'
@@ -86,7 +91,6 @@ let chatbot_directive =
             }
             return url
         }
-        
         $scope.handle_response = (res)=>{
             if(_.isArray(res.data.questions) && res.data.questions.length > 0) {
                 
@@ -105,54 +109,34 @@ let chatbot_directive =
                     $scope.should_open() &&
                     ($scope.opened = true) &&
                     $cookies.putObject('chatbot_last_open_date', moment())
-                }, 5000)
+                }, 0)
                 
             }
             else $scope.questions = null
         }
-        
-        $scope.should_open = ()=> {
-            
-            let time = $rootScope.authorization >=10 ? 2 : 10
-            
-            return !['project_create_update', 'invite', 'reset_pwd', 'recover_pwd'].includes(_.get($rootScope , 'page_info.name'))
-            && !$scope.last_open || moment($scope.last_open, 'YYYY-MM-DDTHH:mm:ss.SSSSZ').isBefore(moment().subtract(time, 'minutes'))
-        }
-        
-        $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
-        $scope.entityid = _.get($rootScope, 'page_info.options.entity_id')
     
-        // Profile page case
-        if(
-            _.get($rootScope, 'page_info.name') === 'profile_detail' &&
-            _.get($rootScope, 'user.profile') != _.get($rootScope, 'page_info.options.profile_id')
-        )
-        {
-            $scope.entityname = 'profile'
-            $scope.entityid = _.get($rootScope, 'page_info.options.profile_id')
-        }
-        
         $scope.get()
     
     
+        /*
+        *  MESSAGES HANDLERS
+        * */
         $rootScope.$on('wizard.'+$scope.wizardid+'.end', ()=>{ $rootScope.$emit('chatbot.closed'); $scope.opened=false;  })
         $rootScope.$on('wizard.'+$scope.wizardid+'.hide', ()=>{ $scope.opened=false; })
         $rootScope.$on('chatbot.force_close', (e, m)=>{ $scope.force_close=m; })
-        $rootScope.$on('authorization.refresh', ()=>{  $scope.get() })
+        $rootScope.$on('chatbot.dont_bother_me', ()=>$scope.dont_bother_me())
+        $rootScope.$on('authorization.refresh', ()=>$scope.get())
         $rootScope.$on('interested.new', ()=>{
             $http
                 .get('/api/v1.4/interest/chatbot/')
-                .then((res)=>{
-                    if($rootScope.bookmarks && res.data)
-                    {
-                        $rootScope.bookmarks.news = res.data.news;
-                        $rootScope.bookmarks.events = res.data.events;
-                        $rootScope.bookmarks.projects = res.data.projects;
-                    }
-                })
-                .catch((e) => {console.log(e)})
+                .then(res=>res.data && res.status === 200 && ($rootScope.bookmarks = res.data))
+                .catch(e=>console.log(e))
         })
         
+        
+        /*
+        *  TEMPLATE FUNCTIONS
+        * */
         $scope.tooltip_html = (entity_name)=>{
             let bookmarks = _.get($rootScope, `bookmarks.${entity_name}`);
             let entity_label = entity_name == 'news' ? 'articles': entity_name
@@ -164,7 +148,35 @@ let chatbot_directive =
             `
         }
         
+        /*
+        *  OPEN/CLOSE LOGIC
+        * */
+        $scope.user_toggle_bot = ()=> {
+            console.log($scope.opened);
+            if($scope.opened==='by_user') $scope.opened=false
+            else if($scope.opened===true) {$scope.dont_bother_me(); $scope.opened=false; }
+            else if($scope.opened===false) $scope.opened='by_user'
+            console.log($scope.opened);
+            return $scope.questions && $scope.opened
+            
+        }
+    
+        $scope.should_open = ()=> {
         
+            let time_format = 'YYYY-MM-DDTHH:mm:ss.SSSSZ'
+            let time = $rootScope.authorization >=10 ? 0 : 3;
+        
+            let last_open = $cookies.getObject('chatbot_last_open_date')
+            let bother = $cookies.getObject('chatbot_dont_bother_date')
+        
+            let is_page_blacklisted = !['project_create_update', 'invite', 'reset_pwd', 'recover_pwd'].includes(_.get($rootScope , 'page_info.name'))
+            let is_date_ok = !last_open || moment(last_open, time_format).isBefore(moment().subtract(time, 'minutes'))
+                && !bother || moment(bother, time_format).isBefore(moment().subtract(1, 'days'))
+        
+            return is_page_blacklisted && is_date_ok
+        }
+        
+        $scope.dont_bother_me = ()=>{console.log('dont bother me');   return $cookies.putObject('chatbot_dont_bother_date', moment()) }
     
     }]
 }
