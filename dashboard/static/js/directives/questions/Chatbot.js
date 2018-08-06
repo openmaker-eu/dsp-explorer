@@ -176,7 +176,7 @@ let chatbot_directive =
             return is_page_blacklisted && is_date_ok
         }
         
-        $scope.dont_bother_me = ()=>{console.log('dont bother me');   return $cookies.putObject('chatbot_dont_bother_date', moment()) }
+        $scope.dont_bother_me = ()=>{console.log('dont bother me');  return $cookies.putObject('chatbot_dont_bother_date', moment()) }
     
     }]
 }

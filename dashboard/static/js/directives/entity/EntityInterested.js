@@ -17,7 +17,8 @@ export default [function(){
                     <!--</a>-->
                 </a>
             </div>
-            <div ng-if="$root.authorization<10"><h5>INTERESTED:&nbsp;&nbsp;<span style="font-size:120%;">{$ interested || 0 $}</span></h5></div>
+            <div ng-if="$root.authorization<10"><h5>
+                INTERESTED:&nbsp;&nbsp;<span style="font-size:120%;">{$ interested.length $}</span></h5></div>
         `,
         scope: {
             entityname : '@',

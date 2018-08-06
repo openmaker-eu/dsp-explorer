@@ -9,9 +9,12 @@ let template = `
 export default ['$rootScope', '$uibModal', '$document', function($rootScope, $uibModal, $document){
     
     let F = {
+        
         open: (ev, questions, action=null)=>{
             
-            console.log('modal', ev, questions, action);
+            console.log('open', open);
+    
+            if($rootScope.modal_opened === true) return false
             
             F.modalInstance = $uibModal.open({
                 template: template,
@@ -36,6 +39,7 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                     $rootScope.$emit('chatbot.force_close', true);
                     
                     $rootScope.noscroll = true
+                    $rootScope.modal_opened = true
 
                 }]
             });
@@ -46,6 +50,7 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                 $rootScope.$emit('entity.change.all') ;
                 $rootScope.$emit('authorization.refresh')
                 $rootScope.noscroll = false
+                $rootScope.modal_opened = false
             })
     
             F.modalInstance.rendered.then(x=>x)

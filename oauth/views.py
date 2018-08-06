@@ -61,13 +61,24 @@ def twitter_redirect(request):
         return response
 
     twitter_profile = TwitterProfile.objects.filter(user_id=user_id).first()
-    if twitter_profile and twitter_profile.profile_id:
-        if not request.user.is_authenticated:
+    profile = Profile.objects.filter(user__email=request.user.email).first() if request.user.is_authenticated else None
+
+    print('profile')
+    print(profile)
+
+    if twitter_profile:
+        # Already completed: login user
+        if not profile and twitter_profile.profile_id:
             login(request, twitter_profile.profile.user)
             messages.success(request, 'Sucessfully login with your twitter account')
             response.delete_cookie('twitter_oauth')
+        # Link accounts
+        if not twitter_profile.profile_id:
+            print('update')
+            twitter_profile.profile = profile
+            twitter_profile.save()
     else:
-        profile = Profile.objects.filter(user__email=request.user.email).first() if request.user.is_authenticated else None
+        # Create
         twitter_profile = TwitterProfile.create(
             profile=profile,
             user_id=user_id,
@@ -75,11 +86,13 @@ def twitter_redirect(request):
             secret_access_token=oauth_token_secret,
             screen_name=screen_name
         )
-        if not request.user.is_authenticated:
-            response.set_cookie('twitter_oauth', twitter_profile.pk)
+
+    if not request.user.is_authenticated:
+        response.set_cookie('twitter_oauth', twitter_profile.pk)
             #messages.error(request, 'You need to link you twitter acocunt...')
-        else:
-            messages.success(request, 'Link with your Twitter profile completed.')
+    else:
+        messages.success(request, 'Link with your Twitter profile completed.')
+
     return response
 
 
