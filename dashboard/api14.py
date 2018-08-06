@@ -190,8 +190,7 @@ def interested(request, entity='news', entity_id=None):
     """
     try:
         local_entity = ModelHelper.find_this_entity(entity, entity_id)
-        res = ProfileSerializer(local_entity.interested(), many=True).data if request.user.is_authenticated \
-            else len(local_entity.interested())
+        res = ProfileSerializer(local_entity.interested(), many=True).data
         return Response(res)
     except Exception as e:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
