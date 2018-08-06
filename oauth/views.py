@@ -63,9 +63,6 @@ def twitter_redirect(request):
     twitter_profile = TwitterProfile.objects.filter(user_id=user_id).first()
     profile = Profile.objects.filter(user__email=request.user.email).first() if request.user.is_authenticated else None
 
-    print('profile')
-    print(profile)
-
     if twitter_profile:
         # Already completed: login user
         if not profile and twitter_profile.profile_id:
@@ -77,8 +74,9 @@ def twitter_redirect(request):
             print('update')
             twitter_profile.profile = profile
             twitter_profile.save()
+            messages.success(request, 'Link with your Twitter profile completed.')
     else:
-        # Create
+        # Create and link if authenticated else show modal
         twitter_profile = TwitterProfile.create(
             profile=profile,
             user_id=user_id,
@@ -86,12 +84,9 @@ def twitter_redirect(request):
             secret_access_token=oauth_token_secret,
             screen_name=screen_name
         )
-
-    if not request.user.is_authenticated:
-        response.set_cookie('twitter_oauth', twitter_profile.pk)
-            #messages.error(request, 'You need to link you twitter acocunt...')
-    else:
-        messages.success(request, 'Link with your Twitter profile completed.')
+        messages.success(request, 'Link with your Twitter profile completed.') \
+            if request.user.is_authenticated \
+            else response.set_cookie('twitter_oauth', twitter_profile.pk)
 
     return response
 
