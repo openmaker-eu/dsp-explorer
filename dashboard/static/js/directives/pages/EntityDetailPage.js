@@ -1,7 +1,7 @@
 let _ = require('lodash')
 
 let template = `
-    <div class="container">
+    <div class="container container--main">
         <div class="row">
             
            <div class="mobile__padding">
@@ -20,7 +20,7 @@ let template = `
                 </div>
             </div>
             
-            <div class="col-md-9 col-sm-9 col-sm-offset-01 entity-detail-page__content">
+            <div class="col-md-9 col-sm-12 col-sm-offset-0 entity-detail-page__content">
                 
                 <!--Content-->
                 <div class="row entity-detail__content">

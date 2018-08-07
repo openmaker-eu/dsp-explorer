@@ -10,26 +10,30 @@ let template = `
                 <h2 class="chatbot__header__flex">
                     <div class="entity-actions" ng-if="$root.authorization >= 10">
                         <a
+                            tooltip-popup-delay="{$ tooltip_delay $}"
                             tooltip-append-to-body="true"
                             uib-tooltip-html="tooltip_html('news')"
                             href="/entity/news/?bookmark=true"
-                            class="far fa-bookmark pointer" ng-class="{'text-highlight': $root.bookmarks.news}"
+                            class="far fa-bookmark pointer text--darken--hover" ng-class="{'text-highlight': $root.bookmarks.news}"
                         ></a>
                         <a
+                            tooltip-popup-delay="{$ tooltip_delay $}"
                             tooltip-append-to-body="true"
                             uib-tooltip-html="tooltip_html('projects')"
                             href="/entity/projects/?bookmark=true"
-                            class="far fa-star pointer" ng-class="{'text-highlight': $root.bookmarks.projects}"
+                            class="far fa-star pointer text--darken--hover" ng-class="{'text-highlight': $root.bookmarks.projects}"
                         ></a>
                         <a
+                            tooltip-popup-delay="{$ tooltip_delay $}"
                             tooltip-append-to-body="true"
                             uib-tooltip-html="tooltip_html('events')"
                             href="/entity/events/?bookmark=true"
-                            class="far fa-bell pointer" ng-class="{'text-highlight': $root.bookmarks.events}"
+                            class="far fa-bell pointer text--darken--hover" ng-class="{'text-highlight': $root.bookmarks.events}"
                         ></a>
                     </div>
                     <div class="chatbot__toggler pointer">
                         <span
+                            tooltip-popup-delay="{$ tooltip_delay $}"
                             tooltip-append-to-body="true"
                             uib-tooltip-html="opened ?'<big>Close me!</big>': '<big>Talk with me!</big>' "
                             class="fas fa-chevron-up text-white"
@@ -70,7 +74,8 @@ let chatbot_directive =
         $scope.force_close = false
         $scope.entityname = _.get($rootScope, 'page_info.options.entity_name') || 'profile'
         $scope.entityid = _.get($rootScope, 'page_info.options.entity_id') || _.get($rootScope, 'page_info.options.profile_id')
-    
+        $scope.tooltip_delay = 900
+        
         /*
         *  NETWORK FUNCTIONS
         * */

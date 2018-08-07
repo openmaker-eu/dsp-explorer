@@ -6,18 +6,7 @@ let template = `
         <svg id="bubble_container"></svg>
     </div>
     <style>
-        
-        .node {
-          /*fill: rgb(31, 119, 180);*/
-          /*fill-opacity: .0;*/
-          /*stroke: rgb(31, 119, 180);*/
-          /*stroke-width: 1px;*/
-        }
-        
-        .leaf.node {
-          fill-opacity: initial;
-        }
-        
+        .leaf.node {fill-opacity: initial;}
         text {
           font: 10px sans-serif;
           text-anchor: middle;
@@ -55,7 +44,8 @@ export default [function(){
             $scope.reload = ()=> $scope.results && jQuery('#bubble_container').html('') && $scope.bubble('#bubble_container', $scope.results)
             
             $rootScope.$on('user.search.results', $scope.reload)
-            angular.element(window).on('resize', $scope.reload)
+            
+            $(window).on('resize', ()=>$scope.reload())
     
             $scope.$watch('themefilter', (new_data, old_data)=>old_data && old_data !== new_data && $scope.get_data())
             $scope.$watch('results', (new_data, old_data)=>$scope.reload())

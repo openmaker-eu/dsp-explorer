@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container container--main">
     <div class="row">
         <!--Entity Heading-->
         <div class="col-md-12 entity-heading margin-bottom-1-perc">
@@ -17,7 +17,7 @@
             <div class="user-detail__header mobile__padding">
                 <div>
                     <div><div class="col-md-2 col-md-offset-5">
-                        <circle-image src="entity.data.picture" style="min-width:100%;" ></circle-image>
+                        <circle-image src="entity.data.picture" style="min-width:100%;"></circle-image>
                     </div></div>
                     <div><div class="col-md-4 col-md-offset-4">
                         <h2 class="text-center">{$ entity.data.user.first_name+' '+entity.data.user.last_name $}</h2>
@@ -84,26 +84,32 @@
 
         <!--Right sidebar-->
         <div class="col-md-3">
-            <div class="entity-sidebar background-red--light col-md-12">
+            <div class="entity-sidebar background-red--light col-md-12 entity-sidebar--profile">
                 <div class="row row--no-margin" ng-if="$root.authorization >=10">
 
                     <entity-carousel ng-if="!is_my_profile" class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                        entityname="matches" userid="{$ entityid $}"
+                        entityname="matches"
+                        userid="{$ entityid $}"
                         carouseltitle="Profiles similar to {$ entity.data.user.first_name $}"
-                        title="Profiles similar to {$ entity.data.user.first_name $}"
                     ></entity-carousel>
 
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                        entityname="loved" userid="{$ entityid $}" title="Who {$ entity.data.user.first_name $} loves" carouseltitle="Who {$ entity.data.user.first_name $} <i class='far fa-heart'></i> "
+                        entityname="loved"
+                        userid="{$ entityid $}"
+                        carouseltitle="Who {$ entity.data.user.first_name $} <i class='far fa-heart'></i> "
                     ></entity-carousel>
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                        entityname="lovers" userid="{$ entityid $}" title="Who loves {$ entity.data.user.first_name $}" carouseltitle="Who <i class='far fa-heart'></i> {$ entity.data.user.first_name $} "
+                        entityname="lovers" userid="{$ entityid $}"
+                        carouseltitle="Who <i class='far fa-heart'></i> {$ entity.data.user.first_name $} "
                     ></entity-carousel>
 
                 </div>
                 <div class="row row--no-margin" ng-if="$root.authorization<10">
-                    <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                                     entityname="matches" userid="{$ entityid $}" carouseltitle="Profiles similar to {$ entity.data.user.first_name $}"
+                    <entity-carousel
+                        class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                        entityname="matches"
+                        userid="{$ entityid $}"
+                        carouseltitle="Profiles similar to {$ entity.data.user.first_name $}"
                     ></entity-carousel>
                 </div>
             </div>

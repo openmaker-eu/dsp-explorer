@@ -6,10 +6,20 @@ let template = `
             'background-white': ! entity.hasOwnProperty('company') && preview
         }">
         
-        <div ng-class="{'force-square': preview}" ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture">
-            <a href="/profile/{$ entity.id $}">
-                <img ng-src="{$ entity.picture || 'media/images/profile/other.svg' $}" alt="" style="width:100%; ">
-            </a>
+        <div
+            ng-class="{'force-square': preview}"
+            ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture"
+
+        >
+                <a  href="/profile/{$ entity.id $}"
+                    class="entity-detail__username"
+                ><span>{$ entity.user.first_name+' '+entity.user.last_name $}</span></a>
+                <circle-image
+                    src="entity.picture"
+                    href="/profile/{$ entity.id $}"
+                    squared="true"
+                    placeholder="{$ '/media/images/profile/'+entity.gender+'.svg' $}"
+                ></circle-image>
         </div>
         
         <div ng-class="{'force-square': preview}" ng-if="entityname==='profile'">Profile Page</div>

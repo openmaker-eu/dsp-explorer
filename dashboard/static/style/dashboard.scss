@@ -238,8 +238,6 @@ a {
     &:hover{color: $dsp-red;}
 }
 
-.user-card:nth-child(3n+4){ clear:both; }
-
 .influencer-toggle{
     width:100%; border-radius:5px; overflow: hidden; border:solid 1px $grey;
     .influencers-location-btn { border-left:solid 1px $grey;  border-right: solid 1px $grey; width:20%;}

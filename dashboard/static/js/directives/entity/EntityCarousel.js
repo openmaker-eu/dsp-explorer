@@ -18,8 +18,8 @@ let template = `
                 class="entity-carousel__body"
                 ng-class="{'small-slider': entityperslide > 1}"
                 ng-if="entity_list && !entity_list.loading && entity_list.data.length!==0">
-                <slick settings="slickConfig">
-                    <div ng-repeat="entity in entity_list.data | limitTo: (limit || 20)" style="width: 90%;">
+                <slick settings="slickConfig" >
+                    <div ng-repeat="entity in entity_list.data | limitTo: (limit || 20)" >
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
                 </slick>  
@@ -48,7 +48,7 @@ export default [function(){
             $scope.entity_list.get()
             
             $scope.entitiy_title= ()=> ['challenges', 'projects'].includes($scope.entityname)
-                ? '<span>Projects</span><span></span>&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
+                ? '<span>Projects&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
                 : $scope.entityname == 'news' ? 'articles' : $scope.entityname
             
             $scope.$watch('entity_list.data',  (a, b)=>{

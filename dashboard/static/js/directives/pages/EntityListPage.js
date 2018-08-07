@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 
 let template = /*html*/`
-    <div class="container entity-list">
+    <div class="container container--main entity-list">
         <div class="row ">
         
             <!--Entity heading-->
@@ -30,7 +30,7 @@ let template = /*html*/`
             </div>
         
             <!--Left content-->
-            <div class="col-md-9 col-sm-9 col-sm-offset-0 entity-content" >
+            <div class="col-md-9 col-sm-12 col-sm-offset-0 entity-content" >
                 <div class="row">
                     
                     <div class="col-md-12">

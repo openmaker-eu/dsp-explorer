@@ -4,7 +4,7 @@ export default function(){
             <i
                 ng-click="interest()"
                 ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
-                class="far pointer"
+                class="far pointer text--darken--hover"
                 ng-class="{
                     'text-highlight': interested,
                     'fa-star':entityname=='projects' || entityname=='challenges',
