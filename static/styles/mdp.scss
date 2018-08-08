@@ -966,26 +966,30 @@ chatbot {
   //  * {word-wrap: break-word!important;}
   //}
 }
-
-.profile-question {
-
-  @media all and(max-width: $lg){ &:nth-child(2n+3){ clear: both; }}
-  @media all and(min-width: $lg){ &:nth-child(3n+4){ clear: both; }}
-  font-size: 1.3rem;
-  @extend .light;
-
-  &__actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-
-    & > * {display: none;}
-    &:hover > * {display: block;}
-    &--edit > * {display: block}
-  }
+profile-questions {
+  float: left;
 
   .profile-question {
-    padding:10%; border:solid 1px #efefef;
+
+    @media all and(max-width: $lg){ &:nth-child(2n+3){ clear: both; }}
+    @media all and(min-width: $lg){ &:nth-child(3n+4){ clear: both; }}
+    font-size: 1.3rem;
+    @extend .light;
+
+    &__actions {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      //& > * {display: none;}
+      &:hover > * {display: block!important;}
+      &--edit > * {display: block!important;}
+
+    }
+
+    &__inner {
+      padding:10%; border:solid 1px #efefef;
+    }
     &__actions {
       position: absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;
     }
@@ -999,18 +1003,18 @@ chatbot {
       padding:5% 0 0 0;
       flex-wrap: wrap;
     }
+
+    &--edit {
+      position: absolute;
+      z-index: 1000000;
+      box-shadow: 0 0 3px #000;
+      left: -10%;
+
+      @media all and(max-width: $sm){ left:0; max-width: 100%; }
+
+    }
+
   }
-
-  &--edit {
-    position: absolute;
-    z-index: 1000000;
-    box-shadow: 0 0 3px #000;
-    left: -10%;
-
-    @media all and(max-width: $sm){ left:0; max-width: 100%; }
-
-  }
-
 }
 
 // Elements that Add space at bottom of some pages

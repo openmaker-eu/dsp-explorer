@@ -18,6 +18,7 @@ require("../../../node_modules/slick-carousel/slick/slick.css");
 require("../../../node_modules/slick-carousel/slick/slick-theme.css");
 require("../../../node_modules/slick-carousel");
 require("../../../node_modules/angular-slick-carousel/");
+require("../../../node_modules/angular-hammer");
 
 // Init Angular APP
 var app = angular.module('dashboard', [
@@ -30,7 +31,8 @@ var app = angular.module('dashboard', [
     'ngMap',
     'slickCarousel',
     'moment-picker',
-    'ngCookies'
+    'ngCookies',
+    'hmTouchEvents'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');

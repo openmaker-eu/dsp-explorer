@@ -12,10 +12,9 @@
                 </h1>
             </div>
         </div>
-
         <div class="col-md-9 user-detail">
             <div class="user-detail__header mobile__padding">
-                <div>
+                <div class="row">
                     <div><div class="col-md-2 col-md-offset-5">
                         <circle-image src="entity.data.picture" style="min-width:100%;"></circle-image>
                     </div></div>
@@ -63,23 +62,22 @@
                                 ></a>
                             </h4>
 
-
-
                             <h4 class="text-center zilla light" style="padding:0 10%;">{$ entity.data.statement ? entity.data.statement : 'No statement added yet...' $}</h4>
                             <div class="col-md-12" style="border-top:solid 1px #bbb; margin:3% 0;"></div>
                             <h3 style="position:absolute; top:40%; right:5%; line-height: 0; margin:0; padding:0;" ng-show="!is_my_profile">
                                 <interest-button  entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                             </h3>
                         </div>
+                    </div>
 
-                    </div></div>
-                <div class="col-md-12"><user-projects-stripe profileid="{$ entityid $}"></user-projects-stripe></div></div>
+                    <div class="col-md-12"><user-projects-stripe profileid="{$ entityid $}"></user-projects-stripe></div></div>
 
-                <div class="col-md-12">
-                    <div class="col-md-12"><hr></div>
-                    <profile-questions profile="entity"></profile-questions>
+                    <div class="col-md-12">
+                        <div class="col-md-12"><hr></div>
+                        <profile-questions profile="entity"></profile-questions>
+                    </div>
+                    <div class="col-md-12"><h3>&nbsp;</h3></div>
                 </div>
-                <div class="col-md-12"><h3>&nbsp;</h3></div>
             </div>
 
         <!--Right sidebar-->

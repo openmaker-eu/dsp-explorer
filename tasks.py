@@ -1,4 +1,5 @@
 from invoke import task, Collection, Responder
+import webbrowser
 # USAGE: invoke run [function_name]
 
 @task
@@ -9,7 +10,7 @@ def start(c):
 def init(c, colored=True):
     c.run('python manage.py migrate')
     c.run('python ./manage.py loaddata --ignorenonexistent db.json')
-    c.run('open http://localhost:8000')
+    webbrowser.open('http://localhost:8000', new=0)
     c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
 
 @task
