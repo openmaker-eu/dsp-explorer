@@ -984,11 +984,9 @@ profile-questions {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
-
       //& > * {display: none;}
       &:hover > * {display: block!important;}
       &--edit > * {display: block!important;}
-
     }
 
     &__inner {

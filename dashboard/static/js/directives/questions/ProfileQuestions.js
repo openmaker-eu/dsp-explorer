@@ -14,12 +14,11 @@ let template = `
             <div
                 class="profile-question__inner background-white"
                 ng-class="{'profile-question--edit': question.is_edit}"
-                
             >
                 <div
                     class="profile-question__actions"
-                    ng-class="{'profile-question__actions--edit': question.is_edit}"
                     ng-show="question.is_action"
+                    ng-if="!question.is_edit"
                 >
                     <h3
                         class="far fa-fw text-red background-white pointer"
@@ -69,17 +68,17 @@ let template = `
 
                 </div>
                 
-                <div>
+                <div ng-show="question.is_edit">
                 
                     <h3
                         class="far fa-fw fa-times-circle text-red background-white pointer"
-                        ng-if="question.is_edit"
+                        
                         style="position: absolute; top:0%; right:5%;"
                         ng-click="toggle_edit(question)"
                         uib-tooltip-html="'Exit from edit mode'"
                     ></h3>
                     
-                    <div class="profile-question__answers" ng-show="question.is_edit">
+                    <div class="profile-question__answers">
                         <div ng-repeat="(act, k) in question.answers" style="padding:2px; z-index:10000;" >
                             <button
                                 class="btn btn-danger pull-left capitalize pointer"
