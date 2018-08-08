@@ -976,6 +976,10 @@ profile-questions {
     font-size: 1.3rem;
     @extend .light;
 
+    &:hover .profile-question__actions {
+      &, & * { display: block!important;}
+    }
+
     &__actions {
       display: flex;
       flex-direction: row;
