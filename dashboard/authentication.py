@@ -81,20 +81,16 @@ def recover_pwd(request):
             profile.save()
 
             # send e-mail
-            email_body = authentication_reset_password.format(
-                FIRST_NAME=profile.user.first_name.encode('utf-8'),
-                LAST_NAME=profile.user.last_name.encode('utf-8'),
-                BASE_URL=get_current_site(request),
-                TOKEN=profile.reset_token
-            )
-            email_content = "{0}{1}{2}".format(
-                invitation_base_template_header,
-                email_body,
-                invitation_base_template_footer
-            )
-            EmailHelper.send_email(
-                message=email_content,
-                subject='DSPExplorer - Reset Password',
+            email_vars = {
+                'FIRST_NAME': profile.user.first_name,
+                'LAST_NAME': profile.user.last_name,
+                'BASE_URL': get_current_site(request),
+                'TOKEN': profile.reset_token
+            }
+            EmailHelper.email(
+                template_name='authentication_reset_password',
+                title='Openmaker - Reset Password',
+                vars=email_vars,
                 receiver_email=profile.user.email
             )
 
@@ -163,8 +159,8 @@ def onboarding(request):
             email = request.POST['email'].lower()
             pasw = request.POST['password']
             pasw_confirm = request.POST['password_confirm']
-            first_name = request.POST['first_name'].title()
-            last_name = request.POST['last_name'].title()
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
             gender = request.POST['gender']
             birthdate_dt = datetime.strptime(request.POST['birthdate'], '%Y/%m/%d')
             birthdate_dt = pytz.utc.localize(birthdate_dt)
@@ -238,8 +234,8 @@ def onboarding(request):
             template_name='onboarding_email_template',
             title='Openmaker - confirm your email',
             vars={
-                'FIRST_NAME': first_name.encode('utf-8'),
-                'LAST_NAME': last_name.encode('utf-8'),
+                'FIRST_NAME': first_name,
+                'LAST_NAME': last_name,
                 'CONFIRMATION_LINK': confirmation_link
             },
             receiver_email=email

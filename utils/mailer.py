@@ -33,15 +33,19 @@ class EmailHelper(object):
     def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
+        from email.mime.multipart import MIMEMultipart
 
         receivers = [receiver_email]
         formatted_message = Message()
+        formatted_message = MIMEMultipart('alternative')
         formatted_message['Content-Type'] = 'text/html'
-        formatted_message['Subject'] = Header("%s" % (subject))
+        formatted_message['Subject'] = "%s" % Header(subject, 'utf-8')
         formatted_message['From'] = EmailHelper._format_email(sender_name, sender_email)
         formatted_message['To'] = EmailHelper._format_email(receiver_name, receiver_email)
+
         formatted_message.set_payload(message)
         formatted_message = formatted_message.as_string().encode()
+
         try:
             smtp_obj = smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT)
             smtp_obj.ehlo()

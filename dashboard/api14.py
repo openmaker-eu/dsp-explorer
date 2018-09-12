@@ -251,7 +251,6 @@ class entity(APIView):
             profile = request.user.profile
         except:
             profile = None
-
         # Local entities
         if entity == 'loved':
             return interest(request._request, entity='profile', user_id=user_id)
@@ -365,8 +364,8 @@ def signup(request):
         template_name='onboarding_email_template',
         title='OpenMaker - Confirm your email',
         vars={
-            'FIRST_NAME': user.first_name.encode('utf-8'),
-            'LAST_NAME': user.last_name.encode('utf-8'),
+            'FIRST_NAME': user.first_name,
+            'LAST_NAME': user.last_name,
             'CONFIRMATION_LINK': confirmation_link,
         },
         receiver_email=user.email
