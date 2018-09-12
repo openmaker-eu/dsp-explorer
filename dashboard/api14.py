@@ -278,17 +278,16 @@ class entity(APIView):
                 reccomended = []
 
                 if not profile:
-                    selected_topic = random.choice(topics_id_list)
-                    results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic, cursor=-1)[entity]
+                    results = self.random_content_visitor(topics_id_list, method_to_call, entity)
                     results = results[:5]
                 else:
                     if page == 0:
-                        reccomended = \
-                            Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
-                            if not page or int(page) == 1 \
-                            else []
+                        reccomended = self.reccomended_content(request, entity, page)
                         more_pages = 1
                         results = reccomended
+                        if len(reccomended) == 0:
+                            results = self.random_content_visitor(topics_id_list, method_to_call, entity)
+                            results = results[:per_page]
                     else:
                         for index, topic_id in enumerate(topics_id_list):
                             entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
@@ -298,8 +297,7 @@ class entity(APIView):
                                 results.append(res)
                             more_pages = more_pages + next_cursor
                         results = mix_result_round_robin(*results)
-
-                    # results = reccomended + mix_result_round_robin(*results)
+                        # results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException as e:
                 print(e)
                 pass
@@ -313,6 +311,19 @@ class entity(APIView):
         # return Response(results if len(results) > 20 else results)
         status = 200 if more_pages > 0 else 202
         return Response(data=results, status=status)
+
+    def reccomended_content(self, request, entity, page):
+        return Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
+            if not page or int(page) == 1 \
+            else []
+
+    def generic_content(self):
+        pass
+
+    def random_content_visitor(self, topics_id_list, method_to_call, entity):
+        selected_topic = random.choice(topics_id_list)
+        results = getattr(DSPConnectorV13, method_to_call)(topic_id=selected_topic, cursor=-1)
+        return results[entity] if entity in results else []
 
 
 class entity_details(APIView):

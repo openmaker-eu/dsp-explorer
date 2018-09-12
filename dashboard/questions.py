@@ -219,18 +219,16 @@ class questions(APIView):
             response = Insight.questions(crm_ids=[crm_id], amount=10)
             if response.status_code < 205:
                 res_dict = response.json()
-                questions = res_dict['users'][0]['questions']
+                questions = res_dict['users'][0]['questions'] if isinstance(res_dict['users'], dict) else []
 
                 if len(questions) > 0:
                     self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
-                    print('questions')
                 else:
                     self.questions = [self.question('no_questions', first_name=request.user.first_name)]
-                    print('no questions')
         except Exception as e:
                 print('CHATBOT QUESTIONS EXCEPTION')
                 print(e)
-                self.questions = None
+                self.questions = self.questions = [self.question('no_questions', first_name=request.user.first_name)]
 
     def edit_profile_questions(self, request):
         '''
