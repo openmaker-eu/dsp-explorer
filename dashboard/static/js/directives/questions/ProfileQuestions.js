@@ -8,7 +8,7 @@ let template = `
             ng-repeat="question in questions"
             class=" col-lg-4 col-md-6 col-sm-12 col-xs-12 margin-bottom-1-perc profile-question"
             style="position: relative"
-            ng-init="question.is_action=false;"
+            ng-init="question.is_action=false; question.is_edit=false;"
             ng-click="question.is_action=!question.is_action"
         >
             <div

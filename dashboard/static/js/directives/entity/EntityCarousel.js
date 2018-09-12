@@ -77,5 +77,27 @@ export default [function(){
     }
 }]
 
+var row_html = '' +
+    '<section class="row section-activities--mobile">' +
+    '<div class="spb-row " data-row-type="color" data-wrap="full-width-contained" data-image-movement="fixed" data-content-stretch="false" data-row-height="content-height" data-col-v-pos="default" data-legacy="true" style="margin-top: 0px; margin-bottom: 0px; opacity: 1; visibility: visible;" data-sb-init="true">' +
+    '<div class="spb_content_element clearfix" style="padding-left: 383px; padding-right: 382px;">' +
+    '<div class="spb-row-no-cols-wrapper spb-row-multi-col clearfix"> ' +
+    '<div class="row">' +
+    '<div class="blank_spacer col-sm-12></div>'
+'</div>'+
+'</div>' +
+'</div>'+
+'</div>' +
+'</section>'
 
-
+var row_html = '' +
+    '<section class="row section-activities--mobile">' +
+    '<div class="spb_content_element col-sm-12 spb_text_column">' +
+    '<div class="spb-asset-content" style="padding-top:0%;padding-bottom:0%;padding-left:0%;padding-right:0%;">' +
+    '<div class="title-wrap clearfix ">' +
+    '<h2 class="spb-heading"><span>Attività</span>' +
+    '</h2>' +
+    '</div>' +
+    '</div>'+
+    '</div>'+
+    '</section>'

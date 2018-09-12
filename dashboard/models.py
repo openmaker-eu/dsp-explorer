@@ -700,16 +700,16 @@ class Profile(models.Model):
         interest.delete()
 
     def is_this_interested_by_me(self, entity):
-        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+        ct_id = ContentType.objects.get_for_model(entity).pk
+        return len(self.profile_interest.filter(object_id=entity.id, content_type_id=ct_id)) == 1
 
     def interest_this(self, entity):
-
         if self.is_this_interested_by_me(entity):
             self.delete_interest(entity, entity.id)
         else:
             # add interest
             self.add_interest(entity)
-        return len(self.profile_interest.filter(object_id=entity.id)) == 1
+        return self.is_this_interested_by_me(entity)
 
     def add_bookmark(self, bookmark_obj):
         ct_id = ContentType.objects.get_for_model(bookmark_obj).pk

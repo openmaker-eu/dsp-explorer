@@ -97,6 +97,9 @@ let chatbot_directive =
             return url
         }
         $scope.handle_response = (res)=>{
+            
+            console.log('CAHTBOT', res);
+            
             if(_.isArray(res.data.questions) && res.data.questions.length > 0) {
                 
                 let next_question = {
@@ -106,7 +109,7 @@ let chatbot_directive =
                 }
                 
                 $scope.questions = _(res.data.questions)
-                    .map((a, i)=> i>1 && i<res.data.questions.length-1 ? [next_question, a] : [a] )
+                    .map((a, i)=> i>1 && i<4 && i<res.data.questions.length-1 ? [next_question, a] : [a] )
                     .flatten()
                     .value()
                 
@@ -157,13 +160,10 @@ let chatbot_directive =
         *  OPEN/CLOSE LOGIC
         * */
         $scope.user_toggle_bot = ()=> {
-            console.log($scope.opened);
             if($scope.opened==='by_user') $scope.opened=false
             else if($scope.opened===true) {$scope.dont_bother_me(); $scope.opened=false; }
             else if($scope.opened===false) $scope.opened='by_user'
-            console.log($scope.opened);
             return $scope.questions && $scope.opened
-            
         }
     
         $scope.should_open = ()=> {
@@ -178,7 +178,7 @@ let chatbot_directive =
             let is_date_ok = !last_open || moment(last_open, time_format).isBefore(moment().subtract(time, 'minutes'))
                 && !bother || moment(bother, time_format).isBefore(moment().subtract(1, 'days'))
         
-            return is_page_blacklisted && is_date_ok
+            return is_page_blacklisted && is_date_ok && $scope.questions.length !== 1
         }
         
         $scope.dont_bother_me = ()=>{console.log('dont bother me');  return $cookies.putObject('chatbot_dont_bother_date', moment()) }

@@ -94,11 +94,17 @@
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
                         entityname="loved"
                         userid="{$ entityid $}"
-                        carouseltitle="Who {$ entity.data.user.first_name $} <i class='far fa-heart'></i> "
+                        carouseltitle="Who {$ is_my_profile? 'you': entity.data.user.first_name  $} <i class='far fa-heart'></i> "
                     ></entity-carousel>
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
                         entityname="lovers" userid="{$ entityid $}"
-                        carouseltitle="Who <i class='far fa-heart'></i> {$ entity.data.user.first_name $} "
+                        carouseltitle="Who <i class='far fa-heart'></i> {$ is_my_profile? 'you': entity.data.user.first_name $} "
+                    ></entity-carousel>
+
+                    <entity-carousel ng-if="is_my_profile" class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                                     entityname="matches"
+                                     userid="{$ entityid $}"
+                                     carouseltitle="People you might like"
                     ></entity-carousel>
 
                 </div>

@@ -65,8 +65,6 @@ class questions(APIView):
         feedback = request.data.get('feedback', None)
         is_private = request.data.get('is_private', None)
 
-        print('im on post')
-
         try:
             # Send Chatbot Feedback to Insight
             if action == 'chatbot' and request.user.is_authenticated:
@@ -222,11 +220,17 @@ class questions(APIView):
             if response.status_code < 205:
                 res_dict = response.json()
                 questions = res_dict['users'][0]['questions']
-                self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
 
+                if len(questions) > 0:
+                    self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
+                    print('questions')
+                else:
+                    self.questions = [self.question('no_questions', first_name=request.user.first_name)]
+                    print('no questions')
         except Exception as e:
-            print(e)
-            self.questions = None
+                print('CHATBOT QUESTIONS EXCEPTION')
+                print(e)
+                self.questions = None
 
     def edit_profile_questions(self, request):
         '''
@@ -362,6 +366,12 @@ class questions(APIView):
                 'type': "question",
                 'question': "Nice talking "+first_name+"!",
                 'text': "Have a nice day",
+                'actions': {'options': ['  Bye!  ']}
+            },
+            'no_questions': {
+                'type': "question",
+                'question': "I'm really busy right now "+first_name+"!",
+                'text': "I will come back to you soon",
                 'actions': {'options': ['  Bye!  ']}
             },
             'rate_entity': {

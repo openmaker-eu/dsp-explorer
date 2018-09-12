@@ -74,7 +74,7 @@
     "material-design-icons": "^3.0.1",
     "moment": "^2.22.1",
     "ngmap": "^1.18.4",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.9.3",
     "postcss-import": "^11.1.0",
     "protractor": "^5.2.0",
     "slick-carousel": "^1.8.1",

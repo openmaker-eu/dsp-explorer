@@ -62,10 +62,11 @@
 
             <!--MEMBERS-->
             <ul ng-if="$root.authorization >= 10" class="nav navbar-nav navbar-right friends">
-                <li class="{% if current_url == 'dashboard:profile_detail' %}liactive{% endif %}"
-                ><a href="{% url 'dashboard:profile_detail' %}" ng-cloack="$root.user.first_name">
-                    {$ $root.user.first_name+' '+$root.user.last_name $}
-                </a></li>
+                <li class="{% if current_url == 'dashboard:profile_detail' %}liactive{% endif %}">
+                    <a ng-href="/profile/{$ $root.user.profile $}" ng-cloack="$root.user.first_name">
+                        {$ $root.user.first_name+' '+$root.user.last_name $}
+                    </a>
+                </li>
                 <li class="hidden-xs"><a>|</a></li>
                 <li><a ng-click="$root.logout($event)">Logout</a></li>
             </ul>

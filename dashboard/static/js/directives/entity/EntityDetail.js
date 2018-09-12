@@ -9,10 +9,8 @@ let template = `
         <div
             ng-class="{'force-square': preview}"
             ng-if="['lovers','loved','matches'].includes(entityname) && entity.picture"
-
         >
-                <a  href="/profile/{$ entity.id $}"
-                    class="entity-detail__username"
+                <a ng-href="{$ entity.id? '/profile/'+entity.id : '' $}" class="entity-detail__username"
                 ><span>{$ entity.user.first_name+' '+entity.user.last_name $}</span></a>
                 <circle-image
                     src="entity.picture"
@@ -31,18 +29,36 @@ let template = `
             <div class="entity-detail__content entity-detail-padding" >
                 
                 <!--Entity Detail Title-->
-                <h3 class="text-{$ entityname $} entity-detail__title semi-bold" style="letter-spacing: 1px;">
+                <h3 class=" entity-detail__title semi-bold" style="letter-spacing: 1px;">
                     <!--<span>{$ entity.title || entity.name | limitTo: ( preview ? 50 : '' ) $}</span>-->
                     <!--<span ng-if="preview && entity.title.length > 20">...</span>-->
-                    <span>{$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}</span>
+                    
+                    <a
+                        ng-if="!preview && (entity.link || entity.source)"
+                        ng-href="{$ entity.link || entity.url $}"
+                        class="text-{$ entityname $}"
+                        target="_blank"
+                    >
+                        {$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}
+                    </a>
+                    
+                    <span
+                        ng-if="preview || !(entity.link || entity.source)"
+                        class="text-{$ entityname $}"
+                    >
+                        {$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}
+                    </span>
+                    
                 </h3>
                 <br>
                 
                 <!--PROJECTS ONLY: Company title with icons-->
                 <div ng-if="entityname == 'projects'"">
                     <h5 ng-if="entity.profile.user">
-                        <i class="fas fa-fw fa-user-tie" style="font-size:120%;"></i>&nbsp;&nbsp;
-                        <span class="cairo">{$ entity.profile.user.first_name $} {$ entity.profile.user.last_name $} ({$ entity.creator_role $})</span>
+                        <a ng-href="/profile/{$ entity.profile.id $}">
+                            <i class="fas fa-fw fa-user-tie" style="font-size:120%;"></i>&nbsp;&nbsp;
+                            <span class="cairo">{$ entity.profile.user.first_name $} {$ entity.profile.user.last_name $} ({$ entity.creator_role $})</span>
+                        </a>
                     </h5>
                     <h5 ng-if="entity.tags">
                         <i class="fas fa-fw fa-hashtag" style="font-size:120%;"></i>&nbsp;&nbsp;

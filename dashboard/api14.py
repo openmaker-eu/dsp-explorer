@@ -195,6 +195,7 @@ def interested(request, entity='news', entity_id=None):
     except Exception as e:
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
+
 def get_interests(request):
     try:
         profile = request.user.profile
@@ -209,6 +210,7 @@ def get_interests(request):
             'status': 'ko',
             'result': 'Unhautorized',
         }, status=403)
+
 
 @api_view(['GET'])
 def chatbot_interests(request):

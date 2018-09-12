@@ -108,6 +108,7 @@ h1,h2,h2,h4,h5,h6 {
   letter-spacing: 2px;
 }
 
+
 .text {
   &-highlight {
     color:$color-red!important;
@@ -120,7 +121,6 @@ h1,h2,h2,h4,h5,h6 {
     font-size: 1.3rem!important;
     p { line-height: 2.3rem; }
   }
-
 }
 
 // GENERIC STYLES
@@ -298,7 +298,6 @@ main {
   }
 }
 
-
 .chatbot {
   .text-highlight { color:$color-white!important; }
 }
@@ -385,6 +384,7 @@ entity-carousel {
       //height:100%;
       //min-height: 100%;
     }
+
   }
 
   .slick-arrow--custom {
@@ -480,6 +480,13 @@ entity-carousel {
 }
 
 .entity-detail{
+
+  a {
+    &:hover{
+      @extend  .text-red--dark;
+      & * { @extend  .text-red--dark }
+    }
+  }
 
   &-padding {
     padding:2% 8%;
@@ -985,8 +992,8 @@ profile-questions {
       flex-direction: row;
       justify-content: flex-end;
       //& > * {display: none;}
-      &:hover > * {display: block!important;}
-      &--edit > * {display: block!important;}
+      &:hover {display: block!important;}
+      &--edit {display: block!important;}
     }
 
     &__inner {
