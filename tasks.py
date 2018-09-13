@@ -61,11 +61,10 @@ def staging(c):
         response="yes\n",
     )
     c.run('python manage.py migrate')
-    c.run('npm i')
+    c.run('npm i -f')
     c.run('npm run staging')
     c.run('python ./manage.py collectstatic', watchers=[responder])
     c.run('service apache2 restart')
-
 
 @task
 def production(c):
@@ -74,7 +73,7 @@ def production(c):
         response="yes\n",
     )
     c.run('python manage.py migrate')
-    c.run('npm i')
+    c.run('npm i -f')
     c.run('npm run prod')
     c.run('python ./manage.py collectstatic', watchers=[responder])
     c.run('service apache2 restart')
