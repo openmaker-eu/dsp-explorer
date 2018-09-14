@@ -314,7 +314,6 @@ def onboarding_confirmation(request, token):
     return HttpResponseRedirect(reverse('dashboard:homepage'))
 
 
-# THIS IS NOT USED ANYMORE
 def om_confirmation(
         request,
         sender_first_name,
@@ -349,10 +348,10 @@ def om_confirmation(
 
     # Emails
     email_vars = {
-        'RECEIVER_FIRST_NAME': receiver_first_name.encode('utf-8'),
-        'RECEIVER_LAST_NAME': receiver_last_name.encode('utf-8'),
-        'SENDER_FIRST_NAME': sender_first_name.encode('utf-8'),
-        'SENDER_LAST_NAME': sender_last_name.encode('utf-8'),
+        'RECEIVER_FIRST_NAME': receiver_first_name,
+        'RECEIVER_LAST_NAME': receiver_last_name,
+        'SENDER_FIRST_NAME': sender_first_name,
+        'SENDER_LAST_NAME': sender_last_name,
         'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
     }
 

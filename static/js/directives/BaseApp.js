@@ -13,8 +13,8 @@ export default [function(){
             pageinfo:'=',
             twitterscreenname : '='
         },
-        controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', '$element', '$timeout',
-            function($scope, $rootScope, $http, LoginService, QuestionModal, $element, $timeout){
+        controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', '$element', '$timeout', '$location',
+            function($scope, $rootScope, $http, LoginService, QuestionModal, $element, $timeout, $location){
             
             // GLOBAL ACTIONS
             $rootScope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
@@ -55,7 +55,11 @@ export default [function(){
                 let nav = $('.navbar-collapse')
                 nav.collapse('hide')
             }
-            
+    
+            //Open signup modal
+            angular.element(document).ready(function() {
+                $location.hash() == 'signup' && $rootScope.$emit('question.modal.open')
+            });
             
         }]
     }

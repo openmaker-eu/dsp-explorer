@@ -325,7 +325,6 @@ def profile(request, profile_id=None, action=None):
 
 #@login_required()
 def community(request, search_string=''):
-    print('usera count')
     print(Profile.objects.count())
     return render(request, 'dashboard/community.html', {
         'search_string': search_string,
