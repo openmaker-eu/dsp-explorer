@@ -27,41 +27,34 @@
                             <input class="form-control" required type="text" name="first_name" placeholder="First name"><br />
                             <input class="form-control" required type="text" name="last_name" placeholder="Last name"><br />
                             <input class="form-control" required type="email" name="email" placeholder="E-mail"><br />
-                            <span  class="pointer" style="cursor:pointer;">
-                                <label style="font-weight: 500!important;" >
-                                    <span ng-click="tac=!tac;">
-                                        <span ng-show="tac" class="glyphicon glyphicon-check text-red"></span>
-                                        <span ng-show="!tac" class="glyphicon glyphicon-unchecked text-red"></span>
+                            <div class="form-group" ng-init="privacy=false; tac=false;">
+                                <span class="pointer" style="cursor:pointer;">
+                                    <span  ng-click="tac=!tac;">
+                                        <i class="glyphicon required" ng-class="{'glyphicon-check':tac, 'glyphicon-unchecked':!tac}"></i>
                                         <input type="checkbox" ng-model="tac" required="required" class="fake-check">
                                         &nbsp;You agree to the conditions
                                     </span>
-                                </label>
-                                (<a class="text-red" target="_blank" href="{% url 'dashboard:express_acceptance' %}">Express Acceptance</a>)
-                            </span>
-                            <br>
-                            <span  class="pointer" style="cursor:pointer;">
-                                <label style="font-weight: 500!important;" >
+                                    (<a class="text-red" target="_blank" href="express_acceptance/">Express Acceptance</a>)
+                                </span>
+                                                            <br>
+                                                            <span class="pointer" style="cursor:pointer;">
                                     <span ng-click="privacy=!privacy;" >
-                                        <span ng-show="privacy" class="glyphicon glyphicon-check text-red"></span>
-                                        <span ng-show="!privacy" class="glyphicon glyphicon-unchecked text-red"></span>
+                                        <i class="glyphicon required" ng-class="{'glyphicon-check':privacy, 'glyphicon-unchecked':!privacy}"></i>
                                         <input type="checkbox" ng-model="privacy" required="required" class="fake-check">
-                                        &nbsp;
-                                        You agree to use your data to allow us to map the community of makers and encourage the meeting between
-                                        representatives of the makers' community and the manufacturing industry
-                                        By registering you agree to the following conditions
+                                        &nbsp;You agree to use your data to allow us to map the community of makers and encourage the meeting between
+                                        representatives of the makers' community and the manufacturing industry By registering you agree to the following conditions
                                     </span>
-                                    (<a class="text-red" target="_blank" href="{% url 'dashboard:terms_conditions' %}">Terms of service</a>)
-                                    <span ng-click="privacy=!privacy;" >
-                                        , You consent to the use of your data in accordance with the privacy policy
-                                    </span>
-                                        (<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy policy</a>)
-                                    <span ng-click="privacy=!privacy;" >
-                                        you ask to use our service.
-                                        You will receive an email to confirm your registration.
-                                    </span>
-                                </label>
-                                <!--(<a class="text-red" target="_blank" href="{% url 'dashboard:privacy' %}">Privacy Policy</a>)-->
-                            </span>
+                                    (<a class="text-red" target="_blank" href="/terms/">Terms of service</a>)
+                                    <span ng-click="privacy=!privacy;" >, You consent to the use of your data in accordance with the privacy policy</span>
+                                        (<a class="text-red" target="_blank" href="/privacy/">Privacy policy</a>)
+                                    <span ng-click="privacy=!privacy;" >you ask to use our service.You will receive an email to confirm your registration.</span>
+                                </span>
+                                <br><br>
+                                <span>
+                                     The service offered by the Top-ix Consortium, it is indefinite and you can withdraw at any time within the
+                                     (<a class="text-red" target="_blank" href="/terms/">terms and the conditions</a>)
+                                </span>
+                            </div>
                             <input class="col-md-2 col-md-offset-10 btn login-button margin-top-30" type="submit" value="Invite">
                         </div>
                         <div class="col-xs-12 col-md-10 col-md-offset-1">

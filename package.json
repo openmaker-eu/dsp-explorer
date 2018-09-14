@@ -20,7 +20,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/topixdevelopers/dsp-explorer#readme",
   "devDependencies": {
-   
+
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
