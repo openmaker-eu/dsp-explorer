@@ -14,7 +14,6 @@ from django.template import loader, Context, Template
 from django.template.loader import render_to_string
 
 
-
 class EmailHelper(object):
     """
     Email Helper Class
@@ -37,7 +36,6 @@ class EmailHelper(object):
 
         receivers = [receiver_email]
         formatted_message = Message()
-        formatted_message = MIMEMultipart('alternative')
         formatted_message['Content-Type'] = 'text/html'
         formatted_message['Subject'] = "%s" % Header(subject, 'utf-8')
         formatted_message['From'] = EmailHelper._format_email(sender_name, sender_email)
