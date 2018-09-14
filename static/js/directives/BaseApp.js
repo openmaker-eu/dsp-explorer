@@ -58,10 +58,10 @@ export default [function(){
     
             // Wait for elements to be rendered
             angular.element(()=>{
-                
                 // Open signup modal if url contains hash: #signup
-                $location.hash() == 'signup' && $rootScope.$emit('question.modal.open')
-                
+                $timeout(function(a){
+                    $location.hash() == 'signup' && $rootScope.$emit('question.modal.open')
+                }, 1000)
             });
 
             
