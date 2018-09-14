@@ -357,11 +357,11 @@ def invite(request):
 
             # Emails
             email_vars = {
-                'RECEIVER_FIRST_NAME': first_name.encode('utf-8'),
-                'RECEIVER_LAST_NAME': last_name.encode('utf-8'),
-                'SENDER_FIRST_NAME': request.user.first_name.encode('utf-8'),
-                'SENDER_LAST_NAME': request.user.last_name.encode('utf-8'),
-                'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+                'RECEIVER_FIRST_NAME': first_name,
+                'RECEIVER_LAST_NAME': last_name,
+                'SENDER_FIRST_NAME': request.user.first_name,
+                'SENDER_LAST_NAME': request.user.last_name,
+                'ONBOARDING_LINK': request.build_absolute_uri('/dashboard/')
             }
             # Send email to receiver only the first time
             if len(Invitation.get_by_email(receiver_email=receiver_email)) == 1:
