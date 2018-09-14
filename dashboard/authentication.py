@@ -352,7 +352,7 @@ def om_confirmation(
         'RECEIVER_LAST_NAME': receiver_last_name,
         'SENDER_FIRST_NAME': sender_first_name,
         'SENDER_LAST_NAME': sender_last_name,
-        'ONBOARDING_LINK': request.build_absolute_uri('/onboarding/')
+        'ONBOARDING_LINK': request.build_absolute_uri('/dashboard/')
     }
 
     # Send email to receiver only the first time
