@@ -56,10 +56,14 @@ export default [function(){
                 nav.collapse('hide')
             }
     
-            //Open signup modal
-            angular.element(document).ready(function() {
+            // Wait for elements to be rendered
+            angular.element(()=>{
+                
+                // Open signup modal if url contains hash: #signup
                 $location.hash() == 'signup' && $rootScope.$emit('question.modal.open')
+                
             });
+
             
         }]
     }

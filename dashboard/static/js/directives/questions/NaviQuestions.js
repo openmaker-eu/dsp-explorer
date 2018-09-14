@@ -1,3 +1,5 @@
+let _ = require('lodash')
+
 export default function(){
     return {
         template:`
@@ -51,12 +53,13 @@ export default function(){
             
             let custom_buttons = ()=>{
                 let question = $scope.items && $scope.items[$scope.current]
-    
-                $scope.is_custom_next = $scope.items[$scope.current].hasOwnProperty('custom_next')
-                $scope.is_custom_prev = $scope.items[$scope.current].hasOwnProperty('custom_prev')
+                let current = $scope.items[$scope.current] || {}
                 
-                $scope.custom_next = $scope.items[$scope.current]['custom_next']
-                $scope.custom_prev = $scope.items[$scope.current]['custom_prev']
+                $scope.is_custom_next = current.hasOwnProperty('custom_next')
+                $scope.is_custom_prev = current.hasOwnProperty('custom_prev')
+                
+                $scope.custom_next = current['custom_next']
+                $scope.custom_prev = current['custom_prev']
                 
             }
             
