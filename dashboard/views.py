@@ -371,6 +371,7 @@ def invite(request):
                     vars=email_vars,
                     receiver_email=receiver_email
                 )
+
             # Send mail to sender
             EmailHelper.email(
                 template_name='invitation_email_confirmed',
