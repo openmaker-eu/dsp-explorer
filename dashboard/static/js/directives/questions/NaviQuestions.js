@@ -63,7 +63,7 @@ export default function(){
                 
             }
             
-            $rootScope.$on($scope.wizard_name+'.afterChange',(ev, {event, slick, currentSlide, nextSlide})=>{
+             $rootScope.$on($scope.wizard_name+'.afterChange',(ev, {event, slick, currentSlide, nextSlide})=>{
                 $scope.current = currentSlide
                 $scope.is_start = currentSlide === 0
                 $scope.is_end = currentSlide === $scope.items.length-1

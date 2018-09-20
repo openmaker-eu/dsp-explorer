@@ -128,6 +128,13 @@ h1,h2,h2,h4,h5,h6 {
 // GENERIC STYLES
 .transparent {opacity:0; height:0; cursor:default;}
 
+.disable-scroll {
+  width:100vw!important; height:100vh!important;
+  max-width:100vw!important; max-height:100vh!important;
+  min-width:100vw!important; min-height:100vh!important;
+  overflow: hidden;
+}
+
 // BASE
 body, html {
 
@@ -147,10 +154,7 @@ body, html {
   @media all and (min-width: $xl) { font-size:12px ; }
 
   &.disable-scroll {
-    width:100vw!important; height:100vh!important;
-    max-width:100vw!important; max-height:100vh!important;
-    min-width:100vw!important; min-height:100vh!important;
-    overflow: hidden;
+    @extend .disable-scroll
   }
 
 }
@@ -706,6 +710,7 @@ entity-carousel {
           justify-content: space-between;
           align-content: center;
           padding-top: 0 !important;
+          z-index:1;
           //height: 100%;
 
           .modal-slider {
@@ -713,6 +718,7 @@ entity-carousel {
           }
           .slick-list, .slick-track {
             height: 100% !important;
+            overflow-y:visible!important;
           }
           .slick-track {
             display: flex;
@@ -1056,10 +1062,12 @@ profile-questions {
   .row--mobile-padding { padding :0 3%;}
 }
 
+.no-desktop { display: none; }
 @media all and(max-width: $sm){
 
   .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
   .no-mobile {display: none!important;}
+  .no-desktop {display: initial;}
   .row--mobile { margin-left:0!important; margin-right:0!important;}
 
   // fix some container issues on smallest devices (< 300px width)
@@ -1072,8 +1080,10 @@ profile-questions {
   }
 
   .modal, .modal-dialog, .modal-content, .modal-body{
+
     width:100vw!important;
-    height:100%;
+    height:auto;
+
     position:absolute;top:0;right:0;bottom:0;left:0;
 
     margin:0!important;
@@ -1087,7 +1097,7 @@ profile-questions {
       font-size: 0.8em;
       min-width: auto;
     }
-    .ui-select-choices { max-height: 14rem!important; }
+    .ui-select-choices { max-height: 9rem!important;}
   }
 
   // Disable scrollbar
@@ -1096,8 +1106,6 @@ profile-questions {
   }
   // Fix padding on homepage
   entity-carousel {& > * {max-width: 100vw;} }
-
-
 }
 
 @media all and(max-width: 480px){

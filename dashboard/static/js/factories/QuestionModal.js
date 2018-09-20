@@ -40,6 +40,8 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                     
                     $rootScope.noscroll = true
                     $rootScope.modal_opened = true
+                    
+                    
 
                 }]
             });
