@@ -76,6 +76,7 @@ $color_list : (
 */
 
 $ombreakpoints: (
+  xs: (375px, 100%),
   sm: (768px, 100%),
   md: (992px, 100%),
   ml: (1000px, 100%),
@@ -83,6 +84,7 @@ $ombreakpoints: (
   xl: (1650px, 80%),
 );
 
+$xs : nth(map-get($ombreakpoints,'sm'),1);
 $sm : nth(map-get($ombreakpoints,'sm'),1);
 $md : nth(map-get($ombreakpoints,'md'),1);
 $ml : nth(map-get($ombreakpoints,'ml'),1);
@@ -476,7 +478,6 @@ entity-carousel {
     }
   }
 
-
 }
 
 .entity-detail{
@@ -764,6 +765,10 @@ entity-carousel {
 
       &__label {
         text-align: center;
+
+      }
+      &__title {
+        font-size:2em!important;
       }
 
     }
@@ -1041,7 +1046,7 @@ profile-questions {
 @media all and(max-width: $md){
 
   .chatbot_section { position:absolute!important; bottom:100px!important; }
-  .hidden_space_bottom{ display: block; height: 170px;}
+  .hidden_space_bottom{ display: block; height: 160px;}
 
   footer {
     position:absolute!important; bottom:0!important; height: 100px!important;
@@ -1056,6 +1061,15 @@ profile-questions {
   .mobile__padding{ padding-left: 2%!important; padding-right: 2%!important; }
   .no-mobile {display: none!important;}
   .row--mobile { margin-left:0!important; margin-right:0!important;}
+
+  // fix some container issues on smallest devices (< 300px width)
+  .container.container--main {
+    padding:5% 0!important;
+
+    *[class*='col-'] { padding:0!important;}
+    .row{ margin:0!important;}
+
+  }
 
   .modal, .modal-dialog, .modal-content, .modal-body{
     width:100vw!important;
@@ -1073,6 +1087,7 @@ profile-questions {
       font-size: 0.8em;
       min-width: auto;
     }
+    .ui-select-choices { max-height: 14rem!important; }
   }
 
   // Disable scrollbar
@@ -1084,6 +1099,7 @@ profile-questions {
 
 
 }
+
 @media all and(max-width: 480px){
   .entity-carousel__header {
     &, * {font-size:1rem!important;}

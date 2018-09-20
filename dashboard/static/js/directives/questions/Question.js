@@ -5,7 +5,7 @@ let template = `
      <div ng-form="{$ x.name $}" class="signup-template" style="padding:5%;">
         <div style=" display: flex; flex-direction: column; justify-content: center; align-items: center">
         
-            <h1 ng-if="x.label" class="signup-template__label">{$ x.label $}</h1>
+            <h1 ng-if="x.label" class="signup-template__label signup-template__title">{$ x.label $}</h1>
             <h4 ng-if="x.question_text" class="text-brown">{$ x.question_text $}</h4>
             <h3 ng-if="x.subtext">{$ x.subtext $}</h3>
             <br>

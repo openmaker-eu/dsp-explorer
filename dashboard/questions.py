@@ -194,6 +194,8 @@ class questions(APIView):
             self.question('user_occupation'),
             self.question('activity_question_1'),
             self.question('activity_question_2'),
+            self.question('activity_question_3'),
+            self.question('activity_question_4'),
             #self.question('user_tags'),
             self.question('user_signup_data'),
             self.question('signup_bye'),
@@ -256,11 +258,19 @@ class questions(APIView):
             self.make('activity-question-1', 'activity-question-1', 'What is your activity?',
                       value={
                           "domain": [x['name'] for x in profile.activity('domain')],
-                          "area": [x['name'] for x in profile.activity('area')]
                       }),
             self.make('activity-question-2', 'activity-question-2', 'What is your activity?',
                       value={
+                          "area": [x['name'] for x in profile.activity('area')]
+                      }
+                      ),
+            self.make('activity-question-3', 'activity-question-3', 'What is your activity?',
+                      value={
                           "technology": [x['name'] for x in profile.activity('technology')],
+                      }
+                      ),
+            self.make('activity-question-4', 'activity-question-4', 'What is your activity?',
+                      value={
                           "skills": [x['name'] for x in profile.activity('skills')]
                       }
                       ),
@@ -384,7 +394,7 @@ class questions(APIView):
                 'type': "question",
                 'question': 'Thank you!, '+first_name+'!',
                 'text': "Now i will be able to show you more interesting " + entity_name,
-                'actions': {'options': ['  Tank you!  ']}
+                'actions': {'options': ['  Thank you!  ']}
             },
             'signup_proposal': {
                 'type': "question",
@@ -412,8 +422,10 @@ class questions(APIView):
             ),
             'user_city': cls.make('city', 'city', 'What is your city?'),
             'user_occupation': cls.make('occupation', 'text', 'What is your occupation?'),
-            'activity_question_1': cls.make('activity-question-1', 'activity-question-1', 'What is your activity? (1 of 2)'),
-            'activity_question_2': cls.make('activity-question-2', 'activity-question-2', 'What is your activity? (2 of 2)'),
+            'activity_question_1': cls.make('activity-question-1', 'activity-question-1', 'What is your activity? (1 of 4)'),
+            'activity_question_2': cls.make('activity-question-2', 'activity-question-2', 'What is your activity? (2 of 4)'),
+            'activity_question_3': cls.make('activity-question-3', 'activity-question-3', 'What is your activity? (3 of 4)'),
+            'activity_question_4': cls.make('activity-question-4', 'activity-question-4', 'What is your activity? (4 of 4)'),
             'user_tags': cls.make('tags', 'multi_select', 'Choose 3 tags', options=[x.name for x in Tag.objects.all()]),
             'user_signup_data': cls.make('signup', 'signup', 'Your login information', apicall='/api/v1.4/signup/'),
             'signup_bye': cls.make('signup_end', 'success', 'Thank you', value='Check your inbox for a confirmation email'),

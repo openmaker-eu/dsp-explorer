@@ -61,10 +61,16 @@ required>
 <input type="hidden" ng-model="m[x.name]" ng-value="m[x.name]" name="{$ x.name $}" required/>
 
 [activity-question-1]
-<activity-question data="x.value" activityfilter="['domain', 'area']" ></activity-question>
+<activity-question data="x.value" activityfilter="['domain']" ></activity-question>
 
 [activity-question-2]
-<activity-question data="x.value" activityfilter="['technology', 'skills']" ></activity-question>
+<activity-question data="x.value" activityfilter="['area']" ></activity-question>
+
+[activity-question-3]
+<activity-question data="x.value" activityfilter="['technology']" ></activity-question>
+
+[activity-question-4]
+<activity-question data="x.value" activityfilter="['skills']" ></activity-question>
 
 [question]
 <h3 class="text-brown text-center" ng-if="x.super_text" ><i>{$ x.super_text $}</i></h3>
