@@ -41,7 +41,7 @@ def search_members(request, search_string):
     if search_string and search_string.strip() != '':
         results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
     else:
-        results = Profile.objects.all()
+        results = Profile.objects.all().reverse()
 
     count = results.count()
 
