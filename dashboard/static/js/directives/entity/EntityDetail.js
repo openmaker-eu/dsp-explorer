@@ -101,26 +101,26 @@ let template = `
                 <!-- Show Full text if exist-->
                 
                     <!--News-->
-                    <p class="entity-detail__body" ng-if="entity.full_text ">
+                    <p class="entity-detail__body" ng-if="entity.full_text">
                         <span>{$ entity.summary | limitTo : 1024 $}</span>
-                        <span ng-if="entity.description.text.length > 1024">...</span>
+                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">&gt;&gt;&gt;</a></span>
                     </p>
 
                     <!--Events-->
                     <p class="entity-detail__body" ng-if="entity.description.text">
                         {$ entity.description.text | limitTo : 1024 $}
-                        <span ng-if="entity.description.text.length > 1024">...</span>
+                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">&gt;&gt;&gt;</a></span>
                     </p>
                     
                     <!--Projects-->
-                    <p class="entity-detail__body" ng-if="entity.description && !entity.description.text">
-                        <div ng-if="preview">
+                    <p class="entity-detail__body" ng-if="entity.description && !entity.description.text" >
+                        <span ng-if="preview">
                             {$ entity.description | limitTo : 512 $}
-                            <span ng-if="entity.description.length > 512">&nbsp<a ng-href="{$ entity.link || entity.url $}">...</a></span>
-                        </div>
-                        <div ng-if="!preview">
+                            <span ng-if="entity.description.length > 512">...</span>
+                        </span>
+                        <span ng-if="!preview">
                             {$ entity.description $}
-                        </div>
+                        </span>
                     </p>
                     
                     <!--Challenges-->
