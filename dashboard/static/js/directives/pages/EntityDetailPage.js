@@ -3,7 +3,7 @@ let _ = require('lodash')
 let template = `
     <div class="container container--main">
         <div class="row">
-            
+           
            <div class="mobile__padding">
             <!--Entity Heading-->
             <div class="col-md-12 entity-heading margin-bottom-1-perc">
@@ -59,9 +59,11 @@ let template = `
                         <h3 ng-if="!entity.data.start_date">&nbsp;</h3>
                         
                         <br>
+                        
                         <img style="padding:0; width:100%;"
                             ng-if="entity.data.im || entity.data.picture || entity.data.cover"
                             ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
+                            onError="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"
                         class="col-md-12">
                         
                     </div>

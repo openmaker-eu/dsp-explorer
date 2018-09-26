@@ -114,8 +114,13 @@ let template = `
                     
                     <!--Projects-->
                     <p class="entity-detail__body" ng-if="entity.description && !entity.description.text">
-                        {$ entity.description | limitTo : 1024 $}
-                        <span ng-if="entity.description.length > 1024">...</span>
+                        <div ng-if="preview">
+                            {$ entity.description | limitTo : 512 $}
+                            <span ng-if="entity.description.length > 512">&nbsp<a ng-href="{$ entity.link || entity.url $}">...</a></span>
+                        </div>
+                        <div ng-if="!preview">
+                            {$ entity.description $}
+                        </div>
                     </p>
                     
                     <!--Challenges-->
@@ -150,7 +155,13 @@ export default [function(){
                 ($scope.entity.temp_id || '' )
             
             $scope.add_http_to_url = (url)=>url.startsWith("http://") || url.startsWith("https://") ? url : 'http://'+url
-            
+    
+            const new_image = (src)=>{
+                let image = new Image()
+                image.src = src
+                image.className = "circle-image portrait"
+                return image
+            }
             
         }]
     }
