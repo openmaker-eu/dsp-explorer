@@ -103,13 +103,16 @@ let template = `
                     <!--News-->
                     <p class="entity-detail__body" ng-if="entity.full_text">
                         <span>{$ entity.summary | limitTo : 1024 $}</span>
-                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">&gt;&gt;&gt;</a></span>
+                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">
+                        <i class="fas fa-angle-double-right"></i></a></span>
                     </p>
 
                     <!--Events-->
                     <p class="entity-detail__body" ng-if="entity.description.text">
                         {$ entity.description.text | limitTo : 1024 $}
-                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">&gt;&gt;&gt;</a></span>
+                        <span ng-if="entity.description.text.length > 1024">&nbsp;<a target="_blank" ng-href="{$ entity.link || entity.url $}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a></span>
                     </p>
                     
                     <!--Projects-->
