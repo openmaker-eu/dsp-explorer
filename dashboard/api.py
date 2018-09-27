@@ -228,7 +228,7 @@ def post_om_invitation(request):
     #     return HttpResponseRedirect('http://openmaker.eu/error_receiver/')
     # except User.DoesNotExist:
     #     pass
-    
+
     # receiver already invited?
     # try:
     #     Invitation.objects.get(receiver_email=HashHelper.md5_hash(receiver_email))
@@ -757,8 +757,8 @@ class v13:
             try:
                 if end_date != '':
                     end_date = dt.strptime(end_date, '%Y-%m-%d')
-                    if end_date > dt.now():
-                        return bad_request('The project end_date cannot be in the future')
+                    # if end_date > dt.now():
+                    #     return bad_request('The project end_date cannot be in the future')
                     if end_date < data_to_update['start_date']:
                         return bad_request('The project end date cannot be before the project start date')
                     data_to_update['end_date'] = end_date
