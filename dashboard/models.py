@@ -252,11 +252,8 @@ class User(User):
                 first_name=kwargs.get('first_name', False),
                 last_name=kwargs.get('last_name', False)
             )
-            print('2')
             user.is_active = False
-            print('3')
             user.save()
-            print('4')
             return user
 
         except Exception as e:

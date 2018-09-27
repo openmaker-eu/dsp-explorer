@@ -55,6 +55,21 @@ def add_crm_id_to_profile(user):
     except Exception as e:
         print(e)
 
+
+def update_crm(user):
+    from crmconnector.models import Party
+    try:
+        # Crm
+        party = Party(user)
+        party.create_or_update()
+    except:
+        print('Error updating crm user')
+        print(user.email)
+        print('#################################')
+
+    print('user updated: ')
+    print(user.email)
+
 if __name__ == "__main__":
     users = User.objects.all()
     for user in users:
@@ -62,4 +77,5 @@ if __name__ == "__main__":
             add_location_to_user(user)
             deobfuscate_invitation(user)
             add_crm_id_to_profile(user)
+            update_crm(user)
 

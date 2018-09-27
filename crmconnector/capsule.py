@@ -9,7 +9,7 @@ class CRMValidationException(Exception):
 
 
 class CRMConnector(object):
-    
+
     @staticmethod
     def _wrapper_request(response):
         if response.status_code < 204:
@@ -30,7 +30,7 @@ class CRMConnector(object):
             'Accept': 'application/json'
         }
         return headers
-    
+
     @staticmethod
     def _perform_get(url):
         """
@@ -39,7 +39,7 @@ class CRMConnector(object):
         :return: Requests Response Object
         """
         return requests.get(url=url, headers=CRMConnector._get_headers())
-    
+
     @staticmethod
     def _perform_post(url, data):
         """
@@ -68,7 +68,7 @@ class CRMConnector(object):
         :return: Requests Response Object
         """
         return CRMConnector._wrapper_request(requests.delete(url=url, headers=CRMConnector._get_headers()))
-    
+
     @staticmethod
     def search_party_by_email(email):
         """
@@ -111,8 +111,8 @@ class CRMConnector(object):
 
     @staticmethod
     def update_party(party_id, party):
-        print(type(party))
-        print(party)
+        # print(type(party))
+        # print(party)
         party = json.dumps(party)
         return CRMConnector._perform_post(settings.CAPSULE_BASE_URL_PARTIES + '/' + str(party_id), party)
 
