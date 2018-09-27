@@ -805,8 +805,8 @@ class v13:
             # if it is not an ongoing project check dates
 
             if project_end_date is not None:
-                if project_end_date > dt.now():
-                    return bad_request('The project end date cannot be in the future')
+                # if project_end_date > dt.now():
+                #     return bad_request('The project end date cannot be in the future')
                 if project_end_date < project_start_date:
                     return bad_request('The project end date cannot be before the project start date')
 
