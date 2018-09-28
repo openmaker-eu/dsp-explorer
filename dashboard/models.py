@@ -141,7 +141,6 @@ class Country(models.Model):
     def __str__(self):
         return self.code
 
-
 class Location(models.Model):
 
     lat = models.CharField(null=True, blank=True, max_length=20)
@@ -314,6 +313,12 @@ class Profile(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
     interest = GenericRelation('Interest')
 
+    activities_domain = models.TextField(max_length=1000, null=True, blank=True, default='')
+    activities_area = models.TextField(max_length=1000, null=True, blank=True, default='')
+    activities_technology = models.TextField(max_length=1000, null=True, blank=True, default='')
+    activities_skills = models.TextField(max_length=1000, null=True, blank=True, default='')
+
+
     # domain = models.TextField(blank=True)
     # area = models.TextField(blank=True)
     # technology = models.TextField(blank=True)
@@ -382,19 +387,37 @@ class Profile(models.Model):
         profile.city = kwargs.get('city', None)
         profile.occupation = kwargs.get('occupation', None)
         profile.place = kwargs.get('place', None)
-        profile.city = kwargs.get('city', None)
-
-        profile.city = kwargs.get('area', None)
-        profile.city = kwargs.get('domain', None)
-        profile.city = kwargs.get('technology', None)
-        profile.city = kwargs.get('skills', None)
 
         profile.reset_token = Profile.get_new_reset_token()
         profile.save()
 
         tags and profile.tags_create_or_update(tags)
 
+        profile.activity('area', kwargs.get('area', None))
+        profile.activity('technology', kwargs.get('technology', None))
+        profile.activity('skills', kwargs.get('skills', None))
+        profile.activity('domain', kwargs.get('domain', None))
+        profile.save()
+        
+        # Profile Extra
+        #profile.tags_create_or_update(kwargs.get('tags', None), clear=True)
+
+        cls.create_or_update_to_crm(profile.user)
+
         return profile
+
+    @classmethod
+    def create_or_update_to_crm(cls, user):
+        from crmconnector.models import Party
+        user = user or cls
+        try:
+            party = Party(user)
+            party.create_or_update()
+        except Exception as e:
+            print('#####################################')
+            print('Error creating/updating user to CRM')
+            print(e)
+            print('#####################################')
 
     def tags_create_or_update(self, tags, clear=False, tag_type=None):
         if not tags:
