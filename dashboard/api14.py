@@ -300,9 +300,11 @@ class entity(APIView):
                         # results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException as e:
                 print(e)
+                logger.error(e)
                 pass
             except AttributeError as a:
                 print(a)
+                logger.error(a)
                 pass
 
         # paginator = Paginator(results, per_page)

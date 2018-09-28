@@ -10,22 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='profile',
-            name='activities_area',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='activities_domain',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='activities_skills',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='activities_technology',
-        ),
         migrations.AddField(
             model_name='profile',
             name='area',
