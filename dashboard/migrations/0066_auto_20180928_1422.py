@@ -8,44 +8,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('dashboard', '0065_tag_type'),
     ]
-
     operations = [
-        migrations.RemoveField(
-            model_name='profile',
-            name='area',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='domain',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='skills',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='technology',
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='activities_area',
-            field=models.TextField(blank=True, default='', max_length=1000, null=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='activities_domain',
-            field=models.TextField(blank=True, default='', max_length=1000, null=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='activities_skills',
-            field=models.TextField(blank=True, default='', max_length=1000, null=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='activities_technology',
-            field=models.TextField(blank=True, default='', max_length=1000, null=True),
-        ),
         migrations.AlterField(
             model_name='tag',
             name='type',

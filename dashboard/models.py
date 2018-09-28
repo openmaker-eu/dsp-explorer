@@ -398,7 +398,7 @@ class Profile(models.Model):
         profile.activity('skills', kwargs.get('skills', None))
         profile.activity('domain', kwargs.get('domain', None))
         profile.save()
-        
+
         # Profile Extra
         #profile.tags_create_or_update(kwargs.get('tags', None), clear=True)
 
