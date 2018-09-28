@@ -96,10 +96,10 @@ class Party(object):
 
         custom_fields = {
             '444006': user.profile.city,
-            '448805': user.profile.sector,
-            '411952': user.profile.size,
-            '444014': user.profile.technical_expertise,
-            '412036': user.profile.technical_expertise,
+            #'448805': user.profile.sector,
+            #'411952': user.profile.size,
+            #'444014': user.profile.technical_expertise,
+            #'412036': user.profile.technical_expertise,
             '444008': user.profile.occupation,
             '444007': user.profile.birthdate
                 if isinstance(user.profile.birthdate, str)
@@ -108,16 +108,16 @@ class Party(object):
             '444016': user.profile.statement if not user.profile.statement or len(user.profile.statement) < 250 else user.profile.statement[:247]+'...',
 
             # Types of innovation
-            '411984': 'Product innovation' in user.profile.types_of_innovation,
-            '411985': 'Process innovation' in user.profile.types_of_innovation,
-            '411987': 'Technological innovation' in user.profile.types_of_innovation,
-            '411988': 'Business model innovation' in user.profile.types_of_innovation,
-            '411989': 'Social innovation' in user.profile.types_of_innovation,
+            #'411984': 'Product innovation' in user.profile.types_of_innovation,
+            #'411985': 'Process innovation' in user.profile.types_of_innovation,
+            #'411987': 'Technological innovation' in user.profile.types_of_innovation,
+            #'411988': 'Business model innovation' in user.profile.types_of_innovation,
+            #'411989': 'Social innovation' in user.profile.types_of_innovation,
 
             #Other
-            '450898': user.profile.role_other,
-            '450899': user.profile.technical_expertise_other,
-            '450900': user.profile.sector_other,
+            #'450899': user.profile.technical_expertise_other,
+            #'450898': user.profile.role_other,
+            #'450900': user.profile.sector_other,
 
             # @TODO: make methods in model that saves and retrieve this
             #'444010': ','.join(map(lambda x: x.name, user.profile.source_of_inspiration.all())) if len(user.profile.source_of_inspiration.all()) > 0 else None

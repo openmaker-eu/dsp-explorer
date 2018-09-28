@@ -9,6 +9,7 @@ django.setup()
 from dashboard.models import User, Profile, Location, Invitation
 import json
 from utils.GoogleHelper import GoogleHelper
+from utils.Colorizer import Colorizer
 
 
 def sanitize_place(user):
@@ -62,13 +63,14 @@ def update_crm(user):
         # Crm
         party = Party(user)
         party.create_or_update()
-    except:
-        print('Error updating crm user')
-        print(user.email)
-        print('#################################')
+    except Exception as e:
+        print(Colorizer.Red('###############################################'))
+        print(Colorizer.Red('UPDATE Error : ' + user.email))
+        print(e)
+        print(Colorizer.Red('###############################################'))
 
-    print('user updated: ')
-    print(user.email)
+    print(Colorizer.Green('user updated: '+user.email))
+
 
 if __name__ == "__main__":
     users = User.objects.all()
