@@ -1,4 +1,4 @@
-let fields = require('../../../templates/question_templates.html')
+let fields = require('./templates/question_templates.html')
 let _ = require('lodash')
 
 //let question_text = 'As a maker/manufacturer/stakeholder/user which of the following maker related activity domains or application areas would you say you are most active?'

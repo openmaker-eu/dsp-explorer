@@ -11,7 +11,9 @@ let template = `
                     
                 </div>
             </div>
+            
         </div>
+        <div class="col-md-12"><h5 class="text-center">Image size must be less than 1MB</h5></div>
         
         <div class="col-md-12 col-sm-12">
              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
@@ -99,7 +101,7 @@ export default [function(){
     return {
         template:template,
         scope: { projectid : '=', tags: '=' },
-        controller : ['$scope', '$http', '$sce', '$window', 'toastr', function($scope, $http, $sce, $window, toastr){
+        controller : ['$scope', '$rootScope', '$http', '$sce', '$window', 'toastr', function($scope, $rootScope, $http, $sce, $window, toastr){
 
         // form data
         $scope.data = {}
@@ -118,7 +120,13 @@ export default [function(){
                 $window.location.href = '/profile/project/' + $scope.projectid + '/detail':
                 $window.location.href = '/profile'
             )
-            .catch(r=>toastr.error('Error', response.data.message))
+            .catch(
+                r=>{
+                    console.log('Error', r);
+                    console.log('Error', r.data.message);
+                    $rootScope.alert_message ('danger', _.get(r, 'data.message'))
+                }
+            )
             
         }
 

@@ -1,4 +1,4 @@
-let fields = require('../../../templates/question_templates.html')
+let fields = require('./templates/question_templates.html')
 import {TemplateLoader} from '../../classes/TemplateLoader'
 
 let template = `
@@ -18,7 +18,7 @@ let template = `
      <div>
 `
 
-export default { 
+export default {
     transclude: true,
     template: template,
     bindings: {

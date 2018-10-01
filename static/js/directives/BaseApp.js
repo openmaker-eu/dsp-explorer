@@ -13,15 +13,14 @@ export default [function(){
             pageinfo:'=',
             twitterscreenname : '='
         },
-        controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', '$element', '$timeout', '$location',
-            function($scope, $rootScope, $http, LoginService, QuestionModal, $element, $timeout, $location){
+        controller : ['$scope', '$rootScope', '$http', 'LoginService', 'QuestionModal', '$element', '$timeout', '$location', '$window',
+            function($scope, $rootScope, $http, LoginService, QuestionModal, $element, $timeout, $location, $window){
             
             // GLOBAL ACTIONS
             $rootScope.open_signup = ($event)=> { $event.stopPropagation(); $rootScope.$emit('question.modal.open') }
             $rootScope.logout = LoginService.logout
             
             $rootScope.login =(oauth)=>{
-    
                 let timeout = oauth? 1000: 0
                 $timeout(function(a){
                     QuestionModal.open(
@@ -39,8 +38,19 @@ export default [function(){
                         ,'login'
                     )
                 }, timeout)
+            }
+            
+            $rootScope.alert_message = (message_type, message_text)=>{
+                $rootScope.message = {type:message_type, text:message_text}
+                let message_id = $rootScope.message.id = new Date().getUTCMilliseconds()
+                $window.scrollTo(0,0)
+                
+                $timeout(function () {
+                    $rootScope.message && $rootScope.message.id === message_id && ($rootScope.message=null)
+                }, 20000)
                 
             }
+            
             
             $rootScope.authorization=$scope.authorization
             $rootScope.twitter_auth=$scope.twitterauth
@@ -64,7 +74,6 @@ export default [function(){
                 }, 1000)
             });
 
-            
         }]
     }
     

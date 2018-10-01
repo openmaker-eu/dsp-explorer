@@ -787,49 +787,59 @@ class v13:
             # check if fields are filled
             try:
                 project_image = request.FILES.get('picture')
-                v13.check_image(project_image)
                 project_name = request.POST['name']
                 project_description = request.POST['description']
                 project_start_date = dt.strptime(request.POST['start_date'], '%Y-%m-%d')
                 project_creator_role = request.POST['creator_role']
                 project_url = request.POST['project_url']
                 project_tags = request.POST['tags']
+
+                # Check image
+                is_image_ok = v13.check_image(project_image)
+                if is_image_ok is not True:
+                    return is_image_ok
+
             except KeyError as k:
                 print(k)
-                return bad_request("Please       fill all the fields")
+                return bad_request("Please fill all the fields")
+            except Exception as e:
+                return bad_request(e)
+
             # check if is or not an ongoing project
             try:
                 project_end_date = dt.strptime(request.POST['end_date'], '%Y-%m-%d')
             except KeyError:
                 project_end_date = None
+
             # if it is not an ongoing project check dates
-
             if project_end_date is not None:
-                # if project_end_date > dt.now():
-                #     return bad_request('The project end date cannot be in the future')
                 if project_end_date < project_start_date:
-                    return bad_request('The project end date cannot be before the project start date')
+                    return bad_request('The project END DATE cannot be before the project START DATE')
 
-            # check user has not project with that name
-            profile = request.user.profile
-            projects = Project.objects.filter(profile=profile, name=project_name)
-            if len(projects) > 0:
-                return bad_request('Project name already exist')
+            try:
+                # check user has not project with that name
+                profile = request.user.profile
+                projects = Project.objects.filter(profile=profile, name=project_name)
+                if len(projects) > 0:
+                    return bad_request('Project name already exist')
 
-            project = Project(profile=profile,
-                              name= project_name,
-                              picture=project_image,
-                              description=project_description,
-                              start_date=project_start_date,
-                              end_date=project_end_date,
-                              creator_role=project_creator_role,
-                              project_url=project_url)
-            project.save()
-            project.tags.clear()
-            for tagName in [x.lower().capitalize() for x in project_tags.split(",")]:
-                project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
-            project.save()
-            result = ProjectSerializer(project).data
+                project = Project(profile=profile,
+                                  name=project_name,
+                                  picture=project_image,
+                                  description=project_description,
+                                  start_date=project_start_date,
+                                  end_date=project_end_date,
+                                  creator_role=project_creator_role,
+                                  project_url=project_url)
+                project.save()
+                project.tags.clear()
+                for tagName in [x.lower().capitalize() for x in project_tags.split(",")]:
+                    project.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
+                project.save()
+                result = ProjectSerializer(project).data
+            except Exception as e:
+                return bad_request(e)
+
             return success('ok', 'project created', result)
 
     @staticmethod
@@ -847,15 +857,17 @@ class v13:
                 project_image.name = str(datetime.now().microsecond) + '_' + str(project_image._size) + file_extension
         except ValueError as exc:
             if str(exc) == 'sizelimit':
-                return bad_request('project_image size must be less than 1MB')
+                return bad_request('Image size must be less than 1MB')
             if str(exc) == 'nonvalid':
-                return bad_request('project_image is not an image file')
+                return bad_request('The file you uploaded is not a supported image file ( you must upload a jpg or a png file')
         except KeyError as k:
             print(k)
             return bad_request("please fill all the fields")
         except Exception as e:
             print(e)
-            return bad_request('some error in the image upload')
+            return bad_request('Some error in the image upload process occour. Please try again.')
+        else:
+            return True
 
 ###########
 # API V 1.2

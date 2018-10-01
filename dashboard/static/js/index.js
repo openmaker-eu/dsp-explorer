@@ -62,13 +62,13 @@ app.controller('searchController', require('./controllers/searchmembers.controll
 app.directive('userStories', require('./directives/UserStories.directive').default )
 
 // Challenge
-app.directive('challengeList', require('./directives/ChallengeList').default )
-app.directive('challenge', require('./directives/Challenge').default )
+app.directive('challengeList', require('./directives/challenge/ChallengeList').default )
+app.directive('challenge', require('./directives/challenge/Challenge').default )
 
 // Projects
-app.directive('projectDetail', require('./directives/ProjectDetail').default )
-app.directive('projectList', require('./directives/ProjectList').default )
-app.directive('project', require('./directives/Project').default )
+app.directive('projectDetail', require('./directives/project/ProjectDetail').default )
+app.directive('projectList', require('./directives/project/ProjectList').default )
+app.directive('project', require('./directives/project/Project').default )
 
 /******
 * MDP *
@@ -106,7 +106,7 @@ app.directive('profileQuestions', require('./directives/questions/ProfileQuestio
 app.directive('naviQuestions', require('./directives/questions/NaviQuestions').default )
 app.directive('naviChatbot', require('./directives/questions/NaviChatbot').default )
 
-app.component('activityQuestion', require('./directives/partials/ActivityQuestion').default )
+app.component('activityQuestion', require('./directives/questions/ActivityQuestion').default )
 
 
 // Content providers

@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-let template =  require('../../../templates/profile_details.html')
+let template =  require('./templates/profile_details.html')
 
 export default [function(){
     return {

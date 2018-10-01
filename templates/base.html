@@ -27,8 +27,8 @@
 </head>
 
 <body
-        ng-app="{{ request.resolver_match.app_name }}"
         base-app
+        ng-app="{{ request.resolver_match.app_name }}"
         user="{{json_user}}"
         authorization="{{om_authorization}}"
         pageinfo="{{page_info}}"
@@ -54,11 +54,18 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
                     <h4>{{ message }}</h4>
                 </div>
-
             {% endfor %}
 
-            <div ng-if="$root.message" class="alert alert-dismissible text-center alert-{$ $root.message.type $}">
-                <button type="button" class="close" aria-label="Close" ng-click="$root.message=false;"><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            <div
+                ng-if="$root.message"
+                class="alert alert-dismissible text-center alert-{$ $root.message.type $}"
+            >
+                <button
+                        type="button"
+                        class="close"
+                        aria-label="Close"
+                        ng-click="$root.message=false;"
+                ><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
                 <h4>{$ $root.message.text $}</h4>
             </div>
 

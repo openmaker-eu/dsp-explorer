@@ -303,7 +303,6 @@ class Profile(models.Model):
     technical_expertise = models.TextField(_('Technical Expertise'), max_length=200, null=True, blank=True, default='')
 
     technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
-    technical_expertise_other = models.TextField(_('Technical Expertise other'), max_length=200, null=True, blank=True, default='')
     role_other = models.TextField(_('Role other'), max_length=200, null=True, blank=True, default='')
     sector_other = models.TextField(_('Sector other'), max_length=200, null=True, blank=True, default='')
 
