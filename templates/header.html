@@ -40,7 +40,10 @@
                             <a href="{% url 'pss:application_result' %}">Application Results</a>
                         </li>
                         <li class="{% if current_url == 'dashboard:invite' %}liactive{% endif %}"  style="padding:5%;">
-                            <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Download CSV</a>
+                        <a class="btn login-button" href="{% url 'dashboard:get_invitation_csv' %}">Application CSV</a>
+                        </li>
+                        <li style="padding:5%;">
+                            <a class="btn login-button" href="{% url 'dashboard:get_users_csv' %}">Users CSV</a>
                         </li>
                     </ul>
                 </li>

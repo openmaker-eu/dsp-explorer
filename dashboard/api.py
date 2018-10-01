@@ -796,7 +796,7 @@ class v13:
                 project_tags = request.POST['tags']
             except KeyError as k:
                 print(k)
-                return bad_request("Please fill all the fields")
+                return bad_request("Please       fill all the fields")
             # check if is or not an ongoing project
             try:
                 project_end_date = dt.strptime(request.POST['end_date'], '%Y-%m-%d')

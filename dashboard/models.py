@@ -313,10 +313,10 @@ class Profile(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, default=None)
     interest = GenericRelation('Interest')
 
-    domain = models.TextField(blank=True)
-    area = models.TextField(blank=True)
-    technology = models.TextField(blank=True)
-    skills = models.TextField(blank=True)
+    # domain = models.TextField(blank=True)
+    # area = models.TextField(blank=True)
+    # technology = models.TextField(blank=True)
+    # skills = models.TextField(blank=True)
 
     def activity(self, tag_type, tags=None):
         '''

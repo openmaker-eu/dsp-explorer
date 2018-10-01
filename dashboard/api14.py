@@ -33,6 +33,7 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from connectors.insight.connector import InsightConnectorV10 as Insight
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 
 def __wrap_response(*args, **kwargs):
@@ -443,3 +444,82 @@ def apilogout(request):
     from django.contrib.auth import logout
     logout(request)
     return Response({'authorization': 0})
+
+
+@login_required
+def users_csv(request):
+    from django.http import HttpResponse
+    import csv
+
+    if not request.user.is_superuser:
+        return HttpResponse(status=401)
+
+    response = HttpResponse(csv, content_type='application/csv')
+    response['Content-Disposition'] = 'attachment; filename="OM_users.csv"'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="OM_users.csv"'
+    writer = csv.writer(response, delimiter=';', lineterminator='\n', quoting=csv.QUOTE_ALL, dialect='excel')
+
+    writer.writerow([
+        'user:email',
+        'user:first_name',
+        'user:last_name',
+        'user:birthdate',
+        'user:gender',
+        'user:occupation',
+        'location:city',
+        'location:state',
+        'location:country',
+        'location:country_short',
+        'location:post_code',
+        'location:lat',
+        'location:long',
+        'activity:domain',
+        'activity:area',
+        'activity:technology',
+        'activity:skills'
+    ])
+
+    profiles = Profile.objects.all()
+    for profile in profiles:
+        try:
+            location = {}
+            try:
+                location = json.loads(profile.place)
+            except Exception as e:
+                pass
+
+            activities = {'domain': '', 'area': '', 'technology': '', 'skills': ''}
+
+            for k, activity in activities.items():
+                activities[k] = ','.join([x.name for x in profile.tags.filter(type=k)])
+
+            writer.writerow([
+                profile.user.email,
+                profile.user.first_name,
+                profile.user.last_name,
+                profile.birthdate,
+                profile.gender,
+                profile.occupation,
+
+                location.get('city', ' '),
+                location.get('state', ' '),
+                location.get('country', ' '),
+                location.get('country_short', ' '),
+                location.get('post_code', ' '),
+                location.get('lat', ' '),
+                location.get('long', ' '),
+
+                activities.get('domain', ' '),
+                activities.get('area', ' '),
+                activities.get('technology', ' '),
+                activities.get('skills', ' ')
+            ])
+
+        except User.DoesNotExist:
+            print('there are profiles without user')
+
+
+    return response
+
+
