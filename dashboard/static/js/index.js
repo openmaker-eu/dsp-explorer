@@ -96,6 +96,7 @@ app.directive('bookmarkedStripeToggler', require('./directives/partials/Bookmark
 app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').default )
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
+app.directive('accountDelete', require('./directives/partials/AccountDelete').default )
 
 // Questions/Chatbot
 app.directive('wizard', require('./directives/questions/Wizard').default )

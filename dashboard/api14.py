@@ -34,6 +34,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from connectors.insight.connector import InsightConnectorV10 as Insight
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from utils.mailer import EmailHelper
 
 
 def __wrap_response(*args, **kwargs):
@@ -354,7 +355,7 @@ class entity_details(APIView):
 
 @api_view(['POST'])
 def signup(request):
-    from utils.mailer import EmailHelper
+
 
     data = {key: value for (key, value) in request.data.items()}
 
@@ -444,6 +445,32 @@ def apilogout(request):
     from django.contrib.auth import logout
     logout(request)
     return Response({'authorization': 0})
+
+
+@api_view(['POST'])
+def apiunsubscribe(request):
+    try:
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        Profile.delete_account(request.user.pk)
+
+        EmailHelper.email(
+            template_name='account_deletion_confirmation',
+            title='Openmaker Explorer account deletion',
+            vars={
+                'FIRST_NAME': first_name,
+                'LAST_NAME': last_name,
+            },
+            receiver_email=request.user.email
+        )
+        logout(request)
+
+    except Exception as e:
+        print('error removing user')
+        print(e)
+        return Response({'error': e}, status=500)
+
+    return Response()
 
 
 @login_required

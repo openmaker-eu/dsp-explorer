@@ -73,6 +73,8 @@ export default [function(){
                     $location.hash() == 'signup' && $rootScope.$emit('question.modal.open')
                 }, 1000)
             });
+    
+            $location.hash() == 'account_deleted' && $rootScope.alert_message('success', 'Account deleted')
 
         }]
     }
