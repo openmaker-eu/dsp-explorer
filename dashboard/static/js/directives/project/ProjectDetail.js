@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as d3 from 'd3';
 
 
-let template = require('./templates/project_details.html');
+let template = require('./templates/ProjectDetails.html');
 
 export default [function(){
     return {

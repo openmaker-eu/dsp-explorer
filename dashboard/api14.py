@@ -241,7 +241,6 @@ class entity(APIView):
         :param user_id:
         :return:
         """
-
         #TODO make cursor works
         profile = None
         results = []
@@ -261,7 +260,7 @@ class entity(APIView):
         elif entity == 'lovers':
             return interested(request._request, entity='profile', entity_id=user_id)
         elif entity == 'projects' or entity == 'challenges':
-
+            from .helpers import order_date_index
             # Projects
             local_entities = Project.objects.order_by('-end_date')
             if not profile:
@@ -275,14 +274,7 @@ class entity(APIView):
             results = results+ChallengeSerializer(local_entities, many=True).data
 
             # Mix both
-            results = sorted(
-                results,
-                key=lambda k: str(datetime.now()-datetime.strptime(k['end_date'], "%Y-%m-%dT%H:%M:%SZ")
-                                  if k['end_date']
-                                  else datetime.now()+timedelta(days=3650)),
-                reverse=False
-            )
-            # datetime.now()-k['end_date'] if k['end_date'] else datetime.now()+timedelta(days=3650)
+            results = sorted(results, key=order_date_index, reverse=False)
 
         elif entity == 'matches':
             local_entities = Profile.objects.get(pk=user_id).best_matches()

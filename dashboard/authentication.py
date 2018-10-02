@@ -284,15 +284,20 @@ def onboarding(request):
 
 def onboarding_confirmation(request, token):
 
+    party_crm_id = ''
+
     # Check for token
     try:
         profile = Profile.objects.filter(reset_token=token).first()
     except Profile.DoesNotExist:
-        messages.error(request, 'Your token is expired please try to login or recover your password')
+        messages.error(request, 'Your token is expired please try to login or <a href="' + reverse('dashboard:resend_activation_email') + '">Resend activation email</a>')
         return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
+        messages.error(request, 'An error occour during the confirmation process please try again')
+        logger.error('User confirmation error %s' % e)
         print('other error')
         print(e)
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
 
     # update on crm
     try:
@@ -300,32 +305,43 @@ def onboarding_confirmation(request, token):
         result = party.create_or_update()
         party_crm_id = result['party']['id']
     except NotFound as e:
-        messages.error(request, 'There was some connection problem, please try again')
+        messages.debug(request, 'There was some connection problem, please try again')
         print('crm NotFound')
         print(e)
-        logger.debug('CRM CREATION USER CONNECTION ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:homepage'))
+        logger.error('CRM CREATION USER CONNECTION ERROR %s' % e)
     except Exception as e:
         print('crm Exception')
         print(e)
-        logger.debug('CRM CREATION USER ERROR %s' % e)
-        return HttpResponseRedirect(reverse('dashboard:homepage'))
+        logger.error('CRM CREATION USER ERROR %s' % e)
 
+    # Activate user
     try:
         profile.user.is_active = True
-        profile.set_crm_id(party_crm_id)
         profile.user.save()
+    except Exception as e:
+        print('USER ACTIVATION: error login after activation')
+        print(e)
+        logger.error('USER ACTIVATION: error updating user state %s' % e)
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
+
+    # Update crm and login user
+    try:
+        profile.set_crm_id(party_crm_id)
         profile.update_reset_token()
         login(request, profile.user)
     except Exception as e:
         print('USER ACTIVATION: error login after activation')
         print(e)
+        logger.error('USER ACTIVATION: error updating crm %s' % e)
+        return HttpResponseRedirect(reverse('dashboard:homepage'))
 
+    # Dobfuscate invitation
     try:
         Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
     except Exception as e:
         print('error email deobfuscation')
         print(e)
+        logger.error('USER ACTIVATION: error deobfuscate email %s' % e)
 
     messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community')
     return HttpResponseRedirect(reverse('dashboard:homepage'))
