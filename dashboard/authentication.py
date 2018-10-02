@@ -37,7 +37,7 @@ def login_page(request):
     if request.POST:
         username = request.POST['email']
         password = request.POST['password']
-        
+
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
@@ -71,8 +71,12 @@ def recover_pwd(request):
 
             # Check if user is active
             if not profile.user.is_active:
-                messages.error(request, 'Your user is not yet active, '
-                               'please complete the activation process before requesting a new password')
+                messages.error(
+                    request,
+                    'Your user is not yet active, <br>'
+                    'Please complete the activation process by clicking on the link in the email you received after signup <br>' \
+                    'or click on <a href="' + reverse('dashboard:resend_activation_email') + '">Resend activation email</a>'
+                )
                 return HttpResponseRedirect(reverse('dashboard:homepage'))
 
             profile.reset_token = Profile.get_new_reset_token()
@@ -101,6 +105,38 @@ def recover_pwd(request):
     return render(request, 'dashboard/recover_pwd.html', {})
 
 
+def resend_activation_email(request):
+
+    if request.user.is_authenticated:
+        messages.error(request, 'You dont need to activate your account while your user has already been activated and you are currently logged in!')
+    elif request.user.is_active:
+        messages.error(request, 'Your user has already been activated. If you cannot login try <a href="/recover">password recovery</a>')
+    elif request.POST:
+
+        email = request.POST.get('email', '')
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            messages.error(request, 'There isn\'t a User with the email '+email+' on this platform.')
+        elif user.is_active:
+            messages.error(request, 'Your user has already been activated. If you cannot login try <a href="/recover">password recovery</a>')
+        else:
+            confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=user.profile.reset_token))
+            EmailHelper.email(
+                template_name='onboarding_email_template',
+                title='OpenMaker - Confirm your email',
+                vars={
+                    'FIRST_NAME': user.first_name,
+                    'LAST_NAME': user.last_name,
+                    'CONFIRMATION_LINK': confirmation_link,
+                },
+                receiver_email=user.email
+            )
+            messages.success(request, 'Check your inbox, we have send you an email with the confirmation link.')
+
+    return render(request, 'dashboard/resend_activation_email.html', {})
+
+
 def reset_pwd(request, reset_token):
     """
     Method used to reset the password
@@ -119,7 +155,7 @@ def reset_pwd(request, reset_token):
     if profile.ask_reset_at < seven_days_ago:
         messages.error(request, 'Token Expired, Please try asking to reset your password.')
         return HttpResponseRedirect(reverse('dashboard:homepage'))
-    
+
     if request.POST:
         password = request.POST['password']
         repeat_password = request.POST['repeat_password']
@@ -247,14 +283,11 @@ def onboarding(request):
 
 
 def onboarding_confirmation(request, token):
+
     # Check for token
-
-    print(' ################ confirmation')
-
     try:
-        profile = Profile.objects.get(reset_token=token)
+        profile = Profile.objects.filter(reset_token=token).first()
     except Profile.DoesNotExist:
-        print('no exist')
         messages.error(request, 'Your token is expired please try to login or recover your password')
         return HttpResponseRedirect(reverse('dashboard:homepage'))
     except Exception as e:
@@ -278,36 +311,21 @@ def onboarding_confirmation(request, token):
         logger.debug('CRM CREATION USER ERROR %s' % e)
         return HttpResponseRedirect(reverse('dashboard:homepage'))
 
-    profile.user.is_active = True
-    profile.set_crm_id(party_crm_id)
-    profile.user.save()
-    profile.update_reset_token()
-    login(request, profile.user)
+    try:
+        profile.user.is_active = True
+        profile.set_crm_id(party_crm_id)
+        profile.user.save()
+        profile.update_reset_token()
+        login(request, profile.user)
+    except Exception as e:
+        print('USER ACTIVATION: error login after activation')
+        print(e)
 
-    Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
-
-    # Modal creation after first login
-    # body = '' \
-    #        '<div class="row">' \
-    #        '<div class="col-md-12 text-center margin-top-30 margin-bottom-30">' \
-    #        '<p class="margin-bottom-30">Start discover the community and build great projects!</br>Remember to <strong>nominate</strong> your friends!</p>' \
-    #        '<div class="col-md-6 text-center">' \
-    #        '<a href="{EXPLORE_LINK}" class="btn login-button">Start exploring</a>' \
-    #        '</div>' \
-    #        '<div class="col-md-6 text-center">' \
-    #        '<a href="{INVITE_LINK}" class="btn login-button">Invite a friend</a>' \
-    #        '</div>' \
-    #        '</div></div>'.format(
-    #             EXPLORE_LINK=reverse('dashboard:dashboard'),
-    #             INVITE_LINK=reverse('dashboard:invite')
-    #             )
-    #
-    # modal_options = {
-    #     "title": "Welcome onboard %s!" % profile.user.first_name,
-    #     "body": escape_html(body),
-    #     "footer": False
-    # }
-    # messages.info(request, json.dumps(modal_options), extra_tags='modal')
+    try:
+        Invitation.deobfuscate_email(profile.user.email, profile.user.first_name, profile.user.last_name)
+    except Exception as e:
+        print('error email deobfuscation')
+        print(e)
 
     messages.success(request, 'Signup process completed! Now you are part of the OpenMaker community')
     return HttpResponseRedirect(reverse('dashboard:homepage'))

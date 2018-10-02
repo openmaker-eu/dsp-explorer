@@ -13,7 +13,7 @@ let template = `
             <!--<div ng-if="!(x.question || x.super_text || x.text)" class="signup-input">-->
             <div class="signup-input" style="width:100%;"></div>
             
-            <h3 ng-if="x.error" class=" signup-template__label text-red">{$ x.error $}</h3>
+            <h4 ng-if="x.error" class=" signup-template__label text-red" ng-bind-html="x.error"></h4>
         </div>
      <div>
 `

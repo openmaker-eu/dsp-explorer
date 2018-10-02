@@ -52,7 +52,7 @@
                     role="alert"
                 >
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span class="fas fa-times" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                    <h4>{{ message }}</h4>
+                    <h4>{{ message | safe  }}</h4>
                 </div>
             {% endfor %}
 

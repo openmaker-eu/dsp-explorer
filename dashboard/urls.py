@@ -78,6 +78,7 @@ urlpatterns = [
     url(r'^onboarding/$', authentication.onboarding, name='onboarding'),
     url(r'^onboarding/confirmation/(?P<token>.+)/$', authentication.onboarding_confirmation, name='onboarding_confirmation'),
     url(r'^om_confirmation/(?P<sender_first_name>.+)/(?P<sender_last_name>.+)/(?P<sender_email>.+)/(?P<receiver_first_name>.+)/(?P<receiver_last_name>.+)/(?P<receiver_email>.+)/$', authentication.om_confirmation, name='om_confirmation'),
+    url(r'^resend_activation_email/$', authentication.resend_activation_email, name='resend_activation_email'),
 
     # static
     url(r'^privacy/$', static.privacy, name='privacy'),

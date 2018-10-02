@@ -23,13 +23,13 @@ class EmailHelper(object):
                            receiver_name="top-ix User",
                            receiver_email="test1@top-ix.org")
     """
-    
+
     @staticmethod
     def _format_email(name, email):
         return "{} <{}>".format(name, email)
-    
+
     @staticmethod
-    def send_email(message, subject, sender_name='DSPExplorer - Open Maker',
+    def send_email(message, subject, sender_name='Explorer - Open Maker',
                    receiver_name=None, sender_email='noreply@openmaker.eu',
                    receiver_email=None):
         from email.mime.multipart import MIMEMultipart

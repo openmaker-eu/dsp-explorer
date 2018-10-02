@@ -35,6 +35,8 @@ from connectors.insight.connector import InsightConnectorV10 as Insight
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from utils.mailer import EmailHelper
+from django.urls import reverse
+from datetime import datetime, timedelta
 
 
 def __wrap_response(*args, **kwargs):
@@ -259,15 +261,29 @@ class entity(APIView):
         elif entity == 'lovers':
             return interested(request._request, entity='profile', entity_id=user_id)
         elif entity == 'projects' or entity == 'challenges':
+
+            # Projects
             local_entities = Project.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
             results = results+ProjectSerializer(local_entities, many=True).data
+
+            # Challenges
             local_entities = Challenge.objects.order_by('-end_date')
             if not profile:
                 local_entities = local_entities[:5]
             results = results+ChallengeSerializer(local_entities, many=True).data
-            results = sorted(results, key=lambda k: k['end_date'] or '', reverse=False)
+
+            # Mix both
+            results = sorted(
+                results,
+                key=lambda k: str(datetime.now()-datetime.strptime(k['end_date'], "%Y-%m-%dT%H:%M:%SZ")
+                                  if k['end_date']
+                                  else datetime.now()+timedelta(days=3650)),
+                reverse=False
+            )
+            # datetime.now()-k['end_date'] if k['end_date'] else datetime.now()+timedelta(days=3650)
+
         elif entity == 'matches':
             local_entities = Profile.objects.get(pk=user_id).best_matches()
             results = ProfileSerializer(local_entities, many=True).data
@@ -421,7 +437,14 @@ def apilogin(request):
                 print('error twitter auth')
                 print(e)
     else:
-        return Response(data={'error': 'Username or password are wrong'}, status=401)
+        user = User.objects.filter(email=request.data.get('username', False)).first()
+        message = 'Your user is not yet active!<br>' \
+                  'Please complete the activation process by clicking on the link in the email you received after signup <br>' \
+                  'or click on <a href="' + reverse('dashboard:resend_activation_email') + '">Resend activation email</a>' \
+            if user and not user.is_active \
+            else 'Username or password are wrong'
+
+        return Response(data={'error': message}, status=401)
 
     # Try to fill crm_id if not present
     if not user.profile.crm_id:
