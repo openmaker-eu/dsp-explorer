@@ -16,7 +16,7 @@ from .functions import update_crm
 def run(*args):
     profiles = Profile.objects.filter(user__email=args[0]) \
         if len(args) > 0 \
-        else profiles = Profile.objects.all()
+        else Profile.objects.all()
 
     for profile in profiles:
         try:
