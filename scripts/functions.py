@@ -84,9 +84,10 @@ def update_crm(user):
         print(Colorizer.Red('UPDATE Error : ' + user.email))
         print(e)
         print(Colorizer.Red('###############################################'))
+        return {'user': user, 'error': e}
     else:
         print(Colorizer.Green('user updated: '+user.email))
-
+        return False
 
 def update_activities(user):
     res = {
