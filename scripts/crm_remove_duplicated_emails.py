@@ -18,10 +18,8 @@ def run(*args):
     profiles = Profile.objects.filter(user__email=args[0]) \
         if len(args) > 0 \
         else Profile.objects.all()
-    for k, profile in enumerate(profiles):
-        print(Colorizer.Cyan('UPDATING : ' + str(k) + ' of ' + str(len(profiles))))
-        results = update_crm(profile.user)
-        results and errored.append(results)
+
+
 
     print(Colorizer.Yellow(' '))
     print(Colorizer.Yellow('############### RESULTS ###############'))

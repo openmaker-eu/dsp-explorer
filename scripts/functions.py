@@ -18,7 +18,6 @@ activities = {
     'skills': ['Coding: Python', 'Coding: Processing', 'Coding: Django', 'Graphic design', 'Wood carving', 'Clay Sculpting', 'Team Management', 'Workshop Coordination', 'Budgeting', 'Marketing', 'Product design', 'Creative writing', 'Lecturing', 'Painting', 'Social entrepreneurship', 'Drawing']
 }
 
-
 def sanitize_place(user):
     try:
         if user.profile:
@@ -76,18 +75,13 @@ def add_crm_id_to_profile(user):
 def update_crm(user):
     from crmconnector.models import Party
     try:
-        # Crm
         party = Party(user)
         party.create_or_update()
+        return True
     except Exception as e:
-        print(Colorizer.Red('###############################################'))
-        print(Colorizer.Red('UPDATE Error : ' + user.email))
-        print(e)
-        print(Colorizer.Red('###############################################'))
         return {'user': user, 'error': e}
-    else:
-        print(Colorizer.Green('user updated: '+user.email))
-        return False
+
+
 
 def update_activities(user):
     res = {
@@ -105,6 +99,8 @@ def update_activities(user):
                 res[key].append(tag)
 
     [update_res(tag, res) for tag in user.profile.tags.all()]
+
+
 
 
 if __name__ == "__main__":
