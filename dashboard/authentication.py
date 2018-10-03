@@ -316,7 +316,7 @@ def onboarding_confirmation(request, token):
 
     # Activate user
     try:
-        profile.user.is_active = True
+        profile.user.is_active = 1
         profile.user.save()
     except Exception as e:
         print('USER ACTIVATION: error login after activation')
@@ -326,7 +326,7 @@ def onboarding_confirmation(request, token):
 
     # Update crm and login user
     try:
-        profile.set_crm_id(party_crm_id)
+        party_crm_id and profile.set_crm_id(party_crm_id)
         profile.update_reset_token()
         login(request, profile.user)
     except Exception as e:
