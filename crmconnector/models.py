@@ -49,7 +49,8 @@ class Party(object):
 
         # Standard Optional Fields
         if len(user.profile.tags.all()) > 0:
-            self.tags = [{'name': x.name} for x in user.profile.tags.all()]
+            tags = list(set([x.name for x in user.profile.tags.all()]))
+            self.tags = [{'name': x} for x in tags]
         if user.profile.organization:
             self.organisation = {'name': user.profile.organization}
 
@@ -207,11 +208,12 @@ class Party(object):
     def __merge_email(self):
         if self.__capsule_party and len(self.__capsule_party['emailAddresses']) > 0:
             self.emailAddresses = self.__capsule_party['emailAddresses']
-            email_match = filter(lambda x: x['address'] == self.__local_user.email, self.__capsule_party['emailAddresses'])
             try:
-                self.emailAddresses.append({'address': self.__local_user.email})
-            except:
-                pass
+                emails = [x['address'] for x in self.emailAddresses]
+                self.__local_user.email not in emails and self.emailAddresses.append({'address': self.__local_user.email})
+            except Exception as e:
+                print('CRM MODEL ERROR: error adding email to party contacts')
+                print(e)
 
     # Set delete flag to remote websites and add local to websites field
     # Will remove all websites on capsule crm

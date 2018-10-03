@@ -12,7 +12,18 @@ from utils.GoogleHelper import GoogleHelper
 from utils.Colorizer import Colorizer
 from .functions import update_crm
 
-if __name__ == "__main__":
-    profiles = Profile.objects.all()
+
+def run(*args):
+    profiles = Profile.objects.filter(user__email=args[0]) \
+        if len(args) > 0 \
+        else profiles = Profile.objects.all()
+
     for profile in profiles:
-        update_crm(profile.user)
+        try:
+            update_crm(profile.user)
+            print(Colorizer.Green('SUCCESS CRM user update : ' + profile.user.email))
+        except Exception as e:
+            print(Colorizer.Red('#################################################'))
+            print(Colorizer.Red('ERROR CRM Updating user : ' + profile.user.email))
+            print(Colorizer.Red(e))
+            print(Colorizer.Red('#################################################'))
