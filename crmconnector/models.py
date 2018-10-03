@@ -49,7 +49,7 @@ class Party(object):
 
         # Standard Optional Fields
         if len(user.profile.tags.all()) > 0:
-            tags = list(set([x.name for x in user.profile.tags.all()]))
+            tags = list(set([x.name for x in user.profile.tags.all() if x.name is not None and x.name is not '']))
             self.tags = [{'name': x} for x in tags]
         if user.profile.organization:
             self.organisation = {'name': user.profile.organization}
