@@ -57,15 +57,13 @@ let template = `
                                 </h3>
                         </div>
                         <h3 ng-if="!entity.data.start_date">&nbsp;</h3>
-                        
                         <br>
-                        
                         <img style="padding:0; width:100%;"
                             ng-if="entity.data.im || entity.data.picture || entity.data.cover"
                             ng-src="{$ entity.data.im || entity.data.picture || entity.data.cover $}"
                             onError="this.onerror=null;this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"
                         class="col-md-12">
-                        
+                       
                     </div>
                     
                 </div>

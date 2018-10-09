@@ -217,14 +217,14 @@ def profile(request, profile_id=None, action=None):
             # Multiple choice fields
             new_profile['types_of_innovation'] = request.POST.get('types_of_innovation', None)
             new_profile['socialLinks'] = request.POST.get('socialLinks', None)
-            
+
             # Many to many fields
             source_of_inspiration = request.POST.get('source_of_inspiration', None)
-            
+
             tags = request.POST['tags']
             if tags == '' or tags == None or tags == 'undefined':
                 raise KeyError
-        
+
         except ValueError:
             messages.error(request, 'Incorrect birthdate format: it must be YYYY/MM/DD')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
@@ -232,7 +232,7 @@ def profile(request, profile_id=None, action=None):
             print(KeyError)
             messages.error(request, 'Please fill the required fields!')
             return HttpResponseRedirect(reverse('dashboard:profile',  kwargs={'profile_id': user_profile.id, 'action':action}))
-        
+
         # check birthdate
         if new_profile['birthdate'] > pytz.utc.localize(datetime(dt.datetime.now().year - 13, *new_profile['birthdate'].timetuple()[1:-2])):
             messages.error(request, 'You must be older than thirteen')
@@ -242,24 +242,24 @@ def profile(request, profile_id=None, action=None):
         try:
             imagefile = request.FILES['profile_img']
             filename, file_extension = os.path.splitext(imagefile.name)
-            
+
             allowed_extensions = ['.jpg', '.jpeg', '.png']
             if not (file_extension in allowed_extensions):
                 raise ValueError('nonvalid')
-            
+
             # limit to 1MB
             if imagefile.size > 1048576:
                 raise ValueError('sizelimit')
-            
+
             imagefile.name = str(datetime.now().microsecond) + '_' + str(imagefile._size) + file_extension
-        
+
         except ValueError as exc:
             if str(exc) == 'sizelimit':
                 messages.error(request, 'Image size must be less than 1MB')
             if str(exc) == 'nonvalid':
                 messages.error(request, 'Profile Image is not an image file')
             return HttpResponseRedirect(reverse('dashboard:profile'))
-        
+
         except KeyError as exc:
             imagefile = request.user.profile.picture
         except Exception as exc:
@@ -269,9 +269,9 @@ def profile(request, profile_id=None, action=None):
             ))
             return HttpResponseRedirect(reverse('dashboard:profile'))
         new_profile['picture'] = imagefile
-        
+
         user = User.objects.filter(email=request.user.email).first()
-        
+
         # Update user fields
         user.__dict__.update(new_user)
         user.save()
@@ -281,12 +281,12 @@ def profile(request, profile_id=None, action=None):
 
         # Update place, location, country
         user.profile.set_place(request.POST.get('place', None))
-        
+
         # Update tags
         user.profile.tags.clear()
         for tagName in [x.lower().capitalize() for x in tags.split(",")]:
             user.profile.tags.add(Tag.objects.filter(name=tagName).first() or Tag.create(name=tagName))
-        
+
         # Update sourceofinnovation
         user.profile.source_of_inspiration.through.objects.all().delete()
         if source_of_inspiration:
@@ -308,7 +308,7 @@ def profile(request, profile_id=None, action=None):
 
         messages.success(request, 'Profile updated!')
         return HttpResponseRedirect(reverse('dashboard:profile'))
-    
+
     user_profile.jsonTags = json.dumps([x.name for x in user_profile.tags.all()])
     user_profile.jsonSourceOfInspiration = json.dumps([x.name for x in user_profile.source_of_inspiration.all()])
 
@@ -323,12 +323,11 @@ def profile(request, profile_id=None, action=None):
     return render(request, 'dashboard/profile.html', context)
 
 
-#@login_required()
 def community(request, search_string=''):
     return render(request, 'dashboard/community.html', {
         'search_string': search_string,
         'hot_tags': json.dumps([t[0] for t in Profile.get_hot_tags(30)]),
-        'n_registered_user': Profile.objects.count()
+        'n_registered_user': Profile.search_members().count()
     })
 
 

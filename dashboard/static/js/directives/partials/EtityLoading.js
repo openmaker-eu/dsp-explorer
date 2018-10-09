@@ -32,7 +32,7 @@ export default function(){
             loading : '=',
             error : '=',
             entityname : '@',
-            errormessage : '@',
+            errormessage : '=',
             custommessage : '@'
         },
         controller : ['$scope', '$rootScope', function($scope, $rootScope){

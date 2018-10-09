@@ -10,7 +10,7 @@ let template = `
                         loading="entities.length==0 && !nodata"
                         error="nodata"
                         entityname="{$ entityname $}"
-                        errormessage="You have no bookmarked {$ entityname $}"
+                        errormessage="'You have no bookmarked'+entityname"
                     ></entity-loading>
                 </div>
                 <div ng-if="entities.length > 0">

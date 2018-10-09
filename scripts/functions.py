@@ -18,6 +18,40 @@ activities = {
     'skills': ['Coding: Python', 'Coding: Processing', 'Coding: Django', 'Graphic design', 'Wood carving', 'Clay Sculpting', 'Team Management', 'Workshop Coordination', 'Budgeting', 'Marketing', 'Product design', 'Creative writing', 'Lecturing', 'Painting', 'Social entrepreneurship', 'Drawing']
 }
 
+
+def user_sync_template(callback=lambda x: x, args=[]):
+    errored = []
+    profiles = Profile.objects.filter(user__email=args[0]) \
+        if len(args) > 0 \
+        else Profile.objects.all()
+    print(' ')
+    print(Colorizer.Yellow('############ START UPDATING ###########'))
+    print(' ')
+    for k, profile in enumerate(profiles):
+        counter = '('+str(k) + ' of ' + str(len(profiles))+')'
+        results = callback(profile)
+        if results is not True:
+            print(Colorizer.Red(counter + 'UPDATE ERROR : ' + profile.user.email))
+            [print('   '+line) for line in str(results['error']).split('\n')]
+            errored.append(results)
+        else:
+            print(Colorizer.Cyan(counter) + '' + Colorizer.Green('User updated: ')+profile.user.email)
+
+    print(Colorizer.Yellow(' '))
+    print(Colorizer.Yellow('############### RESULTS ###############'))
+    print('')
+    print(Colorizer.Green(str(len(profiles)-len(errored)) + ' USERS WAS SUCCESFULLY UPDATED'))
+    print(' ')
+    print(Colorizer.Red(str(len(errored)) + ' USERS WITH ERRORS'))
+    for error in errored:
+        print('    ')
+        print('    '+Colorizer.Red(error['user'].email+' - UUID: '+str(error['user'].id)))
+        print('      | EXCEPTION: ')
+        [print('      | '+line) for line in str(error['error']).split('\n')]
+    print(Colorizer.Yellow(' '))
+    print(Colorizer.Yellow('#######################################'))
+
+
 def sanitize_place(user):
     try:
         if user.profile:
@@ -72,14 +106,14 @@ def add_crm_id_to_profile(user):
         print(e)
 
 
-def update_crm(user):
+def sync_profiles(profile):
     from crmconnector.models import Party
     try:
-        party = Party(user)
+        party = Party(profile.user)
         party.create_or_update()
         return True
     except Exception as e:
-        return {'user': user, 'error': e}
+        return {'user': profile.user, 'error': e}
 
 
 

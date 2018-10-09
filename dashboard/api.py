@@ -23,7 +23,7 @@ from .helpers import mix_result_round_robin
 from django.http import HttpResponse
 from django.apps import apps
 import math
-from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
+from dashboard.exceptions import EmailAlreadyUsed, UserAlreadyInvited, SelfInvitation
 from dashboard.models import Challenge, Project, Tag, EntityProxy
 from django.contrib.auth.decorators import login_required
 from datetime import datetime as dt
@@ -33,22 +33,18 @@ import os, re
 from django.http import Http404
 
 
-def search_members(request, search_string):
+def search_members(request, search_string=''):
 
-    members_per_page = 20
+    # Can be 3, 2 or 1 column in the frontend
+    members_per_page = 24
 
-    # Switch between Search and last_n_users
-    if search_string and search_string.strip() != '':
-        results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
-    else:
-        results = Profile.objects.all().reverse()
-
+    # A QuerySet wit all the active users as results if no search string is provided else return the filtered QuerySet
+    results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
     count = results.count()
 
     # Pagination
     page = request.GET.get('page', 1)
     max_page = int(math.ceil(float(count)/float(members_per_page))) or 1
-
     paginator = Paginator(results, members_per_page)
     paginated_results = paginator.page(page)
 

@@ -25,8 +25,9 @@ def authorization(request):
 
     if request.user.is_authenticated:
         context['json_user'] = UserSerializer(request.user).data
-        request.user.profile.get_crm_id_and_save()
         profile = request.user.profile
+
+        request.user.profile.crm_id is None and request.user.profile.get_crm_id_and_save()
 
         context['bookmarks'] = {
             'news': len(profile.get_interests('news')),

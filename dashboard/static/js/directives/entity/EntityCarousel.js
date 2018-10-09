@@ -1,3 +1,5 @@
+let _ = require("lodash");
+
 let template = `
     <div>
         <div class="entity-carousel entity-carousel--{$ entityname $} entity--{$ entityname $}" >
@@ -12,6 +14,7 @@ let template = `
                 loading="entity_list.loading"
                 entityname="{$ entityname $}"
                 error="entity_list && !entity_list.loading && entity_list.data && entity_list.data.length===0"
+                errormessage="error_message"
              ></entity-loading>
             
             <div
@@ -22,7 +25,7 @@ let template = `
                     <div ng-repeat="entity in entity_list.data | limitTo: (limit || 20)" >
                         <entity-detail entity="entity" entityname="{$ entityname $}" preview="true"></entity-detail>
                     </div>
-                </slick>  
+                </slick>
             <div>
             
         </div>
@@ -36,20 +39,44 @@ export default [function(){
         scope: {
             entityid : '@',
             entityname : '@',
-            userid : '@',
+            userid: '@',
+            user: '=',
             slider : '@',
             limit: '=',
             entityperslide: '@',
             carouseltitle : '@'
         },
-        controller : ['$scope', '$http', '$timeout', 'EntityProvider', function($scope, $http, $timeout, EntityProvider) {
-            
+        controller : ['$scope', '$rootScope', '$http', '$timeout', 'EntityProvider', function($scope, $rootScope, $http, $timeout, EntityProvider) {
+            $scope.is_my_profile = false
+            $scope.error_message = false
+            $scope.username = ''
             $scope.entity_list = EntityProvider.make($scope.entityname, $scope.entityid, $scope.userid)
             $scope.entity_list.get()
+            
+            $scope.set_user_dependent_vars = () =>{
+                $scope.is_my_profile = $scope.userid && $scope.userid == $rootScope.user.profile
+                $scope.username = _.get($scope.user, 'data.user.first_name')
+                $scope.error_message = $scope.get_error_message()
+            }
+    
+            $scope.$watch('user.data', $scope.set_user_dependent_vars)
+            $rootScope.$watch('user', $scope.set_user_dependent_vars)
             
             $scope.entitiy_title= ()=> ['challenges', 'projects'].includes($scope.entityname)
                 ? '<span>Projects&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
                 : $scope.entityname == 'news' ? 'articles' : $scope.entityname
+            
+            $scope.get_error_message= () =>
+                $scope.entityname === 'lovers' && $scope.is_my_profile && 'There are no people who have shown interest in you ' ||
+                $scope.entityname === 'lovers' && 'There are no people who have shown interest in '+$scope.username +'. You can show your interest in '+$scope.username+' by clicking on the heart shaped icon' ||
+                
+                $scope.entityname === 'loved' && $scope.is_my_profile && 'You have not shown interest in anyone' ||
+                $scope.entityname === 'loved' && $scope.username+' don\'t shows interest to anyone' ||
+                
+                $scope.entityname === 'matches' && $scope.is_my_profile && 'Currently there are no people similar to you' ||
+                $scope.entityname === 'matches' && 'Currently there are no people similar to '+$scope.username ||
+                
+                false
             
             $scope.$watch('entity_list.data',  (a, b)=>{
                 $scope.reload = true;
@@ -72,7 +99,7 @@ export default [function(){
                 //accessibility: true,
                 adaptiveHeight: false
             }
-
+            
         }]
     }
 }]

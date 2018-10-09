@@ -56,13 +56,15 @@ def __wrap_response(*args, **kwargs):
 def get_entity_details(request, entity='news', entity_id=None):
     results = []
     profile = None
-
     try:
         method_to_call = 'get_' + entity+'_detail'
         results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
-    except DSPConnectorException:
-        pass
+    except DSPConnectorException as e:
+        print('ERROR[dashboard.api14.bookmark]: DSPConnectorException')
+        print(e)
     except AttributeError as a:
+        print('NOT FOUND[dashboard.api14.bookmark]: DSPConnectorException')
+        print(a)
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)
             results = ProjectSerializer(local_entities).data
@@ -89,6 +91,8 @@ def bookmark(request, entity='news', entity_id=None):
         else:
             return Response(profile.is_this_bookmarked_by_me(local_entity))
     except Exception as e:
+        print('ERROR[dashboard.api14.bookmark]')
+        print(e)
         return Response({}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -100,6 +104,7 @@ def get_bookmarks(request):
         serialized = BookmarkSerializer(results, many=True).data
         return Response(serialized)
     except Exception as e:
+        print('NOT FOUND[dashboard.api14.get_bookmarks]')
         return Response({}, status.HTTP_404_NOT_FOUND)
 
 
@@ -111,6 +116,7 @@ def get_bookmark_by_entities(request, entity=None):
         serialized = BookmarkSerializer(results, many=True).data
         return Response(serialized)
     except Exception as e:
+        print('NOT FOUND[dashboard.api14.get_bookmark_by_entities]')
         return Response({}, status.HTTP_404_NOT_FOUND)
 
 
@@ -141,7 +147,7 @@ def interest(request, entity, user_id=None):
         res = model_serializer(interests, many=True).data
         return Response(res)
     except Exception as e:
-        print('Error')
+        print('ERROR[dashboard.api14.interest]')
         print(e)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -157,8 +163,10 @@ def my_interest(request, entity, entity_id):
             GET : if logged user is interested
             POST : toggle interest and return if logged user is interested
     """
-    profile = request.user.profile
+    profile = request.user.profile if request.user.is_authenticated else None
     local_entity = ModelHelper.find_this_entity(entity, entity_id)
+    if profile is None:
+        return Response(False)
     if request.method == 'GET':
         return Response(profile.is_this_interested_by_me(local_entity))
     else:
@@ -218,6 +226,8 @@ def get_interests(request):
 
 @api_view(['GET'])
 def chatbot_interests(request):
+    if not request.user.is_authenticated:
+        return Response(data={}, status=204)
     try:
         profile = request.user.profile
         context = {
@@ -227,7 +237,7 @@ def chatbot_interests(request):
         }
         return Response(data=context)
     except Exception as e:
-        print('Error retrieving chatbot bookmark ')
+        print('ERROR[dashboard.api14.chatbot_interests]: Error retrieving chatbot bookmark ')
         print(e)
         return Response(data={}, status=401)
 
@@ -282,23 +292,28 @@ class entity(APIView):
         else:
             # Remote Entities
             try:
-                topics_list = DSPConnectorV12.get_topics()['topics']
-                topics_id_list = [x['topic_id'] for x in topics_list]
-                method_to_call = 'get_' + entity
+
                 reccomended = []
 
                 if not profile:
-                    results = self.random_content_visitor(topics_id_list, method_to_call, entity)
+                    print('no profile')
+                    # results = self.random_content_visitor(topics_id_list, method_to_call, entity)
+                    results = self.reccomended_content(request, entity, page)
+                    print(len(results))
                     results = results[:5]
                 else:
+                    method_to_call = 'get_' + entity
+
                     if page == 0:
                         reccomended = self.reccomended_content(request, entity, page)
                         more_pages = 1
                         results = reccomended
                         if len(reccomended) == 0:
+                            topics_id_list = self.topic_ids()
                             results = self.random_content_visitor(topics_id_list, method_to_call, entity)
                             results = results[:per_page]
                     else:
+                        topics_id_list = topics_id_list = self.topic_ids()
                         for index, topic_id in enumerate(topics_id_list):
                             entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
                             next_cursor = entity_list.get('next_cursor', 0)
@@ -309,13 +324,14 @@ class entity(APIView):
                         results = mix_result_round_robin(*results)
                         # results = reccomended + mix_result_round_robin(*results)
             except DSPConnectorException as e:
+                print('ERROR[dashboard.api14.entity.get] DSPConnectorException')
+                print('DSPConnectorException :')
                 print(e)
                 logger.error(e)
-                pass
             except AttributeError as a:
+                print('ERROR[dashboard.api14.entity.get] AttributeError')
                 print(a)
                 logger.error(a)
-                pass
 
         # paginator = Paginator(results, per_page)
         # paginated_results = paginator.page(page)
@@ -324,8 +340,15 @@ class entity(APIView):
         status = 200 if more_pages > 0 else 202
         return Response(data=results, status=status)
 
+    def topic_ids(self):
+        topics_list = DSPConnectorV13.get_topics()['topics']
+        return [x['topic_id'] for x in topics_list]
+
     def reccomended_content(self, request, entity, page):
-        return Insight.reccomended_entity(crm_id=request.user.profile.crm_id, entity_name=entity) \
+        return Insight.reccomended_entity(
+            crm_id=request.user.profile.crm_id if request.user.is_authenticated else None,
+            entity_name=entity
+        ) \
             if not page or int(page) == 1 \
             else []
 
@@ -353,6 +376,7 @@ class entity_details(APIView):
         else:
             try:
                 method_to_call = 'get_' + entity+'_detail'
+                # results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity][0]
                 results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity][0]
             except DSPConnectorException:
                 pass
@@ -363,7 +387,6 @@ class entity_details(APIView):
 
 @api_view(['POST'])
 def signup(request):
-
 
     data = {key: value for (key, value) in request.data.items()}
 
@@ -426,7 +449,7 @@ def apilogin(request):
                 twitter_profile.save()
                 delete_twitter_coookie = True
             except Exception as e:
-                print('error twitter auth')
+                print('ERROR[dashboard.api14.apilogin]: error twitter auth')
                 print(e)
     else:
         user = User.objects.filter(email=request.data.get('username', False)).first()
@@ -443,6 +466,7 @@ def apilogin(request):
         try:
             crm_user = CRMConnector.search_party_by_email(user.profile.user.email)
         except Exception as e:
+            print('ERROR[dashboard.api14.apilogin]: crm_user not found')
             print(e)
 
     # Build Response
@@ -481,7 +505,7 @@ def apiunsubscribe(request):
         logout(request)
 
     except Exception as e:
-        print('error removing user')
+        print('ERROR[dashboard.api14.apiunsubscribe]')
         print(e)
         return Response({'error': e}, status=500)
 

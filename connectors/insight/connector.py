@@ -49,19 +49,22 @@ class InsightConnectorV10(object):
             results = []
             print('Error get profile questions')
             print(e)
-
         return results
 
     @classmethod
-    def reccomended_entity(cls, crm_id, entity_name):
+    def reccomended_entity(cls, crm_id=None, entity_name=''):
         allowed_entities = ['news', 'events']
         try:
-            results = cls.get('recommendation/'+entity_name, {'crm_ids': [crm_id]}) if entity_name in allowed_entities else {}
+            results = {}
+            if entity_name in allowed_entities:
+                results = \
+                    cls.get('recommendation/'+entity_name, {'crm_ids': [crm_id]}) if crm_id \
+                    else cls.get('recommendation/'+entity_name)
             json_decoded = results.json() if results.status_code < 205 else []
-            reccomendations = json_decoded['users'][0][entity_name]
+            reccomendations = json_decoded['users'][0][entity_name] if crm_id else json_decoded[entity_name]
             return reccomendations
         except Exception as e:
-            print('Error get reccomended entities')
+            print('[ERROR : connectors.insight.connector.InsigthConnectoV10.reccomended_entity] Error get reccomended entities')
             print(e)
             return []
 
@@ -77,12 +80,23 @@ class InsightConnectorV10(object):
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
         url = settings.INSIGHT_API + 'v1.0/' + endpoint + querydict
         try:
-            return requests.get(url, timeout=8)
+            return requests.get(url, timeout=15)
         except Exception as e:
+            print('ERROR[insight.connector.InsightConnectorV10.get]')
             print(e)
             return False
 
     @classmethod
     def merge_ids(cls, ids):
         return ','.join([str(x) for x in ids]) if len(ids) > 1 else str(ids[0])+','
+
+    @classmethod
+    def notify_user_creation(cls, crm_id):
+        results = cls.get('/omn_crawler/post_registered_user', {'crm_id': crm_id})
+        print('Notify Insight about new users: ')
+        print(results)
+
+
+
+
 

@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'profile', 'twitter_name')
+        fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'twitter_name')
 
     def get_twitter_name(self, obj):
         return obj.profile.twitterprofile.screen_name if hasattr(obj.profile, 'twitterprofile') else None

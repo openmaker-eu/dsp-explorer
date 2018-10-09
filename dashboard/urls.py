@@ -128,6 +128,10 @@ urlpatterns = [
     url(r'^api/v1.4/user/(?P<user_id>\w+)/(?P<entity>\w+)/$', api14.entity.as_view(), name='user_entity'),
 
     # Entity
+    # api/v1.4/news
+    # api/v1.4/events
+    # api/v1.4/projects
+    # api/v1.4/challenges
     url(r'^api/v1.4/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.entity_details.as_view(), name='api_14_entity_detail'),
     url(r'^api/v1.4/(?P<entity>\w+)/$', api14.entity.as_view(), name='api_14_entity'),
 

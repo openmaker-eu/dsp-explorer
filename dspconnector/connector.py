@@ -19,6 +19,10 @@ class DSPConnectorException(Exception):
 class DSPConnectorV13(object):
 
     @staticmethod
+    def get_topics():
+        return DSPConnectorV13._get(DSPConnectorV13.generate_url('/get_topics'))
+
+    @staticmethod
     def get_influencers(topic_id, location="", cursor=0):
         return DSPConnectorV13._get(DSPConnectorV13.generate_url(
             endpoint='/get_local_influencers',
@@ -194,7 +198,7 @@ class DSPConnector(object):
         return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_FEEDS,
                                                            parameter='?themename={}&date={}&cursor={}'.format(
                                                                theme_name, date, cursor)))
-    
+
     @staticmethod
     def get_influencers(theme_name):
         return DSPConnector._get(DSPConnector.generate_url(endpoint=settings.DSP_GET_INFLUENCERS,

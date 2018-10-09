@@ -178,6 +178,9 @@ class Party(object):
         self.__exclude_custom_fields()
         return self.create_or_update()
 
+    def get_crm_id(self):
+        return self.__capsule_party['id']
+
     ###################
     # PRIVATE METHODS #
     ###################

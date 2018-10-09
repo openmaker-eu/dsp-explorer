@@ -80,7 +80,7 @@ class ModelHelper:
         if entity == 'news' or entity == 'events':
             with transaction.atomic():
                 try:
-                    local_entity = EntityProxy.objects.select_for_update().get(type=entity,externalId=entity_id)
+                    local_entity = EntityProxy.objects.select_for_update().get(type=entity, externalId=entity_id)
                 except EntityProxy.DoesNotExist:
                     print("CREATE THE ENTITY [TYPE]:{} --- [ID]:{}".format(entity, entity_id))
                     local_entity = EntityProxy()
@@ -386,17 +386,24 @@ class Profile(models.Model):
 
         tags and profile.tags_create_or_update(tags)
 
+        # Set activities as tags
         profile.activity('area', kwargs.get('area', None))
         profile.activity('technology', kwargs.get('technology', None))
         profile.activity('skills', kwargs.get('skills', None))
         profile.activity('domain', kwargs.get('domain', None))
         profile.save()
 
-        # Profile Extra
-        #profile.tags_create_or_update(kwargs.get('tags', None), clear=True)
-
-        cls.create_or_update_to_crm(profile.user)
-
+        try:
+            # Create user on CRM
+            party = cls.create_or_update_to_crm(profile.user)
+            # Try to set crm_id to profile model
+            profile.crm_id = party.get_crm_id() if party else None
+            profile.save()
+            # Notify insight about the new user
+            profile.crm_id and Insight.notify_user_creation(profile.crm_id)
+        except Exception as e:
+            print('[ERROR : dashboard.models.profile.create]')
+            print(e)
         return profile
 
     @classmethod
@@ -406,11 +413,13 @@ class Profile(models.Model):
         try:
             party = Party(user)
             party.create_or_update()
+            return party
         except Exception as e:
             print('#####################################')
             print('Error creating/updating user to CRM')
             print(e)
             print('#####################################')
+            return False
 
     def tags_create_or_update(self, tags, clear=False, tag_type=None):
         if not tags:
@@ -578,37 +587,35 @@ class Profile(models.Model):
         self.save()
 
     @classmethod
-    def search_members(cls, search_string, restrict_to=None):
-        if restrict_to == 'tags':
-            return cls.objects \
-                .filter(Q(tags__name=search_string)) \
-                .distinct()
-        if restrict_to == 'sectors':
-            return cls.objects \
-                .filter(Q(sector=search_string)) \
-                .distinct()
-        if restrict_to == 'basic':
-            return cls.objects \
-                .filter(
-                    Q(user__email__icontains=search_string) |
-                    Q(user__first_name__icontains=search_string) |
-                    Q(user__last_name__icontains=search_string))\
-                .distinct()
+    def search_members(cls, search_string='', restrict_to=None):
+        profiles = Profile.objects.all().select_related('user')
 
-        return cls.objects\
-            .filter(
-                    Q(user__email__icontains=search_string) |
-                    Q(user__first_name__icontains=search_string) |
-                    Q(user__last_name__icontains=search_string) |
-                    Q(tags__name__icontains=search_string) |
-                    Q(twitter_username__icontains=search_string) |
-                    Q(occupation__icontains=search_string) |
-                    Q(sector__icontains=search_string) |
-                    Q(city__icontains=search_string) |
-                    Q(location__city_alias__icontains=search_string) |
-                    Q(location__country_alias__alias__icontains=search_string)
-                )\
-            .distinct()
+        if restrict_to == 'tags':
+            filter = (Q(tags__name=search_string))
+        elif restrict_to == 'sectors':
+            filter = (Q(sector=search_string))
+        elif restrict_to == 'basic':
+            filter = (
+                Q(user__email__icontains=search_string) |
+                Q(user__first_name__icontains=search_string) |
+                Q(user__last_name__icontains=search_string)
+            )
+        else:
+            filter = (
+                Q(user__email__icontains=search_string) |
+                Q(user__first_name__icontains=search_string) |
+                Q(user__last_name__icontains=search_string) |
+                Q(tags__name__icontains=search_string) |
+                Q(twitter_username__icontains=search_string) |
+                Q(occupation__icontains=search_string) |
+                Q(sector__icontains=search_string) |
+                Q(city__icontains=search_string) |
+                Q(location__city_alias__icontains=search_string) |
+                Q(location__country_alias__alias__icontains=search_string)
+            )
+
+        return profiles.filter(filter & Q(user__isnull=False)).distinct().order_by('-pk')
+
 
     @classmethod
     def get_last_n_members(cls, n):

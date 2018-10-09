@@ -94,26 +94,34 @@
             <div class="entity-sidebar background-red--light col-md-12 entity-sidebar--profile">
                 <div class="row row--no-margin" ng-if="$root.authorization >=10">
 
-                    <entity-carousel ng-if="!is_my_profile" class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                    <entity-carousel  class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                        ng-if="!is_my_profile"
                         entityname="matches"
                         userid="{$ entityid $}"
+                        user="entity"
                         carouseltitle="Profiles similar to {$ entity.data.user.first_name $}"
                     ></entity-carousel>
 
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
                         entityname="loved"
                         userid="{$ entityid $}"
+                        user="entity"
                         carouseltitle="Who {$ is_my_profile? 'you': entity.data.user.first_name  $} <i class='far fa-heart'></i> "
                     ></entity-carousel>
+
                     <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                        entityname="lovers" userid="{$ entityid $}"
+                        entityname="lovers"
+                        userid="{$ entityid $}"
+                        user="entity"
                         carouseltitle="Who <i class='far fa-heart'></i> {$ is_my_profile? 'you': entity.data.user.first_name $} "
                     ></entity-carousel>
 
-                    <entity-carousel ng-if="is_my_profile" class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
-                                     entityname="matches"
-                                     userid="{$ entityid $}"
-                                     carouseltitle="People you might like"
+                    <entity-carousel class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
+                        ng-if="is_my_profile"
+                        entityname="matches"
+                        userid="{$ entityid $}"
+                        user="entity"
+                        carouseltitle="People you might like"
                     ></entity-carousel>
 
                 </div>
@@ -122,6 +130,7 @@
                         class="col-md-12 col-sm-12 margin-top-5-per margin-bottom-5-perc"
                         entityname="matches"
                         userid="{$ entityid $}"
+                        user="entity"
                         carouseltitle="Profiles similar to {$ entity.data.user.first_name $}"
                     ></entity-carousel>
                 </div>
