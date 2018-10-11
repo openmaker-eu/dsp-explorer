@@ -37,6 +37,7 @@ from django.contrib.auth.decorators import login_required
 from utils.mailer import EmailHelper
 from django.urls import reverse
 from datetime import datetime, timedelta
+from django.db.models import Q
 
 
 def __wrap_response(*args, **kwargs):
@@ -543,7 +544,9 @@ def users_csv(request):
         'activity:domain',
         'activity:area',
         'activity:technology',
-        'activity:skills'
+        'activity:skills',
+        'tags:old',
+        'twitter:name'
     ])
 
     profiles = Profile.objects.all()
@@ -556,9 +559,22 @@ def users_csv(request):
                 pass
 
             activities = {'domain': '', 'area': '', 'technology': '', 'skills': ''}
-
             for k, activity in activities.items():
-                activities[k] = ','.join([x.name for x in profile.tags.filter(type=k)])
+                activitiesQuerySet = profile.tags.filter(type=k)
+                activities[k] = ','.join([
+                    x.name for x in activitiesQuerySet
+                    if len(activitiesQuerySet) > 0
+                    and x.name not in ['', False, None]
+                ])
+
+            tagsQuerySet = profile.tags.filter(type='')
+            tags = ','.join([
+                x.name for x in tagsQuerySet
+                if len(tagsQuerySet) > 0
+                and x.name not in ['', False, None]
+            ])
+
+            twitter = hasattr(profile, 'twitterauth') and profile.twitterauth or profile.twitter_username
 
             writer.writerow([
                 profile.user.email,
@@ -579,7 +595,10 @@ def users_csv(request):
                 activities.get('domain', ' '),
                 activities.get('area', ' '),
                 activities.get('technology', ' '),
-                activities.get('skills', ' ')
+                activities.get('skills', ' '),
+
+                tags,
+                twitter
             ])
 
         except User.DoesNotExist:
@@ -588,4 +607,12 @@ def users_csv(request):
 
     return response
 
+@api_view(['GET'])
+def gender_distribution(request):
+    from django.db.models import Sum
+
+    profiles = Profile.objects.filter(user__isnull=False).aggregate(Sum('gender'))
+
+    print(profiles)
+    return Response([])
 

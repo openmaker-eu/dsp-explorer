@@ -7,11 +7,14 @@ export default [function(){
             entity: '=',
             entityname: '@',
             entityid : '@',
+            
             preview : '='
         },
         controller : ['$scope', '$sce', function($scope, $sce) {
             
+            // @TODO: link is broken entitiname is mess whe is project/challenge...
             $scope.entity.details = $sce.trustAsHtml($scope.entity.details);
+            
             $scope.entity_link = ()=> '/entity/' +
                 $scope.entityname + '/' +
                 ($scope.entityid || $scope.entity.id || $scope.entity.link_id ) + '/' +

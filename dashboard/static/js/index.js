@@ -8,7 +8,6 @@ require("../style/index.scss")
 // Angular form imports
 baseImports.angularForm()
 
-
 // Stuff
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-google-autocomplete");
 require("../../../node_modules/vsGoogleAutocomplete/dist/vs-autocomplete-validator");
@@ -19,6 +18,7 @@ require("../../../node_modules/slick-carousel/slick/slick-theme.css");
 require("../../../node_modules/slick-carousel");
 require("../../../node_modules/angular-slick-carousel/");
 require("../../../node_modules/angular-hammer");
+require("../../../node_modules/angular-chart.js")
 
 // Init Angular APP
 var app = angular.module('dashboard', [
@@ -32,7 +32,8 @@ var app = angular.module('dashboard', [
     'slickCarousel',
     'moment-picker',
     'ngCookies',
-    'hmTouchEvents'
+    'hmTouchEvents',
+    'chart.js'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');

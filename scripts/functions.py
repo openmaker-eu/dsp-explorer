@@ -91,6 +91,7 @@ def add_location_to_user(user):
     else:
         print(Colorizer.Green('LOCATION OK: '+user.email))
 
+
 def deobfuscate_invitation(user):
     try:
         Invitation.deobfuscate_email(user.email, user.first_name, user.last_name)
@@ -116,7 +117,6 @@ def sync_profiles(profile):
         return {'user': profile.user, 'error': e}
 
 
-
 def update_activities(user):
     res = {
         'domain': [],
@@ -134,15 +134,4 @@ def update_activities(user):
 
     [update_res(tag, res) for tag in user.profile.tags.all()]
 
-
-
-
-if __name__ == "__main__":
-    users = User.objects.all()
-    for user in users:
-            sanitize_place(user)
-            add_location_to_user(user)
-            deobfuscate_invitation(user)
-            add_crm_id_to_profile(user)
-            update_crm(user)
 

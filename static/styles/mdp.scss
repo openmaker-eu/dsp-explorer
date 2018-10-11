@@ -39,7 +39,7 @@ $color_list : (
         'project': $color-projects,
 
         'challenges': $color-projects,
-        'challenges--light': $color-projects--light,
+        'challenge--light': $color-brown--light,
         'challenge': $color-projects,
 
         'events': $color-events,
@@ -47,16 +47,15 @@ $color_list : (
         'event--light': $color-events--light,
         'event': $color-events,
 
-        'challenge--light': $color-brown--light,
 
         'red':$color-red,
         'red--dark':$color-red--dark,
         'red--light':$color-red--light,
-        
+
         'brown':$color-brown,
         'brown--dark':$color-brown--dark,
         'brown--light':$color-brown--light,
-        
+
         'grey':$color-grey,
         'grey--dark':$color-grey--dark,
         'grey--light':$color-grey--light,
@@ -494,7 +493,7 @@ entity-carousel {
   }
 
   &-padding {
-    padding:2% 8%;
+    padding:8%;
   }
 
   &__content {
@@ -557,13 +556,33 @@ entity-carousel {
     * { font-size:1.4rem!important; }
   }
 
-  &__username{
+  &__username {
     position: absolute;
-    top:0%!important;
-    height: 10%!important;
-    z-index:100000!important;
-    width:100%!important;
-    background: rgba(255,55,55,0.8);
+    top: 0% !important;
+    height: 10% !important;
+    z-index: 100000 !important;
+    width: 100% !important;
+    background: rgba(255, 55, 55, 0.8);
+    background: rgba(100, 100, 100, 0.8);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    & > * {
+      color: #fff !important;
+      font-size: 1.5rem;
+      margin: 0;
+      text-align: center;
+    }
+  }
+
+  &__label{
+    position: absolute;
+    top:8px!important;
+    right:8px!important;
+    padding:6px 35px;
     background: rgba(100,100,100,0.8);
 
     display:flex;
@@ -571,11 +590,21 @@ entity-carousel {
     justify-content: center;
     align-items:center;
 
-    & > * {
-      color:#fff; font-size:1.5rem; margin:0; text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.12rem;
+    @extend .cairo;
+    text-transform: uppercase;
+
+    &, & > * {
+      color:#fff!important; font-size:1rem; margin:0; text-align: center;
     }
 
   }
+
+  & pre {
+    white-space: normal !important;
+  }
+
 }
 
 
@@ -925,7 +954,7 @@ entity-carousel {
   .tooltip-arrow { display: none!important;}
 
 }
-                                                                                
+
 chatbot {
   //position:fixed; right:5%; bottom:0; width:30%; z-index:1000000;
   position:absolute; right:0; bottom:0; width:100%!important; z-index:1000000;
@@ -1145,8 +1174,15 @@ profile-questions {
   	position: relative;
   	padding-bottom: 100%;
   	border-radius: 50%;
-
+    color: #ff6600;
   &.squared{ border-radius:0!important; }
+}
+
+.short {
+  h1, h2, h3, h4 ,h5 ,h6 {
+    padding: 4%!important;
+
+  }
 }
 
 

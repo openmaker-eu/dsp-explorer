@@ -12,7 +12,7 @@ class Twitter(models.Model):
 
 
 class TwitterProfile(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, blank=True, null=True, related_name='twitterauth')
     user_id = models.CharField(max_length=200, default='-1')
     access_token = models.CharField(max_length=200)
     secret_access_token = models.CharField(max_length=200)

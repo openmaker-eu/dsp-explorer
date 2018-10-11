@@ -23,14 +23,21 @@
         <!--Fade container-->
         <a ng-href="{$ entity_link() $}" ng-if="preview" class="fade"></a>
 
+        <!-- Project/Challenge Label -->
+        <span ng-if="['challenges', 'projects'].includes(entityname) && preview">
+                <span ng-if="entity.company" class="entity-detail__label" style="background:rgba(255,102,0,0.8); "><span>Challenge</span></span>
+                <span ng-if="!entity.company" class="entity-detail__label" ><span>Project</span></span>
+        </span>
+
         <div class="entity-detail__content entity-detail-padding" >
+
             <!--Entity Detail Title-->
             <h3 class=" entity-detail__title semi-bold" style="letter-spacing: 1px;">
 
                 <a
                         ng-if="!preview && (entity.link || entity.source)"
                         ng-href="{$ entity.link || entity.url $}"
-                        class="text-{$ entityname $}"
+                        class="text-{$ entityname $}" ng-class="{ 'text-grey--dark' : entityname=='projects' && !entity.company  }"
                         target="_blank"
                 >
                     {$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}
@@ -39,6 +46,7 @@
                 <span
                         ng-if="preview || !(entity.link || entity.source)"
                         class="text-{$ entityname $}"
+                        ng-class="{ 'text-grey--dark' : entityname=='projects' && !entity.company  }"
                 >
                         {$ entity.title || entity.name | limitTo: ( preview ? 100 : '' ) $}
                     </span>
@@ -126,7 +134,10 @@
         <!--link to source-->
         <h5 ng-if="!preview && (entity.link || entity.source)" class="text-red">
             <br>
-            <a href="{$ entity.link || entity.url $}" target="_blank">Go to source</a>
+            <a ng-href="{$ entity.link || entity.url $}" target="_blank"  style="font-size:120%;">
+                <i class="fas fa-fw fa-link text-{$ entityname $}" ></i>&nbsp;&nbsp;
+                <span class="ng-binding text-{$ entityname $}" >Go to source</span>
+            </a>
         </h5>
 
     </div>

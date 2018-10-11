@@ -9,7 +9,7 @@ let template = `
             <div class="col-md-12 entity-heading margin-bottom-1-perc">
                 <div class="row">
                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
-                       <a href="/entity/{$ entityname $}" class="entity-detail__title page-title" ng-bind-html="entitiy_title()"></a>
+                       <a href="/entity/{$ entityname == 'challenges'?  'projects': entityname $}" class="entity-detail__title page-title" ng-bind-html="entitiy_title()"></a>
                        <span class="pull-right">
                            <!--<bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>-->
                            <!--&nbsp;&nbsp;-->
