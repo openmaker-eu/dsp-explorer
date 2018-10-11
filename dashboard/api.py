@@ -33,7 +33,7 @@ import os, re
 from django.http import Http404
 
 
-def search_members(request, search_string=''):
+def search_members(request, search_string=None):
 
     # Can be 3, 2 or 1 column in the frontend
     members_per_page = 24

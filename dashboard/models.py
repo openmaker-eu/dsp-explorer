@@ -587,7 +587,7 @@ class Profile(models.Model):
         self.save()
 
     @classmethod
-    def search_members(cls, search_string='', restrict_to=None):
+    def search_members(cls, search_string=None, restrict_to=None):
         profiles = Profile.objects.all().select_related('user')
 
         if restrict_to == 'tags':
@@ -614,8 +614,9 @@ class Profile(models.Model):
                 Q(location__country_alias__alias__icontains=search_string)
             )
 
-        return profiles.filter(filter & Q(user__isnull=False)).distinct().order_by('-pk')
-
+        return profiles.filter(filter & Q(user__isnull=False)).distinct().order_by('-pk') \
+            if search_string is not None \
+            else profiles.filter().distinct().order_by('-pk')
 
     @classmethod
     def get_last_n_members(cls, n):
