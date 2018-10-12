@@ -110,6 +110,8 @@ app.directive('naviChatbot', require('./directives/questions/NaviChatbot').defau
 
 app.component('activityQuestion', require('./directives/questions/ActivityQuestion').default )
 
+// Factories
+app.factory('ContactUserModal', require('./factories/ContactUserWithEmailModal').default )
 
 // Content providers
 app.factory('EntityProvider', require('./content_providers/EntityProvider').default )

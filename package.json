@@ -22,6 +22,7 @@
   "devDependencies": {},
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free": "^5.4.1",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "angular": "^1.7.0",
     "angular-animate": "^1.6.5",
@@ -53,6 +54,7 @@
     "empty-module": "0.0.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
+    "fontawesome": "^4.7.2",
     "html-loader": "^0.5.5",
     "imagemin": "^5.3.1",
     "img-loader": "^3.0.0",

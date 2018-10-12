@@ -400,7 +400,7 @@ class Profile(models.Model):
             profile.crm_id = party.get_crm_id() if party else None
             profile.save()
             # Notify insight about the new user
-            profile.crm_id and Insight.notify_user_creation(profile.crm_id)
+            profile.crm_id is not None and Insight.notify_user_creation(profile.crm_id)
         except Exception as e:
             print('[ERROR : dashboard.models.profile.create]')
             print(e)

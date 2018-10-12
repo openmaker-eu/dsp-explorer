@@ -9,7 +9,9 @@ export default [function(){
             entityid : '@',
             slider: '@'
         },
-        controller : ['$scope', '$rootScope', '$http', 'EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
+        controller : ['$scope', '$rootScope', '$http', 'EntityProvider', 'ContactUserModal' ,
+            function($scope, $rootScope, $http, EntityProvider, ContactUserModal)
+        {
 
             $scope.is_my_profile = false
             
@@ -21,7 +23,11 @@ export default [function(){
     
             $scope.edit = ()=> $rootScope.$emit('question.modal.open', null, 'profileedit' )
             
+            
             $scope.tooltip_template = "<i class='fas fa-user-edit'></i>&nbsp;&nbsp;Click to edit"
+            
+            $scope.openContactUserModal = ()=>ContactUserModal.open($scope.entity.data)
+            
 
         }]
     }

@@ -124,6 +124,16 @@ h1,h2,h2,h4,h5,h6 {
   }
 }
 
+.fake-link {
+  white-space:nowrap;
+  &:active, &:hover, &:focus {
+    cursor:pointer;
+    color:$color-red!important;
+    & * {color:$color-red!important;}
+  }
+}
+
+
 // GENERIC STYLES
 .transparent {opacity:0; height:0; cursor:default;}
 
@@ -1184,5 +1194,7 @@ profile-questions {
 
   }
 }
-
+.profile-title--contact {
+  border-bottom: solid 1px #000; margin:2% 0; padding:2% 0;
+}
 

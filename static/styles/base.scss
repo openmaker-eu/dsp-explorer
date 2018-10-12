@@ -9,16 +9,11 @@ $icon-font-path : '../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/'
 //$fa-font-path : '../../../node_modules/font-awesome/fonts/';
 //@import "../../../node_modules/material-design-icons/iconfont/material-icons.css";
 
-
-$fa-font-path : '../../../node_modules/@fortawesome/fontawesome-free-webfonts/webfonts';
-@import "../../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fontawesome";
-@import "../../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-solid";
-@import "../../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-regular";
-@import "../../../node_modules/@fortawesome/fontawesome-free-webfonts/scss/fa-brands";
-
-
-
-
+$fa-font-path : '../../../node_modules/@fortawesome/fontawesome-free/webfonts';
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/regular";
+@import "../../../node_modules/@fortawesome/fontawesome-free/scss/brands";
 
 @import "../../../node_modules/angular-toastr/dist/angular-toastr.css";
 @import '../../../node_modules/angular-motion/dist/angular-motion.css';

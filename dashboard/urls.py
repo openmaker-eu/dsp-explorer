@@ -96,6 +96,7 @@ urlpatterns = [
     # API v1.4
     ## MDP
     url(r'^api/v1.4/stats/gender_distribution/$', api14.gender_distribution, name='stats.gender_distribution'),
+    url(r'^api/v1.4/contact/user/(?P<user_id>\w+)/', api14.contact_user_with_email, name='stats.gender_distribution'),
 
     url(r'^api/v1.4/bookmark/(?P<entity>\w+)/(?P<entity_id>\w+)/$', api14.bookmark, name='bookmark'),
     url(r'^api/v1.4/bookmarks/(?P<entity>\w+)/$', api14.get_bookmark_by_entities, name='get_bookmark_by_entities'),

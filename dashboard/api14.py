@@ -604,8 +604,8 @@ def users_csv(request):
         except User.DoesNotExist:
             print('there are profiles without user')
 
-
     return response
+
 
 @api_view(['GET'])
 def gender_distribution(request):
@@ -615,4 +615,32 @@ def gender_distribution(request):
 
     print(profiles)
     return Response([])
+
+
+@login_required()
+@api_view(['POST'])
+def contact_user_with_email(request, user_id):
+    from django.utils.html import escape, strip_tags
+
+    if request.user.profile.id == user_id:
+        return Response({'error': 'you cannot send message to yourself'}, status=422)
+
+    email_message = strip_tags(escape(request.data.get('message', None)))
+
+    sender = request.user
+    receiver = User.objects.filter(pk=user_id).first()
+
+    vars = {
+        'SENDER_FIRST_NAME': sender.first_name,
+        'SENDER_LAST_NAME': sender.last_name,
+        'SENDER_PROFILE_PAGE': 'http://explorer.openmaker.eu/profile/'+str(sender.id),
+        'RECEIVER_FIRST_NAME': receiver.first_name,
+        'RECEIVER_LAST_NAME': receiver.last_name,
+        'MESSAGE': email_message
+    }
+
+    email_title = 'OpenMaker - message from : ' + (sender.first_name + ' ' + sender.last_name).title()
+    EmailHelper.email('user_to_user', receiver.email, email_title, vars)
+
+    return Response('Message sent')
 
