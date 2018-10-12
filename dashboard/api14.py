@@ -633,7 +633,7 @@ def contact_user_with_email(request, user_id):
     vars = {
         'SENDER_FIRST_NAME': sender.first_name,
         'SENDER_LAST_NAME': sender.last_name,
-        'SENDER_PROFILE_PAGE': 'http://explorer.openmaker.eu/profile/'+str(sender.id),
+        'SENDER_PROFILE_PAGE': 'http://explorer.openmaker.eu/profile/'+str(sender.profile.id),
         'RECEIVER_FIRST_NAME': receiver.first_name,
         'RECEIVER_LAST_NAME': receiver.last_name,
         'MESSAGE': email_message
