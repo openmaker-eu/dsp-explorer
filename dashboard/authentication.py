@@ -284,6 +284,7 @@ def onboarding(request):
 
 def onboarding_confirmation(request, token):
 
+    from connectors.insight.connector import InsightConnectorV10 as Insight
     party_crm_id = ''
 
     # Check for token
@@ -304,6 +305,9 @@ def onboarding_confirmation(request, token):
         party = Party(profile.user)
         result = party.create_or_update()
         party_crm_id = result['party']['id']
+        party_crm_id = party.get_crm_id() if party else None
+        party_crm_id is not None and Insight.notify_user_creation(party_crm_id)
+        party_crm_id and profile.set_crm_id(party_crm_id)
     except NotFound as e:
         messages.debug(request, 'There was some connection problem, please try again')
         print('crm NotFound')
