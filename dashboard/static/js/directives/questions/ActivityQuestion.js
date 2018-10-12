@@ -11,7 +11,7 @@ let question_label = `
 `
 let question_subtext = `
      <span class="no-mobile">
-        Please select the options that better describes you.
+        Please select the options that better describe you.
         This will improve your user experience and increase your impact on the OpenMaker community.
     </span>
 `
