@@ -29,18 +29,6 @@ let template = `
                                 ></entity-detail>
                             </div>
                         </div>
-                   
-                        <!--<slick settings="slickConfig"  >-->
-                             <!--<entity-detail-->
-                                    <!--ng-repeat="entity in entities"-->
-                                        <!--entity="entity"-->
-                                        <!--entityname="{$ entityname $}"-->
-                                        <!--entityid="{$ entity.link_id || entity.id $}"-->
-                                       <!--preview="true"-->
-                             <!--&gt;</entity-detail>-->
-                        <!--</slick>-->
-                    
-                    
                 </div>
             </div>
         </div>

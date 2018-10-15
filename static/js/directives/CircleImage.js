@@ -2,7 +2,9 @@ let placeholder = '/media/images/profile/other.svg'
 
 let template = `
     <a ng-href="{$ href $}" style="display: block;">
-        <div class="profile-image-static background-grey" ng-class="{'squared': squared }"></div>
+        <div class="profile-image-static background-grey" ng-class="{'squared': squared }">
+            <img ng-if="!src" ng-src="{$ placeholder $}" class="circle-image landscape" alt="">
+        </div>
     </a>
 
     <style>
@@ -26,10 +28,11 @@ export default {
     controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
         
         this.$onChanges = function(changes){
+            
             $scope.src= changes.src && changes.src.currentValue || undefined
             $scope.href= (changes.href && changes.href.currentValue) || undefined
             $scope.squared= this.squared
-            $scope.placeholder= (changes.placeholder && changes.placeholder.currentValue) || undefined
+            $scope.placeholder= (changes.placeholder && changes.placeholder.currentValue) || placeholder
             
             $scope.loaded = false
             
@@ -40,22 +43,28 @@ export default {
                 return image
             }
             
-            let image = new_image($scope.src)
-            console.log('squared', this.squared);
-    
-            image.addEventListener('load', p=> {
-                console.log('load image', $scope.src);
-                p.target.height > p.target.width && (image.className = "circle-image landscape")
-                $element.find('.profile-image-static').html(image)
-                $scope.loaded = true
-            })
-            image.addEventListener('error', ()=> {
-                $scope.loaded === false &&
+            const create_image = ()=>{
                 
-                $element.find('.profile-image-static').html(new_image($scope.placeholder || placeholder))
+                let image = new_image($scope.src)
+                console.log('squared', this.squared);
+    
+                image.addEventListener('load', p=> {
+                    console.log('load image', $scope.src);
+                    p.target.height > p.target.width && (image.className = "circle-image landscape")
+                    $element.find('.profile-image-static').html(image)
+                    $scope.loaded = true
+                })
+                image.addEventListener('error', ()=> {
+                    $scope.loaded === false &&
         
-            })
+                    $element.find('.profile-image-static').html(new_image($scope.placeholder || placeholder))
+        
+                })
+                
+                
+            }
             
+            $scope.src && create_image()
             
         };
         
