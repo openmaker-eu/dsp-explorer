@@ -219,16 +219,26 @@ class questions(APIView):
 
             crm_id = request.user.profile.crm_id
             response = Insight.questions(crm_ids=[crm_id], amount=10)
+
             if response.status_code < 205:
                 res_dict = response.json()
-                questions = res_dict['users'][0]['questions'] if isinstance(res_dict['users'], dict) else []
+                print(type(res_dict['users']))
+                questions = res_dict['users'][0]['questions'] \
+                    if isinstance(res_dict['users'], dict) or isinstance(res_dict['users'], list) \
+                    else []
+
+                print(questions)
 
                 if len(questions) > 0:
                     self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]
                 else:
                     self.questions = [self.question('no_questions', first_name=request.user.first_name)]
+            else:
+                print('[dashboard.questions.questions.chatbot_question] CHATBOT QUESTION insight response error')
+                print(response)
+
         except Exception as e:
-                print('CHATBOT QUESTIONS EXCEPTION')
+                print('[ERROR : dashboard.questions.questions.chatbot_question]')
                 print(e)
                 self.questions = self.questions = [self.question('no_questions', first_name=request.user.first_name)]
 
