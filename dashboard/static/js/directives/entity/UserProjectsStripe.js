@@ -14,7 +14,16 @@ let template = `
                     ng-repeat="entity in entities | limitTo : 4"
                     style="margin-bottom:2%; margin-top: 2%;"
                 >
-                        <div class="entity-list__box">
+                        <div class="entity-list__box"
+                            ng-init="entity.hover=false"
+                            ng-mouseover="entity.hover=true"
+                            ng-mouseleave="entity.hover=false"
+                        >
+                            <entity-delete
+                                ng-show="entity.hover"
+                                style="position: absolute; bottom:10px; right:30px; z-index: 100000000; cursor:pointer"
+                                entityid="{$ entity.id $}" entityname="projects" entitydisplayname="Project"
+                            ></entity-delete>
                             <entity-detail
                                 entity="entity"
                                 entityname="projects"
@@ -34,16 +43,20 @@ export default [function(){
         scope: {
             profileid : '@',
         },
+        
         controller : ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope) {
             $scope.entities = []
-            $scope.get_data = (url) => {
-                $http.get(url).then(res => {
-                    $scope.entities = res.data || []
-                },
-                err => $scope.nodata = true
-                )
+            $scope.get_data = () => {
+                $http
+                    .get('/api/v1.4/user/' + ($scope.profileid ? $scope.profileid+'/': '')  + 'project/')
+                    .then(res => $scope.entities = res.data || [])
+                    .catch(err => $scope.nodata = true)
             }
-            $scope.get_data('/api/v1.4/user/' + ($scope.profileid ? $scope.profileid+'/': '')  + 'project/')
+            
+            $scope.get_data()
+    
+            $rootScope.$on('user.projects.refresh', $scope.get_data)
+   
 
         }]
     }

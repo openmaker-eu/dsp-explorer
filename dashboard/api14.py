@@ -386,6 +386,24 @@ class entity_details(APIView):
 
         return Response(results)
 
+    def delete(self, request, entity, entity_id):
+
+        authorized = request.user.is_authenticated \
+            and entity == 'projects' \
+            and int(entity_id) in [x.id for x in Project.objects.filter(profile=request.user.profile)]
+
+        if not authorized:
+            return Response(status=401)
+
+        try:
+            project = Project.objects.filter(id=entity_id).first()
+            project.delete()
+        except Exception as e:
+            print('[ERROR: dashboard.api14.entity_details.delete]')
+            print(e)
+        return Response()
+
+
 @api_view(['POST'])
 def signup(request):
 

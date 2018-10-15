@@ -100,6 +100,7 @@ app.directive('bookmarkButton', require('./directives/partials/BookmarkButton').
 app.directive('interestButton', require('./directives/partials/InterestButton').default )
 app.directive('entityLoading', require('./directives/partials/EtityLoading').default )
 app.directive('accountDelete', require('./directives/partials/AccountDelete').default )
+app.directive('entityDelete', require('./directives/entity/EntityDelete').default )
 
 // Questions/Chatbot
 app.directive('wizard', require('./directives/questions/Wizard').default )
