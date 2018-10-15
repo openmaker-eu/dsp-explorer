@@ -1,17 +1,25 @@
-import * as _ from 'lodash'
-import * as d3 from 'd3';
-require('js-marker-clusterer/src/markerclusterer')
+ let _ = require('lodash')
+ require('js-marker-clusterer/src/markerclusterer')
 
 let template = `
-    <div style="position:relative; padding-bottom:50%;" >
-        <div id="locationmap" style="position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;" ></div>
+    <div style="position:relative; padding-bottom:100%; width:100%; background: #f00;" >
+        <div
+            id="locationmap"
+            style="position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;"
+        ></div>
     </div>
 `
-export default [function(){
-    
+
+console.log('HEYYYYYYY');
+
+export default function(){
     return {
         template:template,
-        controller : ['$scope','$http', '$element', 'NgMap', function($scope, $http, $element, NgMap){
+        scope: {},
+        controller : ['$scope','$http', function($scope, $http){
+            
+            console.log('MAAAAAAP');
+            
             $scope.places=[]
             $scope.leslist=[
                 { lat:'43.2633182', long:'-2.9685838', city:'Bilbao' , is_less:true  },
@@ -24,20 +32,29 @@ export default [function(){
                 { lat:'43.7799528', long:'11.2059486', city:'Firenze' , is_less:true  },
                 { lat:'53.472225', long:'-2.2935019', city:'Manchester' , is_less:true  }
             ]
-    
-            $http.get('/api/v1.1/get_places').then( (results)=>{
+
+            const build_map = (results)=>{
+                // $scope.places = _.map( results.data.places, e => JSON.parse(e) )
                 
-                $scope.places = _.map( results.data.places, e => JSON.parse(e) )
-    
+                $scope.places = _(results)
+                    .get('data.places')
+                    .map(r=>{
+                        try{return JSON.parse(r)}
+                        catch(e){return null}
+                    })
+                    .filter(e=>e)
+                
+                console.log('places', $scope.places);
                 var map = new google.maps.Map(document.getElementById('locationmap'), {
                     zoom: 3,
                     center: new google.maps.LatLng(46.8815115,9.1133242),
                     styles : mapStyles,
                     streetViewControl: false
                 });
-                
+                console.log('MAP', map);
+
                 let markers = _.map($scope.places.concat($scope.leslist) , place=> {
-                    
+
                     return new google.maps.Marker({
                         position: new google.maps.LatLng(place.lat,place.long),
                         icon:{
@@ -47,19 +64,22 @@ export default [function(){
                             scaledSize: new google.maps.Size(35,35)
                         }
                     })
-                    
-                    
+
+
                 })
-                
+
                 let cluster = new MarkerClusterer(map, markers, { imagePath: '/static/images/markers/m'});
                 map.panTo(map.getCenter());
-            })
-            
+            }
+
+            $http.get('/api/v1.1/get_places/')
+                .then(build_map)
+                .catch(e=>console.log('LocationsMap error', e))
             
         }]
     }
     
-}]
+}
 
 let mapStyles = [
     

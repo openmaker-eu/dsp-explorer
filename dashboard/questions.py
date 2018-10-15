@@ -222,12 +222,9 @@ class questions(APIView):
 
             if response.status_code < 205:
                 res_dict = response.json()
-                print(type(res_dict['users']))
                 questions = res_dict['users'][0]['questions'] \
                     if isinstance(res_dict['users'], dict) or isinstance(res_dict['users'], list) \
                     else []
-
-                print(questions)
 
                 if len(questions) > 0:
                     self.questions = [welcome] + [self.map_remote_to_local_questions(q) for q in questions] + [bye]

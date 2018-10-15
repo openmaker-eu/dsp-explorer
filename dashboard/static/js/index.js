@@ -18,7 +18,9 @@ require("../../../node_modules/slick-carousel/slick/slick-theme.css");
 require("../../../node_modules/slick-carousel");
 require("../../../node_modules/angular-slick-carousel/");
 require("../../../node_modules/angular-hammer");
-require("../../../node_modules/angular-chart.js")
+require("../../../node_modules/angular-chart.js");
+require('../../../node_modules/ngmap');
+
 
 // Init Angular APP
 var app = angular.module('dashboard', [

@@ -651,7 +651,9 @@ class Profile(models.Model):
 
     @classmethod
     def get_places(cls):
-        places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
+        # places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
+        print(Profile.objects.values_list('place', flat=True))
+        places = [x for x in Profile.objects.values_list('place', flat=True) if x is not None]
         return places
 
     def sanitize_place(self, force=False):

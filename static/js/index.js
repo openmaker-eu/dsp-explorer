@@ -8,7 +8,7 @@ import moment from '../../node_modules/moment/min/moment-with-locales';
 window.moment = moment
 
 // Import angular google maps
-require('../../node_modules/ngmap')
+
 // Import bootstrap sass
 require("bootstrap-sass")
 // Import cookie consent
@@ -45,6 +45,7 @@ export function directives(app){
 }
 
 export function dataVizDirectives(app){
+    
     app.directive('tagBubbles', require('./directives/TagBubbles').default )
     app.directive('pieSector', require('./directives/PieSector').default )
     app.directive('locationsMap', require('./directives/LocationsMap').default )

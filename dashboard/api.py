@@ -117,9 +117,12 @@ def get_sector(request):
 
 
 def get_places(request):
-
-    return JsonResponse({'status': 'ok',
-                         'places': Profile.get_places()}, status=200)
+    # places = [json.loads(x) for x in Profile.get_places()]
+    return JsonResponse(
+        {
+            'status': 'ok',
+            'places': Profile.get_places()
+        }, status=200)
 
 
 def get_user_stats(request):
