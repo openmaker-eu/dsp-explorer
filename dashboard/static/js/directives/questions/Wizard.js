@@ -34,7 +34,7 @@ let wizard_directive =
         
         // Status variables
         $scope.loading = false
-        $scope.loadingmessage = $scope.loadingmessage || 'Loading your questions'
+        $scope.loadingmessage = $scope.loadingmessage || 'Loading'
         $scope.error = false
         
         // Slick Carousel configuration

@@ -396,7 +396,7 @@ def signup(request):
     password_confirm = data.get('password_confirm', False)
 
     if len(User.objects.filter(email=email)) > 0:
-        return Response(data={'error': 'User already exist'}, status=401)
+        return Response(data={'error': 'User already exists'}, status=401)
 
     if not password or password != password_confirm:
         return Response(data={'error': 'Password and password confirm don\'t match'}, status=401)
@@ -455,7 +455,7 @@ def apilogin(request):
     else:
         user = User.objects.filter(email=request.data.get('username', False)).first()
         message = 'Your user is not yet active!<br>' \
-                  'Please complete the activation process by clicking on the link in the email you received after signup <br>' \
+                  'Please complete the activation process by clicking on the link in the email you received after signing up <br>' \
                   'or click on <a href="' + reverse('dashboard:resend_activation_email') + '">Resend activation email</a>' \
             if user and not user.is_active \
             else 'Username or password are wrong'
