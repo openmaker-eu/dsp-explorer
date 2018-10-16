@@ -41,6 +41,8 @@ let template = `
                         <br>
                         
                         <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
+                        <br>
+                        <br>
                     </div>
                     
                     <div class="col-md-4">

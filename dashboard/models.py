@@ -588,7 +588,11 @@ class Profile(models.Model):
 
     @classmethod
     def search_members(cls, search_string=None, restrict_to=None):
+        from functools import reduce
+        import operator
+
         profiles = Profile.objects.all().select_related('user')
+
 
         if restrict_to == 'tags':
             filter = (Q(tags__name=search_string))
@@ -600,6 +604,9 @@ class Profile(models.Model):
                 Q(user__first_name__icontains=search_string) |
                 Q(user__last_name__icontains=search_string)
             )
+        # elif restrict_to == 'cities':
+        #     print(search_string.split())
+        #     filter = (reduce(operator.and_, (Q(user__place__icontains=x) for x in search_string.split())))
         else:
             filter = (
                 Q(user__email__icontains=search_string) |
