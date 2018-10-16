@@ -2,24 +2,25 @@ import * as _ from 'lodash'
 const template = `
     <h4 ng-click="open()"><i class="fas fa-trash-alt text-red" ></i></h4>
 `
+
 const modal_template = `
-            <div class="modal-content" >
-                    <div class="modal-header" >
-                        <button type="button" class="close" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
-                        <h3 class="modal-title" id="myModalLabel">Delete {$ entitydisplayname || entityname $}</h3>
-                    </div>
-                    <div class="modal-body" style="font-size:1em;">
-                       <p>This operation cannot be reverted</p>
-                       <p>Are you sure do you want to delete this {$ entitydisplayname || entityname $}?</p>
-                       
-                       <h3 class="alert alert danger" ng-if="error">{$  $}</h3>
-                       
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" ng-click="close()">No, Close</button>
-                        <button type="button" class="btn btn-default" ng-click="delete_entity()">Yes, Delete {$ entitydisplayname || entityname $}</button>
-                    </div>
+    <div class="modal-content" >
+            <div class="modal-header" >
+                <button type="button" class="close" aria-label="Close" ng-click="close()"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="myModalLabel">Delete {$ entitydisplayname || entityname $}</h3>
             </div>
+            <div class="modal-body" style="font-size:1em;">
+               <p>This operation cannot be reverted</p>
+               <p>Are you sure do you want to delete this {$ entitydisplayname || entityname $}?</p>
+               
+               <h3 class="alert alert danger" ng-if="error">{$  $}</h3>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" ng-click="close()">No, Close</button>
+                <button type="button" class="btn btn-default" ng-click="delete_entity()">Yes, Delete {$ entitydisplayname || entityname $}</button>
+            </div>
+    </div>
 `
 
 export default [function(){

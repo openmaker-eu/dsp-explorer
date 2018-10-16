@@ -10,24 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='profile',
-            name='area',
-            field=models.TextField(blank=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='domain',
-            field=models.TextField(blank=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='skills',
-            field=models.TextField(blank=True),
-        ),
-        migrations.AddField(
-            model_name='profile',
-            name='technology',
-            field=models.TextField(blank=True),
-        ),
+
     ]

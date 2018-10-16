@@ -20,6 +20,7 @@ require("../../../node_modules/angular-slick-carousel/");
 require("../../../node_modules/angular-hammer");
 require("../../../node_modules/angular-chart.js");
 require('../../../node_modules/ngmap');
+require('../../../node_modules/angular-recaptcha');
 
 
 // Init Angular APP
@@ -35,7 +36,8 @@ var app = angular.module('dashboard', [
     'moment-picker',
     'ngCookies',
     'hmTouchEvents',
-    'chart.js'
+    'chart.js',
+    'vcRecaptcha'
 ])
     .config(['$interpolateProvider', function($interpolateProvider) {
             $interpolateProvider.startSymbol('{$');

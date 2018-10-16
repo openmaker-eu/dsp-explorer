@@ -6,6 +6,7 @@ export default [function(){
                     ng-href="/profile/{$ inter.id $}"
                     class="col-md-2 col-sm-4 col-xs-4"
                     ng-repeat="inter in interested track by $index | limitTo: 20"
+                    style="margin: 1% 0"
                 >
                     <!--<a class="pointer" style="display:block;">-->
                         <circle-image

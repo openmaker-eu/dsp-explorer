@@ -299,6 +299,9 @@ main {
   .background-#{$entity_name} {
       background-color: $entity_color !important ;
   }
+  .border-#{$entity_name}{
+      border: solid 1px $entity_color!important;
+  }
 
   .stripe-full--#{$entity_name} {
     &:before {
@@ -1200,3 +1203,17 @@ profile-questions {
   border-bottom: solid 1px #000; margin:2% 0; padding:2% 0;
 }
 
+.modal-contact-user {
+
+  &__recaptcha {
+    & > div {float:right; margin-bottom: 2.5%;}
+
+    &.captcha-error {
+      & > div {
+        border:solid 1px #a94442;
+      }
+    }
+
+  }
+
+}
