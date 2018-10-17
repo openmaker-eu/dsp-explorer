@@ -23,7 +23,7 @@ class GoogleHelper:
             response = requests.get(city_url)
             if response.status_code < 203:
                 resp = response.json()
-                place = resp['predictions'][0]
+                place = resp['predictions'][0] if 'predictions' in resp and len(resp['predictions']) > 0 else None
 
         except Exception as e:
             print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/autocomplete/ '))
@@ -36,9 +36,8 @@ class GoogleHelper:
             try:
                 response = requests.get(detail_url)
                 if response.status_code < 203:
-                    # place_detail = json.loads(response.content, object_pairs_hook=OrderedDict)
                     resp = response.json()
-                    place_detail = resp['result']
+                    place_detail = resp['result'] if 'result' in resp else None
             except Exception as e:
                 print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/details/ '))
                 print(Logger.error(e))
