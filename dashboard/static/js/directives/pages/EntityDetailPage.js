@@ -11,8 +11,6 @@ let template = `
                    <h2 class="col-md-9 col-sm-9 col-sm-offset-0">
                        <a href="/entity/{$ entityname == 'challenges'?  'projects': entityname $}" class="entity-detail__title page-title" ng-bind-html="entitiy_title()"></a>
                        <span class="pull-right">
-                           <!--<bookmark-button entityname="{$ entityname $}" entityid="{$ entityid $}"></bookmark-button>-->
-                           <!--&nbsp;&nbsp;-->
                            <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button>
                        </span>
                    <h1>
@@ -97,7 +95,7 @@ export default function(){
             $scope.nodata = !$scope.entity.get()
     
             $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname
-            
+    
         }]
     }
 }

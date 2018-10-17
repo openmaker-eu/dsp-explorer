@@ -1,10 +1,12 @@
 from invoke import task, Collection, Responder
 import webbrowser
-# USAGE: invoke run [function_name]
+# USAGE: invoke [function_name]
+
 
 @task
 def start(c):
     c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
+
 
 @task
 def init(c, colored=True):
@@ -13,17 +15,21 @@ def init(c, colored=True):
     webbrowser.open('http://localhost:8000', new=0)
     c.run('npm run dev & python manage.py runserver 0.0.0.0:8000')
 
+
 @task
 def dumpdata(c):
     c.run('python ./manage.py dumpdata > db.json --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 4')
+
 
 @task
 def loaddata(c):
     c.run('python ./manage.py loaddata --ignorenonexistent db.json ')
 
+
 @task
 def createsetting(c):
     c.run('cp dspexplorer/c.run_settings.py-example dspexplorer/c.run_settings.py')
+
 
 @task
 def freeze(c):
@@ -37,22 +43,32 @@ def makemigrations(c):
 def migrate(c):
     c.run('python manage.py migrate')
 
+
 @task
 def install(c):
     c.run('pip install -r requirements.txt')
     c.run('npm install')
 
+
 @task
 def installstatic(c):
     c.run('python ./manage.py collectstatic')
+
 
 @task
 def test(c, filename=''):
     c.run('python manage.py test %s -k' % filename)
 
+
 @task
 def test_e2e(c):
     c.run('protractor protractor-conf.js')
+
+
+@task
+def runscript(c, name):
+    c.run('python ./manage.py runscript '+name)
+
 
 @task
 def staging(c):
@@ -65,6 +81,7 @@ def staging(c):
     c.run('npm run staging')
     c.run('python ./manage.py collectstatic', watchers=[responder])
     c.run('service apache2 restart')
+
 
 @task
 def production(c):

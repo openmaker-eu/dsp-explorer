@@ -52,46 +52,6 @@ def user_sync_template(callback=lambda x: x, args=[]):
     print(Colorizer.Yellow('#######################################'))
 
 
-def sanitize_place(user):
-    try:
-        if user.profile:
-            user.profile.sanitize_place(force=True)
-    except Exception as e:
-        print(Colorizer.Red('###############################'))
-        print(Colorizer.Red('sanitize place error'))
-        print(Colorizer.Red(e))
-        print(Colorizer.Red('###############################'))
-    else:
-        print(Colorizer.Green('PLACE OK: '+user.email))
-
-
-def add_location_to_user(user):
-    try:
-        if user.profile.place:
-            place = json.loads(user.profile.place)
-
-            location = Location.create(
-                lat=repr(place['lat']),
-                lng=repr(place['long']),
-                city=place['city'],
-                state=place['state'],
-                country=place['country'],
-                country_short=place['country_short'],
-                post_code=place['post_code'] if 'post_code' in place else '',
-                city_alias=place['city']+','
-            )
-            user.profile.location = location
-            user.profile.save()
-
-    except Exception as e:
-        print(Colorizer.Red('###############################'))
-        print(Colorizer.Red('Add location error'))
-        print(Colorizer.Red(e))
-        print(Colorizer.Red('###############################'))
-    else:
-        print(Colorizer.Green('LOCATION OK: '+user.email))
-
-
 def deobfuscate_invitation(user):
     try:
         Invitation.deobfuscate_email(user.email, user.first_name, user.last_name)

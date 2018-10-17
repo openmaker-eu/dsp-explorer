@@ -4,7 +4,7 @@
 <div class="container" ng-controller="searchController" ng-init="search_factory.search('{{search_string}}')">
     <div class="row row--mobile">
 
-        <div class="col-md-8 user-detail mobile__padding">
+        <div class="col-md-7 user-detail mobile__padding">
             <div class="row">
 
                 <!--Entity Heading-->
@@ -14,11 +14,16 @@
                    </h1>
                 </div>
 
-
                 <!--Anchor for members on page load-->
                 <div class="col-md-12"> <a id="members" href="#" >&nbsp;</a></div>
                 <div class="col-md-12" ng-if="results_count != undefined">
-                    <h3 ng-hide="is_last_members_label" class="margin-bottom-30">Search results for:  <span class="text-red">&nbsp;{$ search_factory.search_filter $}&nbsp;</span>&nbsp;({$ results_count $} Results)</h3>
+                    <h3 ng-hide="is_last_members_label" class="margin-bottom-30">
+                        <span>Search results for:</span>
+                        <span class="text-red">&nbsp;{$ search_factory.search_filter | limitTo:50 $}
+                            <span ng-if="search_factory.search_filter.length > 50">...</span>&nbsp;&nbsp;
+                        </span>
+                        <span>({$ results_count $} Results)</span>
+                    </h3>
                 </div>
                 <div class="col-md-12">
                     <form>
@@ -126,14 +131,14 @@
         </div>
 
         <!--Right sidebar-->
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="entity-sidebar background-red--light col-md-12" style="padding-bottom: 10px;">
 
                 <div class="row"><div class="col-md-12"><h1>&nbsp;</h1></div></div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="entity-carousel__header background-red text-white">
-                            <h4 style="padding: 4% !important;">Community Location</h4>
+                            <h4 style="padding: 3% !important;">Community Location</h4>
                         </div>
                         <locations-map></locations-map>
                     </div>
@@ -141,7 +146,7 @@
 
                         <div class="entity-carousel entity-carousel--loved entity--loved">
                             <div class="entity-carousel__header">
-                                <h4 style="padding: 4% !important;">Hot tags</h4>
+                                <h4 style="padding: 3% !important;">Hot tags</h4>
                             </div>
                             <div class="entity-carousel__body" style="padding-bottom: 100%;">
                                 <slick style="position: absolute; left:0; bottom:0; top:0; width:100%; height:100%;">
@@ -151,18 +156,8 @@
                         </div>
                         <br>
                     </div>
-
-
-
                 </div>
-                <!--<div class="row">-->
-                    <!--<div class="col-md-12">-->
-                        <!--<div class="background-white text-center" style="padding:10%;">-->
-                            <!--<a href="#community-stats"><h3>Click here to see our statistics</h3></a>-->
-                        <!--</div>-->
 
-                    <!--</div>-->
-                <!--</div>-->
             </div>
         </div>
 

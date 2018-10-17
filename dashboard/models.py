@@ -593,7 +593,6 @@ class Profile(models.Model):
 
         profiles = Profile.objects.all().select_related('user')
 
-
         if restrict_to == 'tags':
             filter = (Q(tags__name=search_string))
         elif restrict_to == 'sectors':
@@ -604,9 +603,8 @@ class Profile(models.Model):
                 Q(user__first_name__icontains=search_string) |
                 Q(user__last_name__icontains=search_string)
             )
-        # elif restrict_to == 'cities':
-        #     print(search_string.split())
-        #     filter = (reduce(operator.and_, (Q(user__place__icontains=x) for x in search_string.split())))
+        elif restrict_to == 'cities':
+            filter = (Q(city__in=search_string.split(';')))
         else:
             filter = (
                 Q(user__email__icontains=search_string) |
@@ -658,8 +656,6 @@ class Profile(models.Model):
 
     @classmethod
     def get_places(cls):
-        # places = filter(lambda x: x is not None, Profile.objects.values_list('place', flat=True))
-        print(Profile.objects.values_list('place', flat=True))
         places = [x for x in Profile.objects.values_list('place', flat=True) if x is not None]
         return places
 
@@ -672,8 +668,8 @@ class Profile(models.Model):
                     self.place = json.dumps(place)
                     self.save()
         except Exception as e:
-            print('error')
-            print('e')
+            print('[ERROR dashboard.models.Profile.sanitize_place]')
+            print(e)
 
     def set_place(self, place):
         self.place = place

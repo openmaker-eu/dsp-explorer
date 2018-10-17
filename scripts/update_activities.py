@@ -24,4 +24,4 @@ def run():
             print(Colorizer.Red(e))
             print(Colorizer.Red('####################################'))
         else:
-            print(Colorizer.Green('Acitivite updated :' + profile.user.email))
+            print(Colorizer.Green('Acitivity updated :' + profile.user.email))

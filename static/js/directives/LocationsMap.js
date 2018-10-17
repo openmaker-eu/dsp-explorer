@@ -2,14 +2,11 @@
  require('js-marker-clusterer/src/markerclusterer')
 
 let template = `
-    <div style="position:relative; padding-bottom:100%; width:100%; background: #fff;" >
+    <div style="position:relative; padding-bottom:80%; width:100%; background: #fff;" >
         <div
             id="locationmap"
             style="position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%;"
         ></div>
-        
-        
-        
     </div>
 `
 
@@ -33,7 +30,6 @@ export default function(){
             
             const user_location = ()=> {
                 try{
-                    console.log('place', _.get($rootScope, 'user.location'));
                     let loc = JSON.parse(_.get($rootScope, 'user.location').replace(/'/g, '"'))
                     return [loc.lat, loc.long, loc.city]
                 }
@@ -58,7 +54,8 @@ export default function(){
                     zoom: 5,
                     center: new google.maps.LatLng(...user_location()),
                     styles : mapStyles,
-                    streetViewControl: false
+                    streetViewControl: false,
+                    mapTypeControl: false
                 });
                 
                 let markers = _.map($scope.places , place=> {
@@ -73,23 +70,9 @@ export default function(){
                     return new google.maps.Marker(marker)
 
                 })
-                
                 let les_markers = _.map($scope.leslist, (place)=>{
                     return new google.maps.Marker( {
                         position: new google.maps.LatLng(place.lat,place.long),
-                        // icon: {
-                        //     path: google.maps.SymbolPath.CIRCLE,
-                        //     scale: 12,
-                        //     fillColor:'white',
-                        //     fillOpacity: 1,
-                        //     strokeWeight: 3,
-                        //     strokeColor:'red'
-                        // },
-                        // label: {
-                        //     text: 'LES',
-                        //     color: 'red',
-                        //     fontSize: "8px"
-                        // },
                         icon:{
                             url: '/static/images/markers/les_pin.png',
                             scaledSize: new google.maps.Size(50,50),
@@ -102,7 +85,6 @@ export default function(){
                             fontWeight: 'bolder'
                         },
                         om_data:place,
-                        
                         map:map
                     })
     
@@ -123,12 +105,12 @@ export default function(){
                 console.log(markercluster);
     
                 google.maps.event.addListener(markercluster, "clusterclick", (cluster)=>{
-                    let city =  cluster.getMarkers()[0].om_data.city
-                    city && UserSearchFactory.search(city, 'city')
-                    // let cities =  _.map(cluster.getMarkers(), (e)=>{
-                    //     return _.get(e, 'om_data.city')
-                    // })
-                    // cities.length > 0 && UserSearchFactory.search(cities.join(','), 'cities')
+                    // let city = _.get(cluster.getMarkers(), '[0].om_data.city')
+                    // city && UserSearchFactory.search(city, 'city')
+                    let cities =  _.map(cluster.getMarkers(), (e)=>{
+                        return _.get(e, 'om_data.city')+', '+_.get(e, 'om_data.state')+', '+_.get(e, 'om_data.country')
+                    })
+                    cities.length > 0 && UserSearchFactory.search(_.uniq(cities).join(';'), 'cities')
                 })
                 
             }

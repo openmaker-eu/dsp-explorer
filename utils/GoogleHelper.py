@@ -4,6 +4,8 @@ import urllib
 from django.conf import settings
 from urllib.parse import urlencode
 from urllib.request import urlopen
+from .Colorizer import Colorizer
+import traceback
 
 class GoogleHelper:
 
@@ -21,32 +23,35 @@ class GoogleHelper:
             if response.status_code < 203:
                 # place = json.loads(response.content, object_pairs_hook=OrderedDict)
                 place = json.loads(response.content)
+                print(place)
                 place = place['predictions'][0]
 
         except Exception as e:
-            print('error')
-            print(e)
+            print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/autocomplete/ '))
+            print(Colorizer.Red(e))
 
         if place:
             place_id = place['place_id']
             detail_url = 'https://maps.googleapis.com/maps/api/place/details/json?' \
-                         ''+urllib.urlencode({'placeid': place_id, 'key': api_key})
-
+                         ''+urlencode({'placeid': place_id, 'key': api_key})
             try:
                 response = requests.get(detail_url)
                 if response.status_code < 203:
                     # place_detail = json.loads(response.content, object_pairs_hook=OrderedDict)
                     place_detail = json.loads(response.content)['result']
-
             except Exception as e:
-                print('error')
-                print(e)
+                print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/details/ '))
+                print(Colorizer.Red(e))
 
         if place and place_detail:
             try:
-                post_code = filter(lambda x: "postal_code" in x["types"], place_detail['address_components'])
-                state = filter(lambda x: "political" in x["types"] and not ['country'] in x['types'], place_detail['address_components'])
-                country = filter(lambda x: "country" in x["types"], place_detail['address_components'])
+                post_code = [x for x in place_detail['address_components'] if "postal_code" in x["types"]]
+                state = [
+                    x for x in place_detail['address_components']
+                    if "political" in x["types"]
+                    and not ['country'] in x['types']
+                ]
+                country = [x for x in place_detail['address_components'] if "country" in x["types"]]
 
                 post_code = post_code[0] if len(post_code) > 0 else []
                 state = state.pop() if len(state) > 0 else []
@@ -63,8 +68,18 @@ class GoogleHelper:
                 }
 
             except Exception as e:
-                print('error')
-                print(e)
-
+                print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] create places from google responses '))
+                print(Colorizer.Red(e))
+                print(Colorizer.LightPurple('place'))
+                print(Colorizer.LightPurple(place))
+                print(Colorizer.Cyan('place_detail'))
+                print(Colorizer.Cyan(place_detail))
+                print(Colorizer.Yellow(exception_to_string(e)))
         else:
             return None
+
+
+def exception_to_string(excp):
+   stack = traceback.extract_stack()[:-3] + traceback.extract_tb(excp.__traceback__)  # add limit=??
+   pretty = traceback.format_list(stack)
+   return ''.join(pretty) + '\n  {} {}'.format(excp.__class__, excp)
