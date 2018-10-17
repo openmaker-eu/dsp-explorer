@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from urllib.request import urlopen
 from .Colorizer import Colorizer
 import traceback
+from utils.Logger import Logger
 
 class GoogleHelper:
 
@@ -21,14 +22,12 @@ class GoogleHelper:
         try:
             response = requests.get(city_url)
             if response.status_code < 203:
-                # place = json.loads(response.content, object_pairs_hook=OrderedDict)
-                place = json.loads(response.content)
-                print(place)
-                place = place['predictions'][0]
+                resp = response.json()
+                place = resp['predictions'][0]
 
         except Exception as e:
             print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/autocomplete/ '))
-            print(Colorizer.Red(e))
+            print(Logger.error(e))
 
         if place:
             place_id = place['place_id']
@@ -38,10 +37,11 @@ class GoogleHelper:
                 response = requests.get(detail_url)
                 if response.status_code < 203:
                     # place_detail = json.loads(response.content, object_pairs_hook=OrderedDict)
-                    place_detail = json.loads(response.content)['result']
+                    resp = response.json()
+                    place_detail = resp['result']
             except Exception as e:
                 print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] Get from google place/details/ '))
-                print(Colorizer.Red(e))
+                print(Logger.error(e))
 
         if place and place_detail:
             try:
@@ -69,7 +69,7 @@ class GoogleHelper:
 
             except Exception as e:
                 print(Colorizer.Red('[ERROR utils.GoogleHelper.get_city] create places from google responses '))
-                print(Colorizer.Red(e))
+                print(Logger.error(e))
                 print(Colorizer.LightPurple('place'))
                 print(Colorizer.LightPurple(place))
                 print(Colorizer.Cyan('place_detail'))
