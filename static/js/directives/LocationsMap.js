@@ -50,7 +50,7 @@ export default function(){
                     .filter(e=>!_.isEmpty(e))
                 
                 
-                var map = new google.maps.Map(document.getElementById('locationmap'), {
+                let map = new google.maps.Map(document.getElementById('locationmap'), {
                     zoom: 5,
                     center: new google.maps.LatLng(...user_location()),
                     styles : mapStyles,

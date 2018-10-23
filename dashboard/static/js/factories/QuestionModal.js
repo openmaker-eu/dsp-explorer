@@ -9,8 +9,9 @@ let template = `
 export default ['$rootScope', '$uibModal', '$document', function($rootScope, $uibModal, $document){
     
     let F = {
-        
-        open: (ev, questions, action=null)=>{
+        wizard_id: null,
+        action: null,
+        open: (ev, questions, action=null, extra=null)=>{
             
             console.log('open', open);
     
@@ -23,6 +24,11 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                 transclude: true,
                 appendTo : $document.find('.modal__container').eq(0),
                 controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
+                    
+                    F.wizard_id = $scope.$id
+                    F.action = action
+                    
+                    console.log('modal', F.wizard_id);
                     
                     $scope.questions=questions
                     $scope.action=action
@@ -41,8 +47,6 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                     $rootScope.noscroll = true
                     $rootScope.modal_opened = true
                     
-                    
-
                 }]
             });
     
@@ -58,7 +62,10 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
             F.modalInstance.rendered.then(x=>x)
             F.modalInstance.opened.then(x=>x)
         },
-        close:()=>F.modalInstance.close()
+        close:()=> {
+            F.action && F.action === 'profileedit' && $rootScope.$emit(`wizard.${F.wizard_id}.save`)
+            F.modalInstance.close()
+        }
     }
     
     $rootScope.$on('question.modal.open', F.open)

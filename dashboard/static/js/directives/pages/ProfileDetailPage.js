@@ -21,7 +21,8 @@ export default [function(){
             $scope.entity = EntityProvider.make($scope.entityname,$scope.entityid)
             $scope.nodata = !$scope.entity.get()
     
-            $scope.edit = ()=> $rootScope.$emit('question.modal.open', null, 'profileedit' )
+            $scope.edit = ()=>
+                $rootScope.$emit('question.modal.open', null, 'profileedit' )
             
             
             $scope.tooltip_template = "<i class='fas fa-user-edit'></i>&nbsp;&nbsp;Click to edit"

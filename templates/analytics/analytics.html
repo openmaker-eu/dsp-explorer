@@ -1,9 +1,20 @@
 <!-- Global Site Tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.GOOGLE_ANALYTICS_CODE }}" charset=utf-8"></script>
 <script charset=utf-8">
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments)};
-    gtag('js', new Date());
 
+    window.dataLayer = window.dataLayer || [];
+    console.log('window.dataLayer', window.dataLayer);
+
+    function gtag(){dataLayer.push(arguments)};
+
+    gtag('js', new Date());
     gtag('config', '{{ settings.GOOGLE_ANALYTICS_CODE }}');
+
+    {% if user.is_authenticated %}
+        gtag('crm_id', '{{ user.profile.crm_id }}');
+        gtag('user_id', '{{ user.id }}');
+    {% endif %}
+
+
 </script>
+

@@ -28,10 +28,13 @@ let wizard_directive =
     },
     controller: ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
         
+        $scope.question_url = '/api/v1.4/questions/'
+        
         // Models
         $scope.wizard = {form:{}, formmodel:{}}
         $scope.wizard_name = 'wizard.'+($scope.wizardid ||$scope.$id)
-        
+        console.log('wizard', $scope.wizard_name);
+    
         // Status variables
         $scope.loading = false
         $scope.loadingmessage = $scope.loadingmessage || 'Loading'
@@ -54,6 +57,13 @@ let wizard_directive =
         
         $scope.configuration && ($scope.slickConfig = Object.assign($scope.slickConfig, $scope.configuration))
         
+        const get_form_data = ()=> new FormData( $('.wizard-form')[0] )
+        const send_form_data = (form_data, url) => $http.post(
+            url,
+            form_data,
+            {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
+        )
+        
         // Trigger validation and return bool
         $scope.isSubformValid = (subform) => {
             if(!subform || !subform.hasOwnProperty('$$element')) return false
@@ -64,6 +74,8 @@ let wizard_directive =
             // Return validation status
             return _.get(subform, '$valid')
         }
+        $scope.isSubformDirty = (subform) => subform ? subform.$dirty : true
+        
         $rootScope.$on($scope.wizard_name+'.next', (ev,current)=>{
             let question = _.get($scope , 'questions['+current+']')
             let subform = question.name && $scope.wizard.form[question.name]
@@ -71,7 +83,7 @@ let wizard_directive =
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
                 // Perform apicall
-                if (question && question.apicall) {
+                if (question && question.apicall && $scope.isSubformDirty(subform)) {
                     $scope.loading = true;
                     
                     // Generate url
@@ -79,19 +91,14 @@ let wizard_directive =
                     $scope.action && (url = url + $scope.action + '/')
                     
                     // Create form data
-                    let form_data = new FormData( $('.wizard-form')[0] )
+                    let form_data = get_form_data()
                     
                     // SAFARI FIX : Remove picture if empty
                     let picture = form_data.get('picture')
                     picture && picture.size === 0 && form_data.delete('picture')
                     
                     // Post data to backend
-                    $http
-                        .post(
-                            url,
-                            form_data,
-                            {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
-                        )
+                    send_form_data(form_data, url)
                         .then(res=>{
                             question.emitevent && $rootScope.$emit(question.emitevent, {})
                             $scope.slickConfig.method.slickNext()
@@ -113,7 +120,12 @@ let wizard_directive =
         
         $rootScope.$on($scope.wizard_name+'.prev',()=>$scope.slickConfig.method.slickPrev())
         $rootScope.$on($scope.wizard_name+'.goto',(ev,val)=>$scope.slickConfig.method.slickGoTo(val))
-        $rootScope.$on($scope.wizard_name+'.end', ()=>null)
+        $rootScope.$on($scope.wizard_name+'.end', ()=>{})
+        
+        $rootScope.$on($scope.wizard_name+'.save', ()=>
+            send_form_data( get_form_data(), $scope.question_url)
+                .catch(e=>console.log('Error saving data on close modal', e))
+        )
         
         $scope.close = ()=>$rootScope.$emit($scope.wizard_name+'.end', $scope.current)
         
