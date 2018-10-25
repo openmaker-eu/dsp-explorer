@@ -8,11 +8,18 @@
     function gtag(){dataLayer.push(arguments)};
 
     gtag('js', new Date());
-    gtag('config', '{{ settings.GOOGLE_ANALYTICS_CODE }}');
+    gtag('config', '{{ settings.GOOGLE_ANALYTICS_CODE }}',
+        {
+            'custom_map': {
+                'dimension1': 'crm_id',
+                'dimension2' : 'user_id'
+            }
+        }
+    );
 
     {% if user.is_authenticated %}
-        gtag('crm_id', '{{ user.profile.crm_id }}');
-        gtag('user_id', '{{ user.id }}');
+        gtag('event', 'crm_id_dimension', '{{ user.profile.crm_id }}');
+        gtag('event', 'user_id_dimension', '{{ user.id }}');
     {% endif %}
 
 
