@@ -9,8 +9,9 @@
 
     gtag('js', new Date());
     gtag('config', '{{ settings.GOOGLE_ANALYTICS_CODE }}',
-        {
-            'custom_map': {
+        {'userId': '{% if user.is_authenticated %}  user.profile.crm_id  {% else %}} USER_ID {% endif %}'},
+        {'user_id': '{% if user.is_authenticated %}  user.profile.crm_id  {% else %}} USER_ID {% endif %}'},
+        {'custom_map': {
                 'dimension1': 'crm_id',
                 'dimension2' : 'user_id'
             }

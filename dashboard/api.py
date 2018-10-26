@@ -38,6 +38,8 @@ def search_members(request, search_string=None, extra_params=None):
     # Can be 3, 2 or 1 column in the frontend
     members_per_page = 24
 
+    search_string = request.POST.get('search_query', '') if not search_string else search_string
+
     # A QuerySet wit all the active users as results if no search string is provided else return the filtered QuerySet
     results = Profile.search_members(search_string, request.GET.get('restrict_to', None))
     count = results.count()

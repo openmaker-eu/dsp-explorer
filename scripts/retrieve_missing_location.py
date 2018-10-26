@@ -10,7 +10,7 @@ from dashboard.models import User, Profile, Location, Invitation
 import json
 from utils.GoogleHelper import GoogleHelper
 from utils.Colorizer import Colorizer
-
+from utils.Logger import Logger
 
 def add_place_to_profile(profile):
     try:
@@ -33,31 +33,27 @@ def add_location_to_user(user):
                 lat=repr(place['lat']),
                 lng=repr(place['long']),
                 city=place['city'],
-                state=place['state'],
+                state=place['state'] if 'state' in place else '',
                 country=place['country'],
                 country_short=place['country_short'],
                 post_code=place['post_code'] if 'post_code' in place else '',
                 city_alias=place['city']+','
             )
             user.profile.location = location
+            user.profile.latlong = ','.join([format(place['lat'], '.6f'),format(place['long'], '.6f')])
             user.profile.save()
 
     except Exception as e:
         print(Colorizer.Red('###############################'))
-        print(Colorizer.Red('Add location error'))
-        print(Colorizer.Red(e))
+        print(Colorizer.Red('[ERROR Add location error]'))
+        print(Logger.error(e))
         print(Colorizer.Red('###############################'))
     else:
         print(Colorizer.Green('LOCATION OK: '+user.email))
 
 
 def run():
-    users = User.objects.all()
-    for user in users:
+    profiles = Profile.objects.all()
+    for profile in profiles:
         add_place_to_profile(profile)
-        add_location_to_user(user)
-
-
-
-
-        {"city":"Arezzo","state":"Toscana","country_short":"IT","country":"Italia","post_code":"52100","lat":43.46328390000001,"long":11.879633600000034}
+        add_location_to_user(profile.user)

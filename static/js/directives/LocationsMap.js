@@ -105,12 +105,17 @@ export default function(){
                 console.log(markercluster);
     
                 google.maps.event.addListener(markercluster, "clusterclick", (cluster)=>{
-                    // let city = _.get(cluster.getMarkers(), '[0].om_data.city')
-                    // city && UserSearchFactory.search(city, 'city')
-                    let cities =  _.map(cluster.getMarkers(), (e)=>{
-                        return _.get(e, 'om_data.city')+', '+_.get(e, 'om_data.state')+', '+_.get(e, 'om_data.country')
+                    // let cities =  _.map(cluster.getMarkers(), (e)=>{
+                    //     return _.get(e, 'om_data.city')+', '+_.get(e, 'om_data.state')+', '+_.get(e, 'om_data.country')
+                    // })
+                    // cities.length > 0 && UserSearchFactory.search(_.uniq(cities).join(';'), 'cities')
+                    let latlong =  _.map(cluster.getMarkers(), (e)=>{
+                        return parseFloat(_.get(e, 'om_data.lat')).toFixed(6) +
+                            ','+
+                            parseFloat(_.get(e, 'om_data.long')).toFixed(6)
                     })
-                    cities.length > 0 && UserSearchFactory.search(_.uniq(cities).join(';'), 'cities')
+                    
+                    latlong.length > 0 && UserSearchFactory.search(_.uniq(latlong).join(';'), 'latlong')
                 })
                 
             }

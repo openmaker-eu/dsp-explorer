@@ -285,6 +285,7 @@ class Profile(models.Model):
     picture = models.ImageField(_('Picture'), upload_to='images/profile', null=True, blank=True)
     gender = models.TextField(_('Gender'), max_length=500, null=True, blank=True)
     city = models.TextField(_('City'), max_length=500, null=True, blank=True)
+    latlong = models.TextField(max_length=500, null=True, blank=True)
     occupation = models.TextField(_('Occupation'), max_length=500, null=True, blank=True)
     birthdate = models.DateTimeField(_('Birth Date'), blank=True, null=True)
 
@@ -591,7 +592,7 @@ class Profile(models.Model):
         from functools import reduce
         import operator
 
-        profiles = Profile.objects.all().select_related('user')
+        profiles = Profile.objects.all()
 
         if restrict_to == 'tags':
             filter = (Q(tags__name=search_string))
@@ -605,6 +606,8 @@ class Profile(models.Model):
             )
         elif restrict_to == 'cities':
             filter = (Q(city__in=search_string.split(';')))
+        elif restrict_to == 'latlong':
+            filter = (Q(latlong__in=search_string.split(';')))
         else:
             filter = (
                 Q(user__email__icontains=search_string) |
@@ -619,7 +622,7 @@ class Profile(models.Model):
                 Q(location__country_alias__alias__icontains=search_string)
             )
 
-        return profiles.filter(filter & Q(user__isnull=False)).distinct().order_by('-pk') \
+        return profiles.filter(Q(user__isnull=False) & filter).distinct().order_by('-pk') \
             if search_string is not None \
             else profiles.filter().distinct().order_by('-pk')
 
@@ -644,11 +647,6 @@ class Profile(models.Model):
     @classmethod
     def get_sectors(cls):
         from collections import Counter
-
-        print('sectors')
-        print(Profile.objects.values_list('sector', flat=True))
-        print('endsectors')
-
         #flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         flat_sectors = filter(lambda x: x is not None and x.strip() != '', Profile.objects.values_list('sector', flat=True))
         sectors = Counter(flat_sectors).most_common(1000)

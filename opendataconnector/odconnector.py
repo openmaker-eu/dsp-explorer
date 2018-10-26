@@ -31,7 +31,7 @@ class OpenDataConnector(object):
     @classmethod
     def __get_url(cls, params):
         return 'https://data.opendatasoft.com/api/records/1.0/search/?' \
-               ''+urllib.urlencode(params)
+               ''+urllib.parse.urlencode(params)
 
     @classmethod
     def __perform_get(cls, url):

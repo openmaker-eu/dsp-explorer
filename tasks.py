@@ -67,6 +67,13 @@ def test_e2e(c):
 
 @task
 def runscript(c, name):
+    '''
+    USAGE: inv runscript -n [scriptname],
+    [scriptname] is a python script located in scripts/ directory or dspexplorer/ directory
+    :param c:
+    :param name:
+    :return:
+    '''
     c.run('python ./manage.py runscript '+name)
 
 
