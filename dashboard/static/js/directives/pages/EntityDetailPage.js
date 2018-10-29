@@ -37,7 +37,16 @@ let template = `
                         </div>
                         <br>
                         <br>
-                        
+                       
+                        <!--Apply_button-->
+                        <div class="row" ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') ">
+                            <h2  ng-if="entityname==='challenges'&& entity.data !== null"  class="col-md-12 col-sm-12 col-sm-offset-0">
+                            <span class="pull-right">
+                                <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button></h2>
+                            </span>
+                       </div>
+                       <br>
+                       <br>
                         <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                         <br>
                         <br>

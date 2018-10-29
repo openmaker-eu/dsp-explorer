@@ -1,18 +1,23 @@
 export default function(){
     return {
         template:`
-            <i
-                ng-click="interest()"
-                ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
+        <div ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
+            ng-click="interest()" class="far pointer text--darken--hover" ng-class="{
+            'text-highlight': interested}"> 
+                <i ng-if="entityname==='challenges'" ng-class="{
+                    'text-highlight': interested}" class="cairo"> 
+                Apply</i>
+                <i
                 class="far pointer text--darken--hover"
                 ng-class="{
-                    'text-highlight': interested,
-                    'fa-star':entityname=='projects' || entityname=='challenges',
-                    'fa-heart': entityname==='profile',
-                    'fa-bookmark': entityname === 'news',
-                    'fa-bell': entityname === 'events'
+                'text-highlight': interested,
+                'fa-star':entityname==='projects' || entityname==='challenges',
+                'fa-heart': entityname==='profile',
+                'fa-bookmark': entityname === 'news',
+                'fa-bell': entityname === 'events'
                 }"
-            ></i>
+                ></i>
+        </div>     
         `,
         scope: {
             entityname : '@',
@@ -34,7 +39,7 @@ export default function(){
                 }
                 $rootScope.$emit($scope.entityname+'.'+$scope.entityid+'.interest.change', {'interested':$scope.interested})
             }
-    
+            
             $rootScope.$on($scope.entityname+'.'+$scope.entityid+'.interest.change', (e, m)=>$scope.interested = _.get(m, 'interested'))
     
             // First check if is bookmarked
@@ -52,13 +57,13 @@ export default function(){
                 if(!$scope.isstatic){ url() && $http.post(url()).then(change_status); }
                 else{ $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:!$scope.interested}); }
 
-                
+                console.log("ciao")
             }
             
             // React to bookmark action
             $rootScope.$on('bookmarked.'+$scope.entityname+'.visibility', (e, m)=>{ $scope.interested=m.visible })
             
-    
+            
         }]
     }
 }
