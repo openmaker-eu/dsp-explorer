@@ -1,6 +1,7 @@
 export default function(){
     return {
         template:`
+            <div>
             <i
                 ng-click="interest()"
                 ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
@@ -13,6 +14,7 @@ export default function(){
                     'fa-bell': entityname === 'events'
                 }"
             ></i>
+            </div>
         `,
         scope: {
             entityname : '@',

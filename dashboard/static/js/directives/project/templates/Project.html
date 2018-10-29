@@ -1,31 +1,31 @@
 <form name="project_form" class="col-md-12" ng-submit="create_or_update_project()" enctype="multipart/form-data" id="project_form">
+
     <div class="col-md-6 col-md-offset-3 col-sm-12 col-sm-offset-0">
         <div class="form-group">
             <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3 text-center" >
-                <button class="btn custom-button margin-bottom-10" ng-click="profileImageUpload();">
+
+                <span class="btn custom-button margin-bottom-10" ng-click="profileImageUpload();">
                     {$ data.picture? 'Change': 'Choose' $} Image
-                </button>
+                </span>
 
             </div>
         </div>
-
     </div>
+
     <div class="col-md-12"><h5 class="text-center">Image size must be less than 1MB</h5></div>
 
     <div class="col-md-12 col-sm-12">
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
-            <div  ng-if="image_model.src"  class="thumbnail" id="profile-image-div" >
-                <img style="max-width: 100%; max-height: 500px;" ng-src="{$ image_model.src $}"/>
+            <div ng-if="data.picture || image_model.src" class="thumbnail" id="profile-image-div" >
+                <img style="max-width: 100%; max-height: 500px;" ng-src="{$ data.picture || image_model.src $}"/>
             </div>
-            <div  ng-if="data.picture" class="thumbnail" id="profile-image-div" >
-                <img style="max-width: 100%; max-height: 500px;" ng-src="{$ data.picture $}"/>
-            </div>
-            <input id="profile-image-input"
+            <input
+                   id="profile-image-input"
                    style="width:1px; height:1px; opacity:0.1;"
                    input_file_model="data.picture"
                    type="file"
                    name="picture"
-                   required
+                   ng-attr-required="projectid"
             />
         </div>
     </div>

@@ -75,6 +75,17 @@ class InsightConnectorV10(object):
 
 
     @classmethod
+    def entity_details(cls, entityname, temp_id):
+        try:
+            results = cls.get('recommendation/get_{}_contents'.format(entityname), {'temp_ids': [temp_id]})
+            return results.json()['Temporary Contents'][temp_id]
+        except Exception as e:
+            print('[ERROR : connectors.insight.connector.InsigthConnectoV10.entity_detail] Error get reccomended entities')
+            print(e)
+            return []
+
+
+    @classmethod
     def get(cls, endpoint, querydict={}):
         querydict['api_key'] = settings.INSIGHT_API_KEY
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
@@ -85,6 +96,7 @@ class InsightConnectorV10(object):
             print('ERROR[insight.connector.InsightConnectorV10.get]')
             print(e)
             return False
+
 
     @classmethod
     def merge_ids(cls, ids):

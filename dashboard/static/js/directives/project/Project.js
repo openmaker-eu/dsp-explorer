@@ -12,6 +12,7 @@ export default [function(){
         // form data
         $scope.data = {}
         
+        
         $scope.create_or_update_project = () => {
             let form =  document.getElementById('project_form')
             
@@ -22,8 +23,7 @@ export default [function(){
                 headers: {'Content-Type': undefined },
                 transformRequest: angular.identity
             })
-            .then(r=> $scope.projectid ?
-                $window.location.href = '/profile/project/' + $scope.projectid + '/detail':
+            .then(r=>
                 $window.location.href = '/profile'
             )
             .catch(

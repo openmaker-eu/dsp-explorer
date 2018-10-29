@@ -82,7 +82,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_tags_string(self, obj):
-        return TagSerializer(obj.get_tags(), many=True).data
+        return [x.get('name', '') for x in TagSerializer(obj.get_tags(), many=True).data]
 
     def get_interested(self, obj):
         return ProfileSerializer(obj.interested(), many=True).data

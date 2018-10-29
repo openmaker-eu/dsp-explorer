@@ -19,11 +19,27 @@ let template = `
                             ng-mouseover="entity.hover=true"
                             ng-mouseleave="entity.hover=false"
                         >
-                            <entity-delete
-                                ng-show="entity.hover"
-                                style="position: absolute; bottom:10px; right:30px; z-index: 100000000; cursor:pointer"
-                                entityid="{$ entity.id $}" entityname="projects" entitydisplayname="Project"
-                            ></entity-delete>
+                        
+                            <div
+                                style="
+                                    position: absolute; bottom:10px; right:30px; z-index: 100000000;
+                                    cursor:pointer;
+                                    display:flex; flex-direction: row; justify-content: flex-end;
+                                "
+                            >
+                            
+                                <a ng-href="/profile/project/{$ entity.id $}" uib-tooltip="Edit this project">
+                                    <h4><i class="fas fa-edit text-grey--dark" ></i></h4>
+                                </a>
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <entity-delete
+                                    entityid="{$ entity.id $}"
+                                    entityname="projects"
+                                    entitydisplayname="Project"
+                                ></entity-delete>
+                                
+                            </div>
+       
                             <entity-detail
                                 entity="entity"
                                 entityname="projects"

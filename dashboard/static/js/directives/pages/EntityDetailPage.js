@@ -91,7 +91,7 @@ export default function(){
             
             $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            $scope.entity = EntityProvider.make($scope.entityname, $scope.entityid)
+            $scope.entity = EntityProvider.make($scope.entityname, $scope.entitytempid)
             $scope.nodata = !$scope.entity.get()
     
             $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname

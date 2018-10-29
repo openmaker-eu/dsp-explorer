@@ -60,6 +60,9 @@ def get_entity_details(request, entity='news', entity_id=None):
     try:
         method_to_call = 'get_' + entity+'_detail'
         results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
+        # results = Insight.entity_detail(entity, entity_id)
+        print('results')
+        print(results)
     except DSPConnectorException as e:
         print('ERROR[dashboard.api14.bookmark]: DSPConnectorException')
         print(e)
@@ -295,12 +298,10 @@ class entity(APIView):
             try:
 
                 reccomended = []
-
                 if not profile:
                     print('no profile')
                     # results = self.random_content_visitor(topics_id_list, method_to_call, entity)
                     results = self.reccomended_content(request, entity, page)
-                    print(len(results))
                     results = results[:5]
                 else:
                     method_to_call = 'get_' + entity
@@ -378,7 +379,7 @@ class entity_details(APIView):
             try:
                 method_to_call = 'get_' + entity+'_detail'
                 # results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity][0]
-                results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity][0]
+                results = Insight.entity_details(entity, entity_id)
             except DSPConnectorException:
                 pass
             except AttributeError as a:

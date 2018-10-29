@@ -725,6 +725,7 @@ class v13:
             except Exception as e:
                 print(e)
                 return not_found()
+
         # GET SINGLE
         if request.method == 'GET' and project_id is not None:
             try:
@@ -737,6 +738,7 @@ class v13:
             except Exception as e:
                 print(e)
                 return error()
+
         # UPDATE
         if request.method == 'POST' and project_id is not None:
             data_to_update = {}
@@ -757,6 +759,7 @@ class v13:
             try:
                 if end_date != '':
                     end_date = dt.strptime(end_date, '%Y-%m-%d')
+                    data_to_update['start_date'] = dt.strptime(data_to_update['start_date'], '%Y-%m-%d')
                     # if end_date > dt.now():
                     #     return bad_request('The project end_date cannot be in the future')
                     if end_date < data_to_update['start_date']:
@@ -782,6 +785,7 @@ class v13:
                 return error()
             result = ProjectSerializer(project).data
             return success('ok', 'project updated', result)
+
         # CREATE
         if request.method == 'POST' and project_id is None:
             # check if fields are filled

@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 const template = `
-    <h4 ng-click="open()"><i class="fas fa-trash-alt text-red" ></i></h4>
+    <h4 ng-click="open()" uib-tooltip="Delete this project" ><i class="fas fa-trash-alt text-grey--dark" ></i></h4>
 `
 
 const modal_template = `
