@@ -7,7 +7,6 @@ export default [function(){
             entity: '=',
             entityname: '@',
             entityid : '@',
-            
             preview : '='
         },
         controller : ['$scope', '$sce', function($scope, $sce) {

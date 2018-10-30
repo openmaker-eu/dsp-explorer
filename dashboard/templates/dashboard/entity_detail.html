@@ -5,6 +5,6 @@
             entityname="{{ entity }}"
             entityid="{{ entity_id }}"
             slider="{{ slider }}"
-            entitytempid="{{ entity_temp_id }}"
+            entitytempid="{$ {{ entity_temp_id }} == 'None' ? null : {{ entity_temp_id }} $}"
     ></entity-detail-page>
 {% endblock %}

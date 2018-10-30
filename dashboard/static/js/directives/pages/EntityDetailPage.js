@@ -23,7 +23,6 @@ let template = `
                 <!--Content-->
                 <div class="row entity-detail__content">
                     <div class="col-md-8">
-                        
                         <!--Loader-->
                         <entity-loading
                             loading="!entity.data && !nodata"
@@ -37,7 +36,16 @@ let template = `
                         </div>
                         <br>
                         <br>
-                        
+                       
+                        <!--Apply_button-->
+                        <div class="row" ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') ">
+                            <h2  ng-if="entityname==='challenges'&& entity.data !== null"  class="col-md-12 col-sm-12 col-sm-offset-0">
+                            <span class="pull-right">
+                                <interest-button entityname="{$ entityname $}" entityid="{$ entityid $}"></interest-button></h2>
+                            </span>
+                       </div>
+                       <br>
+                       <br>
                         <entity-interested entityname="{$ entityname $}" entityid="{$ entityid $}"></entity-interested>
                         <br>
                         <br>
@@ -90,8 +98,12 @@ export default function(){
         controller : ['$scope', '$rootScope', '$http', 'EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
             
             $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
+            $scope.entity = EntityProvider.make(
+                $scope.entityname,
+                $scope.entitytempid || $scope.entityid
+            )
+            
             $scope.slider_list = $scope.slider ? $scope.slider.split('-').filter(x => x): []
-            $scope.entity = EntityProvider.make($scope.entityname, $scope.entitytempid)
             $scope.nodata = !$scope.entity.get()
     
             $scope.entitiy_title= ()=>$scope.entityname === 'news' ? 'articles' : $scope.entityname
