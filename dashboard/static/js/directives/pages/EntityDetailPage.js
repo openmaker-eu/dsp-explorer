@@ -20,6 +20,17 @@ let template = `
             
             <div class="col-md-9 col-sm-12 col-sm-offset-0 entity-detail-page__content">
                 
+            <!-- PROVA GRAFICO-->
+
+            <div class="row">
+                 <div class="col-md-6">
+                    <gender-graph></gender-graph>
+                 </div>
+                 <div class="col-md-6">
+                    <age-graph></age-graph>
+                 </div>
+            </div>
+
                 <!--Content-->
                 <div class="row entity-detail__content">
                     <div class="col-md-8">
@@ -51,7 +62,6 @@ let template = `
                         <br>
                         <br>
                     </div>
-                    
                     <div class="col-md-4">
                         <!--Challenges: Event details with icons-->
                         <div

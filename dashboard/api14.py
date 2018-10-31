@@ -627,12 +627,27 @@ def users_csv(request):
 
 @api_view(['GET'])
 def gender_distribution(request):
-    from django.db.models import Sum
+    users_total=Profile.objects.all().count()
+    male_percentage=Profile.objects.filter(gender='male').count()*100/users_total
+    female_percentage=Profile.objects.filter(gender='female').count()*100/users_total
+    nonspecifiedgender_percentage=Profile.objects.filter(gender='other').count()*100/users_total
+    geneder_percentage= {
+        "male":"%.2f"%male_percentage,
+        "female":"%.2f"%female_percentage,
+        "other":"%.2f"%nonspecifiedgender_percentage
+    }
+    print()
+    return Response(geneder_percentage)
 
-    profiles = Profile.objects.filter(user__isnull=False).aggregate(Sum('gender'))
+@api_view(['GET'])
+def age_distribution(request):
+    birthdate=Profile.objects.values("birthdate")
+    return Response({  
+        'birthdate': birthdate
 
-    print(profiles)
-    return Response([])
+    })
+
+
 
 
 @login_required()
