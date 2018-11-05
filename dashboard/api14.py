@@ -685,7 +685,7 @@ def age_distribution(request):
 
 def job_distribution(request):
     from django.db.models import Count
-    jobs= Profile.objects.values("occupation").annotate(caso=Count('occupation')).order_by('-caso')
+    jobs= Profile.objects.values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
     
     # jobs_list=[]
     # for job in jobs:
