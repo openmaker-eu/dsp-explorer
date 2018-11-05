@@ -625,12 +625,13 @@ def users_csv(request):
     return response
 
 
+# GENDER DISTRIBUTION 
 @api_view(['GET'])
 def gender_distribution(request):
     users_total=Profile.objects.all().count()
-    male_percentage=Profile.objects.filter(gender='male').count()*100/users_total
-    female_percentage=Profile.objects.filter(gender='female').count()*100/users_total
-    nonspecifiedgender_percentage=Profile.objects.filter(gender='other').count()*100/users_total
+    male_percentage=Profile.objects.filter(Q(gender='male', user__isnull=False)).count()*100/users_total
+    female_percentage=Profile.objects.filter(Q(gender='female', user__isnull=False)).count()*100/users_total
+    nonspecifiedgender_percentage=Profile.objects.filter( Q(gender='other', user__isnull=False)).count()*100/users_total
     geneder_percentage= {
         "male":"%.2f"%male_percentage,
         "female":"%.2f"%female_percentage,
@@ -639,15 +640,59 @@ def gender_distribution(request):
     print()
     return Response(geneder_percentage)
 
+
+# AGE DISTRIBUTION
 @api_view(['GET'])
 def age_distribution(request):
-    birthdate=Profile.objects.values("birthdate")
-    return Response({  
-        'birthdate': birthdate
+    from datetime import datetime, date
+    birthdates=Profile.objects.filter(Q(user__isnull=False)).values("birthdate")
+    list=[]
+    zero_to_thirty=[]
+    thirty_to_forty=[]
+    forty_to_fifty=[]
+    over_fifty=[]
+    today=datetime.today()
+    for birthdate in birthdates:
+        single_birthdate=birthdate.get('birthdate').replace(tzinfo=None)
+        delta=today - single_birthdate
+        age=delta.days/365
+        list.append(age)
+    for age in list:
+        if age > 0 and age <= 30:
+            zero_to_thirty.append(age)
+    for age in list:
+        if age >30 and age <= 40:
+            thirty_to_forty.append(age)
+    for age in list:
+        if age > 40 and age <= 50:
+            forty_to_fifty.append(age)
+    for age in list:
+        if age > 50 :
+            over_fifty.append(age)
+   
+    age_intervals={
+        "zero_to_thirty": len(zero_to_thirty),
+        "thirty_to_forty": len(thirty_to_forty),
+        "forty_to_fifty": len(forty_to_fifty),
+        "over_fifty": len(over_fifty)
+    }
+    return Response(
+           age_intervals
+        )
 
-    })
+# JOB DISTRIBUTION
+@api_view(['GET'])
 
-
+def job_distribution(request):
+    from django.db.models import Count
+    jobs= Profile.objects.values("occupation").annotate(caso=Count('occupation')).order_by('-caso')
+    
+    # jobs_list=[]
+    # for job in jobs:
+    #     single_job=job.get('occupation')
+    #     jobs_list.append(single_job).annotate
+    print(jobs)
+    return Response(jobs)
 
 
 @login_required()
