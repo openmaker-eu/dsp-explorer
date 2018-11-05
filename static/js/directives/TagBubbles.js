@@ -67,8 +67,6 @@ let bubble = function(div_id, tags){
     
     var diameter = parent.width()
     
-    console.log('parent width ', diameter);
-    
     container.attr('width' , diameter)
     container.attr('height' , diameter)
     

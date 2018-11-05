@@ -14,10 +14,9 @@ export default function(){
     return {
         template:template,
         scope: {},
-        controller : ['$scope', '$rootScope', '$http', 'UserSearchFactory', function($scope, $rootScope, $http, UserSearchFactory){
+        controller : ['$scope', '$rootScope', '$http', 'UserSearchFactory', '$element', function($scope, $rootScope, $http, UserSearchFactory, $element){
             
             $scope.places=[]
-            
             $scope.leslist=[
                 { lat:'48.1356952', long:'16.9758341', city:'Bratislava', is_les:true  },
                 { lat:'52.4774169', long:'-1.9336706', city:'Birmingham', is_les:true  },
@@ -28,19 +27,25 @@ export default function(){
                 { lat:'53.472225', long:'-2.2935019', city:'Manchester', is_les:true  }
             ]
             
+            const default_center = [46.8815115,9.1133242]
+            
             const user_location = ()=> {
                 try{
-                    let loc = JSON.parse(_.get($rootScope, 'user.location').replace(/'/g, '"'))
-                    return [loc.lat, loc.long, loc.city]
+                    let loc = JSON.parse( _.get($rootScope, 'user.location').replace(/'/g, '"') )
+                    return _.isEmpty(loc) ? default_center : [loc.lat, loc.long, loc.city]
                 }
                 catch(e){
                     console.log('[LocationMap -> user_location]', e);
-                    return [46.8815115,9.1133242]
+                    return default_center
                 }
             }
-
+    
+            const map_container = $element.find('#locationmap')[0]
+            const map_center = user_location()
+            
             const build_map = (results)=>{
                 
+                // Places list from json-string removing empty objects
                 $scope.places = _(results)
                     .get('data.places')
                     .map(r=>{
@@ -49,15 +54,18 @@ export default function(){
                     })
                     .filter(e=>!_.isEmpty(e))
                 
+                console.log($scope.places);
                 
-                let map = new google.maps.Map(document.getElementById('locationmap'), {
+                // Init map
+                let map = new google.maps.Map(map_container, {
                     zoom: 5,
-                    center: new google.maps.LatLng(...user_location()),
+                    center: new google.maps.LatLng(...map_center),
                     styles : mapStyles,
                     streetViewControl: false,
                     mapTypeControl: false
                 });
                 
+                // User Markers
                 let markers = _.map($scope.places , place=> {
                     let marker = {
                         position: new google.maps.LatLng(place.lat,place.long),
@@ -70,6 +78,8 @@ export default function(){
                     return new google.maps.Marker(marker)
 
                 })
+                
+                // LES markers
                 let les_markers = _.map($scope.leslist, (place)=>{
                     return new google.maps.Marker( {
                         position: new google.maps.LatLng(place.lat,place.long),
@@ -90,6 +100,7 @@ export default function(){
     
                 })
                 
+                // Merge all markers
                 let all_markers = markers.concat(les_markers)
                 
                 _.each(all_markers, (m)=>{
@@ -99,24 +110,22 @@ export default function(){
                     });
                 })
                 
+                // Init Marker Clusterization
                 let markercluster = new MarkerClusterer(map, markers, { imagePath: '/static/images/markers/m'});
-                map.panTo(map.getCenter());
                 
-                console.log(markercluster);
-    
+                // Filter list on marker or cluster click
                 google.maps.event.addListener(markercluster, "clusterclick", (cluster)=>{
-                    // let cities =  _.map(cluster.getMarkers(), (e)=>{
-                    //     return _.get(e, 'om_data.city')+', '+_.get(e, 'om_data.state')+', '+_.get(e, 'om_data.country')
-                    // })
-                    // cities.length > 0 && UserSearchFactory.search(_.uniq(cities).join(';'), 'cities')
                     let latlong =  _.map(cluster.getMarkers(), (e)=>{
                         return parseFloat(_.get(e, 'om_data.lat')).toFixed(6) +
                             ','+
                             parseFloat(_.get(e, 'om_data.long')).toFixed(6)
                     })
-                    
+
                     latlong.length > 0 && UserSearchFactory.search(_.uniq(latlong).join(';'), 'latlong')
                 })
+    
+                // Set map to center
+                map.panTo(map.getCenter());
                 
             }
 

@@ -18,6 +18,7 @@ require("../../../node_modules/slick-carousel/slick/slick-theme.css");
 require("../../../node_modules/slick-carousel");
 require("../../../node_modules/angular-slick-carousel/");
 require("../../../node_modules/angular-hammer");
+require("../../../node_modules/chart.js/dist/Chart.bundle.js");
 require("../../../node_modules/angular-chart.js");
 require('../../../node_modules/ngmap');
 require('../../../node_modules/angular-recaptcha');

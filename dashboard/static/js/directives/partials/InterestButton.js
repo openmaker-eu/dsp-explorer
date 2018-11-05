@@ -1,22 +1,23 @@
 export default function(){
     return {
         template:`
-        <div ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
-            ng-click="interest()" class="far pointer text--darken--hover" ng-class="{
-            'text-highlight': interested}">
-                <i ng-if="entityname==='challenges'" ng-class="{
-                    'text-highlight': interested}" class="cairo">
-                Apply</i>
-                <i
+        <div
+            ng-if="$root.authorization >= 10 && (entityname !== 'projects' || entityname !== 'challenges') "
+            ng-click="interest()"
+            class="far pointer text--darken--hover"
+            ng-class="{'text-highlight': interested}"
+        >
+            <i ng-if="entityname==='challenges'" ng-class="{'text-highlight': interested}" class="cairo">Apply</i>
+            <i
                 class="far pointer text--darken--hover"
                 ng-class="{
-                'text-highlight': interested,
-                'fa-star':entityname==='projects' || entityname==='challenges',
-                'fa-heart': entityname==='profile',
-                'fa-bookmark': entityname === 'news',
-                'fa-bell': entityname === 'events'
+                    'text-highlight': interested,
+                    'fa-star':entityname==='projects' || entityname==='challenges',
+                    'fa-heart': entityname==='profile',
+                    'fa-bookmark': entityname === 'news',
+                    'fa-bell': entityname === 'events'
                 }"
-                ></i>
+            ></i>
         </div>
         `,
         scope: {
@@ -47,22 +48,12 @@ export default function(){
     
             // Change bookmark on BE OR trigger bookmark action
             $scope.interest = () => {
-    
-                //let is_list = $rootScope.page_info.name == 'entity_list';
-                //let is_this_entity = _.get($rootScope, 'page_info.options.entity_name') === $scope.entityname;
-                // if ( (!is_list || !is_this_entity) && $scope.isstatic){
-                //     $window.location.href = `/entity/${$scope.entityname}/?bookmark=true`
-                // }
-                // else
                 if(!$scope.isstatic){ url() && $http.post(url()).then(change_status); }
                 else{ $rootScope.$emit('bookmarked.'+$scope.entityname+'.visibility', {visible:!$scope.interested}); }
-
-                console.log("ciao")
             }
             
             // React to bookmark action
             $rootScope.$on('bookmarked.'+$scope.entityname+'.visibility', (e, m)=>{ $scope.interested=m.visible })
-            
             
         }]
     }

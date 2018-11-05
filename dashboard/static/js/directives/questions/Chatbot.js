@@ -98,8 +98,6 @@ let chatbot_directive =
         }
         $scope.handle_response = (res)=>{
             
-            console.log('CAHTBOT', res);
-            
             if(_.isArray(res.data.questions) && res.data.questions.length > 0) {
                 
                 let next_question = {

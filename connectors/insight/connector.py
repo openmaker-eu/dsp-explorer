@@ -52,17 +52,14 @@ class InsightConnectorV10(object):
         return results
 
     @classmethod
-    def reccomended_entity(cls, crm_id=None, entity_name=''):
+    def reccomended_entity(cls, crm_id=None, entity_name=None, page=None):
         allowed_entities = ['news', 'events']
         try:
             results = {}
             if entity_name in allowed_entities:
-                results = \
-                    cls.get('recommendation/'+entity_name, {'crm_ids': [crm_id]}) if crm_id \
-                    else cls.get('recommendation/'+entity_name)
-            json_decoded = results.json() if results.status_code < 205 else []
-            reccomendations = json_decoded['users'][0][entity_name] if crm_id else json_decoded[entity_name]
-            return reccomendations
+                querydict = {k: v for (k, v) in {'crm_id': crm_id, 'page': page}.items() if v}
+                results = cls.get('recommendation/'+entity_name, querydict)
+            return results.json() if results.status_code < 205 else []
         except Exception as e:
             print('[ERROR : connectors.insight.connector.InsigthConnectoV10.reccomended_entity] Error get reccomended entities')
             print(e)

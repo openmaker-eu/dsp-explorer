@@ -46,19 +46,15 @@ export default {
             const create_image = ()=>{
                 
                 let image = new_image($scope.src)
-                console.log('squared', this.squared);
     
                 image.addEventListener('load', p=> {
-                    console.log('load image', $scope.src);
                     p.target.height > p.target.width && (image.className = "circle-image landscape")
                     $element.find('.profile-image-static').html(image)
                     $scope.loaded = true
                 })
                 image.addEventListener('error', ()=> {
                     $scope.loaded === false &&
-        
                     $element.find('.profile-image-static').html(new_image($scope.placeholder || placeholder))
-        
                 })
                 
                 

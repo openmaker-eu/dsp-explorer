@@ -4,6 +4,7 @@ let template = /*html*/`
         <div class="row row--mobile">
             <h3 class="col-md-12 margin-top-2-perc"><a class="text-red cairo bold" href="/manifesto">OM MANIFESTO</a></h3>
         </div>
+
         <div class="row margin-top-2-perc margin-bottom-5-perc">
             <div ng-repeat="entity_name in entities_names" class="col-md-4">
                 <entity-carousel entityname="{$ entity_name $}" limit="$root.authorization<10 && 1"></entity-carousel>

@@ -28,9 +28,6 @@ export default [function(){
                 return image
             }
             
-            
-            console.log('entity', $scope.entityname);
-            
         }]
     }
 }]

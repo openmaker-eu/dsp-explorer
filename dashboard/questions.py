@@ -322,7 +322,7 @@ class questions(APIView):
         print('im on user update')
 
         city = request.data.get('city', profile.city)
-        place = request.data.get('city', profile.place)
+        place = request.data.get('place', profile.place)
 
         try:
             # User
@@ -331,7 +331,7 @@ class questions(APIView):
 
             # Profile
             profile.city = city if not not city else profile.city
-            profile.place = json.loads(request.data.get('place', profile.place))
+            profile.place = place if bool(place) else profile.palce
 
             profile.birthdate = request.data.get('birthdate', profile.birthdate)
             profile.occupation = request.data.get('occupation', profile.occupation)
@@ -345,8 +345,8 @@ class questions(APIView):
             profile.activity('domain', request.data.get('domain', None))
 
             # Profile Extra
-            profile.tags_create_or_update(request.data.get('tags', None), clear=True)
-            profile.picture_set_or_update(request.data.get('picture', None))
+            #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
+            profile.picture_set_or_update(request.data.get('picture', profile.picture))
 
             user.save()
             profile.save()

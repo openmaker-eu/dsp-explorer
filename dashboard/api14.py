@@ -38,7 +38,7 @@ from utils.mailer import EmailHelper
 from django.urls import reverse
 from datetime import datetime, timedelta
 from django.db.models import Q
-
+from .helpers import order_date_index
 
 def __wrap_response(*args, **kwargs):
     try:
@@ -253,94 +253,46 @@ class entity(APIView):
         :param request:
         :param entity:
         :param user_id:
+        :param page:
         :return:
         """
         #TODO make cursor works
-        profile = None
-        results = []
-        local_entities = None
-        page = int(request.GET.get('page', 0))
-        per_page = 10
-        more_pages = 0
-        cursor = (page-1)*per_page
+        page = int(request.GET.get('page', 1))
+        is_last_page = False
+        profile = request.user.profile if request.user.is_authenticated else None
 
-        try:
-            profile = request.user.profile
-        except:
-            profile = None
+
         # Local entities
         if entity == 'loved':
             return interest(request._request, entity='profile', user_id=user_id)
         elif entity == 'lovers':
             return interested(request._request, entity='profile', entity_id=user_id)
         elif entity == 'projects' or entity == 'challenges':
-            from .helpers import order_date_index
-            # Projects
-            local_entities = Project.objects.order_by('-end_date')
-            if not profile:
-                local_entities = local_entities[:5]
-            results = results+ProjectSerializer(local_entities, many=True).data
-
-            # Challenges
-            local_entities = Challenge.objects.order_by('-end_date')
-            if not profile:
-                local_entities = local_entities[:5]
-            results = results+ChallengeSerializer(local_entities, many=True).data
-
-            # Mix both
+            projects = Project.objects.order_by('-end_date') if profile \
+                else Project.objects.order_by('-end_date')[:5]
+            challenges = Challenge.objects.order_by('-end_date') if profile \
+                else Challenge.objects.order_by('-end_date')[:5]
+            # Mix Results
+            results = ChallengeSerializer(challenges, many=True).data + ProjectSerializer(projects, many=True).data
             results = sorted(results, key=order_date_index, reverse=False)
-
         elif entity == 'matches':
-            local_entities = Profile.objects.get(pk=user_id).best_matches()
-            results = ProfileSerializer(local_entities, many=True).data
+            matches = Profile.objects.get(pk=user_id).best_matches()
+            results = ProfileSerializer(matches, many=True).data
         else:
             # Remote Entities
             try:
-
-                reccomended = []
-                if not profile:
-                    print('no profile')
-                    # results = self.random_content_visitor(topics_id_list, method_to_call, entity)
-                    results = self.reccomended_content(request, entity, page)
-                    results = results[:5]
-                else:
-                    method_to_call = 'get_' + entity
-
-                    if page == 0:
-                        reccomended = self.reccomended_content(request, entity, page)
-                        more_pages = 1
-                        results = reccomended
-                        if len(reccomended) == 0:
-                            topics_id_list = self.topic_ids()
-                            results = self.random_content_visitor(topics_id_list, method_to_call, entity)
-                            results = results[:per_page]
-                    else:
-                        topics_id_list = topics_id_list = self.topic_ids()
-                        for index, topic_id in enumerate(topics_id_list):
-                            entity_list = getattr(DSPConnectorV13, method_to_call)(topic_id=topic_id, cursor=cursor)
-                            next_cursor = entity_list.get('next_cursor', 0)
-                            res = entity_list.get(entity, [])
-                            if len(res) > 0:
-                                results.append(res)
-                            more_pages = more_pages + next_cursor
-                        results = mix_result_round_robin(*results)
-                        # results = reccomended + mix_result_round_robin(*results)
+                response = self.reccomended_content(request, entity, page) if profile \
+                    else self.reccomended_content(request, entity, page)
+                is_last_page = 'next_page' in response and response['next_page'] == 0
+                results = response[entity]
             except DSPConnectorException as e:
                 print('ERROR[dashboard.api14.entity.get] DSPConnectorException')
-                print('DSPConnectorException :')
-                print(e)
                 logger.error(e)
             except AttributeError as a:
                 print('ERROR[dashboard.api14.entity.get] AttributeError')
-                print(a)
                 logger.error(a)
 
-        # paginator = Paginator(results, per_page)
-        # paginated_results = paginator.page(page)
-
-        # return Response(results if len(results) > 20 else results)
-        status = 200 if more_pages > 0 else 202
-        return Response(data=results, status=status)
+        return Response(data=results or [], status=202 if is_last_page else 200)
 
     def topic_ids(self):
         topics_list = DSPConnectorV13.get_topics()['topics']
@@ -349,10 +301,9 @@ class entity(APIView):
     def reccomended_content(self, request, entity, page):
         return Insight.reccomended_entity(
             crm_id=request.user.profile.crm_id if request.user.is_authenticated else None,
-            entity_name=entity
-        ) \
-            if not page or int(page) == 1 \
-            else []
+            entity_name=entity,
+            page=page
+        )
 
     def generic_content(self):
         pass
