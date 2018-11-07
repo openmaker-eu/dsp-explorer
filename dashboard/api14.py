@@ -685,14 +685,40 @@ def age_distribution(request):
 
 def job_distribution(request):
     from django.db.models import Count
-    jobs= Profile.objects.values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
-    
-    # jobs_list=[]
-    # for job in jobs:
-    #     single_job=job.get('occupation')
-    #     jobs_list.append(single_job).annotate
+    jobs= Profile.objects.filter(Q(user__isnull=False)).values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
     print(jobs)
     return Response(jobs)
+
+#CITY DISTRIBUTION
+@api_view(['GET'])
+
+def city_distribution(request):
+    from json import JSONDecodeError
+    import json
+    users_total=Profile.objects.all().count()
+    cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
+    latitude=[]
+    longitude=[]
+    places=[]
+    print(type(cities[0]['place']))
+    print(json.loads(cities[0]['place']))
+
+    for k,city in enumerate(cities):
+        try:
+            place=json.loads(city['place'])
+            places.append(place)
+        except JSONDecodeError as e:
+            x=city['place'].replace("'","\"")
+            place=json.loads(x)
+            places.append(place)
+        except TypeError as e:
+            print('è vuoto', k)
+
+    #     single_latitude=cities.get('lat')
+    #     latitude.append(single_latitude)
+    print(place)
+    print(type)
+    return Response(places)
 
 
 @login_required()

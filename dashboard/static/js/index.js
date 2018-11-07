@@ -125,3 +125,4 @@ app.factory('EntityProvider', require('./content_providers/EntityProvider').defa
 //Community Stats
 app.directive('genderGraph', require('./directives/graphs/genderGraph').default )
 app.directive('ageGraph', require('./directives/graphs/ageGraph').default)
+app.directive('jobGraph', require('./directives/graphs/jobGraph').default)
