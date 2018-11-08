@@ -20,6 +20,7 @@ let template = `
             
             <div class="col-md-9 col-sm-12 col-sm-offset-0 entity-detail-page__content">
                 
+           
                 <!--Content-->
                 <div class="row entity-detail__content">
                     <div class="col-md-8">
@@ -50,7 +51,6 @@ let template = `
                         <br>
                         <br>
                     </div>
-                    
                     <div class="col-md-4">
                         <!--Challenges: Event details with icons-->
                         <div

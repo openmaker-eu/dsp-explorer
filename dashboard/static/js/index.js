@@ -122,4 +122,7 @@ app.factory('ContactUserModal', require('./factories/ContactUserWithEmailModal')
 // Content providers
 app.factory('EntityProvider', require('./content_providers/EntityProvider').default )
 
-
+//Community Stats
+app.directive('genderGraph', require('./directives/graphs/genderGraph').default )
+app.directive('ageGraph', require('./directives/graphs/ageGraph').default)
+app.directive('jobGraph', require('./directives/graphs/jobGraph').default)

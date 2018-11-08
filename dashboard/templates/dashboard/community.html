@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block container %}
+
 <div>
 <div class="container" ng-controller="searchController" ng-init="search_factory.search('{{search_string}}')">
     <div class="row row--mobile">
@@ -90,19 +91,20 @@
                 <div class="col-md-12 entity-heading margin-bottom-1-perc">
                     <h1 class="margin-bottom-30 page-title">COMMUNITY STATISTICS</h1>
                 </div>
+
+                <!-- Gender pie chart -->
                 <div class="col-md-6">
-                        <div class="entity-carousel__header short background-red text-white">
-                            <h4>Gender Distribution</h4>
-                        </div>
-                        <img src="/static/images/stats/gender_distribution.png" alt="" style="width:100%">
+                        <gender-graph></gender-graph>                           
                 </div>
+
+                <!-- Age bar chart-->
                 <div class="col-md-6">
-                        <div class="entity-carousel__header short background-red text-white">
-                            <h4>Age Distribution</h4>
-                        </div>
-                        <img src="/static/images/stats/age_distribution.png" alt="" style="width:100%">
+                        <age-graph></age-graph>
                 </div>
+                
+                
                 <div class="col-md-12"><br></div>
+                        
                 <div class="col-md-12">
 
                     <div class="background-white">
@@ -113,14 +115,8 @@
                         <img src="/static/images/stats/city_distribution.png" alt="" style="width:100%">
                     </div>
                     <br>
-
-                    <div class="background-white">
-                        <div class="entity-carousel__header background-red text-white">
-                            <h4 style="padding:2%;">Job Distribution</h4>
-                        </div>
-                        <br>
-                        <img src="/static/images/stats/job_distribution.png" alt="" style="width:100%">
-                    </div>
+                
+                    <job-graph></job-graph>
                     <br>
 
                 </div>
