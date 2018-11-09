@@ -42,8 +42,24 @@ export default function(){
                 }
                 $scope.AskServer();
                 $scope.labels= ['female', 'male', 'other'];
-                $scope.colors= ['#d2d2d2','#a8a6b5','#f2bdc1']
-                //$scope.data=[60, 30, 10]
+                // $scope.colors= ['#d2d2d2','#a8a6b5','#f2bdc1'];    
+                $scope.colors= [
+                    {
+                        backgroundColor: 'rgba(105, 105, 105, 1)',
+                        pointBackgroundColor: '#d2d2d2',
+                        
+                    },
+                    {
+                        backgroundColor: 'rgba(80, 78, 94, 1)',
+                        pointBackgroundColor: '#a8a6b5',
+                    
+                    },
+                    {
+                        backgroundColor: 'rgba(227, 121, 129, 1)',
+                        pointBackgroundColor: '#f2bdc1',
+                      
+                    }
+                ]
                 $scope.options = {
                     cutoutPercentage: 40,
                     animation: false,
@@ -68,6 +84,7 @@ export default function(){
                 
                     },
                 }
+                
             }
         }
     }

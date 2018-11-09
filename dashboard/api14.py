@@ -648,12 +648,14 @@ def city_distribution(request):
     from json import JSONDecodeError
     from django.db.models import Count, F
     import json
+    from itertools import groupby
     users_total=Profile.objects.all().count()
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
-    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).annotate(city=F('city')).order_by('-people').filter()[:10]
+    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).annotate(city=F('city')).order_by('-people')[:10]
+
     places=[]
-    print(type(cities[0]['place']))
-    print(json.loads(cities[0]['place']))
+    # print(type(cities[0]['place']))
+    # print(json.loads(cities[0]['place']))
     for k,city in enumerate(cities):
         try:
             place=json.loads(city['place'])
