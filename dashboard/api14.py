@@ -646,15 +646,14 @@ def job_distribution(request):
 
 def city_distribution(request):
     from json import JSONDecodeError
+    from django.db.models import Count, F
     import json
     users_total=Profile.objects.all().count()
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
-    latitude=[]
-    longitude=[]
+    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).annotate(city=F('city')).order_by('-people').filter()[:10]
     places=[]
     print(type(cities[0]['place']))
     print(json.loads(cities[0]['place']))
-
     for k,city in enumerate(cities):
         try:
             place=json.loads(city['place'])
@@ -665,12 +664,13 @@ def city_distribution(request):
             places.append(place)
         except TypeError as e:
             print('è vuoto', k)
+    
+        # lat=latlong[0].get('latlong').split(',')
+        # lati=lat[0]
 
-    #     single_latitude=cities.get('lat')
-    #     latitude.append(single_latitude)
     print(place)
     print(type)
-    return Response(places)
+    return Response(latlong)
 
 
 @login_required()

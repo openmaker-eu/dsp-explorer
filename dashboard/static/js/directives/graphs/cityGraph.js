@@ -2,7 +2,7 @@ export default function(){
     return{
             template:`
             <div class="entity-carousel__header short background-red text-white" ng-if="loading==false">
-                 <h4>Job Distribution</h4>
+                 <h4>City Distribution</h4>
             </div>
             <br>
             <div class="block-rectangular" ng-if="loading==false">
@@ -15,31 +15,30 @@ export default function(){
              `,
             transclude:true,
             scope:{
-                occupation:"=",
+                latlong:"=",
                 people:"="
             },
             controller: function($scope, $http){
                 $scope.loading=true 
                 $scope.jobdata= {
-                    occupation: 'designer',
+                    city: 'London',
                     people:10
                 }              
                 
                 $scope.AskServer = function(){
-                    var ads = $http.get('/api/v1.4/stats/job_distribution/')
+                    var ads = $http.get('/api/v1.4/stats/city_distribution/')
                     ads.then(
                     function(success){ 
-                        $scope.jobdata = success.data; 
+                        $scope.citydata = success.data; 
                         $scope.loading=false;
                         $scope.colors=[],                       
                         $scope.data=[],
                         $scope.labels=[];
                         var i=0;
-                            for (i = 0; i < $scope.jobdata.length; i++) { 
-                                $scope.data.push($scope.jobdata[i].people)
-                                $scope.labels.push($scope.jobdata[i].occupation) 
+                            for (i = 0; i < $scope.citydata.length; i++) { 
+                                $scope.data.push($scope.citydata[i].people)
+                                $scope.labels.push($scope.citydata[i].city) 
                                 $scope.colors.push('#a8a6b5')                            }
-                           
                         },
                     function(error){ console.log("ritenta");$scope.loading=false
                         }
@@ -76,6 +75,7 @@ export default function(){
                     tooltips: {
                         callbacks: {
                             title:function(tooltipItems) {
+                                console.log(tooltipItems)
                                 return tooltipItems[0].xLabel +" people "
                                          },  
                             label:function(){
@@ -84,8 +84,9 @@ export default function(){
                         }
                 
                     }
-           
-                }
+                
             }
+           
+        }
         }
     }

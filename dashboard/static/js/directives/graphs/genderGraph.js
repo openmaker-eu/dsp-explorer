@@ -2,7 +2,7 @@
 export default function(){
     return{
             template:`
-            <div class="entity-carousel__header short background-red text-white">
+            <div class="entity-carousel__header short background-red text-white" ng-if="loading==false">
                  <h4>Gender Distribution</h4>
             </div>
             <br>
@@ -33,8 +33,6 @@ export default function(){
                     ads.then(
                     function(success){ 
                         $scope.genderdata = success.data; 
-                        console.log($scope.genderdata)
-                        console.log($scope.genderdata.female)
                         $scope.loading=false
                         $scope.data=[$scope.genderdata.female, $scope.genderdata.male, $scope.genderdata.other]
                         },
@@ -58,15 +56,19 @@ export default function(){
                     },
                     tooltips: {
                         callbacks: {  
-                            afterLabel:function(){
-                                return "%"
-                            }                                   
+                            label: function (tooltipItems, data) {
+                                var i, label = [], l = data.datasets.length;
+                                for (i = 0; i < l; i += 1) {
+                                    label[i] = $scope.labels[tooltipItems.index] + ' : ' + data.datasets[i].data[tooltipItems.index]+ '%';
+                                }
+                                return label;
+                            }               
                            
                         }
                 
-                    }
-           
+                    },
                 }
             }
         }
     }
+    

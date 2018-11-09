@@ -1,7 +1,7 @@
 export default function(){
     return{
             template:`
-            <div class="entity-carousel__header short background-red text-white">
+            <div class="entity-carousel__header short background-red text-white" ng-if="loading==false">
                  <h4>Age Distribution</h4>
             </div>
             <br>
@@ -35,8 +35,6 @@ export default function(){
                     function(success){ 
                         $scope.agedata = success.data; 
                         $scope.loading=false
-                        console.log('fhjfjkyry')
-                        console.log($scope.agedata.zero_to_thirty)
                         $scope.loading=false
                         $scope.data=[$scope.agedata.zero_to_thirty, $scope.agedata.thirty_to_forty, $scope.agedata.forty_to_fifty, $scope.agedata.over_fifty]
                         },
@@ -72,7 +70,6 @@ export default function(){
                     tooltips: {
                             callbacks: {
                                 title:function(tooltipItems) {
-                                    console.log(tooltipItems)
                                     return tooltipItems[0].yLabel +" people "
                                              },  
                                 label:function(){
