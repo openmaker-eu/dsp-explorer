@@ -5,7 +5,8 @@ export default function(){
                  <h4>Age Distribution</h4>
             </div>
             <br>
-            <div class="block-square" ng-if="loading==false">
+            <!-- <div class="block-square" ng-if="loading==false"> -->
+            <div ng-if="loading==false">
                 <div>
                     <canvas class="chart chart-bar" style="width:100%; height:100%;"
                         chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
@@ -44,9 +45,21 @@ export default function(){
                 }
                 $scope.AskServer();
                 
-                
                 $scope.labels= ['0-30', '30-40', '40-50', '50+'];
-                $scope.colors= ['#a8a6b5','#a8a6b5','#a8a6b5','#a8a6b5']
+                $scope.colors= [
+                    {   pointBackgroundColor:'#a8a6b5',
+                        backgroundColor:'rgba(80, 78, 94, 1)'
+                    },
+                    {   pointBackgroundColor:'#a8a6b5',
+                        backgroundColor:'rgba(80, 78, 94, 1)'
+                    },
+                    {   pointBackgroundColor:'#a8a6b5',
+                        backgroundColor:'rgba(80, 78, 94, 1)'
+                    },
+                    {   pointBackgroundColor:'#a8a6b5',
+                        backgroundColor:'rgba(80, 78, 94, 1)'
+                    }
+                ]
                 $scope.options = {
                     animation: false,
                     responsive: true,

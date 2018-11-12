@@ -652,7 +652,11 @@ def city_distribution(request):
     users_total=Profile.objects.all().count()
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
     latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).annotate(city=F('city')).order_by('-people')[:10]
+    # .annotate(city=F('city'))
+    # for x in latlong:
+    #     città=Profile.objects.filter(latlong=latlong)
 
+        
     places=[]
     # print(type(cities[0]['place']))
     # print(json.loads(cities[0]['place']))

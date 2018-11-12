@@ -344,6 +344,7 @@ main {
 //  margin-top:5%;
 //}
 
+
 entity-carousel {
   padding: 0 !important;
 }
@@ -366,6 +367,7 @@ entity-carousel {
       @extend .regular;
       span {word-wrap: break-spaces; display:inline-block;}
     }
+    
 
     .home-page & {
       * { font-size:2rem; }
@@ -1244,3 +1246,9 @@ profile-questions {
   }
 }
 
+.graph_title{
+  height:52px;
+  h4{
+    padding: 19px 0px 0px !important;
+  }
+}

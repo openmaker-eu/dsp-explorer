@@ -1,7 +1,7 @@
 export default function(){
     return{
             template:`
-            <div class="entity-carousel__header short background-red text-white" ng-if="loading==false">
+            <div class="entity-carousel__header short background-red text-white graph_title" ng-if="loading==false">
                  <h4>Job Distribution</h4>
             </div>
             <br>
@@ -38,7 +38,7 @@ export default function(){
                             for (i = 0; i < $scope.jobdata.length; i++) { 
                                 $scope.data.push($scope.jobdata[i].people)
                                 $scope.labels.push($scope.jobdata[i].occupation) 
-                                $scope.colors.push('#a8a6b5')                            }
+                                $scope.colors.push({pointBackgroundColor:'#a8a6b5', backgroundColor:'rgba(80, 78, 94, 1)'})                            }
                            
                         },
                     function(error){ console.log("ritenta");$scope.loading=false

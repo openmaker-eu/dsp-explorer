@@ -6,7 +6,8 @@ export default function(){
                  <h4>Gender Distribution</h4>
             </div>
             <br>
-            <div class="block-square" ng-if="loading==false">
+                <!--<div class="block-square" ng-if="loading==false"> -->
+            <div ng-if="loading==false">
                 <div style="height:100%; width:100%;">
                     <canvas style="height:100%; width:100%;" class="chart chart-doughnut"
                         chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
