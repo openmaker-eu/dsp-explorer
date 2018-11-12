@@ -651,12 +651,14 @@ def city_distribution(request):
     from itertools import groupby
     users_total=Profile.objects.all().count()
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
-    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).annotate(city=F('city')).order_by('-people')[:10]
+    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
     # .annotate(city=F('city'))
-    # for x in latlong:
-    #     città=Profile.objects.filter(latlong=latlong)
-
-        
+    
+    for x in latlong:
+        citta=Profile.objects.filter(latlong=x['latlong']).first()
+        print('citta', citta.city)
+        x['city'] = citta.city
+           
     places=[]
     # print(type(cities[0]['place']))
     # print(json.loads(cities[0]['place']))
@@ -670,12 +672,7 @@ def city_distribution(request):
             places.append(place)
         except TypeError as e:
             print('è vuoto', k)
-    
-        # lat=latlong[0].get('latlong').split(',')
-        # lati=lat[0]
 
-    print(place)
-    print(type)
     return Response(latlong)
 
 
