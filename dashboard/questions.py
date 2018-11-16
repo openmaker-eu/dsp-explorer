@@ -336,7 +336,7 @@ class questions(APIView):
             profile.birthdate = request.data.get('birthdate', profile.birthdate)
             profile.occupation = request.data.get('occupation', profile.occupation)
             profile.statement = request.data.get('statement', profile.statement)
-            profile.gender = request.data.get('gender', profile.statement)
+            profile.gender = request.data.get('gender', profile.gender)
 
             # Activity
             profile.activity('area', request.data.get('area', None))
@@ -346,7 +346,9 @@ class questions(APIView):
 
             # Profile Extra
             #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
-            profile.picture_set_or_update(request.data.get('picture', profile.picture))
+
+            picture = request.data.get('picture', None)
+            profile.picture_set_or_update(picture) if len(picture) > 0 else None
 
             user.save()
             profile.save()

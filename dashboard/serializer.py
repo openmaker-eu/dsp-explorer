@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'first_name', 'last_name', 'profile', 'twitter_name', 'location')
 
     def get_twitter_name(self, obj):
-        return obj.profile.twitterprofile.screen_name if hasattr(obj.profile, 'twitterprofile') else None
+        return obj.profile.twitterauth.screen_name if hasattr(obj.profile, 'twitterauth') else None
 
     def get_location(self, obj):
         return obj.profile.place if hasattr(obj.profile, 'place') else None

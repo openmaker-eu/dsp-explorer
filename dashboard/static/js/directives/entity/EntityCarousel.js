@@ -67,11 +67,11 @@ export default [function(){
                 : $scope.entityname == 'news' ? 'articles' : $scope.entityname
             
             $scope.get_error_message= () =>
-                $scope.entityname === 'lovers' && $scope.is_my_profile && 'There are no people who have shown interest in you ' ||
-                $scope.entityname === 'lovers' && 'There are no people who have shown interest in '+$scope.username +'. You can show your interest in '+$scope.username+' by clicking on the heart shaped icon' ||
+                $scope.entityname === 'lovers' && $scope.is_my_profile && 'There are no people who have shown interest in you' ||
+                $scope.entityname === 'lovers' && 'Be the first to appreciate  '+$scope.username +'. You can show your appreciation to '+$scope.username+' by clicking on the heart shaped icon' ||
                 
-                $scope.entityname === 'loved' && $scope.is_my_profile && 'You have not shown interest in anyone' ||
-                $scope.entityname === 'loved' && $scope.username+' don\'t shows interest to anyone' ||
+                $scope.entityname === 'loved' && $scope.is_my_profile && 'You have not shared any interest yet.' ||
+                $scope.entityname === 'loved' && $scope.username+' has not shared any interest yet' ||
                 
                 $scope.entityname === 'matches' && $scope.is_my_profile && 'Currently there are no people similar to you' ||
                 $scope.entityname === 'matches' && 'Currently there are no people similar to '+$scope.username ||
