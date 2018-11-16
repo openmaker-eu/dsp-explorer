@@ -11,7 +11,7 @@ export default function(){
                 <div style="height:100%; width:100%;">
                     <canvas style="height:100%; width:100%;" class="chart chart-doughnut"
                         chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
-                    </canvas> 
+                    </canvas>
                 </div>
             </div>
              `,
@@ -19,9 +19,9 @@ export default function(){
             scope:{
                 female:"=",
                 male:"=",
-                other:"="               
+                other:"="
             },
-            controller: function($scope, $http){
+            controller: ['$scope', '$http', function($scope, $http){
                 $scope.loading=true
                 $scope.genderdata= {
                     female: 10,
@@ -32,8 +32,8 @@ export default function(){
                 $scope.AskServer = function(){
                     var ads = $http.get('/api/v1.4/stats/gender_distribution/')
                     ads.then(
-                    function(success){ 
-                        $scope.genderdata = success.data; 
+                    function(success){
+                        $scope.genderdata = success.data;
                         $scope.loading=false
                         $scope.data=[$scope.genderdata.female, $scope.genderdata.male, $scope.genderdata.other]
                         },
@@ -43,7 +43,7 @@ export default function(){
                 }
                 $scope.AskServer();
                 $scope.labels= ['female', 'male', 'other'];
-                // $scope.colors= ['#d2d2d2','#a8a6b5','#f2bdc1'];    
+                // $scope.colors= ['#d2d2d2','#a8a6b5','#f2bdc1'];
                 $scope.colors= [
                     {
                         backgroundColor: 'rgba(105, 105, 105, 1)',
@@ -72,21 +72,21 @@ export default function(){
                         position: 'right'
                     },
                     tooltips: {
-                        callbacks: {  
+                        callbacks: {
                             label: function (tooltipItems, data) {
                                 var i, label = [], l = data.datasets.length;
                                 for (i = 0; i < l; i += 1) {
                                     label[i] = $scope.labels[tooltipItems.index] + ' : ' + data.datasets[i].data[tooltipItems.index]+ '%';
                                 }
                                 return label;
-                            }               
+                            }
                            
                         }
                 
                     },
                 }
                 
-            }
+            }]
         }
     }
     

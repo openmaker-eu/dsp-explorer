@@ -9,7 +9,7 @@ export default function(){
                 <div>
                     <canvas class="chart chart-horizontalBar" style="width:100%; height:100%;"
                         chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
-                    </canvas>    
+                    </canvas>
                 </div>
             </div>
              `,
@@ -18,26 +18,26 @@ export default function(){
                 occupation:"=",
                 people:"="
             },
-            controller: function($scope, $http){
-                $scope.loading=true 
+            controller: ['$scope', '$http', function($scope, $http){
+                $scope.loading=true
                 $scope.jobdata= {
                     occupation: 'designer',
                     people:10
-                }              
+                }
                 
                 $scope.AskServer = function(){
                     var ads = $http.get('/api/v1.4/stats/job_distribution/')
                     ads.then(
-                    function(success){ 
-                        $scope.jobdata = success.data; 
+                    function(success){
+                        $scope.jobdata = success.data;
                         $scope.loading=false;
-                        $scope.colors=[],                       
+                        $scope.colors=[],
                         $scope.data=[],
                         $scope.labels=[];
                         var i=0;
-                            for (i = 0; i < $scope.jobdata.length; i++) { 
+                            for (i = 0; i < $scope.jobdata.length; i++) {
                                 $scope.data.push($scope.jobdata[i].people)
-                                $scope.labels.push($scope.jobdata[i].occupation) 
+                                $scope.labels.push($scope.jobdata[i].occupation)
                                 $scope.colors.push({pointBackgroundColor:'#a8a6b5', backgroundColor:'rgba(80, 78, 94, 1)'})                            }
                            
                         },
@@ -58,14 +58,14 @@ export default function(){
                     legend: {
                         display:false,
                         position: 'bottom',
-                           
+                        
                       },
                     scales: {
                         xAxes:[{
                             barPercentage: 0.8,
                             ticks:{
                                 beginAtZero: true
-                            },          
+                            },
                             scaleLabel:{
                                 display: true,
                                 labelString:''
@@ -77,15 +77,15 @@ export default function(){
                         callbacks: {
                             title:function(tooltipItems) {
                                 return tooltipItems[0].xLabel +" people "
-                                         },  
+                                         },
                             label:function(){
                                 return false
-                            }    
+                            }
                         }
                 
                     }
            
                 }
-            }
+            }]
         }
     }

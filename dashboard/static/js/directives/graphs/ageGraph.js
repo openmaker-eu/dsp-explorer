@@ -10,7 +10,7 @@ export default function(){
                 <div>
                     <canvas class="chart chart-bar" style="width:100%; height:100%;"
                         chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
-                    </canvas>    
+                    </canvas>
                 </div>
             </div>
              `,
@@ -19,9 +19,9 @@ export default function(){
                 zero_to_thirty:"=",
                 thirty_to_forty:"=",
                 forty_to_fifty:"=",
-                over_fifty:"="      
+                over_fifty:"="
             },
-            controller: function($scope, $http){
+            controller: ['$scope', '$http', function($scope, $http){
                 $scope.loading=true
                 $scope.agedata= {
                     zero_to_thirty: 10,
@@ -33,8 +33,8 @@ export default function(){
                 $scope.AskServer = function(){
                     var ads = $http.get('/api/v1.4/stats/age_distribution/')
                     ads.then(
-                    function(success){ 
-                        $scope.agedata = success.data; 
+                    function(success){
+                        $scope.agedata = success.data;
                         $scope.loading=false
                         $scope.loading=false
                         $scope.data=[$scope.agedata.zero_to_thirty, $scope.agedata.thirty_to_forty, $scope.agedata.forty_to_fifty, $scope.agedata.over_fifty]
@@ -68,7 +68,7 @@ export default function(){
                     legend: {
                         display:false,
                         position: 'bottom',
-                           
+                        
                       },
                     scales: {
                         xAxes:[{
@@ -79,22 +79,22 @@ export default function(){
                             }
                         }],
                     },
-                        
+                    
                     tooltips: {
                             callbacks: {
                                 title:function(tooltipItems) {
                                     return tooltipItems[0].yLabel +" people "
-                                             },  
+                                             },
                                 label:function(){
                                     return false
                                 }
-                                                          
-                    }            
+                                
+                    }
                     
                 }
                 
             }
            
-        }
+            }]
     }
 }
