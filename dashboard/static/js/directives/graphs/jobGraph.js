@@ -72,7 +72,7 @@ export default function(){
                             }
                         }],
                     },
-                        
+                    
                     tooltips: {
                         callbacks: {
                             title:function(tooltipItems) {

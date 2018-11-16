@@ -55,6 +55,23 @@ export default [function(){
                 ? '<span>Projects</span><span></span>&nbsp;/&nbsp;</span><span class="text-yellow">Challenges</span>'
                 : $scope.entityname == 'news' ? 'articles' : $scope.entityname
     
+    
+    
+            $scope.slickConfig ={
+                slidesToShow: 3,
+                slidesToScroll:  1,
+                // prevArrow: '<i class="fas fa-chevron-left slick-arrow--custom prev"></i>',
+                // nextArrow: '<i class="fas fa-chevron-right slick-arrow--custom next"></i>',
+        
+                //focusOnSelect: false,
+                autoplay: false,
+                draggable: true,
+                swipeToSlide: true,
+                arrows: true,
+                accessibility: true,
+                adaptiveHeight: true
+            }
+    
         }]
     }
 }]
