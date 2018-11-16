@@ -15,6 +15,7 @@ let template = `
                 </div>
                 <div ng-if="entities.length > 0">
                 
+                
                         <div
                             class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
                             ng-repeat="entity in entities | limitTo : 3"
@@ -29,6 +30,30 @@ let template = `
                                 ></entity-detail>
                             </div>
                         </div>
+             
+
+
+                    <!-- 
+                        <div 
+                        class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pull-right"
+                        >
+                            <i class="fas fa-chevron-right slick-arrow--custom pre slick-arrow"></i>
+                        </div>
+                            
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pull-right"></div>
+
+                        <div 
+                            class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pull-left"
+                        >
+                            <i class="fas fa-chevron-left slick-arrow--custom next slick-arrow"></i>
+                        </div>
+                        
+                        SLIDER --> 
+                       
+                        
+
+
+
                 </div>
             </div>
         </div>

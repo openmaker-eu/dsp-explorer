@@ -344,6 +344,7 @@ main {
 //  margin-top:5%;
 //}
 
+
 entity-carousel {
   padding: 0 !important;
 }
@@ -366,6 +367,7 @@ entity-carousel {
       @extend .regular;
       span {word-wrap: break-spaces; display:inline-block;}
     }
+    
 
     .home-page & {
       * { font-size:2rem; }
@@ -1220,3 +1222,33 @@ profile-questions {
 
 }
 
+.block-square {
+  position:relative;
+  padding-top: 100%;
+
+  & > * {
+    position:absolute;
+    top:0; bottom:0; left:0; right:0; 
+    width: 100%;
+    height:100%
+  }
+}
+
+.block-rectangular {
+  position:relative;
+  padding-top: 50%;
+
+  & > * {
+    position:absolute;
+    top:0; bottom:0; left:0; right:0; 
+    width: 100%;
+    height:100%
+  }
+}
+
+.graph_title{
+  height:52px;
+  h4{
+    padding: 19px 0px 0px !important;
+  }
+}

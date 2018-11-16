@@ -577,14 +577,103 @@ def users_csv(request):
     return response
 
 
+# GENDER DISTRIBUTION 
 @api_view(['GET'])
 def gender_distribution(request):
-    from django.db.models import Sum
+    users_total=Profile.objects.all().count()
+    male_percentage=Profile.objects.filter(Q(gender='male', user__isnull=False)).count()*100/users_total
+    female_percentage=Profile.objects.filter(Q(gender='female', user__isnull=False)).count()*100/users_total
+    nonspecifiedgender_percentage=Profile.objects.filter( Q(gender='other', user__isnull=False)).count()*100/users_total
+    geneder_percentage= {
+        "male":"%.2f"%male_percentage,
+        "female":"%.2f"%female_percentage,
+        "other":"%.2f"%nonspecifiedgender_percentage
+    }
+    print()
+    return Response(geneder_percentage)
 
-    profiles = Profile.objects.filter(user__isnull=False).aggregate(Sum('gender'))
 
-    print(profiles)
-    return Response([])
+# AGE DISTRIBUTION
+@api_view(['GET'])
+def age_distribution(request):
+    from datetime import datetime, date
+    birthdates=Profile.objects.filter(Q(user__isnull=False)).values("birthdate")
+    list=[]
+    zero_to_thirty=[]
+    thirty_to_forty=[]
+    forty_to_fifty=[]
+    over_fifty=[]
+    today=datetime.today()
+    for birthdate in birthdates:
+        single_birthdate=birthdate.get('birthdate').replace(tzinfo=None)
+        delta=today - single_birthdate
+        age=delta.days/365
+        list.append(age)
+    for age in list:
+        if age > 0 and age <= 30:
+            zero_to_thirty.append(age)
+    for age in list:
+        if age >30 and age <= 40:
+            thirty_to_forty.append(age)
+    for age in list:
+        if age > 40 and age <= 50:
+            forty_to_fifty.append(age)
+    for age in list:
+        if age > 50 :
+            over_fifty.append(age)
+   
+    age_intervals={
+        "zero_to_thirty": len(zero_to_thirty),
+        "thirty_to_forty": len(thirty_to_forty),
+        "forty_to_fifty": len(forty_to_fifty),
+        "over_fifty": len(over_fifty)
+    }
+    return Response(
+           age_intervals
+        )
+
+# JOB DISTRIBUTION
+@api_view(['GET'])
+
+def job_distribution(request):
+    from django.db.models import Count
+    jobs= Profile.objects.filter(Q(user__isnull=False)).values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
+    print(jobs)
+    return Response(jobs)
+
+#CITY DISTRIBUTION
+@api_view(['GET'])
+
+def city_distribution(request):
+    from json import JSONDecodeError
+    from django.db.models import Count, F
+    import json
+    from itertools import groupby
+    users_total=Profile.objects.all().count()
+    cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
+    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
+    # .annotate(city=F('city'))
+    
+    for x in latlong:
+        citta=Profile.objects.filter(latlong=x['latlong']).first()
+        print('citta', citta.city)
+        x['city'] = citta.city
+           
+    places=[]
+    # print(type(cities[0]['place']))
+    # print(json.loads(cities[0]['place']))
+    for k,city in enumerate(cities):
+        try:
+            place=json.loads(city['place'])
+            places.append(place)
+        except JSONDecodeError as e:
+            x=city['place'].replace("'","\"")
+            place=json.loads(x)
+            places.append(place)
+        except TypeError as e:
+            print('è vuoto', k)
+
+    return Response(latlong)
 
 
 @login_required()
