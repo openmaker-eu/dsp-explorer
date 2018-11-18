@@ -147,12 +147,21 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
         singular_entity = EntityProxy.singular_name(entity) if entity in ['projects', 'challenges'] else entity
-        model_serializer = InterestSerializer if entity in ['news', 'events'] \
-            else ModelHelper.get_serializer(singular_entity.capitalize())
+
+        # model_serializer = InterestSerializer if entity in ['news', 'events'] \
+        #     else ModelHelper.get_serializer(singular_entity.capitalize())
+
         interests = profile.get_interests(entity)
 
-        print(interest)
-        res = model_serializer(interests, many=True).data
+        if entity in ['news', 'events']:
+            ids = [x.externalId for x in interests]
+            res = getattr(DSPConnectorV13, 'get_'+entity+'_detail')(entity_id=','.join(ids))[entity] \
+                if len(ids) > 0 \
+                else []
+        else:
+            model_serializer = ModelHelper.get_serializer(singular_entity.capitalize())
+            res = model_serializer(interests, many=True).data
+
         return Response(res)
     except Exception as e:
         print('ERROR[dashboard.api14.interest]')

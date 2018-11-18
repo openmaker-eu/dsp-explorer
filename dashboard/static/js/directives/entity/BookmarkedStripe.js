@@ -13,7 +13,7 @@ let template = `
                         loading="entities.length==0 && !nodata"
                         error="nodata"
                         entityname="{$ entityname $}"
-                        errormessage="'You have no bookmarked'+entityname"
+                        errormessage="'You have not bookmarked any '+entityname +' yet'"
                     ></entity-loading>
                 </div>
                 
