@@ -124,13 +124,17 @@ required>
 <h1>Loading</h1>
 
 [imageupload]
-<div class="fake-input__container">
-    <circle-image src="x.value"></circle-image>
-    <input input_file_model="x.value" type="file" name="picture"/>
-    <div class="fake-input__icon">
-        <span class="fas fa-plus-circle fa-5x"></span>
+<div>
+    <div class="fake-input__container">
+        <circle-image src="x.value"></circle-image>
+        <input input_file_model="x.value" input_file_form="subform" type="file" name="picture"/>
+        <div class="fake-input__icon">
+            <span class="fas fa-plus-circle fa-5x"></span>
+        </div>
     </div>
+
 </div>
+
 
 [textarea]
 <textarea class="form-control"

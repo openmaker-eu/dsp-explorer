@@ -84,8 +84,9 @@ class questions(APIView):
             not action and self.update_user(request)
 
         except Exception as e:
+            print(' ###################################################')
             print(e)
-            return Response(data={'error': 'error send feedback'}, status=403)
+            return Response(data={'error': str(e) }, status=403)
         return Response()
 
     def feedback_questions(self, request, entity_name, entity_id):
@@ -324,41 +325,41 @@ class questions(APIView):
         city = request.data.get('city', profile.city)
         place = request.data.get('place', profile.place)
 
-        try:
-            # User
-            user.first_name = request.data.get('first_name', user.first_name)
-            user.last_name = request.data.get('last_name', user.last_name)
+        # try:
+        # User
+        user.first_name = request.data.get('first_name', user.first_name)
+        user.last_name = request.data.get('last_name', user.last_name)
 
-            # Profile
-            profile.city = city if not not city else profile.city
-            profile.place = place if bool(place) else profile.palce
+        # Profile
+        profile.city = city if not not city else profile.city
+        profile.place = place if bool(place) else profile.palce
 
-            profile.birthdate = request.data.get('birthdate', profile.birthdate)
-            profile.occupation = request.data.get('occupation', profile.occupation)
-            profile.statement = request.data.get('statement', profile.statement)
-            profile.gender = request.data.get('gender', profile.gender)
+        profile.birthdate = request.data.get('birthdate', profile.birthdate)
+        profile.occupation = request.data.get('occupation', profile.occupation)
+        profile.statement = request.data.get('statement', profile.statement)
+        profile.gender = request.data.get('gender', profile.gender)
 
-            # Activity
-            profile.activity('area', request.data.get('area', None))
-            profile.activity('technology', request.data.get('technology', None))
-            profile.activity('skills', request.data.get('skills', None))
-            profile.activity('domain', request.data.get('domain', None))
+        # Activity
+        profile.activity('area', request.data.get('area', None))
+        profile.activity('technology', request.data.get('technology', None))
+        profile.activity('skills', request.data.get('skills', None))
+        profile.activity('domain', request.data.get('domain', None))
 
-            # Profile Extra
-            #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
+        # Profile Extra
+        #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
 
-            picture = request.data.get('picture', None)
-            profile.picture_set_or_update(picture) if len(picture) > 0 else None
+        picture = request.data.get('picture', None)
+        profile.picture_set_or_update(picture) if picture and len(picture) > 0 else None
 
-            user.save()
-            profile.save()
+        user.save()
+        profile.save()
 
-            party = profile.create_or_update_to_crm(profile.user)
+        party = profile.create_or_update_to_crm(profile.user)
 
-        except Exception as error:
-            print('[ERROR : dahsboard.questions.question.update_user]')
-            print(error)
-            return Response(data={'error': error}, status=403)
+        # except Exception as error:
+        #     print('[ERROR : dahsboard.questions.question.update_user]')
+        #     print(error)
+        #     return Response(data={'error': error}, status=403)
 
     @classmethod
     def question(cls, question, **kwargs):

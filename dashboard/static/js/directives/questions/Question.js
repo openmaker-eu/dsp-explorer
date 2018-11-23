@@ -22,32 +22,28 @@ export default {
     transclude: true,
     template: template,
     bindings: {
-        data: '=',
-        model: '=',
+        data: '<',
+        model: '<',
     },
     controller: ['$scope', '$element', '$compile', function($scope, $element, $compile) {
         
         // Wait for controller to init
         this.$onInit = ()=>{
             
-            // Add binding data to $scope
-            $scope.x = this.data
-            $scope.m = this.model
-            
-            // Object containign this sub form
-            $scope.subform = $scope[$scope.x.name]
-            
-            // Compile template
             $scope.$applyAsync(()=>{
-                
                 if( true || $scope.x.type !== 'question') {
                     $scope.template = angular.element( TemplateLoader.load(fields, $scope.x.type) )
                     $element.find('.signup-input').html( $scope.template )
+                    $scope.subform = $scope[$scope.x.name]
                     $scope.template = $compile( $scope.template )($scope)
                 }
-
             });
 
+        }
+        
+        this.$onChanges = (changes)=>{
+            $scope.x = _.get(changes, 'data.currentValue') || _.get(changes, 'data.previousValue')
+            $scope.m = _.get(changes, 'model.currentValue') || _.get(changes, 'model.previousValue')
         }
         
     }],
