@@ -69,10 +69,10 @@ class Party(object):
                     'service': self.__social_allowed_names[social['name'].upper()],
                     'address': social['link']
                 })
-
-        self.websites.append({
+        twitter = user.profile.twitterauth.screen_name if hasattr(user.profile, 'twitterauth') else user.profile.twitter_username
+        twitter and self.websites.append({
             'service': 'TWITTER',
-            'address': user.profile.twitterauth.screen_name if hasattr(user.profile, 'twitterauth') else user.profile.twitter_username
+            'address': twitter
         })
 
     def __str__(self):
