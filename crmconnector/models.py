@@ -179,8 +179,10 @@ class Party(object):
         return self.create_or_update()
 
     def get_crm_id(self):
-        print(self.__capsule_party)
-        return self.__capsule_party['id']
+        try:
+            return self.__capsule_party['id']
+        except:
+            return False
 
     ###################
     # PRIVATE METHODS #

@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from connectors.insight.connector import InsightConnectorV10 as Insight
-
+import pprint
 
 class questions(APIView):
 
@@ -354,12 +354,12 @@ class questions(APIView):
         user.save()
         profile.save()
 
-        party = profile.create_or_update_to_crm(profile.user)
-
-        # except Exception as error:
-        #     print('[ERROR : dahsboard.questions.question.update_user]')
-        #     print(error)
-        #     return Response(data={'error': error}, status=403)
+        try:
+            party = profile.create_or_update_to_crm(profile.user)
+            crm_id = party and party.get_crm_id()
+            crm_id and Insight.notify_user_creation(crm_id)
+        except Exception as e:
+            logger.log('error', e)
 
     @classmethod
     def question(cls, question, **kwargs):
