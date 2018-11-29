@@ -279,6 +279,7 @@ class User(User):
 def default_place():
     return {}
 
+
 class Profile(models.Model):
     crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)

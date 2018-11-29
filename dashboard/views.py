@@ -8,13 +8,15 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.conf import settings
+from rest_framework.response import Response
+from django.http import JsonResponse
 from crmconnector import capsule
 from utils.mailer import EmailHelper
 from utils.hasher import HashHelper
 from dspconnector.connector import DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from .models import Profile, Invitation, Feedback, Tag, SourceOfInspiration, Project, ProjectContributor
 from .exceptions import EmailAlreadyUsed, UserAlreadyInvited, InvitationDoesNotExist, InvitationAlreadyExist, SelfInvitation
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, response, JsonResponse
 # from form import FeedbackForm
 from utils.emailtemplate import invitation_base_template_header, invitation_base_template_footer, invitation_email_receiver
 import datetime as dt, json, os, logging, re, random
@@ -140,11 +142,12 @@ def events(request, topic_id):
     context = {'selected_topic': selected_topic, 'topics': topics_list, 'country': user_profile_location}
     return render(request, 'dashboard/events.html', context)
 
+
 @login_required()
 def test(request):
-    from dashboard.form import ProfileForm
-    form = ProfileForm(request.POST or None)
-    return render(request, 'test.html', {'form': form})
+    profile = Profile.objects.get(id=81)
+    return JsonResponse({})
+
 
 @login_required()
 def profile(request, profile_id=None, action=None):

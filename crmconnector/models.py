@@ -70,6 +70,11 @@ class Party(object):
                     'address': social['link']
                 })
 
+        self.websites.append({
+            'service': 'TWITTER',
+            'address': user.profile.twitterauth.screen_name if hasattr(user.profile, 'twitterauth') else user.profile.twitter_username
+        })
+
     def __str__(self):
         return dumps(self)
 

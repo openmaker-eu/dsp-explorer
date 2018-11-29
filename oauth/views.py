@@ -1,3 +1,5 @@
+
+
 from django.shortcuts import render
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -11,6 +13,9 @@ from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
 import json
 from utils.helpers import get_host
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def twitter_sign_in(request):
@@ -88,6 +93,11 @@ def twitter_redirect(request):
             if request.user.is_authenticated \
             else response.set_cookie('twitter_oauth', twitter_profile.pk)
 
+    try:
+        Profile.create_or_update_to_crm(profile.user)
+    except Exception as e:
+        logger.log('error', e)
+
     return response
 
 
@@ -120,20 +130,6 @@ def _exchange_code_for_twitter_token(app_id=None, app_secret=None, resource_owne
         raise e
 
     return none_response
-
-
-def _twitter_get_data(user_id, app_id, app_secret, oauth_token, oauth_secret):
-    import tweepy
-    try:
-        auth = tweepy.OAuthHandler(app_id, app_secret)
-        auth.set_access_token(oauth_token, oauth_secret)
-        api = tweepy.API(auth)
-        user = api.me()
-        user_object = user._json
-        user_object['friends_list'] = [f.screen_name for f in api.friends()]
-        #MongoWrapper.update_user(user_id, {"twitter": user_object})
-    except Exception as e:
-        raise e
 
 
 @login_required()
