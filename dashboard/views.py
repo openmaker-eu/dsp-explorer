@@ -145,31 +145,9 @@ def events(request, topic_id):
     return render(request, 'dashboard/events.html', context)
 
 
-# @login_required()
+@login_required()
 def test(request):
-    # profile = Profile.objects.get(id=81)
-
-    # user = User.objects.filter(profile__isnull=True).first()
-    user = User.objects.filter(email='massimo.santoli@top-ix.org').first()
-
-    print(user)
-
-    profile = Profile(user=user, reset_token=Profile.get_new_reset_token())
-    profile.save()
-
-
-    EmailHelper.email(
-        'no_profile_email',
-        user.email,
-        'Openmaker Explorer - signup',
-        {
-            'USER_NAME': user.first_name + ' ' + user.last_name,
-            'CONFIRMATION_LINK': request.build_absolute_uri('/onboarding/confirmation/{}'.format(profile.reset_token)),
-
-        }
-    )
-
-    return JsonResponse(ProfileSerializer(profile))
+    return HttpResponseRedirect(reverse('dashboard:dashboard'))
 
 
 @login_required()
