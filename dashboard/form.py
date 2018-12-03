@@ -2,6 +2,8 @@ from django import forms
 import datetime
 import re
 
+from dashboard.models import Tag
+
 
 class FeedbackForm(forms.Form):
     title = forms.CharField(max_length=100, label="Title")
@@ -15,7 +17,7 @@ class OnboardingForm(forms.Form):
     gender = forms.CharField()
     birthdate = forms.DateField(input_formats=['%Y/%m/%d', '%m/%d/%Y', '%m/%d/%y', '%Y-%m-%d'], initial=datetime.date.today)
 
-    tags = forms.ModelMultipleChoiceField(validators=[])
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), validators=[])
 
     occupation = forms.CharField()
     city = forms.CharField()
@@ -28,6 +30,7 @@ class OnboardingForm(forms.Form):
         if tags == 'undefined' or tags == None or tags == '':
             raise forms.ValidationError("You must provide at least one tag.")
         self.data['tags'] = [{'name': x.lower().capitalize()} for x in tags.split(",")]
+
 
 class ProfileForm(OnboardingForm):
 

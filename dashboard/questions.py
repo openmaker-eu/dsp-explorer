@@ -248,6 +248,7 @@ class questions(APIView):
         '''
         user = request.user
         profile = request.user.profile
+        sixteen_date = (datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')
         questions = [
             self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
             self.make('gender', 'select', 'What is your gender?',
@@ -255,8 +256,8 @@ class questions(APIView):
                       ),
             self.make('occupation', 'text', 'What is your occupation?'),
             self.make('birthdate', 'date', 'What is your birthdate?',
-                      max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
-                      value=profile.birthdate.strftime('%Y/%m/%d'),
+                      max=str(sixteen_date),
+                      value=profile.birthdate.strftime('%Y/%m/%d') if profile.birthdate else sixteen_date,
                       ),
             self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
             # self.make('tags', 'multi_select', 'Choose 3 tags',

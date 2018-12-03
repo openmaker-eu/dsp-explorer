@@ -75,7 +75,12 @@ export default [function(){
             });
     
             $location.hash() == 'account_deleted' && $rootScope.alert_message('success', 'Account deleted')
+            $location.hash() == 'edit_profile' && $timeout(function () {
+                $rootScope.$emit('question.modal.open', null, 'profileedit' )
+            }, 1000)
 
+    
+    
         }]
     }
     

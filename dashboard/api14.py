@@ -273,7 +273,7 @@ class entity(APIView):
         page = int(request.GET.get('page', 1))
         is_last_page = False
         profile = request.user.profile if request.user.is_authenticated else None
-
+        print(request.user)
 
         # Local entities
         if entity == 'loved':

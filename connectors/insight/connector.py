@@ -101,7 +101,7 @@ class InsightConnectorV10(object):
 
     @classmethod
     def notify_user_creation(cls, crm_id):
-        results = cls.get('/omn_crawler/post_registered_user', {'crm_id': crm_id})
+        results = cls.get('omn_crawler/post_registered_user', {'crm_id': crm_id})
         print('Notify Insight about new users: ')
         print(results)
 
