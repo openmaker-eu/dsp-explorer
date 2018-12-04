@@ -597,7 +597,7 @@ def gender_distribution(request):
 @api_view(['GET'])
 def age_distribution(request):
     from datetime import datetime, date
-    birthdates=Profile.objects.filter(Q(user__isnull=False)).values("birthdate")
+    birthdates=Profile.objects.filter(Q(user__isnull=False)).exclude(birthdate__isnull=True).values("birthdate")
     list=[]
     zero_to_thirty=[]
     thirty_to_forty=[]
@@ -646,15 +646,22 @@ def job_distribution(request):
 
 def city_distribution(request):
     from json import JSONDecodeError
+    from django.db.models import Count, F
     import json
+    from itertools import groupby
     users_total=Profile.objects.all().count()
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
-    latitude=[]
-    longitude=[]
+    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
+    # .annotate(city=F('city'))
+    
+    for x in latlong:
+        citta=Profile.objects.filter(latlong=x['latlong']).first()
+        print('citta', citta.city)
+        x['city'] = citta.city
+           
     places=[]
-    print(type(cities[0]['place']))
-    print(json.loads(cities[0]['place']))
-
+    # print(type(cities[0]['place']))
+    # print(json.loads(cities[0]['place']))
     for k,city in enumerate(cities):
         try:
             place=json.loads(city['place'])
@@ -666,11 +673,7 @@ def city_distribution(request):
         except TypeError as e:
             print('è vuoto', k)
 
-    #     single_latitude=cities.get('lat')
-    #     latitude.append(single_latitude)
-    print(place)
-    print(type)
-    return Response(places)
+    return Response(latlong)
 
 
 @login_required()
