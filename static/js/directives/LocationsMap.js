@@ -121,7 +121,7 @@ export default function(){
                             parseFloat(_.get(e, 'om_data.long')).toFixed(6)
                     })
 
-                    latlong.length > 0 && UserSearchFactory.search(_.uniq(latlong).join(';'), 'latlong')
+                    latlong.length > 0 && UserSearchFactory.search(_.uniq(latlong).join(';'), 'latlong', 1, 'Various locations')
                 })
     
                 // Set map to center

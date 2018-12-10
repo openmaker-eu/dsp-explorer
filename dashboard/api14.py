@@ -39,6 +39,7 @@ from django.urls import reverse
 from datetime import datetime, timedelta
 from django.db.models import Q
 from .helpers import order_date_index
+from dashboard.models import EntityProxy
 
 def __wrap_response(*args, **kwargs):
     try:
@@ -135,7 +136,8 @@ def interest(request, entity, user_id=None):
             return all the interest shown by specified user that belongs to specific entitiy type
             if no user id specified will use the logged user
     """
-    from dashboard.models import EntityProxy
+
+    print('interest')
     profile = request.user.profile if \
         request.user.is_authenticated and \
         not user_id else \
@@ -145,10 +147,21 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
         singular_entity = EntityProxy.singular_name(entity) if entity in ['projects', 'challenges'] else entity
-        model_serializer = InterestSerializer if entity in ['news', 'events'] \
-            else ModelHelper.get_serializer(singular_entity.capitalize())
+
+        # model_serializer = InterestSerializer if entity in ['news', 'events'] \
+        #     else ModelHelper.get_serializer(singular_entity.capitalize())
+
         interests = profile.get_interests(entity)
-        res = model_serializer(interests, many=True).data
+
+        if entity in ['news', 'events']:
+            ids = [x.externalId for x in interests]
+            res = getattr(DSPConnectorV13, 'get_'+entity+'_detail')(entity_id=','.join(ids))[entity] \
+                if len(ids) > 0 \
+                else []
+        else:
+            model_serializer = ModelHelper.get_serializer(singular_entity.capitalize())
+            res = model_serializer(interests, many=True).data
+
         return Response(res)
     except Exception as e:
         print('ERROR[dashboard.api14.interest]')
@@ -260,7 +273,7 @@ class entity(APIView):
         page = int(request.GET.get('page', 1))
         is_last_page = False
         profile = request.user.profile if request.user.is_authenticated else None
-
+        print(request.user)
 
         # Local entities
         if entity == 'loved':
@@ -577,7 +590,7 @@ def users_csv(request):
     return response
 
 
-# GENDER DISTRIBUTION 
+# GENDER DISTRIBUTION
 @api_view(['GET'])
 def gender_distribution(request):
     users_total=Profile.objects.all().count()
@@ -621,7 +634,7 @@ def age_distribution(request):
     for age in list:
         if age > 50 :
             over_fifty.append(age)
-   
+
     age_intervals={
         "zero_to_thirty": len(zero_to_thirty),
         "thirty_to_forty": len(thirty_to_forty),
@@ -653,12 +666,12 @@ def city_distribution(request):
     cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
     latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
     # .annotate(city=F('city'))
-    
+
     for x in latlong:
         citta=Profile.objects.filter(latlong=x['latlong']).first()
         print('citta', citta.city)
         x['city'] = citta.city
-           
+
     places=[]
     # print(type(cities[0]['place']))
     # print(json.loads(cities[0]['place']))

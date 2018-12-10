@@ -4,6 +4,8 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
     var factory = {
         
         search_filter: '',
+        text_overwrite:null,
+        
         old_search:'',
         restrict_to:'',
         old_restrict_to:'',
@@ -12,8 +14,9 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
         is_max_page:false,
         is_min_page:false,
         
-        search: (searchString = null, restrict_to = null, page = 1)=>{
+        search: (searchString = null, restrict_to = null, page = 1, text_overwrite=null)=>{
             
+            factory.text_overwrite = text_overwrite
             factory.search_filter = searchString || factory.search_filter
             
             let options = {
@@ -27,8 +30,11 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             factory.restrict_to = restrict_to
             
             let apicall = $http(options)
-            apicall.then(factory.update_context, n=>$rootScope.$emit('user.search.error', n) )
+            apicall
+                .then(factory.update_context)
+                .catch(n=>$rootScope.$emit('user.search.error', n))
             return apicall
+            
         },
         
         update_context:(results)=>{

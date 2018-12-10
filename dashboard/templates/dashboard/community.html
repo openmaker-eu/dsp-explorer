@@ -29,12 +29,16 @@
                 <div class="col-md-12">
                     <form>
                         <div class="has-feedback has-feedback-left" style="width:100%">
+
+                            <!--Search input-->
                             <input class="form-control"
                                    ng-change="search_factory.search_filter.length > 1 && search_debounced() "
                                    ng-model-options="{allowInvalid: true}"
                                    ng-model="search_factory.search_filter" id="filter" type="text" class="form-control"
                                    placeholder="Search members for name, city, tagwords and more" value=""
                             >
+
+                            <!-- Icon on the right (static or reset)-->
                             <i ng-if="search_factory.is_search_all()" class="glyphicon glyphicon-search form-control-feedback text-grey"></i>
                             <i
                                     ng-if="!search_factory.is_search_all()"
@@ -42,6 +46,7 @@
                                     class="glyphicon glyphicon-remove form-control-feedback text-red pointer"
                                     style="pointer-events:initial;"
                             ></i>
+
                         </div>
                     </form>
                     <br>
@@ -107,13 +112,7 @@
                         
                 <div class="col-md-12">
 
-                    <div class="background-white">
-                        <div class="entity-carousel__header background-red text-white">
-                            <h4 style="padding:2%;">City Distribution</h4>
-                        </div>
-                        <br>
-                        <img src="/static/images/stats/city_distribution.png" alt="" style="width:100%">
-                    </div>
+                   <city-graph></city-graph>
                     <br>
                 
                     <job-graph></job-graph>

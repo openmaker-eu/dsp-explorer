@@ -121,6 +121,9 @@ def resend_activation_email(request):
         elif user.is_active:
             messages.error(request, 'Your user has already been activated. If you cannot login try <a href="/recover">password recovery</a>')
         else:
+
+            
+
             confirmation_link = request.build_absolute_uri('/onboarding/confirmation/{TOKEN}'.format(TOKEN=user.profile.reset_token))
             EmailHelper.email(
                 template_name='onboarding_email_template',

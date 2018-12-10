@@ -23,6 +23,7 @@ def authorization(request):
         'bookmarks': {},
     }
 
+
     if request.user.is_authenticated:
         context['json_user'] = UserSerializer(request.user).data
         profile = request.user.profile

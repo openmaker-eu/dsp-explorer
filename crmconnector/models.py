@@ -69,6 +69,11 @@ class Party(object):
                     'service': self.__social_allowed_names[social['name'].upper()],
                     'address': social['link']
                 })
+        twitter = user.profile.twitterauth.screen_name if hasattr(user.profile, 'twitterauth') else user.profile.twitter_username
+        twitter and self.websites.append({
+            'service': 'TWITTER',
+            'address': twitter
+        })
 
     def __str__(self):
         return dumps(self)
@@ -179,8 +184,10 @@ class Party(object):
         return self.create_or_update()
 
     def get_crm_id(self):
-        print(self.__capsule_party)
-        return self.__capsule_party['id']
+        try:
+            return self.__capsule_party['id']
+        except:
+            return False
 
     ###################
     # PRIVATE METHODS #

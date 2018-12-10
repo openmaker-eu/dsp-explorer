@@ -2,20 +2,26 @@ import * as _ from 'lodash'
 
 export default [function() {
     return {
-        restrict: 'A',
-        link: function (scope, element, attrs) {
+        scope : {
+            inputFileModel:'=',
+            inputFileForm : '='
+        },
+        controller: [ '$scope', '$element', function($scope, $element){
             
-                element.bind('change',(event)=> {
+            $element.bind('change',(event)=> {
+                    
                     let reader = new FileReader();
                     
                     reader.onload = (readerEvent) => {
-                        _.set(scope, attrs.inputFileModel, readerEvent.target.result)
-                        scope.$apply(scope)
+                        $scope.inputFileModel = readerEvent.target.result
+                        $scope.inputFileForm && _.set($scope, 'inputFileForm.$dirty', true)
+                        $scope.$apply($scope)
                     }
                     reader.readAsDataURL(event.target.files[0]);
-    
+                    
                 }
             );
-        }
+            
+        }]
     };
 }];

@@ -29,6 +29,7 @@ export default [function(){
             
             $scope.openContactUserModal = ()=>ContactUserModal.open($scope.entity.data)
             
+            
 
         }]
     }

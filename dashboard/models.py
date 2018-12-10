@@ -279,6 +279,7 @@ class User(User):
 def default_place():
     return {}
 
+
 class Profile(models.Model):
     crm_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -440,9 +441,10 @@ class Profile(models.Model):
         if picture:
             filename, file_extension = os.path.splitext(picture.name)
             if not file_extension in ['.jpg', '.jpeg', '.png']:
-                raise ValueError('nonvalid')
-            if picture.size > 1048576: ## 1MB limit
-                raise ValueError('sizelimit')
+                raise ValueError('Image format is invalid, you can upload only .jpg, .jpeg or .png files')
+
+            if picture.size > 3145728: # 3MB limit
+                raise ValueError('Image size must be less than 3Mb')
             picture.name = 'p_' + str(self.pk) + file_extension  ## str(datetime.now().microsecond)
             self.picture = picture
 

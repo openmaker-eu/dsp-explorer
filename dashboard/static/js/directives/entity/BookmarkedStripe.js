@@ -1,34 +1,44 @@
 let _ = require('lodash')
 let template = `
-        <div
-            ng-show="is_visible"
-            class="col-md-12 entity-content stripe-full--{$ entityname $}"
-        >
+        <!--<div-->
+            <!--ng-show="is_visible"-->
+            <!--class="col-md-12 entity-content stripe-full&#45;&#45;{$ entityname $}"-->
+        <!--&gt;-->
+        
+        <div ng-if="is_visible" class="col-md-12 entity-content stripe-full--{$ entityname $}">
             <div class="row">
+               
                 <div class="col-md-12">
                     <entity-loading
                         loading="entities.length==0 && !nodata"
                         error="nodata"
                         entityname="{$ entityname $}"
-                        errormessage="'You have no bookmarked'+entityname"
+                        errormessage="'You have not bookmarked any '+entityname +' yet'"
                     ></entity-loading>
                 </div>
-                <div ng-if="entities.length > 0">
                 
-                        <div
-                            class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                            ng-repeat="entity in entities | limitTo : 3"
-                            style="margin-bottom:2%; margin-top: 2%;"
-                        >
-                            <div class="entity-list__box">
-                                <entity-detail
-                                    entity="entity"
-                                    entityname="{$ entityname $}"
-                                    entityid="{$ entity.link_id || entity.id $}"
-                                    preview="true"
-                                ></entity-detail>
-                            </div>
-                        </div>
+                <div ng-if="entities.length > 0" style="padding-top:2%; padding-bottom:2%;">
+                    
+                    <div style="position:relative; display: inline-block; max-width: 100%; width:100%;">
+                     
+                         <slick settings="slickConfig" class="slick_stripe" >
+      
+                                <div class="col-md-4" ng-repeat="entity in entities">
+                                    
+                                    <div class="entity-list__box">
+                                        <entity-detail
+                                            entity="entity"
+                                            entityname="{$ entityname=='projects' && entity.hasOwnProperty('company')? 'challenges' : entityname $}"
+                                            entityid="{$ entity.link_id || entity.id $}"
+                                            preview="true"
+                                        ></entity-detail>
+                                    </div>
+                                    
+                                </div>
+       
+                        </slick>
+                    </div>
+         
                 </div>
             </div>
         </div>
@@ -62,7 +72,7 @@ export default function(){
                                 .flattenDepth(2)
                                 .value()
                             || []
-                        $scope.nodata = false
+                        $scope.nodata = $scope.entities.length === 0 || false
                         $scope.$apply()
                     },
                     err => $scope.nodata = true
@@ -76,15 +86,15 @@ export default function(){
             $scope.slickConfig ={
                 slidesToShow: 3,
                 slidesToScroll:  1,
-                // prevArrow: '<i class="fas fa-chevron-left slick-arrow--custom prev"></i>',
-                // nextArrow: '<i class="fas fa-chevron-right slick-arrow--custom next"></i>',
+                prevArrow: '<h2 style="position:absolute; top: 46%; left: 2%; z-index:1; color:red;"><i class="fas fa-chevron-left" ></i></h2>',
+                nextArrow: '<h2 style="position:absolute; top: 46%; right: 2%; z-index:1; color:red;"><i class="fas fa-chevron-right" ></i></h2>',
         
                 //focusOnSelect: false,
                 autoplay: false,
                 draggable: true,
                 swipeToSlide: true,
                 arrows: true,
-                //accessibility: true,
+                // accessibility: true,
                 // adaptiveHeight: true
             }
 

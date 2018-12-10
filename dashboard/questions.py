@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from connectors.insight.connector import InsightConnectorV10 as Insight
-
+import pprint
 
 class questions(APIView):
 
@@ -84,8 +84,9 @@ class questions(APIView):
             not action and self.update_user(request)
 
         except Exception as e:
+            print(' ###################################################')
             print(e)
-            return Response(data={'error': 'error send feedback'}, status=403)
+            return Response(data={'error': str(e) }, status=403)
         return Response()
 
     def feedback_questions(self, request, entity_name, entity_id):
@@ -247,6 +248,7 @@ class questions(APIView):
         '''
         user = request.user
         profile = request.user.profile
+        sixteen_date = (datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')
         questions = [
             self.make('name', 'name', 'What is your name?', value=[user.first_name, user.last_name]),
             self.make('gender', 'select', 'What is your gender?',
@@ -254,8 +256,8 @@ class questions(APIView):
                       ),
             self.make('occupation', 'text', 'What is your occupation?'),
             self.make('birthdate', 'date', 'What is your birthdate?',
-                      max=str((datetime.datetime.now()-datetime.timedelta(days=16*365)).strftime('%Y/%m/%d')),
-                      value=profile.birthdate.strftime('%Y/%m/%d'),
+                      max=str(sixteen_date),
+                      value=profile.birthdate.strftime('%Y/%m/%d') if profile.birthdate else sixteen_date,
                       ),
             self.make('city', 'city', 'What is your city?', value={'city': profile.city, 'place': {}}),
             # self.make('tags', 'multi_select', 'Choose 3 tags',
@@ -324,39 +326,41 @@ class questions(APIView):
         city = request.data.get('city', profile.city)
         place = request.data.get('place', profile.place)
 
+        # try:
+        # User
+        user.first_name = request.data.get('first_name', user.first_name)
+        user.last_name = request.data.get('last_name', user.last_name)
+
+        # Profile
+        profile.city = city if not not city else profile.city
+        profile.place = place if bool(place) else profile.palce
+
+        profile.birthdate = request.data.get('birthdate', profile.birthdate)
+        profile.occupation = request.data.get('occupation', profile.occupation)
+        profile.statement = request.data.get('statement', profile.statement)
+        profile.gender = request.data.get('gender', profile.gender)
+
+        # Activity
+        profile.activity('area', request.data.get('area', None))
+        profile.activity('technology', request.data.get('technology', None))
+        profile.activity('skills', request.data.get('skills', None))
+        profile.activity('domain', request.data.get('domain', None))
+
+        # Profile Extra
+        #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
+
+        picture = request.data.get('picture', None)
+        profile.picture_set_or_update(picture) if picture and len(picture) > 0 else None
+
+        user.save()
+        profile.save()
+
         try:
-            # User
-            user.first_name = request.data.get('first_name', user.first_name)
-            user.last_name = request.data.get('last_name', user.last_name)
-
-            # Profile
-            profile.city = city if not not city else profile.city
-            profile.place = place if bool(place) else profile.palce
-
-            profile.birthdate = request.data.get('birthdate', profile.birthdate)
-            profile.occupation = request.data.get('occupation', profile.occupation)
-            profile.statement = request.data.get('statement', profile.statement)
-            profile.gender = request.data.get('gender', profile.statement)
-
-            # Activity
-            profile.activity('area', request.data.get('area', None))
-            profile.activity('technology', request.data.get('technology', None))
-            profile.activity('skills', request.data.get('skills', None))
-            profile.activity('domain', request.data.get('domain', None))
-
-            # Profile Extra
-            #profile.tags_create_or_update(request.data.get('tags', None), clear=True)
-            profile.picture_set_or_update(request.data.get('picture', profile.picture))
-
-            user.save()
-            profile.save()
-
             party = profile.create_or_update_to_crm(profile.user)
-
-        except Exception as error:
-            print('[ERROR : dahsboard.questions.question.update_user]')
-            print(error)
-            return Response(data={'error': error}, status=403)
+            crm_id = party and party.get_crm_id()
+            crm_id and Insight.notify_user_creation(crm_id)
+        except Exception as e:
+            logger.log('error', e)
 
     @classmethod
     def question(cls, question, **kwargs):

@@ -82,6 +82,7 @@ let wizard_directive =
             
             // Go on only if form-data is valid
             if($scope.isSubformValid(subform)) {
+                
                 // Perform apicall
                 if (question && question.apicall && $scope.isSubformDirty(subform)) {
                     $scope.loading = true;
