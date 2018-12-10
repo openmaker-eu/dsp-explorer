@@ -610,7 +610,7 @@ def gender_distribution(request):
 @api_view(['GET'])
 def age_distribution(request):
     from datetime import datetime, date
-    birthdates=Profile.objects.filter(Q(user__isnull=False)).values("birthdate")
+    birthdates=Profile.objects.filter(Q(user__isnull=False)).exclude(birthdate__isnull=True).values("birthdate")
     list=[]
     zero_to_thirty=[]
     thirty_to_forty=[]
