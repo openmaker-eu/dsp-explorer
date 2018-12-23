@@ -147,7 +147,13 @@ def events(request, topic_id):
 
 @login_required()
 def test(request):
-    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+
+    profile = Profile.objects.filter(user__email='massimo.santoli@top-ix.org').first()
+    party = Party(profile.user)
+
+    party.create_or_update()
+
+    return False
 
 
 @login_required()

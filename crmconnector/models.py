@@ -54,6 +54,7 @@ class Party(object):
         if user.profile.organization:
             self.organisation = {'name': user.profile.organization}
 
+        print(self.tags)
         # Custom Fields
         for custom_id, local_value in self.get_custom_field(user).items():
             if local_value and local_value is not None and local_value != '':
@@ -168,6 +169,12 @@ class Party(object):
         self.get()
         if self.__capsule_party:
             clone = self.__merge_all()
+            print('TAAAG', clone.__capsule_party)
+            crmid = clone.__capsule_party.id
+            tagid = '3345075'
+
+            # CRMConnector
+
             try:
                 return clone.update()
             except CRMValidationException as e:
@@ -214,7 +221,11 @@ class Party(object):
         clone = deepcopy(self)
         clone.__merge_email()
         clone.__delete_remote_websites_and_add_local()
+        clone.__merge_tags()
         return clone
+
+    def __merge_tags(self):
+        pass
 
     def __merge_email(self):
         if self.__capsule_party and len(self.__capsule_party['emailAddresses']) > 0:

@@ -61,15 +61,11 @@ def get_entity_details(request, entity='news', entity_id=None):
     try:
         method_to_call = 'get_' + entity+'_detail'
         results = getattr(DSPConnectorV13, method_to_call)(entity_id=entity_id)[entity]
-        # results = Insight.entity_detail(entity, entity_id)
-        print('results')
-        print(results)
     except DSPConnectorException as e:
         print('ERROR[dashboard.api14.bookmark]: DSPConnectorException')
         print(e)
     except AttributeError as a:
         print('NOT FOUND[dashboard.api14.bookmark]: DSPConnectorException')
-        print(a)
         if entity == 'projects':
             local_entities = Project.objects.get(pk=entity_id)
             results = ProjectSerializer(local_entities).data
@@ -137,7 +133,6 @@ def interest(request, entity, user_id=None):
             if no user id specified will use the logged user
     """
 
-    print('interest')
     profile = request.user.profile if \
         request.user.is_authenticated and \
         not user_id else \
@@ -147,10 +142,6 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
     try:
         singular_entity = EntityProxy.singular_name(entity) if entity in ['projects', 'challenges'] else entity
-
-        # model_serializer = InterestSerializer if entity in ['news', 'events'] \
-        #     else ModelHelper.get_serializer(singular_entity.capitalize())
-
         interests = profile.get_interests(entity)
 
         if entity in ['news', 'events']:
@@ -273,7 +264,6 @@ class entity(APIView):
         page = int(request.GET.get('page', 1))
         is_last_page = False
         profile = request.user.profile if request.user.is_authenticated else None
-        print(request.user)
 
         # Local entities
         if entity == 'loved':
@@ -300,6 +290,7 @@ class entity(APIView):
                 results = response[entity]
             except DSPConnectorException as e:
                 print('ERROR[dashboard.api14.entity.get] DSPConnectorException')
+                print(response)
                 logger.error(e)
             except AttributeError as a:
                 print('ERROR[dashboard.api14.entity.get] AttributeError')
@@ -602,7 +593,6 @@ def gender_distribution(request):
         "female":"%.2f"%female_percentage,
         "other":"%.2f"%nonspecifiedgender_percentage
     }
-    print()
     return Response(geneder_percentage)
 
 
@@ -650,8 +640,7 @@ def age_distribution(request):
 
 def job_distribution(request):
     from django.db.models import Count
-    jobs= Profile.objects.filter(Q(user__isnull=False)).values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
-    print(jobs)
+    jobs = Profile.objects.filter(Q(user__isnull=False)).values("occupation").annotate(people=Count('occupation')).order_by('-people').filter()[:10]
     return Response(jobs)
 
 #CITY DISTRIBUTION
@@ -662,26 +651,23 @@ def city_distribution(request):
     from django.db.models import Count, F
     import json
     from itertools import groupby
-    users_total=Profile.objects.all().count()
-    cities=Profile.objects.filter(Q(user__isnull=False)).values("place")
-    latlong=Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
-    # .annotate(city=F('city'))
+    users_total = Profile.objects.all().count()
+    cities = Profile.objects.filter(Q(user__isnull=False)).values("place")
+    latlong = Profile.objects.filter(Q(user__isnull=False)).values("latlong").annotate(people=Count('latlong')).order_by('-people')[:10]
+
 
     for x in latlong:
         citta=Profile.objects.filter(latlong=x['latlong']).first()
-        print('citta', citta.city)
         x['city'] = citta.city
 
-    places=[]
-    # print(type(cities[0]['place']))
-    # print(json.loads(cities[0]['place']))
-    for k,city in enumerate(cities):
+    places = []
+    for k, city in enumerate(cities):
         try:
-            place=json.loads(city['place'])
+            place = json.loads(city['place'])
             places.append(place)
         except JSONDecodeError as e:
-            x=city['place'].replace("'","\"")
-            place=json.loads(x)
+            x = city['place'].replace("'", "\"")
+            place = json.loads(x)
             places.append(place)
         except TypeError as e:
             print('è vuoto', k)

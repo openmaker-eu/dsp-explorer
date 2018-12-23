@@ -8,7 +8,6 @@ class InsightConnectorV10(object):
     def questions(cls, crm_ids, amount=1):
         crm_ids = cls.merge_ids(crm_ids)
         res = cls.get('recommendation/questions', {"crm_ids": crm_ids, 'count': amount})
-        #print(res.json())
         return res
 
     @classmethod
@@ -55,11 +54,19 @@ class InsightConnectorV10(object):
     def reccomended_entity(cls, crm_id=None, entity_name=None, page=None):
         allowed_entities = ['news', 'events']
         try:
-            results = {}
+            response = {}
+            crm_ids = '[{}]'.format(str(crm_id)) if crm_id else None
             if entity_name in allowed_entities:
-                querydict = {k: v for (k, v) in {'crm_id': crm_id, 'page': page}.items() if v}
-                results = cls.get('recommendation/'+entity_name, querydict)
-            return results.json() if results.status_code < 205 else []
+                querydict = {k: v for k, v in {'crm_ids': crm_ids, 'page': page}.items() if v}
+                response = cls.get('recommendation/'+entity_name, querydict)
+            response = response.json() if response.status_code < 205 else {}
+
+            results = response['users'][0] \
+                if 'users' in response \
+                   and isinstance(response['users'], list) and len(response['users']) > 0 \
+                else response
+            return results
+
         except Exception as e:
             print('[ERROR : connectors.insight.connector.InsigthConnectoV10.reccomended_entity] Error get reccomended entities')
             print(e)
@@ -86,7 +93,7 @@ class InsightConnectorV10(object):
     def get(cls, endpoint, querydict={}):
         querydict['api_key'] = settings.INSIGHT_API_KEY
         querydict = '?' + urlencode(querydict, False) if querydict and len(querydict) > 0 else ''
-        url = settings.INSIGHT_API + 'v1.0/' + endpoint + querydict
+        url = settings.INSIGHT_API + 'v1.1/' + endpoint + querydict
         try:
             return requests.get(url, timeout=15)
         except Exception as e:
@@ -102,8 +109,6 @@ class InsightConnectorV10(object):
     @classmethod
     def notify_user_creation(cls, crm_id):
         results = cls.get('omn_crawler/post_registered_user', {'crm_id': crm_id})
-        print('Notify Insight about new users: ')
-        print(results)
 
 
 
