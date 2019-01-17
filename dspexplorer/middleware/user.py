@@ -1,5 +1,6 @@
 from oauth.models import TwitterProfile
 
+
 class UserMiddleware:
 
     def __init__(self, get_response):

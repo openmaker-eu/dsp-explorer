@@ -94,7 +94,11 @@ urlpatterns = [
 
 
     # API v1.4
+
     ## MDP
+    url(r'^api/v1.1/project/$', api14.V11.projects, name='api.v1.1.project'),
+    url(r'^api/v1.1/challenge/$', api14.V11.challenges, name='api.v1.1.challenge'),
+
     url(r'^api/v1.4/stats/gender_distribution/$', api14.gender_distribution, name='stats.gender_distribution'),
     url(r'^api/v1.4/stats/age_distribution/$', api14.age_distribution, name='stats.age_distribution'),
     url(r'^api/v1.4/stats/job_distribution/$', api14.job_distribution, name='stats.job_distribution'),

@@ -47,6 +47,7 @@ var app = angular.module('dashboard', [
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.interceptors.push('AddApiToken.Interceptor');
     }])
     .config(['$qProvider', function ($qProvider) {$qProvider.errorOnUnhandledRejections(false);}])
 ;
@@ -121,6 +122,9 @@ app.factory('ContactUserModal', require('./factories/ContactUserWithEmailModal')
 
 // Content providers
 app.factory('EntityProvider', require('./content_providers/EntityProvider').default )
+
+// Api utils
+app.factory('AddApiToken.Interceptor', require('./factories/AddApiToken.Interceptor').default )
 
 //Community Stats
 app.directive('genderGraph', require('./directives/graphs/genderGraph').default )

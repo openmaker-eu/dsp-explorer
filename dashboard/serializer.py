@@ -135,3 +135,59 @@ class InterestSerializer(serializers.ModelSerializer):
         elif isinstance(obj, Project):
             return ProjectSerializer(obj).to_representation(obj)
         return super(InterestSerializer, self).to_representation(obj)
+
+
+class ExtChallengeSerializer(serializers.ModelSerializer):
+    company = CompanySerializer(many=False, read_only=True)
+    tags = serializers.SerializerMethodField()
+    company = serializers.SerializerMethodField()
+    les = serializers.SerializerMethodField()
+    profile = ProfileSerializer(read_only=True)
+
+    interested = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Challenge
+        # fields = '__all__'
+        exclude = ("notify_admin", "notify_user")
+
+    def get_tags(self, obj):
+        return [x.name for x in obj.tags.all()]
+
+    def get_company(self, obj):
+        return obj.company.name
+
+    def get_interested(self, obj):
+        return [x.crm_id for x in obj.interested()]
+
+    def get_les(self, obj):
+        return obj.les_choices[obj.les][1]
+
+    # def get_interested(self, obj):
+    #     return ProfileSerializer(obj.interested(), many=True).data
+
+
+class ExtProjectSerializer(serializers.ModelSerializer):
+    tags = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+    contributors = serializers.SerializerMethodField()
+
+    interested = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Project
+        # fields = '__all__'
+        exclude = ('project_contributors',)
+
+    def get_tags(self, obj):
+        return [x.name for x in obj.tags.all()]
+
+    def get_profile(self, obj):
+        return obj.profile.crm_id
+
+    def get_interested(self, obj):
+        return [x.crm_id for x in obj.interested()]
+
+    def get_contributors(self, obj):
+        contrib_rel = ProjectContributor.objects.filter(project=obj)
+        return [x.crm_id for x in contrib_rel]

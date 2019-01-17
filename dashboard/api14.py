@@ -2,9 +2,12 @@
 from django.http import JsonResponse
 
 from django.core.exceptions import ObjectDoesNotExist
+
+from dspexplorer import settings
 from .models import ModelHelper
 
-from .serializer import ProfileSerializer, ProjectSerializer, ChallengeSerializer
+from .serializer import ProfileSerializer, ProjectSerializer, ChallengeSerializer, ExtProjectSerializer, \
+    ExtChallengeSerializer
 from dspconnector.connector import DSPConnector, DSPConnectorException, DSPConnectorV12, DSPConnectorV13
 from utils.api import not_authorized, not_found, error, bad_request, success
 
@@ -41,6 +44,7 @@ from django.db.models import Q
 from .helpers import order_date_index
 from dashboard.models import EntityProxy
 
+
 def __wrap_response(*args, **kwargs):
     try:
         results = args[0](args[1:])
@@ -76,6 +80,7 @@ def get_entity_details(request, entity='news', entity_id=None):
     return success('ok', 'single entity', results)
 
 
+@login_required
 @api_view(['GET', 'POST'])
 def bookmark(request, entity='news', entity_id=None):
     # GET return status of a bookmark (ES: {bookmarked:true|false})
@@ -97,6 +102,7 @@ def bookmark(request, entity='news', entity_id=None):
         return Response({}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@login_required
 @api_view(['GET'])
 def get_bookmarks(request):
     try:
@@ -109,6 +115,7 @@ def get_bookmarks(request):
         return Response({}, status.HTTP_404_NOT_FOUND)
 
 
+@login_required
 @api_view(['GET'])
 def get_bookmark_by_entities(request, entity=None):
     try:
@@ -121,6 +128,7 @@ def get_bookmark_by_entities(request, entity=None):
         return Response({}, status.HTTP_404_NOT_FOUND)
 
 
+@login_required
 @api_view(['GET'])
 def interest(request, entity, user_id=None):
     """
@@ -160,6 +168,7 @@ def interest(request, entity, user_id=None):
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required
 @api_view(['POST', 'GET'])
 def my_interest(request, entity, entity_id):
     """
@@ -181,6 +190,7 @@ def my_interest(request, entity, entity_id):
         return Response(profile.interest_this(local_entity))
 
 
+@login_required
 @api_view(['GET'])
 def user_projects(request, profile_id):
     """
@@ -197,6 +207,7 @@ def user_projects(request, profile_id):
     return Response(serialized)
 
 
+@login_required
 @api_view(['GET'])
 def interested(request, entity='news', entity_id=None):
     """
@@ -216,6 +227,8 @@ def interested(request, entity='news', entity_id=None):
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
 
+@login_required
+@login_required
 def get_interests(request):
     try:
         profile = request.user.profile
@@ -232,6 +245,7 @@ def get_interests(request):
         }, status=403)
 
 
+@login_required
 @api_view(['GET'])
 def chatbot_interests(request):
     if not request.user.is_authenticated:
@@ -701,4 +715,25 @@ def contact_user_with_email(request, user_id):
     EmailHelper.email('user_to_user', receiver.email, email_title, vars)
 
     return Response('Message sent')
+
+
+class V11:
+    @api_view(['GET'])
+    def projects(request):
+        token = request.GET.get('access_token', None)
+        if not token or token != settings.API_AUTH_TOKEN:
+            return Response('Unhautorized', status=401)
+
+        projects = Project.objects.all()
+        return Response(data=ExtProjectSerializer(projects, many=True).data)
+
+
+    @api_view(['GET'])
+    def challenges(request):
+        token = request.GET.get('access_token', None)
+        if not token or token != settings.API_AUTH_TOKEN:
+            return Response('Unhautorized', status=401)
+
+        challenges = Challenge.objects.all()
+        return Response(data=ExtChallengeSerializer(challenges, many=True).data)
 
