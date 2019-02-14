@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'dspconnector.apps.DspconnectorConfig',
+    'connectors.apps.ConnectorsConfig',
     'oauth.apps.OauthConfig',
     'pss.apps.PssConfig',
     'froala_editor',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'webpack_loader',
     'django_extensions'
+
 ]
 
 MIDDLEWARE = [

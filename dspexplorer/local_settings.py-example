@@ -180,3 +180,4 @@ FROALA_EDITOR_OPTIONS = {
 }
 
 AES_KEY = '32 bytes long key'
+API_AUTH_TOKEN = 'A_key_of_your_choice'

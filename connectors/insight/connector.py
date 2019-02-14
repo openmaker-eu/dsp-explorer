@@ -1,6 +1,11 @@
+import re
+
 import requests
 from django.conf import settings
 from urllib.parse import urlencode
+
+# from dashboard.models import EntityProxy
+
 
 class InsightConnectorV10(object):
 
@@ -81,8 +86,21 @@ class InsightConnectorV10(object):
     @classmethod
     def entity_details(cls, entityname, temp_id):
         try:
-            results = cls.get('recommendation/get_{}_contents'.format(entityname), {'temp_ids': [temp_id]})
-            return results.json()['Temporary Contents'][temp_id]
+            # name = EntityProxy.singular_name(entityname)
+            name = re.sub(r'^(?!news)(\w+)s$', r'\1', entityname) if entityname else ''
+
+            results = cls.get(
+                'recommendation/get_{}_contents'.format(entityname),
+                {name+'_ids': ','.join(temp_id)} if type(temp_id) != 'list' else [temp_id]
+            )
+
+            res = results.json()['Contents']
+            return [v for k, v in res.items()]
+            return [v for k, v in res.items()] if type(temp_id) == 'list' else res[temp_id]
+
+            # results = cls.get('recommendation/get_{}_contents'.format(entityname), {'temp_ids': [temp_id]})
+            # return results.json()['Temporary Contents'][temp_id]
+
         except Exception as e:
             print('[ERROR : connectors.insight.connector.InsigthConnectoV10.entity_detail] Error get reccomended entities')
             print(e)

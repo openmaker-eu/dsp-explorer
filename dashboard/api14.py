@@ -140,7 +140,6 @@ def interest(request, entity, user_id=None):
             return all the interest shown by specified user that belongs to specific entitiy type
             if no user id specified will use the logged user
     """
-
     profile = request.user.profile if \
         request.user.is_authenticated and \
         not user_id else \
@@ -154,9 +153,12 @@ def interest(request, entity, user_id=None):
 
         if entity in ['news', 'events']:
             ids = [x.externalId for x in interests]
-            res = getattr(DSPConnectorV13, 'get_'+entity+'_detail')(entity_id=','.join(ids))[entity] \
-                if len(ids) > 0 \
-                else []
+            res = Insight.entity_details(entity, ids)
+
+            print(res)
+            # res = getattr(DSPConnectorV13, 'get_'+entity+'_detail')(entity_id=','.join(ids))[entity] \
+            #     if len(ids) > 0 \
+            #     else []
         else:
             model_serializer = ModelHelper.get_serializer(singular_entity.capitalize())
             res = model_serializer(interests, many=True).data
