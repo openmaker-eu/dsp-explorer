@@ -88,21 +88,16 @@ class InsightConnectorV10(object):
         try:
             # name = EntityProxy.singular_name(entityname)
             name = re.sub(r'^(?!news)(\w+)s$', r'\1', entityname) if entityname else ''
+            is_list = isinstance(temp_id, list)
 
             results = cls.get(
                 'recommendation/get_{}_contents'.format(entityname),
-                {name+'_ids': ','.join(temp_id)} if type(temp_id) != 'list' else [temp_id]
+                {name+'_ids': ','.join(temp_id) if is_list else [temp_id] }
             )
-
             res = results.json()['Contents']
-            return [v for k, v in res.items()]
-            return [v for k, v in res.items()] if type(temp_id) == 'list' else res[temp_id]
-
-            # results = cls.get('recommendation/get_{}_contents'.format(entityname), {'temp_ids': [temp_id]})
-            # return results.json()['Temporary Contents'][temp_id]
-
+            return [v for k, v in res.items() if v] if is_list else res[temp_id]
         except Exception as e:
-            print('[ERROR : connectors.insight.connector.InsigthConnectoV10.entity_detail] Error get reccomended entities')
+            print('[ERROR : connectors.insight.connector.InsigthConnectoV10.entity_details] Error get reccomended entities')
             print(e)
             return []
 

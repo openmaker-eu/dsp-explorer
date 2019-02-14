@@ -97,9 +97,6 @@ export default function(){
         },
         controller : ['$scope', '$rootScope', '$http', 'EntityProvider', function($scope, $rootScope, $http, EntityProvider) {
             
-            
-            console.log($scope.entityid);
-            
             $scope.entityname = _.get($rootScope, 'page_info.options.entity_name')
             $scope.entity = EntityProvider.make(
                 $scope.entityname,

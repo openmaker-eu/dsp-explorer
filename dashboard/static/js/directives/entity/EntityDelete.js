@@ -52,7 +52,6 @@ export default [function(){
                             $http
                                 .delete(`/api/v1.4/${entity.entityname}/${entity.entityid}/`)
                                 .then(r=>{
-                                    console.log(r);
                                     $rootScope.alert_message('success', `${$scope.entitydisplayname} deleted`);
                                     $rootScope.$emit('user.projects.refresh', {})
                                     modal.close()}

@@ -76,7 +76,6 @@ export default function(){
                     tooltips: {
                         callbacks: {
                             title:function(tooltipItems) {
-                                console.log(tooltipItems)
                                 return tooltipItems[0].xLabel +" people "
                                          },
                             label:function(){

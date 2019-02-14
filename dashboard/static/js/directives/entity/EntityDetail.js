@@ -22,12 +22,6 @@ export default [function(){
                 plurals.includes($scope.entityname) ?
                     $scope.entityname :
                     $scope.entityname.slice(0, -1)
-    
-            console.log({
-                'sad': `${singularize($scope.entityname)}_id`,
-                'entity':$scope.entity ,
-                'sid': $scope.entity[`${singularize($scope.entityname)}_id`]
-            });
             
             $scope.entity_link = ()=> '/entity/' +
                 $scope.entityname + '/' +

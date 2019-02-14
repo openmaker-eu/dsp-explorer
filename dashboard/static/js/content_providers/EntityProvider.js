@@ -18,8 +18,6 @@ export default ['$http', '$rootScope',  function($http, $rootScope){
             
             this.url += userid ? `/user/${userid}` : ''
             this.url += `/${entityname}/${ entityid ? entityid+'/' : ''}`
-            
-            console.log(`${entityname}/${entityid}/${userid}` ,  this.url);
         }
 
         get = (force=false, page=null)=>{

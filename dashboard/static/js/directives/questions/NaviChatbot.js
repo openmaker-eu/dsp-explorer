@@ -47,7 +47,6 @@ export default function(){
             $scope.prev=()=>$rootScope.$emit($scope.wizard_name+'.prev', $scope.current)
             $scope.next=(value)=> {
                 if(value === 'goto:last') {
-                    console.log('got last');
                     $rootScope.$emit('chatbot.dont_bother_me', $scope.current)
                     $scope.goto($scope.items.length-1)
                 }

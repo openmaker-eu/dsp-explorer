@@ -13,8 +13,6 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
         action: null,
         open: (ev, questions, action=null, extra=null)=>{
             
-            console.log('open', open);
-    
             if($rootScope.modal_opened === true) return false
             
             F.modalInstance = $uibModal.open({
@@ -27,8 +25,6 @@ export default ['$rootScope', '$uibModal', '$document', function($rootScope, $ui
                     
                     F.wizard_id = $scope.$id
                     F.action = action
-                    
-                    console.log('modal', F.wizard_id);
                     
                     $scope.questions=questions
                     $scope.action=action

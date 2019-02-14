@@ -51,7 +51,6 @@ export default function(){
                         $scope.delete=()=>{
                             $http.post('/api/v1.4/user/delete/')
                                 .then(()=>{
-                                    console.log('deleted');
                                     $window.location.href = '/#account_deleted'
                                 })
                                 .catch(e=>{

@@ -154,11 +154,6 @@ def interest(request, entity, user_id=None):
         if entity in ['news', 'events']:
             ids = [x.externalId for x in interests]
             res = Insight.entity_details(entity, ids)
-
-            print(res)
-            # res = getattr(DSPConnectorV13, 'get_'+entity+'_detail')(entity_id=','.join(ids))[entity] \
-            #     if len(ids) > 0 \
-            #     else []
         else:
             model_serializer = ModelHelper.get_serializer(singular_entity.capitalize())
             res = model_serializer(interests, many=True).data
