@@ -17,7 +17,6 @@ export default [function(){
             
             let plurals = ['news']
             
-            
             const singularize = (name)=>
                 plurals.includes($scope.entityname) ?
                     $scope.entityname :
