@@ -31,7 +31,7 @@ requests==2.18.4
 requests-oauthlib==1.0.0
 six==1.11.0
 tweepy==3.6.0
-urllib3==1.22
+urllib3==1.26.5
 Naked==0.1.31
 crypto==1.4.1
 shellescape==3.4.1
